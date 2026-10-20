@@ -1,0 +1,70 @@
+name: Build FreeFrame Mobile APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/build-apk.yml'
+      - 'freeframe/**'
+      - 'README.md'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout FreeFrame repo
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Fetch Local Diffusion engine
+        run: |
+          git clone --depth 1 https://github.com/rmatif/Local-Diffusion.git app
+
+      - name: Apply FreeFrame branding
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          manifest = Path('app/android/app/src/main/AndroidManifest.xml')
+          text = manifest.read_text(encoding='utf-8')
+          text = text.replace('android:label="local_diffusion"', 'android:label="FreeFrame Mobile"')
+          text = text.replace('android:label="Local Diffusion"', 'android:label="FreeFrame Mobile"')
+          manifest.write_text(text, encoding='utf-8')
+
+          pubspec = Path('app/pubspec.yaml')
+          p = pubspec.read_text(encoding='utf-8')
+          p = p.replace('description: "A new Flutter project."', 'description: "FreeFrame Mobile - local on-device image generation."')
+          pubspec.write_text(p, encoding='utf-8')
+          PY
+
+      - name: Flutter dependencies
+        working-directory: app
+        run: flutter pub get
+
+      - name: Build release APK
+        working-directory: app
+        run: flutter build apk --release
+
+      - name: Rename APK
+        run: |
+          cp app/build/app/outputs/flutter-apk/app-release.apk FreeFrame-Mobile.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: FreeFrame-Mobile-APK
+          path: FreeFrame-Mobile.apk
+          if-no-files-found: error
