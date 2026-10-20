@@ -32,12 +32,17 @@ jobs:
 
       - name: Install required Android NDK with retry
         run: |
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          if [ ! -x "$SDKMANAGER" ]; then
+            SDKMANAGER="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager | head -n 1)"
+          fi
+          echo "Using sdkmanager at: $SDKMANAGER"
           rm -rf "$ANDROID_HOME/ndk/26.3.11579264"
-          yes | sdkmanager --licenses >/dev/null || true
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
           ok=0
           for attempt in 1 2 3; do
             echo "NDK install attempt $attempt"
-            if sdkmanager "ndk;26.3.11579264"; then
+            if "$SDKMANAGER" "ndk;26.3.11579264"; then
               ok=1
               break
             fi
