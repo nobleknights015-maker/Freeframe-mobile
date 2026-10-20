@@ -75,12 +75,33 @@ jobs:
           pubspec.write_text(p, encoding='utf-8')
           PY
 
-      - name: Apply FreeFrame stability fixes
+      - name: Apply FreeFrame Alpha 3 patches
         run: python3 freeframe/patch_mobile.py
 
       - name: Flutter dependencies
         working-directory: app
         run: flutter pub get
+
+      - name: Alpha 3 regression cycle 1
+        run: |
+          python3 freeframe/regression_assertions.py
+          cd app
+          flutter analyze
+          flutter test
+
+      - name: Alpha 3 regression cycle 2
+        run: |
+          python3 freeframe/regression_assertions.py
+          cd app
+          flutter analyze
+          flutter test
+
+      - name: Alpha 3 regression cycle 3
+        run: |
+          python3 freeframe/regression_assertions.py
+          cd app
+          flutter analyze
+          flutter test
 
       - name: Build release APK
         working-directory: app
