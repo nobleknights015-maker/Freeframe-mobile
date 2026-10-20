@@ -179,9 +179,12 @@ replacement = """                final result = await FilePicker.platform.pickFi
                   ),
                 );
 """
-if start not in s:
+count = s.count(start)
+if count < 1:
     raise SystemExit('Expected Img2Img model-picker block was not found; upstream changed.')
-s = s.replace(start, replacement, 1)
+s = s.replace(start, replacement)
+if '.getDirectoryPath(initialDirectory: modelDirPath)' in s:
+    raise SystemExit('Legacy Img2Img folder-first picker remained after patching.')
 p.write_text(s, encoding='utf-8')
 
-print('FreeFrame mobile stability patches applied.')
+print(f'FreeFrame mobile stability patches applied ({count} Img2Img picker block(s) replaced).')
