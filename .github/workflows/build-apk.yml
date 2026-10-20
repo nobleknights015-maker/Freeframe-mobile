@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout FreeFrame repo
@@ -29,6 +29,25 @@ jobs:
           flutter-version: '3.29.3'
           channel: stable
           cache: true
+
+      - name: Install required Android NDK with retry
+        run: |
+          rm -rf "$ANDROID_HOME/ndk/26.3.11579264"
+          yes | sdkmanager --licenses >/dev/null || true
+          ok=0
+          for attempt in 1 2 3; do
+            echo "NDK install attempt $attempt"
+            if sdkmanager "ndk;26.3.11579264"; then
+              ok=1
+              break
+            fi
+            rm -rf "$ANDROID_HOME/ndk/26.3.11579264" "$HOME/.android/cache"
+            sleep 15
+          done
+          if [ "$ok" -ne 1 ]; then
+            echo "Failed to install Android NDK after retries"
+            exit 1
+          fi
 
       - name: Fetch Local Diffusion engine
         run: |
