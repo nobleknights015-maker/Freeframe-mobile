@@ -75,6 +75,9 @@ jobs:
           pubspec.write_text(p, encoding='utf-8')
           PY
 
+      - name: Apply FreeFrame stability fixes
+        run: python3 freeframe/patch_mobile.py
+
       - name: Flutter dependencies
         working-directory: app
         run: flutter pub get
