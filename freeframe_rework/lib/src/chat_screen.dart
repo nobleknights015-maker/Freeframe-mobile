@@ -80,23 +80,89 @@ class _ChatScreenState extends State<ChatScreen> {
     super.dispose();
   }
 
-  Future<void> _chooseModel() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: const ['safetensors', 'ckpt', 'gguf'],
-      allowMultiple: false,
+  Future<void> _openModelsPanel() async {
+    _focusNode.unfocus();
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        final current = _session.activeConfig;
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Models',
+                  style: Theme.of(sheetContext).textTheme.headlineSmall,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  current == null
+                      ? 'Choose a Stable Diffusion model file from your phone.'
+                      : 'Loaded: ${_fileName(current.modelPath)}',
+                ),
+                const SizedBox(height: 16),
+                FilledButton.icon(
+                  onPressed: () async {
+                    Navigator.of(sheetContext).pop();
+                    await Future<void>.delayed(
+                      const Duration(milliseconds: 180),
+                    );
+                    await _chooseModel();
+                  },
+                  icon: const Icon(Icons.folder_open_rounded),
+                  label: Text(
+                    current == null ? 'Choose model file' : 'Change model',
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Supported: .safetensors, .ckpt, .gguf · Q4_0 is the default low-memory setting.',
+                  style: Theme.of(sheetContext).textTheme.bodySmall,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
-    final path = result?.files.single.path;
-    if (path == null) return;
+  }
 
-    _addAssistant('Loading ${_fileName(path)}…');
+  Future<void> _chooseModel() async {
     try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.any,
+        allowMultiple: false,
+        withData: false,
+      );
+      final path = result?.files.single.path;
+      if (path == null) return;
+
+      final lower = path.toLowerCase();
+      if (!(lower.endsWith('.safetensors') ||
+          lower.endsWith('.ckpt') ||
+          lower.endsWith('.gguf'))) {
+        _addAssistant(
+          'That file is not a supported model. Choose a .safetensors, .ckpt, or .gguf file.',
+        );
+        return;
+      }
+
+      _addAssistant('Loading ${_fileName(path)}…');
       await _session.load(ModelLoadConfig(modelPath: path));
       if (!mounted) return;
-      _addAssistant('${_fileName(path)} is loaded and set as your default model.');
+      _addAssistant(
+        '${_fileName(path)} is loaded and set as your default model.',
+      );
     } catch (error) {
       if (!mounted) return;
-      _addAssistant('That model could not be loaded. ${_friendlyError(error)}');
+      _addAssistant(
+        'I could not open or load that model. ${_friendlyError(error)}',
+      );
     }
   }
 
@@ -107,7 +173,9 @@ class _ChatScreenState extends State<ChatScreen> {
       setState(() => _attachedImage = prepared);
       _focusNode.requestFocus();
     } catch (error) {
-      if (mounted) _addAssistant('I could not open that image. ${_friendlyError(error)}');
+      if (mounted) {
+        _addAssistant('I could not open that image. ${_friendlyError(error)}');
+      }
     }
   }
 
@@ -116,7 +184,9 @@ class _ChatScreenState extends State<ChatScreen> {
     if (text.isEmpty || _sessionState == ModelSessionState.generating) return;
 
     if (!_session.isReady) {
-      _addAssistant('Choose a model first. Tap Models at the top and select your .safetensors, .ckpt, or .gguf file.');
+      _addAssistant(
+        'Choose a model first. Tap Models at the top and select your .safetensors, .ckpt, or .gguf file.',
+      );
       return;
     }
 
@@ -196,7 +266,9 @@ class _ChatScreenState extends State<ChatScreen> {
         );
       }
     } catch (error) {
-      if (mounted) _addAssistant('I could not save that image. ${_friendlyError(error)}');
+      if (mounted) {
+        _addAssistant('I could not save that image. ${_friendlyError(error)}');
+      }
     }
   }
 
@@ -207,7 +279,9 @@ class _ChatScreenState extends State<ChatScreen> {
       setState(() => _attachedImage = prepared);
       _focusNode.requestFocus();
     } catch (error) {
-      if (mounted) _addAssistant('I could not reuse that image. ${_friendlyError(error)}');
+      if (mounted) {
+        _addAssistant('I could not reuse that image. ${_friendlyError(error)}');
+      }
     }
   }
 
@@ -231,7 +305,10 @@ class _ChatScreenState extends State<ChatScreen> {
   String _fileName(String path) => path.split(RegExp(r'[/\\]')).last;
 
   String _friendlyError(Object error) {
-    return error.toString().replaceFirst('Bad state: ', '').replaceFirst('StateError: ', '');
+    return error
+        .toString()
+        .replaceFirst('Bad state: ', '')
+        .replaceFirst('StateError: ', '');
   }
 
   String get _statusText {
@@ -266,7 +343,7 @@ class _ChatScreenState extends State<ChatScreen> {
         scrolledUnderElevation: 0,
         actions: [
           TextButton.icon(
-            onPressed: busy ? null : _chooseModel,
+            onPressed: busy ? null : _openModelsPanel,
             icon: const Icon(Icons.tune_rounded, size: 19),
             label: const Text('Models'),
           ),
@@ -287,8 +364,14 @@ class _ChatScreenState extends State<ChatScreen> {
                     border: Border.all(color: scheme.outlineVariant),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    child: Text(_statusText, style: Theme.of(context).textTheme.labelMedium),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
+                    ),
+                    child: Text(
+                      _statusText,
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ),
                   ),
                 ),
               ),
@@ -304,13 +387,19 @@ class _ChatScreenState extends State<ChatScreen> {
                   final item = _items[index];
                   final isUser = item.role == _Role.user;
                   return Align(
-                    alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
+                    alignment: isUser
+                        ? Alignment.centerRight
+                        : Alignment.centerLeft,
                     child: Container(
                       constraints: const BoxConstraints(maxWidth: 640),
                       margin: const EdgeInsets.symmetric(vertical: 6),
-                      padding: EdgeInsets.all(item.generatedImage == null ? 12 : 8),
+                      padding: EdgeInsets.all(
+                        item.generatedImage == null ? 12 : 8,
+                      ),
                       decoration: BoxDecoration(
-                        color: isUser ? scheme.surfaceContainerHighest : Colors.transparent,
+                        color: isUser
+                            ? scheme.surfaceContainerHighest
+                            : Colors.transparent,
                         borderRadius: BorderRadius.circular(18),
                       ),
                       child: Column(
@@ -338,30 +427,49 @@ class _ChatScreenState extends State<ChatScreen> {
                             const SizedBox(height: 8),
                           ],
                           if (item.text.isNotEmpty)
-                            Text(item.text, style: Theme.of(context).textTheme.bodyLarge),
+                            Text(
+                              item.text,
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
                           if (item.generatedImage != null) ...[
                             const SizedBox(height: 4),
                             Wrap(
                               spacing: 6,
                               children: [
                                 TextButton.icon(
-                                  onPressed: () => _useGeneratedAsReference(item.generatedImage!),
+                                  onPressed: () => _useGeneratedAsReference(
+                                    item.generatedImage!,
+                                  ),
                                   icon: const Icon(Icons.edit_rounded, size: 18),
                                   label: const Text('Edit'),
                                 ),
                                 TextButton.icon(
-                                  onPressed: () => _useGeneratedAsReference(item.generatedImage!),
+                                  onPressed: () => _useGeneratedAsReference(
+                                    item.generatedImage!,
+                                  ),
                                   icon: const Icon(Icons.link_rounded, size: 18),
                                   label: const Text('Use as reference'),
                                 ),
                                 TextButton.icon(
-                                  onPressed: _lastPrompt == null ? null : () => _submit(overrideText: _lastPrompt),
-                                  icon: const Icon(Icons.refresh_rounded, size: 18),
+                                  onPressed: _lastPrompt == null
+                                      ? null
+                                      : () => _submit(
+                                            overrideText: _lastPrompt,
+                                          ),
+                                  icon: const Icon(
+                                    Icons.refresh_rounded,
+                                    size: 18,
+                                  ),
                                   label: const Text('Retry'),
                                 ),
                                 TextButton.icon(
-                                  onPressed: () => _saveImage(item.generatedImage!),
-                                  icon: const Icon(Icons.download_rounded, size: 18),
+                                  onPressed: () => _saveImage(
+                                    item.generatedImage!,
+                                  ),
+                                  icon: const Icon(
+                                    Icons.download_rounded,
+                                    size: 18,
+                                  ),
                                   label: const Text('Save'),
                                 ),
                               ],
