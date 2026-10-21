@@ -138,7 +138,7 @@ jobs:
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 4096
           script: |
-            set -euo pipefail
+            set -eu
             APK="sim-apk/FreeFrame-Rework-Test.apk"
             adb install -r "$APK"
             PACKAGE=$(aapt dump badging "$APK" | sed -n "s/package: name='\([^']*\)'.*/\1/p")
@@ -151,10 +151,8 @@ jobs:
 
             python3 - <<'PY'
             import re, subprocess, xml.etree.ElementTree as ET
-
             tree = ET.parse('window.xml')
             nodes = list(tree.getroot().iter('node'))
-
             def center(node):
                 b = node.attrib.get('bounds', '')
                 m = re.match(r'\[(\d+),(\d+)\]\[(\d+),(\d+)\]', b)
@@ -162,7 +160,6 @@ jobs:
                     raise SystemExit(f'No bounds for node: {node.attrib}')
                 x1,y1,x2,y2 = map(int, m.groups())
                 return (x1+x2)//2, (y1+y2)//2
-
             prompt = next((n for n in nodes if 'Describe what you want' in n.attrib.get('text','')), None)
             if prompt is None:
                 prompt = next((n for n in nodes if n.attrib.get('class','').endswith('EditText')), None)
