@@ -140,9 +140,7 @@ if "Future<void> generateTextToImage({" not in text:
 path.write_text(text, encoding='utf-8')
 print('FreeFrame shared native processor patch applied')
 
-# The prompt field must recover cleanly after Android file-picker/model-load
-# activity transitions. Force an explicit text-input show after focus is
-# requested instead of relying on implicit platform focus restoration.
+# Harden the prompt keyboard and external picker lifecycle for low-memory Android.
 chat_path = Path('app/lib/src/chat_screen.dart')
 chat = chat_path.read_text(encoding='utf-8')
 
@@ -154,13 +152,20 @@ if services_import not in chat:
         1,
     )
 
-helper_marker = "  Future<void> _restoreModel() async {\n"
+# Replace existing direct focus requests before inserting the helper so the
+# helper itself can safely call requestFocus without being rewritten.
 if "void _focusPrompt()" not in chat:
+    chat = chat.replace('_focusNode.requestFocus();', '_focusPrompt();')
+    helper_marker = "  Future<void> _restoreModel() async {\n"
     helper = r'''  void _focusPrompt() {
-    if (!mounted || _sessionState == ModelSessionState.loading) return;
+    if (!mounted) return;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!mounted) return;
-      _focusNode.requestFocus();
+      if (!_focusNode.hasFocus) {
+        FocusScope.of(context).requestFocus(_focusNode);
+      }
+      await Future<void>.delayed(const Duration(milliseconds: 120));
+      if (!mounted || !_focusNode.hasFocus) return;
       await SystemChannels.textInput.invokeMethod<void>('TextInput.show');
     });
   }
@@ -170,7 +175,14 @@ if "void _focusPrompt()" not in chat:
         raise SystemExit('FreeFrame chat shape changed: restore marker not found')
     chat = chat.replace(helper_marker, helper + helper_marker, 1)
 
-chat = chat.replace('_focusNode.requestFocus();', '_focusPrompt();')
+# Keep the text input connection alive while the model is loading. Disabling
+# and re-enabling TextField on this Motorola target was leaving the IME in a
+# broken state after the native model transition.
+chat = chat.replace(
+    "                        enabled: _sessionState != ModelSessionState.loading,\n",
+    "",
+    1,
+)
 
 field_marker = "                        textInputAction: TextInputAction.newline,\n"
 if "onTap: _focusPrompt," not in chat:
@@ -182,5 +194,64 @@ if "onTap: _focusPrompt," not in chat:
         1,
     )
 
+# A multi-gigabyte model remaining resident while Android opens DocumentsUI can
+# cause the 4 GB target phone to kill FreeFrame in the background. Release the
+# native model context before leaving the app, then restore the same model after
+# the picker returns. The persisted default is left unchanged.
+old_picker = r'''  Future<void> _pickReference() async {
+    try {
+      final prepared = await ImageInputService.instance.pickReference();
+      if (prepared == null || !mounted) return;
+      setState(() => _attachedImage = prepared);
+      _focusPrompt();
+    } catch (error) {
+      if (mounted) {
+        _addAssistant('I could not open that image. ${_friendlyError(error)}');
+      }
+    }
+  }
+'''
+
+new_picker = r'''  Future<void> _pickReference() async {
+    final config = _session.activeConfig;
+    final shouldRestoreModel = config != null && _session.isReady;
+    try {
+      _focusNode.unfocus();
+      await SystemChannels.textInput.invokeMethod<void>('TextInput.hide');
+
+      if (shouldRestoreModel) {
+        await _session.unload();
+        await Future<void>.delayed(const Duration(milliseconds: 250));
+      }
+
+      final prepared = await ImageInputService.instance.pickReference();
+      if (prepared != null && mounted) {
+        setState(() => _attachedImage = prepared);
+      }
+    } catch (error) {
+      if (mounted) {
+        _addAssistant('I could not open that image. ${_friendlyError(error)}');
+      }
+    } finally {
+      if (shouldRestoreModel && config != null && mounted) {
+        try {
+          await _session.load(config, persist: false);
+        } catch (error) {
+          if (mounted) {
+            _addAssistant(
+              'The image picker returned, but I could not reload the model. ${_friendlyError(error)}',
+            );
+          }
+        }
+      }
+      if (mounted) _focusPrompt();
+    }
+  }
+'''
+
+if old_picker not in chat:
+    raise SystemExit('FreeFrame chat shape changed: reference picker method not found')
+chat = chat.replace(old_picker, new_picker, 1)
+
 chat_path.write_text(chat, encoding='utf-8')
-print('FreeFrame prompt focus patch applied')
+print('FreeFrame keyboard and picker lifecycle hardening applied')
