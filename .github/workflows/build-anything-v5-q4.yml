@@ -39,8 +39,7 @@ jobs:
 
       - name: Convert to Q4_0 GGUF
         run: |
-          sd-cli=sdcpp/build/bin/sd-cli
-          sd-cli -M convert -m anything-v5.safetensors \
+          sdcpp/build/bin/sd-cli -M convert -m anything-v5.safetensors \
             -o Anything-V5-Q4_0.gguf -v --type q4_0
           ls -lh Anything-V5-Q4_0.gguf
           sha256sum Anything-V5-Q4_0.gguf | tee Anything-V5-Q4_0.gguf.sha256
