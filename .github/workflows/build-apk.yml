@@ -138,3 +138,37 @@ jobs:
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 4096
           script: sh freeframe_rework/moto_g_smoke.sh
+
+  moto-g-boosted-sim:
+    name: Moto G boosted 12GB headroom comparison
+    needs: build
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout FreeFrame repo
+        uses: actions/checkout@v4
+
+      - name: Download built APK
+        uses: actions/download-artifact@v4
+        with:
+          name: FreeFrame-Rework-Test-APK
+          path: sim-apk
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Android 15 / 12GB headroom comparison
+        uses: ReactiveCircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          arch: x86_64
+          profile: pixel_4
+          ram-size: 12288M
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 12288
+          script: |
+            echo 'This is a generous upper-bound comparison for RAM Boost behavior; it is not a Motorola firmware-level emulation.'
+            sh freeframe_rework/moto_g_smoke.sh
