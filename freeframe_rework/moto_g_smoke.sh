@@ -3,7 +3,15 @@ set -eu
 
 APK="sim-apk/FreeFrame-Rework-Test.apk"
 adb install -r "$APK"
-PACKAGE=$(aapt dump badging "$APK" | sed -n "s/package: name='\([^']*\)'.*/\1/p")
+PACKAGE=$(adb shell pm list packages | sed -n 's/^package://p' | grep -Ei 'freeframe|local.diffusion|local_diffusion' | head -n 1 || true)
+if [ -z "$PACKAGE" ]; then
+  PACKAGE=$(unzip -p "$APK" META-INF/MANIFEST.MF 2>/dev/null | sed -n 's/^Package: //p' | head -n 1 || true)
+fi
+if [ -z "$PACKAGE" ]; then
+  echo 'Could not determine installed FreeFrame package name.'
+  adb shell pm list packages
+  exit 1
+fi
 echo "Testing package: $PACKAGE"
 
 adb shell monkey -p "$PACKAGE" -c android.intent.category.LAUNCHER 1 >/dev/null
