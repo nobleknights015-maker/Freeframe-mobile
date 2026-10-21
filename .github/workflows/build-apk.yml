@@ -52,6 +52,7 @@ jobs:
           rm -rf app/test
           cp -R freeframe_rework/test app/test
           python3 freeframe_rework/engine_patch.py
+          python3 freeframe_rework/low_memory_384_patch.py
           python3 - <<'PY'
           from pathlib import Path
           manifest = Path('app/android/app/src/main/AndroidManifest.xml')
@@ -70,6 +71,11 @@ jobs:
           grep -q "Img2ImgProcessor" app/lib/src/model_session.dart
           grep -q "restoreDefaultModel" app/lib/src/model_session.dart
           grep -q "pickReference" app/lib/src/chat_screen.dart
+          grep -q "width: 384" app/lib/src/chat_screen.dart
+          grep -q "height: 384" app/lib/src/chat_screen.dart
+          grep -q "this.width = 384" app/lib/src/model_session.dart
+          grep -q "this.height = 384" app/lib/src/model_session.dart
+          grep -q "this.steps = 15" app/lib/src/model_session.dart
 
       - name: Flutter dependencies
         working-directory: app
