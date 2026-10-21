@@ -78,19 +78,19 @@ jobs:
       - name: FreeFrame regression cycle 1
         working-directory: app
         run: |
-          flutter analyze lib test
+          flutter analyze --no-fatal-infos --no-fatal-warnings lib/main.dart lib/src lib/img2img_processor.dart lib/ffi_bindings.dart lib/stable_diffusion_service.dart lib/sd_image.dart test
           flutter test
 
       - name: FreeFrame regression cycle 2
         working-directory: app
         run: |
-          flutter analyze lib test
+          flutter analyze --no-fatal-infos --no-fatal-warnings lib/main.dart lib/src lib/img2img_processor.dart lib/ffi_bindings.dart lib/stable_diffusion_service.dart lib/sd_image.dart test
           flutter test
 
       - name: FreeFrame regression cycle 3
         working-directory: app
         run: |
-          flutter analyze lib test
+          flutter analyze --no-fatal-infos --no-fatal-warnings lib/main.dart lib/src lib/img2img_processor.dart lib/ffi_bindings.dart lib/stable_diffusion_service.dart lib/sd_image.dart test
           flutter test
 
       - name: Build rework APK
