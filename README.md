@@ -33,6 +33,25 @@ This is the first installable baseline. The next FreeFrame-specific layer will f
 - saved character/reference profiles
 - model presets suitable for phone RAM limits
 
-## Upstream engine
+## Upstream engine and ownership
 
-The build currently pulls the Apache-2.0 Local Diffusion project by rmatif at build time and applies FreeFrame branding. This keeps the first build maintainable while FreeFrame-specific interface changes are developed.
+FreeFrame Mobile is an independent project and does not claim ownership of the open-source projects or AI model weights it uses.
+
+Primary upstream components include:
+
+- **Local Diffusion** by rmatif — Apache License 2.0  
+  https://github.com/rmatif/Local-Diffusion
+- **stable-diffusion.cpp** by leejet and contributors — MIT License  
+  https://github.com/leejet/stable-diffusion.cpp
+- **Flutter** by Google LLC and contributors — BSD 3-Clause License  
+  https://github.com/flutter/flutter
+- **Dart** by Google LLC and contributors — BSD 3-Clause License  
+  https://github.com/dart-lang/sdk
+
+FreeFrame Mobile includes FreeFrame-specific interface code, workflow files, integration changes, bug fixes, and other modifications/additions. Third-party code, trademarks, copyrights, and model weights remain the property of their respective owners.
+
+See `NOTICE`, `LICENSE`, and `THIRD_PARTY_NOTICES.md` for attribution and license information.
+
+## AI models
+
+Model files are normally downloaded separately and are not owned by FreeFrame Mobile. Each checkpoint, LoRA, VAE, ControlNet model, or other model file remains subject to its own original license and usage terms. Quantizing or converting a model does not change its ownership or remove its original license obligations.
