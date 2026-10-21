@@ -1,16 +1,21 @@
-name: Build FreeFrame Rework APK
+name: Build FreeFrame Android APKs
 
 on:
   workflow_dispatch:
   push:
-    branches: [freeframe-rework]
+    branches: [freeframe-rework, main]
     paths:
       - '.github/workflows/build-apk.yml'
       - 'freeframe_rework/**'
 
 jobs:
   build:
+    name: Build ${{ matrix.profile }} APK
     runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        profile: [standard, low-memory]
 
     steps:
       - name: Checkout FreeFrame repo
@@ -52,8 +57,11 @@ jobs:
           rm -rf app/test
           cp -R freeframe_rework/test app/test
           python3 freeframe_rework/engine_patch.py
-          python3 freeframe_rework/low_memory_384_patch.py
-          python3 freeframe_rework/hybrid_cloud_patch.py
+          if [ "${{ matrix.profile }}" = "low-memory" ]; then
+            python3 freeframe_rework/low_memory_384_patch.py
+          else
+            python3 freeframe_rework/high_memory_patch.py
+          fi
           python3 - <<'PY'
           from pathlib import Path
           manifest = Path('app/android/app/src/main/AndroidManifest.xml')
@@ -65,23 +73,28 @@ jobs:
           manifest.write_text(text, encoding='utf-8')
           PY
 
-      - name: Verify shared native session patch
+      - name: Verify FreeFrame profile
         run: |
           grep -q "case 'freeframeTxt2Img':" app/lib/img2img_processor.dart
           grep -q "Future<void> generateTextToImage" app/lib/img2img_processor.dart
           grep -q "Img2ImgProcessor" app/lib/src/model_session.dart
           grep -q "restoreDefaultModel" app/lib/src/model_session.dart
           grep -q "pickReference" app/lib/src/chat_screen.dart
-          grep -q "width: 320" app/lib/src/chat_screen.dart
-          grep -q "height: 320" app/lib/src/chat_screen.dart
-          grep -q "this.width = 320" app/lib/src/model_session.dart
-          grep -q "this.height = 320" app/lib/src/model_session.dart
-          grep -q "this.steps = 12" app/lib/src/model_session.dart
-          grep -q "maxSide: 320" app/lib/src/image_input.dart
           grep -q "useFlashAttention: true" app/lib/src/model_session.dart
-          grep -q "CloudGateway" app/lib/src/chat_screen.dart
-          grep -q "SegmentedButton<bool>" app/lib/src/chat_screen.dart
-          grep -q "FREEFRAME_CLOUD_URL" app/lib/src/cloud_gateway.dart
+          if [ "${{ matrix.profile }}" = "low-memory" ]; then
+            grep -q "width: 320" app/lib/src/chat_screen.dart
+            grep -q "height: 320" app/lib/src/chat_screen.dart
+            grep -q "this.width = 320" app/lib/src/model_session.dart
+            grep -q "this.height = 320" app/lib/src/model_session.dart
+            grep -q "this.steps = 12" app/lib/src/model_session.dart
+            grep -q "maxSide: 320" app/lib/src/image_input.dart
+          else
+            grep -q "width: 512" app/lib/src/chat_screen.dart
+            grep -q "height: 512" app/lib/src/chat_screen.dart
+            grep -q "this.width = 512" app/lib/src/model_session.dart
+            grep -q "this.height = 512" app/lib/src/model_session.dart
+            grep -q "this.steps = 20" app/lib/src/model_session.dart
+          fi
 
       - name: Flutter dependencies
         working-directory: app
@@ -99,48 +112,43 @@ jobs:
           flutter analyze --no-fatal-infos --no-fatal-warnings lib/main.dart lib/src lib/img2img_processor.dart lib/ffi_bindings.dart lib/stable_diffusion_service.dart lib/sd_image.dart test
           flutter test
 
-      - name: FreeFrame regression cycle 3
-        working-directory: app
-        run: |
-          flutter analyze --no-fatal-infos --no-fatal-warnings lib/main.dart lib/src lib/img2img_processor.dart lib/ffi_bindings.dart lib/stable_diffusion_service.dart lib/sd_image.dart test
-          flutter test
-
-      - name: Build rework APK
+      - name: Build release APK
         working-directory: app
         run: flutter build apk --release
 
       - name: Rename APK
-        run: cp app/build/app/outputs/flutter-apk/app-release.apk FreeFrame-Rework-Test.apk
+        run: |
+          if [ "${{ matrix.profile }}" = "low-memory" ]; then
+            cp app/build/app/outputs/flutter-apk/app-release.apk FreeFrame-LowMemory.apk
+          else
+            cp app/build/app/outputs/flutter-apk/app-release.apk FreeFrame-Standard.apk
+          fi
 
-      - name: Upload test artifact
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: FreeFrame-Rework-Test-APK
-          path: FreeFrame-Rework-Test.apk
+          name: FreeFrame-${{ matrix.profile }}-APK
+          path: FreeFrame-*.apk
           if-no-files-found: error
 
-  moto-g-sim:
-    name: Moto G 4GB Android smoke test
+  low-memory-smoke:
+    name: Low-memory Android 4GB smoke test
     needs: build
     runs-on: ubuntu-24.04
-
     steps:
       - name: Checkout FreeFrame repo
         uses: actions/checkout@v4
-
-      - name: Download built APK
+      - name: Download low-memory APK
         uses: actions/download-artifact@v4
         with:
-          name: FreeFrame-Rework-Test-APK
+          name: FreeFrame-low-memory-APK
           path: sim-apk
-
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-
-      - name: Moto G class Android 15 / 4GB simulation
+      - name: Android 15 / 4GB simulation
         uses: ReactiveCircus/android-emulator-runner@v2
         with:
           api-level: 35
@@ -151,36 +159,30 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 4096
           script: sh freeframe_rework/moto_g_smoke.sh
 
-  moto-g-boosted-sim:
-    name: Moto G boosted 12GB headroom comparison
+  standard-smoke:
+    name: Standard Android 8GB smoke test
     needs: build
     runs-on: ubuntu-24.04
-
     steps:
       - name: Checkout FreeFrame repo
         uses: actions/checkout@v4
-
-      - name: Download built APK
+      - name: Download standard APK
         uses: actions/download-artifact@v4
         with:
-          name: FreeFrame-Rework-Test-APK
+          name: FreeFrame-standard-APK
           path: sim-apk
-
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-
-      - name: Android 15 / 12GB headroom comparison
+      - name: Android 15 / 8GB simulation
         uses: ReactiveCircus/android-emulator-runner@v2
         with:
           api-level: 35
           arch: x86_64
           profile: pixel_4
-          ram-size: 12288M
+          ram-size: 8192M
           disable-animations: true
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 12288
-          script: |
-            echo 'This is a generous upper-bound comparison for RAM Boost behavior; it is not a Motorola firmware-level emulation.'
-            sh freeframe_rework/moto_g_smoke.sh
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 8192
+          script: sh freeframe_rework/moto_g_smoke.sh
