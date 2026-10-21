@@ -1,0 +1,29 @@
+FreeFrame Mobile
+
+This project contains original FreeFrame Mobile code and modifications, and incorporates or is built upon third-party open-source software.
+
+Primary upstream project:
+- Local Diffusion by rmatif
+  https://github.com/rmatif/Local-Diffusion
+  Licensed under the Apache License, Version 2.0.
+
+Inference engine used by the upstream project / FreeFrame build:
+- stable-diffusion.cpp by leejet and contributors
+  https://github.com/leejet/stable-diffusion.cpp
+  Licensed under the MIT License.
+
+Application framework:
+- Flutter by Google LLC and contributors
+  https://github.com/flutter/flutter
+  Distributed under the BSD 3-Clause License, with additional third-party notices provided by the Flutter project.
+
+Language/runtime:
+- Dart by Google LLC and contributors
+  https://github.com/dart-lang/sdk
+  Distributed under the BSD 3-Clause License, with additional third-party notices provided by the Dart project.
+
+FreeFrame Mobile is an independent project. The names, trademarks, and copyrights of third-party projects remain the property of their respective owners. Inclusion of a project name here is attribution only and does not imply endorsement, sponsorship, or ownership by FreeFrame Mobile.
+
+AI model files are not bundled with the FreeFrame Mobile APK unless explicitly stated. Each model remains subject to its own license, usage terms, and attribution requirements. Users and distributors are responsible for reviewing the license that accompanies any model they add to FreeFrame Mobile.
+
+For full license texts and additional attribution information, see LICENSE and THIRD_PARTY_NOTICES.md in this repository.
