@@ -253,6 +253,120 @@ if old_picker not in chat:
     raise SystemExit('FreeFrame chat shape changed: reference picker method not found')
 chat = chat.replace(old_picker, new_picker, 1)
 
+# Treat model selection like the reference picker on low-memory Android. The
+# model file browser itself needs memory, so release the native model before
+# opening DocumentsUI. If the user cancels, restore the previous model. Also
+# open the picker directly from the top Models button to avoid the extra modal
+# transition that has intermittently swallowed the picker launch on-device.
+old_choose_model = r'''  Future<void> _chooseModel() async {
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.any,
+        allowMultiple: false,
+        withData: false,
+      );
+      final path = result?.files.single.path;
+      if (path == null) return;
+
+      final lower = path.toLowerCase();
+      if (!(lower.endsWith('.safetensors') ||
+          lower.endsWith('.ckpt') ||
+          lower.endsWith('.gguf'))) {
+        _addAssistant(
+          'That file is not a supported model. Choose a .safetensors, .ckpt, or .gguf file.',
+        );
+        return;
+      }
+
+      _addAssistant('Loading ${_fileName(path)}…');
+      await _session.load(ModelLoadConfig(modelPath: path));
+      if (!mounted) return;
+      _addAssistant(
+        '${_fileName(path)} is loaded and set as your default model.',
+      );
+    } catch (error) {
+      if (!mounted) return;
+      _addAssistant(
+        'I could not open or load that model. ${_friendlyError(error)}',
+      );
+    }
+  }
+'''
+
+new_choose_model = r'''  Future<void> _chooseModel() async {
+    final previousConfig = _session.activeConfig;
+    final hadLoadedModel = previousConfig != null && _session.isReady;
+    var selectedNewModel = false;
+
+    try {
+      _focusNode.unfocus();
+      await SystemChannels.textInput.invokeMethod<void>('TextInput.hide');
+
+      if (hadLoadedModel) {
+        await _session.unload();
+        await Future<void>.delayed(const Duration(milliseconds: 300));
+      }
+
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.any,
+        allowMultiple: false,
+        withData: false,
+      );
+      final path = result?.files.single.path;
+
+      if (path == null) {
+        if (hadLoadedModel && previousConfig != null && mounted) {
+          await _session.load(previousConfig, persist: false);
+        }
+        return;
+      }
+
+      final lower = path.toLowerCase();
+      if (!(lower.endsWith('.safetensors') ||
+          lower.endsWith('.ckpt') ||
+          lower.endsWith('.gguf'))) {
+        _addAssistant(
+          'That file is not a supported model. Choose a .safetensors, .ckpt, or .gguf file.',
+        );
+        if (hadLoadedModel && previousConfig != null && mounted) {
+          await _session.load(previousConfig, persist: false);
+        }
+        return;
+      }
+
+      selectedNewModel = true;
+      _addAssistant('Loading ${_fileName(path)}…');
+      await _session.load(ModelLoadConfig(modelPath: path));
+      if (!mounted) return;
+      _addAssistant(
+        '${_fileName(path)} is loaded and set as your default model.',
+      );
+    } catch (error) {
+      if (mounted) {
+        _addAssistant(
+          'I could not open or load that model. ${_friendlyError(error)}',
+        );
+      }
+      if (!selectedNewModel && hadLoadedModel && previousConfig != null && mounted && !_session.isReady) {
+        try {
+          await _session.load(previousConfig, persist: false);
+        } catch (_) {}
+      }
+    } finally {
+      if (mounted) _focusPrompt();
+    }
+  }
+'''
+
+if old_choose_model not in chat:
+    raise SystemExit('FreeFrame chat shape changed: model picker method not found')
+chat = chat.replace(old_choose_model, new_choose_model, 1)
+chat = chat.replace(
+    '            onPressed: busy ? null : _openModelsPanel,\n',
+    '            onPressed: busy ? null : _chooseModel,\n',
+    1,
+)
+
 # Moto G safe-generation profile. Keep the known-good Q4 model quality while
 # lowering the short-lived allocation spike that was killing the process at
 # sampling start on the physical 4 GB device.
@@ -277,7 +391,7 @@ if "imageCache.clearLiveImages" not in chat:
     )
 
 chat_path.write_text(chat, encoding='utf-8')
-print('FreeFrame keyboard, picker, and low-memory generation hardening applied')
+print('FreeFrame keyboard, model picker, reference picker, and low-memory generation hardening applied')
 
 # Apply the same safe defaults at the session layer so any future generation
 # entry point gets the low-memory profile even if it does not come from chat.
