@@ -53,6 +53,7 @@ jobs:
           cp -R freeframe_rework/test app/test
           python3 freeframe_rework/engine_patch.py
           python3 freeframe_rework/low_memory_384_patch.py
+          python3 freeframe_rework/hybrid_cloud_patch.py
           python3 - <<'PY'
           from pathlib import Path
           manifest = Path('app/android/app/src/main/AndroidManifest.xml')
@@ -78,6 +79,9 @@ jobs:
           grep -q "this.steps = 12" app/lib/src/model_session.dart
           grep -q "maxSide: 320" app/lib/src/image_input.dart
           grep -q "useFlashAttention: true" app/lib/src/model_session.dart
+          grep -q "CloudGateway" app/lib/src/chat_screen.dart
+          grep -q "SegmentedButton<bool>" app/lib/src/chat_screen.dart
+          grep -q "FREEFRAME_CLOUD_URL" app/lib/src/cloud_gateway.dart
 
       - name: Flutter dependencies
         working-directory: app
