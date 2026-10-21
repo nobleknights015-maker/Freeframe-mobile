@@ -71,11 +71,13 @@ jobs:
           grep -q "Img2ImgProcessor" app/lib/src/model_session.dart
           grep -q "restoreDefaultModel" app/lib/src/model_session.dart
           grep -q "pickReference" app/lib/src/chat_screen.dart
-          grep -q "width: 384" app/lib/src/chat_screen.dart
-          grep -q "height: 384" app/lib/src/chat_screen.dart
-          grep -q "this.width = 384" app/lib/src/model_session.dart
-          grep -q "this.height = 384" app/lib/src/model_session.dart
-          grep -q "this.steps = 15" app/lib/src/model_session.dart
+          grep -q "width: 320" app/lib/src/chat_screen.dart
+          grep -q "height: 320" app/lib/src/chat_screen.dart
+          grep -q "this.width = 320" app/lib/src/model_session.dart
+          grep -q "this.height = 320" app/lib/src/model_session.dart
+          grep -q "this.steps = 12" app/lib/src/model_session.dart
+          grep -q "maxSide: 320" app/lib/src/image_input.dart
+          grep -q "useFlashAttention: true" app/lib/src/model_session.dart
 
       - name: Flutter dependencies
         working-directory: app
