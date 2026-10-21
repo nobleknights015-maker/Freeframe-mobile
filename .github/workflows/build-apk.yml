@@ -44,10 +44,14 @@ jobs:
           cd app
           git checkout 184b7f92cf2f810e7d5eb4b04b190a5da829005f
 
-      - name: Replace upstream app layer with FreeFrame shell
+      - name: Overlay FreeFrame app layer
         run: |
-          rm -rf app/lib
-          cp -R freeframe_rework/lib app/lib
+          cp freeframe_rework/lib/main.dart app/lib/main.dart
+          mkdir -p app/lib/src
+          cp -R freeframe_rework/lib/src/. app/lib/src/
+          rm -rf app/test
+          cp -R freeframe_rework/test app/test
+          python3 freeframe_rework/engine_patch.py
           python3 - <<'PY'
           from pathlib import Path
           manifest = Path('app/android/app/src/main/AndroidManifest.xml')
@@ -59,24 +63,46 @@ jobs:
           manifest.write_text(text, encoding='utf-8')
           PY
 
+      - name: Verify shared native session patch
+        run: |
+          grep -q "case 'freeframeTxt2Img':" app/lib/img2img_processor.dart
+          grep -q "Future<void> generateTextToImage" app/lib/img2img_processor.dart
+          grep -q "Img2ImgProcessor" app/lib/src/model_session.dart
+          grep -q "restoreDefaultModel" app/lib/src/model_session.dart
+          grep -q "pickReference" app/lib/src/chat_screen.dart
+
       - name: Flutter dependencies
         working-directory: app
         run: flutter pub get
 
-      - name: Analyze FreeFrame shell
+      - name: FreeFrame regression cycle 1
         working-directory: app
-        run: flutter analyze lib
+        run: |
+          flutter analyze lib test
+          flutter test
+
+      - name: FreeFrame regression cycle 2
+        working-directory: app
+        run: |
+          flutter analyze lib test
+          flutter test
+
+      - name: FreeFrame regression cycle 3
+        working-directory: app
+        run: |
+          flutter analyze lib test
+          flutter test
 
       - name: Build rework APK
         working-directory: app
         run: flutter build apk --release
 
       - name: Rename APK
-        run: cp app/build/app/outputs/flutter-apk/app-release.apk FreeFrame-Rework-Dev.apk
+        run: cp app/build/app/outputs/flutter-apk/app-release.apk FreeFrame-Rework-Test.apk
 
-      - name: Upload developer artifact
+      - name: Upload test artifact
         uses: actions/upload-artifact@v4
         with:
-          name: FreeFrame-Rework-Dev-APK
-          path: FreeFrame-Rework-Dev.apk
+          name: FreeFrame-Rework-Test-APK
+          path: FreeFrame-Rework-Test.apk
           if-no-files-found: error
