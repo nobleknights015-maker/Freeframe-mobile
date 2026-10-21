@@ -22,7 +22,8 @@ jobs:
 
       - name: Fetch stable-diffusion.cpp
         run: |
-          git clone --depth 1 https://github.com/leejet/stable-diffusion.cpp.git sdcpp
+          git clone --depth 1 --recurse-submodules --shallow-submodules \
+            https://github.com/leejet/stable-diffusion.cpp.git sdcpp
 
       - name: Build converter
         run: |
