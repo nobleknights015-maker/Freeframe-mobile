@@ -253,5 +253,39 @@ if old_picker not in chat:
     raise SystemExit('FreeFrame chat shape changed: reference picker method not found')
 chat = chat.replace(old_picker, new_picker, 1)
 
+# Moto G safe-generation profile. Keep the known-good Q4 model quality while
+# lowering the short-lived allocation spike that was killing the process at
+# sampling start on the physical 4 GB device.
+chat = chat.replace('        width: source?.width ?? 512,\n', '        width: 448,\n', 1)
+chat = chat.replace('        height: source?.height ?? 512,\n', '        height: 448,\n', 1)
+strength_marker = "        strength: intent.action == FreeFrameAction.editImage ? 0.45 : 0.58,\n"
+if "        steps: 15,\n" not in chat:
+    if strength_marker not in chat:
+        raise SystemExit('FreeFrame chat shape changed: generation request marker not found')
+    chat = chat.replace(strength_marker, "        steps: 15,\n" + strength_marker, 1)
+
+# Purge Flutter's decoded-image cache immediately before native sampling. This
+# does not touch the selected model or source RGB data needed by the request.
+generate_marker = "    try {\n      final result = await _session.generate(GenerationRequest(\n"
+if "imageCache.clearLiveImages" not in chat:
+    if generate_marker not in chat:
+        raise SystemExit('FreeFrame chat shape changed: generate marker not found')
+    chat = chat.replace(
+        generate_marker,
+        "    try {\n      PaintingBinding.instance.imageCache.clear();\n      PaintingBinding.instance.imageCache.clearLiveImages();\n      await Future<void>.delayed(const Duration(milliseconds: 80));\n      final result = await _session.generate(GenerationRequest(\n",
+        1,
+    )
+
 chat_path.write_text(chat, encoding='utf-8')
-print('FreeFrame keyboard and picker lifecycle hardening applied')
+print('FreeFrame keyboard, picker, and low-memory generation hardening applied')
+
+# Apply the same safe defaults at the session layer so any future generation
+# entry point gets the low-memory profile even if it does not come from chat.
+session_path = Path('app/lib/src/model_session.dart')
+session = session_path.read_text(encoding='utf-8')
+session = session.replace('    this.width = 512,\n', '    this.width = 448,\n', 1)
+session = session.replace('    this.height = 512,\n', '    this.height = 448,\n', 1)
+session = session.replace('    this.steps = 20,\n', '    this.steps = 15,\n', 1)
+session = session.replace('        useFlashAttention: false,\n', '        useFlashAttention: true,\n', 1)
+session_path.write_text(session, encoding='utf-8')
+print('FreeFrame Moto G safe session defaults applied')
