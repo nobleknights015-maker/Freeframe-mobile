@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import '../lib/src/chat_intent.dart';
+import 'package:local_diffusion/src/chat_intent.dart';
 
 void main() {
   const parser = ChatIntentParser();
