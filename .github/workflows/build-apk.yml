@@ -8,6 +8,9 @@ on:
       - '.github/workflows/build-apk.yml'
       - 'freeframe_rework/**'
 
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Build ${{ matrix.profile }} APK
@@ -186,3 +189,37 @@ jobs:
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 8192
           script: sh freeframe_rework/moto_g_smoke.sh
+
+  publish-release:
+    name: Publish GitHub release
+    if: github.ref == 'refs/heads/main'
+    needs: [build, low-memory-smoke, standard-smoke]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Download Standard APK
+        uses: actions/download-artifact@v4
+        with:
+          name: FreeFrame-standard-APK
+          path: release
+      - name: Download Low Memory APK
+        uses: actions/download-artifact@v4
+        with:
+          name: FreeFrame-low-memory-APK
+          path: release
+      - name: Publish alpha release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v0.1.0-alpha
+          name: FreeFrame Mobile v0.1.0 Alpha
+          prerelease: true
+          generate_release_notes: true
+          body: |
+            FreeFrame Mobile public alpha.
+
+            Choose **FreeFrame-Standard.apk** for newer Android phones with roughly 8 GB+ physical RAM.
+            Choose **FreeFrame-LowMemory.apk** for 4–6 GB phones or if Standard runs out of memory.
+
+            FreeFrame runs image generation locally and model files are downloaded separately.
+          files: |
+            release/FreeFrame-Standard.apk
+            release/FreeFrame-LowMemory.apk
