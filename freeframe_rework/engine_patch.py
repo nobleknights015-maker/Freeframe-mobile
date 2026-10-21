@@ -139,3 +139,48 @@ if "Future<void> generateTextToImage({" not in text:
 
 path.write_text(text, encoding='utf-8')
 print('FreeFrame shared native processor patch applied')
+
+# The prompt field must recover cleanly after Android file-picker/model-load
+# activity transitions. Force an explicit text-input show after focus is
+# requested instead of relying on implicit platform focus restoration.
+chat_path = Path('app/lib/src/chat_screen.dart')
+chat = chat_path.read_text(encoding='utf-8')
+
+services_import = "import 'package:flutter/services.dart';\n"
+if services_import not in chat:
+    chat = chat.replace(
+        "import 'package:flutter/material.dart';\n",
+        "import 'package:flutter/material.dart';\n" + services_import,
+        1,
+    )
+
+helper_marker = "  Future<void> _restoreModel() async {\n"
+if "void _focusPrompt()" not in chat:
+    helper = r'''  void _focusPrompt() {
+    if (!mounted || _sessionState == ModelSessionState.loading) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+      _focusNode.requestFocus();
+      await SystemChannels.textInput.invokeMethod<void>('TextInput.show');
+    });
+  }
+
+'''
+    if helper_marker not in chat:
+        raise SystemExit('FreeFrame chat shape changed: restore marker not found')
+    chat = chat.replace(helper_marker, helper + helper_marker, 1)
+
+chat = chat.replace('_focusNode.requestFocus();', '_focusPrompt();')
+
+field_marker = "                        textInputAction: TextInputAction.newline,\n"
+if "onTap: _focusPrompt," not in chat:
+    if field_marker not in chat:
+        raise SystemExit('FreeFrame chat shape changed: text field marker not found')
+    chat = chat.replace(
+        field_marker,
+        "                        textInputAction: TextInputAction.newline,\n                        onTap: _focusPrompt,\n",
+        1,
+    )
+
+chat_path.write_text(chat, encoding='utf-8')
+print('FreeFrame prompt focus patch applied')
