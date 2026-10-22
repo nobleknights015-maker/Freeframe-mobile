@@ -1,0 +1,35 @@
+name: Deploy FreeFrame Modal Worker
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: freeframe-modal-worker-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Require Modal credentials
+        shell: bash
+        run: |
+          test -n "$MODAL_TOKEN_ID" || { echo 'MODAL_TOKEN_ID secret is not configured.' >&2; exit 1; }
+          test -n "$MODAL_TOKEN_SECRET" || { echo 'MODAL_TOKEN_SECRET secret is not configured.' >&2; exit 1; }
+      - name: Install Modal CLI
+        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2'
+      - name: Compile before deployment
+        run: python -m compileall -q modal_worker
+      - name: Deploy worker
+        run: modal deploy --strategy recreate modal_worker/freeframe_worker.py
