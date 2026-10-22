@@ -19,7 +19,10 @@ import modal
 APP_NAME = "freeframe-worker"
 MODEL_VOLUME = "freeframe-model-cache"
 CACHE_DIR = "/cache"
-DEFAULT_MODEL = os.environ.get("FREEFRAME_MODEL", "stabilityai/sd-turbo")
+# SD-Turbo remains useful as a fast diagnostic baseline, but SDXL is the default
+# quality-benchmark model because it is directly supported by Diffusers and does
+# not require gated Hugging Face access. FREEFRAME_MODEL can still override this.
+DEFAULT_MODEL = os.environ.get("FREEFRAME_MODEL", "stabilityai/stable-diffusion-xl-base-1.0")
 
 image = (
     modal.Image.debian_slim(python_version="3.11")
@@ -109,10 +112,17 @@ class FreeFrameGenerator:
         os.environ.setdefault("HF_HUB_CACHE", f"{CACHE_DIR}/hub")
         self.torch = torch
         self.model_name = DEFAULT_MODEL
+        load_kwargs = {
+            "torch_dtype": torch.float16,
+            "cache_dir": CACHE_DIR,
+        }
+        # Official SDXL weights provide an fp16 variant, reducing download/storage
+        # and VRAM pressure on the L4 while preserving the intended pipeline.
+        if self.model_name == "stabilityai/stable-diffusion-xl-base-1.0":
+            load_kwargs.update({"variant": "fp16", "use_safetensors": True})
         self.pipe = AutoPipelineForText2Image.from_pretrained(
             self.model_name,
-            torch_dtype=torch.float16,
-            cache_dir=CACHE_DIR,
+            **load_kwargs,
         ).to("cuda")
 
     def _generate_one(self, request: dict) -> dict:
