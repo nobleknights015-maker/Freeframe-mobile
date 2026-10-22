@@ -1,0 +1,40 @@
+name: FreeFrame Modal Worker Checks
+
+on:
+  push:
+    branches:
+      - freeframe-modal-worker
+    paths:
+      - 'modal_worker/**'
+      - '.github/workflows/modal-worker-checks.yml'
+  pull_request:
+    paths:
+      - 'modal_worker/**'
+      - '.github/workflows/modal-worker-checks.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  worker-core:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - name: Install test dependencies
+        run: pip install 'modal>=1.0,<2' 'pillow>=10.4,<12'
+      - name: Compile worker
+        run: python -m py_compile modal_worker/freeframe_worker.py modal_worker/test_worker_core.py
+      - name: Run worker core tests
+        run: PYTHONPATH=modal_worker python -m unittest modal_worker/test_worker_core.py -v
+      - name: Guard against committed model weights
+        shell: bash
+        run: |
+          if find . -type f \( -name '*.safetensors' -o -name '*.ckpt' -o -name '*.gguf' -o -name '*.bin' \) -size +10M -print -quit | grep -q .; then
+            echo 'Large model weights must not be committed to the repository.' >&2
+            exit 1
+          fi
