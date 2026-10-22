@@ -17,8 +17,10 @@ sleep 5
 FOCUS=$(adb shell dumpsys window | grep -E 'mCurrentFocus|mFocusedApp' | head -n 2 || true)
 echo "Initial focus: $FOCUS"
 if echo "$FOCUS" | grep -q 'com.android.settings'; then
-  echo 'Android Settings permission screen detected; returning to FreeFrame.'
-  adb shell input keyevent 4; sleep 3
+  echo 'Android Settings permission screen detected; relaunching FreeFrame after permission handoff.'
+  adb shell am force-stop com.android.settings || true
+  adb shell am start -W -n "$ACTIVITY" >/dev/null
+  sleep 4
   FOCUS=$(adb shell dumpsys window | grep -E 'mCurrentFocus|mFocusedApp' | head -n 2 || true)
   echo "Post-settings focus: $FOCUS"
 fi
