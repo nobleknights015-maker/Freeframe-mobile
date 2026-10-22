@@ -53,20 +53,37 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          endpoint='https://nobleknights015-maker--freeframe-worker-generate-image.us-east.modal.run'
-          request='{"prompt":"original cozy fantasy JRPG meadow, small plush guardian beside wildflowers, clean game concept art, no text","negative_prompt":"text, watermark, malformed anatomy, extra limbs","width":512,"height":512,"steps":4,"guidance_scale":0.0,"seed":1842}'
-          modal curl -sS -X POST "$endpoint" -H 'Content-Type: application/json' -d "$request" > freeframe-smoke-response.json
           python - <<'PY'
-          import base64, hashlib, json
+          import base64
+          import hashlib
+          import json
           from pathlib import Path
-          payload = json.loads(Path('freeframe-smoke-response.json').read_text())
-          raw = base64.b64decode(payload['image_base64'], validate=True)
-          assert payload['mime_type'] == 'image/png'
-          assert payload['width'] == 512 and payload['height'] == 512
-          assert hashlib.sha256(raw).hexdigest() == payload['sha256']
-          Path('freeframe-smoke.png').write_bytes(raw)
-          summary = {k: payload[k] for k in ('model','seed','width','height','bytes','sha256','elapsed_seconds')}
-          Path('freeframe-smoke-summary.json').write_text(json.dumps(summary, indent=2) + '\n')
+          import modal
+
+          request = {
+              "prompt": "original cozy fantasy JRPG meadow, small plush guardian beside wildflowers, clean game concept art, no text",
+              "negative_prompt": "text, watermark, malformed anatomy, extra limbs",
+              "width": 512,
+              "height": 512,
+              "steps": 4,
+              "guidance_scale": 0.0,
+              "seed": 1842,
+          }
+
+          # Invoke the already-deployed GPU class directly. This tests the core
+          # FreeFrame generation path independently of the HTTP proxy layer.
+          Generator = modal.Cls.from_name("freeframe-worker", "FreeFrameGenerator")
+          payload = Generator().generate.remote(request)
+          Path("freeframe-smoke-response.json").write_text(json.dumps(payload) + "\n")
+
+          raw = base64.b64decode(payload["image_base64"], validate=True)
+          assert payload["mime_type"] == "image/png"
+          assert payload["width"] == 512 and payload["height"] == 512
+          assert hashlib.sha256(raw).hexdigest() == payload["sha256"]
+          assert len(raw) == payload["bytes"]
+          Path("freeframe-smoke.png").write_bytes(raw)
+          summary = {k: payload[k] for k in ("model", "seed", "width", "height", "bytes", "sha256", "elapsed_seconds")}
+          Path("freeframe-smoke-summary.json").write_text(json.dumps(summary, indent=2) + "\n")
           print(json.dumps(summary, indent=2))
           PY
 
