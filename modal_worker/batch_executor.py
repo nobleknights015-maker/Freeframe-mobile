@@ -1,6 +1,8 @@
 """Pure-Python resumable batch orchestration for FreeFrame.
 
-Generation is injected so this module can be stress-tested without a GPU.
+Generation and optional production inspection are injected so this module can
+be stress-tested without a GPU while still enforcing the same acceptance gate
+used by the production asset factory.
 """
 from __future__ import annotations
 
@@ -11,6 +13,7 @@ from typing import Any, Callable, Iterable
 from batch_state import BatchState, load, save_atomic, stable_asset_id
 
 GenerateFn = Callable[[dict[str, Any]], dict[str, Any]]
+InspectFn = Callable[[dict[str, Any], dict[str, Any]], dict[str, Any]]
 
 
 def run_batch(
@@ -19,6 +22,7 @@ def run_batch(
     batch_id: str,
     generate: GenerateFn,
     *,
+    inspect: InspectFn | None = None,
     max_attempts: int = 3,
     retry_delay_seconds: float = 0.0,
 ) -> BatchState:
@@ -47,6 +51,12 @@ def run_batch(
         for attempt in range(previous_attempts + 1, max_attempts + 1):
             try:
                 metadata = generate(item)
+                if inspect is not None:
+                    inspection = inspect(item, metadata)
+                    metadata = {**metadata, "production_inspection": inspection}
+                    if not inspection.get("accepted", False):
+                        reasons = inspection.get("errors") or ["production inspection rejected asset"]
+                        raise ValueError("; ".join(str(reason) for reason in reasons))
                 state.mark_completed(asset_id, metadata)
                 save_atomic(path, state)
                 break
