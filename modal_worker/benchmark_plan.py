@@ -22,28 +22,28 @@ class BenchmarkCase:
 
 CASES = (
     BenchmarkCase(
-        "guardian_meadow",
-        "small foxlike stitched guardian with leaf-shaped ears and a warm amber charm, full body",
-        "plushbound_guardian",
-        1842,
+        case_id="guardian_meadow",
+        preset="plushbound_guardian",
+        prompt="small foxlike stitched guardian with leaf-shaped ears and a warm amber charm, full body",
+        seed=1842,
     ),
     BenchmarkCase(
-        "character_adventurer",
-        "adult traveling adventurer, practical layered fantasy outfit, full body neutral pose",
-        "plushbound_character",
-        2718,
+        case_id="character_adventurer",
+        preset="plushbound_character",
+        prompt="adult traveling adventurer, practical layered fantasy outfit, full body neutral pose",
+        seed=2718,
     ),
     BenchmarkCase(
-        "enemy_forest",
-        "mossy woodland prowler with wooden mask-like facial plating, full creature visible",
-        "plushbound_enemy",
-        3141,
+        case_id="enemy_forest",
+        preset="plushbound_enemy",
+        prompt="mossy woodland prowler with wooden mask-like facial plating, full creature visible",
+        seed=3141,
     ),
     BenchmarkCase(
-        "environment_elyndor",
-        "sunny plains of Elyndor, rolling flower fields, distant village, ancient cloth banners and winding road",
-        "plushbound_environment",
-        5772,
+        case_id="environment_elyndor",
+        preset="plushbound_environment",
+        prompt="sunny plains of Elyndor, rolling flower fields, distant village, ancient cloth banners and winding road",
+        seed=5772,
     ),
 )
 
