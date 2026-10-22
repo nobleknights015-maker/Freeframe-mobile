@@ -8,6 +8,11 @@ on:
         required: true
         default: false
         type: boolean
+      run_quality_benchmark:
+        description: 'Run the four-case Plushbound quality benchmark after deploy'
+        required: true
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -19,7 +24,7 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 30
     env:
       MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
       MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
@@ -54,28 +59,16 @@ jobs:
         run: |
           set -euo pipefail
           python - <<'PY'
-          import base64
-          import hashlib
-          import json
+          import base64, hashlib, json
           from pathlib import Path
           import modal
-
           request = {
               "prompt": "original cozy fantasy JRPG meadow, small plush guardian beside wildflowers, clean game concept art, no text",
               "negative_prompt": "text, watermark, malformed anatomy, extra limbs",
-              "width": 512,
-              "height": 512,
-              "steps": 4,
-              "guidance_scale": 0.0,
-              "seed": 1842,
+              "width": 512, "height": 512, "steps": 4, "guidance_scale": 0.0, "seed": 1842,
           }
-
-          # Invoke the already-deployed GPU class directly. This tests the core
-          # FreeFrame generation path independently of the HTTP proxy layer.
           Generator = modal.Cls.from_name("freeframe-worker", "FreeFrameGenerator")
           payload = Generator().generate.remote(request)
-          Path("freeframe-smoke-response.json").write_text(json.dumps(payload) + "\n")
-
           raw = base64.b64decode(payload["image_base64"], validate=True)
           assert payload["mime_type"] == "image/png"
           assert payload["width"] == 512 and payload["height"] == 512
@@ -95,5 +88,57 @@ jobs:
           path: |
             freeframe-smoke.png
             freeframe-smoke-summary.json
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Run controlled Plushbound quality benchmark
+        if: ${{ inputs.run_quality_benchmark }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import base64, hashlib, json, sys
+          from pathlib import Path
+          import modal
+          sys.path.insert(0, "modal_worker")
+          from benchmark_plan import CASES
+
+          out = Path("freeframe-quality-benchmark")
+          out.mkdir(exist_ok=True)
+          Generator = modal.Cls.from_name("freeframe-worker", "FreeFrameGenerator")
+          generator = Generator()
+          summaries = []
+          for case in CASES:
+              request = case.request()
+              payload = generator.generate.remote(request)
+              raw = base64.b64decode(payload["image_base64"], validate=True)
+              assert payload["mime_type"] == "image/png"
+              assert payload["width"] == request["width"]
+              assert payload["height"] == request["height"]
+              assert hashlib.sha256(raw).hexdigest() == payload["sha256"]
+              assert len(raw) == payload["bytes"]
+              (out / f"{case.case_id}.png").write_bytes(raw)
+              summary = {
+                  "case_id": case.case_id,
+                  "preset": case.preset,
+                  "model": payload["model"],
+                  "seed": payload["seed"],
+                  "width": payload["width"],
+                  "height": payload["height"],
+                  "bytes": payload["bytes"],
+                  "sha256": payload["sha256"],
+                  "elapsed_seconds": payload["elapsed_seconds"],
+              }
+              summaries.append(summary)
+              print(json.dumps(summary))
+          (out / "summary.json").write_text(json.dumps(summaries, indent=2) + "\n")
+          PY
+
+      - name: Upload quality benchmark
+        if: ${{ inputs.run_quality_benchmark }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: freeframe-quality-benchmark
+          path: freeframe-quality-benchmark/
           if-no-files-found: error
           retention-days: 7
