@@ -1,17 +1,29 @@
 """Production-oriented generation presets for Plushbound asset benchmarking.
 
-These presets intentionally describe an original cozy fantasy JRPG visual language.
-They do not reference or reproduce proprietary RPG Maker characters or artwork.
+These presets define an original Plushbound Legends visual language. They are
+written to keep category outputs visually related while avoiding references to
+or reproduction of proprietary RPG Maker characters or artwork.
 """
 from __future__ import annotations
 
 from dataclasses import dataclass, asdict
 
 
+# Shared art-direction spine used by every production category. Category prompts
+# add function-specific composition rules without changing the world's identity.
+PLUSHBOUND_STYLE = (
+    "original Plushbound Legends game art, warm handcrafted fantasy JRPG visual language, "
+    "painterly anime-inspired rendering, clean confident shapes, soft dimensional lighting, "
+    "restrained harmonious color palette, tactile cloth leather wood and stitched-fabric details, "
+    "whimsical but grounded design, professional production concept art, no typography"
+)
+
 BASE_NEGATIVE = (
-    "text, watermark, logo, signature, blurry, low detail, low resolution, "
-    "malformed anatomy, deformed hands, extra fingers, extra limbs, fused limbs, "
-    "duplicate subject, cropped face, distorted face, asymmetrical eyes"
+    "text, letters, words, caption, subtitle, watermark, logo, signature, artist mark, UI, frame, border, "
+    "blurry, low detail, low resolution, jpeg artifacts, oversaturated neon colors, harsh bloom, "
+    "malformed anatomy, deformed hands, extra fingers, missing fingers, extra limbs, fused limbs, "
+    "duplicate subject, cloned subject, repeated character, multiple views, character sheet, turnaround, "
+    "split composition, collage, cropped face, cropped feet, distorted face, asymmetrical eyes"
 )
 
 
@@ -48,51 +60,56 @@ PRESETS = {
     "plushbound_character": ProductionPreset(
         name="plushbound_character",
         prompt_prefix=(
-            "original polished fantasy JRPG character concept art, Plushbound Legends, "
-            "clean expressive anime-inspired illustration, coherent normal anatomy, "
-            "clear silhouette, refined costume design, soft dimensional shading"
+            PLUSHBOUND_STYLE + ", single adult character only, one person, full body head-to-toe, "
+            "centered three-quarter standing pose, coherent normal anatomy, natural hands, five fingers, "
+            "clear readable silhouette, practical layered fantasy clothing, refined costume design, "
+            "simple unobtrusive background, game character concept"
         ),
-        negative_prompt=BASE_NEGATIVE,
+        negative_prompt=BASE_NEGATIVE + ", child proportions, chibi proportions, crowd, companion creature",
         width=768,
         height=1024,
-        steps=28,
+        steps=30,
         guidance_scale=6.0,
     ),
     "plushbound_guardian": ProductionPreset(
         name="plushbound_guardian",
         prompt_prefix=(
-            "original Plushbound Legends plush guardian creature concept, premium fantasy JRPG art, "
-            "appealing readable silhouette, intentional plush construction, expressive face, "
-            "clean anatomy, detailed fabric and magical accents"
+            PLUSHBOUND_STYLE + ", exactly one Plush Guardian creature, single creature only, centered full body, "
+            "appealing readable silhouette, intentional sewn plush construction, visible seams used sparingly, "
+            "expressive face, coherent four-limbed creature anatomy when applicable, detailed fabric and magical accents, "
+            "simple unobtrusive ground plane, collectible companion game concept"
         ),
-        negative_prompt=BASE_NEGATIVE + ", realistic gore, horror mutation",
+        negative_prompt=BASE_NEGATIVE + ", second creature, litter, pack, realistic gore, horror mutation, taxidermy",
         width=768,
         height=768,
-        steps=28,
+        steps=30,
         guidance_scale=6.0,
     ),
     "plushbound_enemy": ProductionPreset(
         name="plushbound_enemy",
         prompt_prefix=(
-            "original Plushbound Legends fantasy JRPG enemy concept art, readable battle silhouette, "
-            "coherent creature anatomy, polished game illustration, distinctive materials and shapes"
+            PLUSHBOUND_STYLE + ", exactly one fantasy JRPG enemy, single creature only, centered full body, "
+            "readable battle silhouette, coherent creature anatomy, distinctive material language and shapes, "
+            "clear gameplay-scale design, simple unobtrusive background, production monster concept"
         ),
-        negative_prompt=BASE_NEGATIVE,
+        negative_prompt=BASE_NEGATIVE + ", second monster, monster group, swarm, gore, dismemberment",
         width=768,
         height=768,
-        steps=28,
+        steps=30,
         guidance_scale=6.0,
     ),
     "plushbound_environment": ProductionPreset(
         name="plushbound_environment",
         prompt_prefix=(
-            "original Plushbound Legends fantasy JRPG environment concept art, inviting storybook world, "
-            "strong composition, layered depth, navigable landmarks, polished game key art"
+            PLUSHBOUND_STYLE + ", wide fantasy JRPG environment establishing shot, no foreground character, "
+            "clear traversable route from foreground into middle distance, layered depth, readable landmarks, "
+            "coherent architecture and vegetation, gameplay-friendly spatial hierarchy, inviting storybook world, "
+            "environment concept art rather than poster art"
         ),
-        negative_prompt=BASE_NEGATIVE + ", character portrait, UI, border",
+        negative_prompt=BASE_NEGATIVE + ", character portrait, foreground hero, giant face, poster composition, floating text",
         width=1024,
         height=768,
-        steps=30,
+        steps=32,
         guidance_scale=6.0,
     ),
 }
