@@ -13,7 +13,6 @@ import io
 import os
 import time
 from dataclasses import dataclass
-from typing import Optional
 
 import modal
 
@@ -140,7 +139,7 @@ class FreeFrameGenerator:
 
 
 @app.function(image=image)
-@modal.fastapi_endpoint(method="GET")
+@modal.fastapi_endpoint(method="GET", requires_proxy_auth=True)
 def health() -> dict:
     return {
         "service": APP_NAME,
@@ -151,7 +150,7 @@ def health() -> dict:
 
 
 @app.function(image=image, timeout=30)
-@modal.fastapi_endpoint(method="POST")
+@modal.fastapi_endpoint(method="POST", requires_proxy_auth=True)
 def validate_asset(request: dict) -> dict:
     """CPU-side integrity check used before/after expensive GPU work."""
     from PIL import Image
@@ -175,3 +174,19 @@ def validate_asset(request: dict) -> dict:
             "sha256": hashlib.sha256(raw).hexdigest(),
             "bytes": len(raw),
         }
+
+
+@app.function(image=image, timeout=930)
+@modal.fastapi_endpoint(method="POST", requires_proxy_auth=True)
+def generate_image(request: dict) -> dict:
+    """Authenticated HTTP bridge to the GPU generator."""
+    GenerationSpec(
+        prompt=str(request.get("prompt", "")),
+        negative_prompt=str(request.get("negative_prompt", "")),
+        width=int(request.get("width", 512)),
+        height=int(request.get("height", 512)),
+        steps=int(request.get("steps", 4)),
+        guidance_scale=float(request.get("guidance_scale", 0.0)),
+        seed=int(request.get("seed", 0)),
+    ).validate()
+    return FreeFrameGenerator().generate.remote(request)
