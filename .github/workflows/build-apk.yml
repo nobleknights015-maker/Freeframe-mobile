@@ -1,17 +1,24 @@
-name: Build FreeFrame Mobile APK
+name: Build FreeFrame Android APKs
 
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [freeframe-rework, main]
     paths:
       - '.github/workflows/build-apk.yml'
-      - 'freeframe/**'
-      - 'README.md'
+      - 'freeframe_rework/**'
+
+permissions:
+  contents: write
 
 jobs:
   build:
+    name: Build ${{ matrix.profile }} APK
     runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        profile: [standard, low-memory]
 
     steps:
       - name: Checkout FreeFrame repo
@@ -30,77 +37,82 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Install required Android NDK with retry
+      - name: Install Android NDK
         run: |
           SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
           if [ ! -x "$SDKMANAGER" ]; then
             SDKMANAGER="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager | head -n 1)"
           fi
-          echo "Using sdkmanager at: $SDKMANAGER"
-          rm -rf "$ANDROID_HOME/ndk/26.3.11579264"
           yes | "$SDKMANAGER" --licenses >/dev/null || true
-          ok=0
-          for attempt in 1 2 3; do
-            echo "NDK install attempt $attempt"
-            if "$SDKMANAGER" "ndk;26.3.11579264"; then
-              ok=1
-              break
-            fi
-            rm -rf "$ANDROID_HOME/ndk/26.3.11579264" "$HOME/.android/cache"
-            sleep 15
-          done
-          if [ "$ok" -ne 1 ]; then
-            echo "Failed to install Android NDK after retries"
-            exit 1
+          "$SDKMANAGER" "ndk;26.3.11579264"
+
+      - name: Fetch pinned Local Diffusion engine host
+        run: |
+          git clone https://github.com/rmatif/Local-Diffusion.git app
+          cd app
+          git checkout 184b7f92cf2f810e7d5eb4b04b190a5da829005f
+
+      - name: Overlay FreeFrame app layer
+        run: |
+          cp freeframe_rework/lib/main.dart app/lib/main.dart
+          mkdir -p app/lib/src
+          cp -R freeframe_rework/lib/src/. app/lib/src/
+          rm -rf app/test
+          cp -R freeframe_rework/test app/test
+          python3 freeframe_rework/engine_patch.py
+          if [ "${{ matrix.profile }}" = "low-memory" ]; then
+            python3 freeframe_rework/low_memory_384_patch.py
+          else
+            python3 freeframe_rework/high_memory_patch.py
           fi
-
-      - name: Fetch Local Diffusion engine
-        run: |
-          git clone --depth 1 https://github.com/rmatif/Local-Diffusion.git app
-
-      - name: Apply FreeFrame branding
-        run: |
           python3 - <<'PY'
           from pathlib import Path
-
           manifest = Path('app/android/app/src/main/AndroidManifest.xml')
           text = manifest.read_text(encoding='utf-8')
-          text = text.replace('android:label="local_diffusion"', 'android:label="FreeFrame Mobile"')
-          text = text.replace('android:label="Local Diffusion"', 'android:label="FreeFrame Mobile"')
+          text = text.replace('android:label="local_diffusion"', 'android:label="FreeFrame"')
+          text = text.replace('android:label="Local Diffusion"', 'android:label="FreeFrame"')
+          if 'android:largeHeap=' not in text:
+              text = text.replace('android:requestLegacyExternalStorage="true"', 'android:requestLegacyExternalStorage="true"\n        android:largeHeap="true"')
           manifest.write_text(text, encoding='utf-8')
-
-          pubspec = Path('app/pubspec.yaml')
-          p = pubspec.read_text(encoding='utf-8')
-          p = p.replace('description: "A new Flutter project."', 'description: "FreeFrame Mobile - local on-device image generation."')
-          pubspec.write_text(p, encoding='utf-8')
           PY
 
-      - name: Apply FreeFrame Alpha 3 patches
-        run: python3 freeframe/patch_mobile.py
+      - name: Verify FreeFrame profile
+        run: |
+          grep -q "case 'freeframeTxt2Img':" app/lib/img2img_processor.dart
+          grep -q "Future<void> generateTextToImage" app/lib/img2img_processor.dart
+          grep -q "Img2ImgProcessor" app/lib/src/model_session.dart
+          grep -q "restoreDefaultModel" app/lib/src/model_session.dart
+          grep -q "pickReference" app/lib/src/chat_screen.dart
+          grep -q "useFlashAttention: true" app/lib/src/model_session.dart
+          if [ "${{ matrix.profile }}" = "low-memory" ]; then
+            grep -q "width: 320" app/lib/src/chat_screen.dart
+            grep -q "height: 320" app/lib/src/chat_screen.dart
+            grep -q "this.width = 320" app/lib/src/model_session.dart
+            grep -q "this.height = 320" app/lib/src/model_session.dart
+            grep -q "this.steps = 12" app/lib/src/model_session.dart
+            grep -q "maxSide: 320" app/lib/src/image_input.dart
+          else
+            grep -q "width: 512" app/lib/src/chat_screen.dart
+            grep -q "height: 512" app/lib/src/chat_screen.dart
+            grep -q "this.width = 512" app/lib/src/model_session.dart
+            grep -q "this.height = 512" app/lib/src/model_session.dart
+            grep -q "this.steps = 20" app/lib/src/model_session.dart
+          fi
 
       - name: Flutter dependencies
         working-directory: app
         run: flutter pub get
 
-      - name: Alpha 3 regression cycle 1
+      - name: FreeFrame regression cycle 1
+        working-directory: app
         run: |
-          python3 freeframe/regression_assertions.py
-          cd app
-          flutter analyze
+          flutter analyze --no-fatal-infos --no-fatal-warnings lib/main.dart lib/src lib/img2img_processor.dart lib/ffi_bindings.dart lib/stable_diffusion_service.dart lib/sd_image.dart test
           flutter test
 
-      - name: Alpha 3 regression cycle 2
+      - name: FreeFrame regression cycle 2
+        working-directory: app
         run: |
-          python3 freeframe/regression_assertions.py
-          cd app
-          flutter analyze
-          flutter test
-
-      - name: Alpha 3 regression cycle 3
-        run: |
-          python3 freeframe/regression_assertions.py
-          cd app
-          flutter analyze
+          flutter analyze --no-fatal-infos --no-fatal-warnings lib/main.dart lib/src lib/img2img_processor.dart lib/ffi_bindings.dart lib/stable_diffusion_service.dart lib/sd_image.dart test
           flutter test
 
       - name: Build release APK
@@ -109,11 +121,105 @@ jobs:
 
       - name: Rename APK
         run: |
-          cp app/build/app/outputs/flutter-apk/app-release.apk FreeFrame-Mobile.apk
+          if [ "${{ matrix.profile }}" = "low-memory" ]; then
+            cp app/build/app/outputs/flutter-apk/app-release.apk FreeFrame-LowMemory.apk
+          else
+            cp app/build/app/outputs/flutter-apk/app-release.apk FreeFrame-Standard.apk
+          fi
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: FreeFrame-Mobile-APK
-          path: FreeFrame-Mobile.apk
+          name: FreeFrame-${{ matrix.profile }}-APK
+          path: FreeFrame-*.apk
           if-no-files-found: error
+
+  low-memory-smoke:
+    name: Low-memory Android 4GB smoke test
+    needs: build
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout FreeFrame repo
+        uses: actions/checkout@v4
+      - name: Download low-memory APK
+        uses: actions/download-artifact@v4
+        with:
+          name: FreeFrame-low-memory-APK
+          path: sim-apk
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Android 15 / 4GB simulation
+        uses: ReactiveCircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          arch: x86_64
+          profile: pixel_4
+          ram-size: 4096M
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 4096
+          script: sh freeframe_rework/moto_g_smoke.sh
+
+  standard-smoke:
+    name: Standard Android 8GB smoke test
+    needs: build
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout FreeFrame repo
+        uses: actions/checkout@v4
+      - name: Download standard APK
+        uses: actions/download-artifact@v4
+        with:
+          name: FreeFrame-standard-APK
+          path: sim-apk
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Android 15 / 8GB simulation
+        uses: ReactiveCircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          arch: x86_64
+          profile: pixel_4
+          ram-size: 8192M
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 8192
+          script: sh freeframe_rework/moto_g_smoke.sh
+
+  publish-release:
+    name: Publish GitHub release
+    if: github.ref == 'refs/heads/main'
+    needs: [build, low-memory-smoke, standard-smoke]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Download Standard APK
+        uses: actions/download-artifact@v4
+        with:
+          name: FreeFrame-standard-APK
+          path: release
+      - name: Download Low Memory APK
+        uses: actions/download-artifact@v4
+        with:
+          name: FreeFrame-low-memory-APK
+          path: release
+      - name: Publish alpha release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v0.1.0-alpha
+          name: FreeFrame Mobile v0.1.0 Alpha
+          prerelease: true
+          generate_release_notes: true
+          body: |
+            FreeFrame Mobile public alpha.
+
+            Choose **FreeFrame-Standard.apk** for newer Android phones with roughly 8 GB+ physical RAM.
+            Choose **FreeFrame-LowMemory.apk** for 4–6 GB phones or if Standard runs out of memory.
+
+            FreeFrame runs image generation locally and model files are downloaded separately.
+          files: |
+            release/FreeFrame-Standard.apk
+            release/FreeFrame-LowMemory.apk

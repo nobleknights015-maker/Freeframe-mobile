@@ -1,0 +1,57 @@
+name: Build Anything V5 Q4_0 GGUF
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [freeframe-rework]
+    paths:
+      - '.github/workflows/build-anything-v5-q4.yml'
+
+jobs:
+  quantize:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake build-essential curl
+
+      - name: Fetch stable-diffusion.cpp
+        run: |
+          git clone --depth 1 --recurse-submodules --shallow-submodules \
+            https://github.com/leejet/stable-diffusion.cpp.git sdcpp
+
+      - name: Build converter
+        run: |
+          cmake -S sdcpp -B sdcpp/build -DCMAKE_BUILD_TYPE=Release
+          cmake --build sdcpp/build --config Release -j2
+          test -x sdcpp/build/bin/sd-cli
+
+      - name: Download Anything V5
+        run: |
+          curl -L --fail --retry 5 --retry-delay 5 \
+            -o anything-v5.safetensors \
+            https://huggingface.co/KatarLegacy/anything_v5/resolve/main/anythngv5.safetensors
+          echo '7f96a1a9ca9b3a3242a9ae95d19284f0d2da8d5282b42d2d974398bf7663a252  anything-v5.safetensors' | sha256sum -c -
+
+      - name: Convert to Q4_0 GGUF
+        run: |
+          sdcpp/build/bin/sd-cli -M convert -m anything-v5.safetensors \
+            -o Anything-V5-Q4_0.gguf -v --type q4_0
+          ls -lh Anything-V5-Q4_0.gguf
+          sha256sum Anything-V5-Q4_0.gguf | tee Anything-V5-Q4_0.gguf.sha256
+
+      - name: Upload quantized model
+        uses: actions/upload-artifact@v4
+        with:
+          name: Anything-V5-Q4_0-GGUF
+          path: |
+            Anything-V5-Q4_0.gguf
+            Anything-V5-Q4_0.gguf.sha256
+          compression-level: 0
+          retention-days: 7
+          if-no-files-found: error
