@@ -24,13 +24,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip'
       - name: Install test dependencies
         run: pip install 'modal>=1.0,<2' 'pillow>=10.4,<12'
       - name: Compile worker
-        run: python -m py_compile modal_worker/freeframe_worker.py modal_worker/test_worker_core.py
+        run: python -m py_compile modal_worker/freeframe_worker.py modal_worker/asset_profiles.py modal_worker/test_worker_core.py modal_worker/test_asset_profiles.py
       - name: Run worker core tests
-        run: PYTHONPATH=modal_worker python -m unittest modal_worker/test_worker_core.py -v
+        run: PYTHONPATH=modal_worker python -m unittest discover -s modal_worker -p 'test_*.py' -v
       - name: Guard against committed model weights
         shell: bash
         run: |
