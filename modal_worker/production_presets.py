@@ -9,6 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass, asdict
 
 
+PLUSHBOUND_STYLE_VERSION = "v3"
 PLUSHBOUND_STYLE = (
     "Plushbound Legends style, warm handcrafted fantasy JRPG, painterly anime-inspired game art, "
     "clean shapes, soft dimensional light, tactile natural materials, harmonious colors"
@@ -45,10 +46,11 @@ class ProductionPreset:
             "guidance_scale": self.guidance_scale,
             "seed": seed,
             "style_preset": self.name,
+            "style_version": PLUSHBOUND_STYLE_VERSION,
         }
 
     def metadata(self) -> dict:
-        return asdict(self)
+        return {**asdict(self), "style_version": PLUSHBOUND_STYLE_VERSION}
 
 
 PRESETS = {
