@@ -17,17 +17,19 @@ permissions:
 
 jobs:
   worker-core:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Show runtime
+        run: python --version && pip --version
       - name: Install test dependencies
-        run: pip install 'modal>=1.0,<2' 'pillow>=10.4,<12'
+        run: python -m pip install --disable-pip-version-check 'modal>=1.0,<2' 'pillow>=10.4,<12'
       - name: Compile worker
-        run: python -m py_compile modal_worker/freeframe_worker.py modal_worker/asset_profiles.py modal_worker/test_worker_core.py modal_worker/test_asset_profiles.py
+        run: python -m compileall -q modal_worker
       - name: Run worker core tests
         run: PYTHONPATH=modal_worker python -m unittest discover -s modal_worker -p 'test_*.py' -v
       - name: Guard against committed model weights
