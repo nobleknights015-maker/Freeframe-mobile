@@ -13,6 +13,11 @@ on:
         required: true
         default: false
         type: boolean
+      run_production_sample:
+        description: 'Run the four-asset controlled Plushbound production sample'
+        required: true
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -140,5 +145,58 @@ jobs:
         with:
           name: freeframe-quality-benchmark
           path: freeframe-quality-benchmark/
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Run controlled Plushbound production sample
+        if: ${{ inputs.run_production_sample }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import base64, hashlib, json, sys
+          from pathlib import Path
+          import modal
+          sys.path.insert(0, "modal_worker")
+          from production_presets import get_preset
+          from production_sample_plan import SAMPLES, sample_manifest
+
+          out = Path("freeframe-production-sample")
+          out.mkdir(exist_ok=True)
+          Generator = modal.Cls.from_name("freeframe-worker", "FreeFrameGenerator")
+          generator = Generator()
+          summaries = []
+          for sample in SAMPLES:
+              request = get_preset(sample.preset).apply(sample.prompt, seed=sample.seed)
+              payload = generator.generate.remote(request)
+              raw = base64.b64decode(payload["image_base64"], validate=True)
+              assert payload["mime_type"] == "image/png"
+              assert payload["width"] == request["width"]
+              assert payload["height"] == request["height"]
+              assert hashlib.sha256(raw).hexdigest() == payload["sha256"]
+              assert len(raw) == payload["bytes"]
+              (out / f"{sample.sample_id}.png").write_bytes(raw)
+              summary = {
+                  **sample.metadata(),
+                  "model": payload["model"],
+                  "width": payload["width"],
+                  "height": payload["height"],
+                  "bytes": payload["bytes"],
+                  "sha256": payload["sha256"],
+                  "elapsed_seconds": payload["elapsed_seconds"],
+              }
+              summaries.append(summary)
+              print(json.dumps(summary))
+          manifest = sample_manifest()
+          manifest["results"] = summaries
+          (out / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
+          PY
+
+      - name: Upload production sample
+        if: ${{ inputs.run_production_sample }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: freeframe-production-sample
+          path: freeframe-production-sample/
           if-no-files-found: error
           retention-days: 7
