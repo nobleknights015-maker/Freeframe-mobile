@@ -9,7 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass, asdict
 
 
-PLUSHBOUND_STYLE_VERSION = "v3"
+PLUSHBOUND_STYLE_VERSION = "v3.1"
 PLUSHBOUND_STYLE = (
     "Plushbound Legends style, warm handcrafted fantasy JRPG, painterly anime-inspired game art, "
     "clean shapes, soft dimensional light, tactile natural materials, harmonious colors"
@@ -36,7 +36,6 @@ class ProductionPreset:
         prompt = prompt.strip()
         if not prompt:
             raise ValueError("prompt must not be empty")
-        # Subject request comes before category/style instructions on purpose.
         return {
             "prompt": f"{prompt}. {self.prompt_prefix}",
             "negative_prompt": self.negative_prompt,
@@ -57,10 +56,11 @@ PRESETS = {
     "plushbound_character": ProductionPreset(
         name="plushbound_character",
         prompt_prefix=(
-            "One adult person only, full body head to toe, natural adult proportions, neutral standing pose, "
-            "normal anatomy, practical layered fantasy clothing, simple background. " + PLUSHBOUND_STYLE
+            "SINGLE SUBJECT PORTRAIT: exactly one adult human, exactly one body, exactly one face, one pose, "
+            "full body head to toe, centered alone in the image, natural adult proportions, neutral standing pose, "
+            "normal anatomy, practical layered fantasy clothing, plain simple background, no alternate views. " + PLUSHBOUND_STYLE
         ),
-        negative_prompt=BASE_NEGATIVE + ", child, chibi, mascot proportions, crowd, second person, companion creature",
+        negative_prompt=BASE_NEGATIVE + ", child, chibi, mascot proportions, crowd, second person, two people, three people, group, twins, duplicate person, repeated person, lineup, contact sheet, design sheet, reference sheet, alternate outfit, alternate pose, companion creature",
         width=768,
         height=1024,
         steps=28,
@@ -81,10 +81,11 @@ PRESETS = {
     "plushbound_enemy": ProductionPreset(
         name="plushbound_enemy",
         prompt_prefix=(
-            "One hostile creature only, one pose only, full creature visible, centered, readable battle silhouette, "
-            "coherent creature anatomy, clearly non-human monster, simple background. " + PLUSHBOUND_STYLE
+            "SINGLE NON-HUMANOID MONSTER: exactly one hostile quadrupedal creature, four-legged animal body plan, "
+            "moves on four legs, no human torso, no human hands, no clothing, no carried weapon, one pose only, "
+            "full creature visible, centered, readable battle silhouette, coherent creature anatomy, simple background. " + PLUSHBOUND_STYLE
         ),
-        negative_prompt=BASE_NEGATIVE + ", human, adventurer, cute party, second monster, monster group, swarm, lineup, model sheet",
+        negative_prompt=BASE_NEGATIVE + ", human, humanoid, biped, standing person, warrior, adventurer, clothing, armor suit, axe, sword, spear, staff, carried weapon, human hands, cute party, second monster, monster group, swarm, lineup, model sheet",
         width=768,
         height=768,
         steps=28,
