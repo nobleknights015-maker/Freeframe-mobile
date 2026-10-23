@@ -14,7 +14,12 @@ from typing import Callable
 
 from PIL import Image, UnidentifiedImageError
 
-from alpha_extraction_gate import inspect_extracted_png
+# Support both package imports in Modal (/root/modal_worker) and the historical
+# direct-module import style used by the lightweight unit-test harness.
+try:
+    from .alpha_extraction_gate import inspect_extracted_png
+except ImportError:  # pragma: no cover - direct-module compatibility for CI/tests
+    from alpha_extraction_gate import inspect_extracted_png
 
 
 @dataclass(frozen=True)
