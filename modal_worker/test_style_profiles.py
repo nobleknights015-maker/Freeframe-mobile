@@ -10,9 +10,9 @@ class StyleProfileTests(unittest.TestCase):
  def test_environment_is_modern_without_poster_cues(self):
   text=get_style_profile("plushbound_trinity_environment").positive; self.assertIn("premium contemporary fantasy JRPG environment key art",text); self.assertIn("no foreground hero",text)
  def test_guardian_is_living_creature_not_product_plush(self):
-  p=get_style_profile("plushbound_guardian_2d_candidate"); self.assertIn("living fantasy companion species native to Plushtopia",p.positive); self.assertIn("creature anatomy and behavior first",p.positive); self.assertIn("textile hide integrated into the living form",p.positive); self.assertIn("retail plush toy",p.negative)
+  p=get_style_profile("plushbound_guardian_2d_candidate"); self.assertIn("Guardian-creature key art",p.positive); self.assertIn("unmistakably alive and behaving as a fantasy species",p.positive); self.assertIn("matte woven textile dermis",p.positive); self.assertIn("natural creature eyes",p.positive); self.assertIn("retail plush toy",p.negative); self.assertIn("fuzzy synthetic plush pile",p.negative); self.assertIn("realistic fur coat",p.negative)
  def test_enemy_is_textile_creature_not_ordinary_animal(self):
-  p=get_style_profile("plushbound_trinity_creature"); self.assertIn("living Plushtopia species",p.positive); self.assertIn("creature first and textile second",p.positive); self.assertIn("woven felt quilted or thread-based hide",p.positive); self.assertIn("ordinary flesh-and-fur animal",p.negative)
+  p=get_style_profile("plushbound_trinity_creature"); self.assertIn("living Plushtopia species",p.positive); self.assertIn("creature first and textile biology second",p.positive); self.assertIn("visibly woven quilted or layered textile dermis",p.positive); self.assertIn("sparse thread bristles instead of ordinary fur",p.positive); self.assertIn("ordinary flesh-and-fur animal",p.negative); self.assertIn("realistic fur coat",p.negative)
  def test_profiles_are_visually_distinct(self): self.assertEqual(len({p.positive for p in STYLE_PROFILES.values()}),len(STYLE_PROFILES))
  def test_empty_prompt_rejected(self):
   with self.assertRaises(ValueError): get_style_profile("plushbound_mv").apply({"prompt":"   "})
