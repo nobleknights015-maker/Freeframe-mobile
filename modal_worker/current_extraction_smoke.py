@@ -1,4 +1,8 @@
-"""Run BiRefNet extraction against current Klein rehearsal subject outputs."""
+"""Run BiRefNet extraction against current Klein rehearsal subject outputs.
+
+The Modal image intentionally mirrors the production FreeFrame extractor's
+BiRefNet dependency surface so this smoke validates the same runtime contract.
+"""
 from __future__ import annotations
 
 import base64
@@ -13,11 +17,19 @@ MODEL_VOLUME = "freeframe-model-cache"
 
 image = (
     modal.Image.debian_slim(python_version="3.11")
+    .apt_install("libgl1", "libglib2.0-0")
     .pip_install(
+        "accelerate>=1.1,<2",
+        "einops>=0.8,<1",
+        "huggingface-hub>=0.26,<1",
+        "kornia>=0.7,<1",
+        "numpy>=1.26,<2",
         "pillow>=10.4,<12",
-        "torch>=2.6,<3",
-        "transformers",
-        "safetensors",
+        "safetensors>=0.4,<1",
+        "timm>=1.0.23,<2",
+        "torch>=2.4,<3",
+        "torchvision>=0.19,<1",
+        "transformers>=4.46,<5",
     )
     .add_local_python_source("modal_worker")
 )
@@ -54,7 +66,7 @@ def main(character_path: str, guardian_path: str, enemy_path: str):
     }
     output_dir = Path("current-extraction-smoke")
     output_dir.mkdir(exist_ok=True)
-    report = {"version": "current-klein-extraction-smoke-v1", "assets": []}
+    report = {"version": "current-klein-extraction-smoke-v2-production-runtime", "assets": []}
     runner = CurrentExtractorSmoke()
     for category, path in paths.items():
         source = path.read_bytes()
