@@ -1,4 +1,5 @@
-trigger: 2026-10-23T04:01Z
-purpose: compare MV, Trinity, and hybrid render steering with same seed and composition
+trigger: 2026-10-23T04:06Z
+purpose: rerun MV, Trinity, and hybrid comparison after moving style tokens ahead of V3.2 prompt
 count: 3
+same_seed: true
 full_batch_authorized: false
