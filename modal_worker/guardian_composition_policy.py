@@ -1,37 +1,38 @@
 """Targeted composition repair for Plush Guardian master generation.
 
 The frozen V3.2 Guardian preset sometimes drifts into a multi-view/model-sheet
-layout. This repair keeps the subject semantics intact while strengthening the
-single-creature, single-camera composition without changing other asset classes.
+layout. This repair keeps the subject semantics intact while replacing studio-like
+composition cues with a candid in-world scene that favors one creature and one view.
 """
 from __future__ import annotations
 
 from typing import Any
 
-GUARDIAN_COMPOSITION_VERSION = "guardian-single-view-v1"
+GUARDIAN_COMPOSITION_VERSION = "guardian-single-view-v2"
 
 _SINGLE_VIEW_POSITIVE = (
-    "one finished creature illustration, exactly one creature, exactly one body, one pose, one camera view, "
-    "front three-quarter view, full creature visible at once, centered in one continuous scene, "
-    "single coherent silhouette, no alternate poses and no secondary views"
+    "candid in-world fantasy scene, one small companion creature sitting naturally beside a forest path, "
+    "one continuous outdoor background, one complete creature body visible once, eye-level camera, "
+    "natural three-quarter angle, coherent silhouette, no alternate poses, no secondary views"
 )
 
 _SINGLE_VIEW_NEGATIVE = (
-    "character sheet, creature sheet, model sheet, turnaround, reference board, presentation board, "
-    "multiple views, alternate view, alternate pose, pose lineup, front side back views, triptych, diptych, "
-    "panels, split screen, inset image, thumbnails, repeated creature, duplicate creature, cloned creature"
+    "studio product photo, catalog image, contact sheet, tiled grid, character sheet, creature sheet, model sheet, "
+    "turnaround, reference board, presentation board, multiple views, alternate view, alternate pose, pose lineup, "
+    "front side back views, triptych, diptych, panels, split screen, inset image, thumbnails, repeated creature, "
+    "duplicate creature, cloned creature, second creature"
 )
 
 
 def apply_guardian_composition(request: dict[str, Any]) -> dict[str, Any]:
-    """Strengthen single-view Guardian composition and record provenance."""
+    """Favor a single candid Guardian scene and record repair provenance."""
     result = dict(request)
     prompt = str(result.get("prompt", "")).strip()
     if not prompt:
         raise ValueError("guardian request prompt must not be empty")
 
-    # Preserve the subject phrase at the front, then immediately reinforce the
-    # composition contract before the longer V3.2 rendering language.
+    # Keep the user subject first, then inject the high-priority composition cue
+    # before the longer V3.2 rendering language reaches the text-encoder tail.
     subject, sep, remainder = prompt.partition(". ")
     if sep:
         result["prompt"] = f"{subject}. {_SINGLE_VIEW_POSITIVE}. {remainder}"
