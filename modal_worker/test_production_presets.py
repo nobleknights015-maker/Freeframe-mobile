@@ -9,7 +9,7 @@ class ProductionPresetTests(unittest.TestCase):
             with self.subTest(name=name):
                 request = preset.apply("silver-haired traveler with a small satchel", seed=42)
                 self.assertEqual(request["style_preset"], name)
-                self.assertEqual(request["style_version"], "v3.2")
+                self.assertEqual(request["style_version"], PLUSHBOUND_STYLE_VERSION)
                 self.assertEqual(request["seed"], 42)
                 self.assertTrue(request["prompt"])
                 self.assertIn("malformed anatomy", request["negative_prompt"])
@@ -19,8 +19,15 @@ class ProductionPresetTests(unittest.TestCase):
                 self.assertGreater(request["guidance_scale"], 0)
                 self.assertEqual(preset.metadata()["style_version"], PLUSHBOUND_STYLE_VERSION)
 
-    def test_v32_identity_is_frozen(self):
-        self.assertEqual(PLUSHBOUND_STYLE_VERSION, "v3.2")
+    def test_v33_identity_is_current(self):
+        self.assertEqual(PLUSHBOUND_STYLE_VERSION, "v3.3")
+
+    def test_shared_style_is_contemporary_not_soft_painterly(self):
+        request = get_preset("plushbound_character").apply("adult traveler", seed=1)
+        self.assertIn("clean contemporary 2D game illustration", request["prompt"])
+        self.assertIn("sharp digital finish", request["prompt"])
+        self.assertNotIn("painterly anime-inspired game art", request["prompt"])
+        self.assertNotIn("soft dimensional light", request["prompt"])
 
     def test_character_uses_scene_composition_not_sheet_language(self):
         request = get_preset("plushbound_character").apply("adult traveler", seed=1)
