@@ -1,0 +1,122 @@
+"""Isolated FLUX.2 Klein 4B L4 benchmark for FreeFrame.
+
+This app is intentionally separate from the production worker. It can measure one
+representative Plushbound case at a time, project raw 22k GPU cost through the
+budget gate, and never authorizes production.
+"""
+from __future__ import annotations
+
+import hashlib
+import io
+import json
+import os
+import time
+
+import modal
+
+APP_NAME = "freeframe-klein-benchmark"
+MODEL_ID = "black-forest-labs/FLUX.2-klein-4B"
+CACHE_DIR = "/cache"
+MODEL_VOLUME = "freeframe-model-cache"
+
+image = (
+    modal.Image.debian_slim(python_version="3.11")
+    .apt_install("libgl1", "libglib2.0-0")
+    .pip_install(
+        "accelerate>=1.5,<2",
+        "git+https://github.com/huggingface/diffusers.git",
+        "huggingface-hub>=0.30,<1",
+        "pillow>=10.4,<12",
+        "safetensors>=0.5,<1",
+        "sentencepiece>=0.2,<1",
+        "torch>=2.6,<3",
+        "transformers>=4.57,<5",
+    )
+    .add_local_python_source("modal_worker")
+)
+
+app = modal.App(APP_NAME)
+model_cache = modal.Volume.from_name(MODEL_VOLUME, create_if_missing=True)
+
+
+def select_case(case_id: str) -> dict:
+    from modal_worker.benchmark_plan import CASES
+    from modal_worker.model_catalog import apply_model_defaults, get_candidate
+
+    matches = [case for case in CASES if case.case_id == case_id]
+    if len(matches) != 1:
+        raise ValueError(f"unknown benchmark case: {case_id}")
+    request = matches[0].request()
+    candidate = get_candidate("flux2_klein_4b_candidate")
+    request = apply_model_defaults(request, candidate)
+    # Klein requires dimensions divisible by 16. Current production presets already
+    # satisfy this; fail closed instead of silently resizing.
+    if request["width"] % 16 or request["height"] % 16:
+        raise ValueError("Klein benchmark dimensions must be divisible by 16")
+    return request
+
+
+@app.cls(
+    gpu="L4",
+    image=image,
+    volumes={CACHE_DIR: model_cache},
+    scaledown_window=60,
+    timeout=1200,
+)
+class KleinBenchmarkRunner:
+    @modal.enter()
+    def load(self):
+        import torch
+        from diffusers import Flux2KleinPipeline
+
+        os.environ.setdefault("HF_HOME", CACHE_DIR)
+        os.environ.setdefault("HF_HUB_CACHE", f"{CACHE_DIR}/hub")
+        self.torch = torch
+        self.pipe = Flux2KleinPipeline.from_pretrained(
+            MODEL_ID,
+            torch_dtype=torch.bfloat16,
+            cache_dir=CACHE_DIR,
+        )
+        self.pipe.to("cuda")
+
+    @modal.method()
+    def run_case(self, case_id: str) -> dict:
+        from modal_worker.model_upgrade_budget import benchmark_decision
+
+        request = select_case(case_id)
+        generator = self.torch.Generator(device="cuda").manual_seed(int(request["seed"]))
+        started = time.monotonic()
+        result = self.pipe(
+            prompt=str(request["prompt"]),
+            width=int(request["width"]),
+            height=int(request["height"]),
+            guidance_scale=float(request["guidance_scale"]),
+            num_inference_steps=int(request["steps"]),
+            generator=generator,
+        ).images[0]
+        elapsed = round(time.monotonic() - started, 3)
+        out = io.BytesIO()
+        result.save(out, format="PNG")
+        raw = out.getvalue()
+        return {
+            "benchmark_version": "klein-l4-v1",
+            "case_id": case_id,
+            "model": MODEL_ID,
+            "gpu": "L4",
+            "elapsed_seconds": elapsed,
+            "width": result.width,
+            "height": result.height,
+            "bytes": len(raw),
+            "sha256": hashlib.sha256(raw).hexdigest(),
+            "steps": int(request["steps"]),
+            "guidance_scale": float(request["guidance_scale"]),
+            "seed": int(request["seed"]),
+            "budget": benchmark_decision(elapsed),
+            "production_authorized": False,
+        }
+
+
+@app.local_entrypoint()
+def main(case_id: str = "guardian_meadow"):
+    result = KleinBenchmarkRunner().run_case.remote(case_id)
+    print(json.dumps(result, sort_keys=True))
