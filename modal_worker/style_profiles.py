@@ -5,20 +5,22 @@ Trinity promotional references without copying characters, logos, costumes, or
 layouts. They remain separate from V3.2 composition presets so proven anatomy
 and composition rules stay stable.
 
-SDXL-family encoders have finite token windows. Style language is therefore kept
-compact and inserted immediately after the subject sentence: early enough to be
-seen, but before the V3.2 framing/anatomy language gets pushed out.
+The language below intentionally describes broad rendering behavior rather than
+asking a renderer to reproduce a specific copyrighted work. Original Plushbound
+identity and project-owned reference art remain the primary source of subject
+identity.
 """
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 
 
-STYLE_PROFILE_VERSION = "mt1.3"
+STYLE_PROFILE_VERSION = "mt1.4"
 
 COMMON_AVOID = (
     "retro visual-novel softness, muddy airbrush, washed-out color, photorealism, "
-    "excessive bloom, photographic depth of field, indistinct material rendering"
+    "excessive bloom, photographic depth of field, indistinct material rendering, "
+    "flat mobile-game vector art, generic stock-fantasy costume, plastic CGI surfaces"
 )
 
 
@@ -57,24 +59,27 @@ STYLE_PROFILES = {
         name="plushbound_mv",
         positive=(
             "clean contemporary fantasy JRPG key art, crisp anime facial construction and bright controlled eyes, "
-            "deliberate linework, clearly separated hair and costume shapes, cel-painted light-shadow groups, "
-            "distinct cloth leather and metal materials, strong readable silhouette, restrained polished highlights"
+            "deliberate linework with tapered edges, clearly separated hair and costume shapes, firm cel-painted light-shadow groups, "
+            "subtle secondary gradients only inside major shadow forms, distinct cloth leather metal and stitched-fabric materials, "
+            "readable silhouette at thumbnail size, restrained polished highlights, cover-illustration finish"
         ),
     ),
     "plushbound_trinity": StyleProfile(
         name="plushbound_trinity",
         positive=(
-            "polished modern fantasy JRPG promotional illustration, crisp anime features, saturated disciplined colors, "
-            "confident layered costume shapes, firm cel-painted shading, selective material highlights, energetic clean lighting, "
-            "strong silhouette hierarchy, contemporary game key-art finish"
+            "high-end modern fantasy JRPG promotional key art, crisp anime features and expressive eyes, saturated disciplined palette, "
+            "layered asymmetrical costume design with clear shape hierarchy, firm cel shading plus selective painterly blending, "
+            "distinct cloth leather metal embroidery and stitched-fabric response, warm key light with restrained cool rim light, "
+            "precise specular accents instead of glow, strong silhouette separation, polished console-RPG cover illustration"
         ),
     ),
     "plushbound_hybrid": StyleProfile(
         name="plushbound_hybrid",
         positive=(
-            "original Plushbound modern fantasy JRPG key art, crisp anime face and clean linework, saturated controlled palette, "
-            "clear hair and costume shape separation, cel-painted forms with selective painterly polish, distinct cloth leather metal "
-            "and stitched-fabric materials, readable silhouette, restrained bloom, polished contemporary RPG cover-art finish"
+            "original Plushbound modern fantasy JRPG cover art, crisp anime face and clean tapered linework, saturated controlled palette, "
+            "clear hair and costume shape separation, firm cel-painted forms with selective painterly polish, layered handcrafted fantasy costume, "
+            "distinct cloth leather metal embroidery and stitched-fabric materials, warm directional light with restrained rim separation, "
+            "readable silhouette, minimal bloom, polished contemporary console-RPG promotional finish"
         ),
     ),
 }
