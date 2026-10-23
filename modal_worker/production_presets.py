@@ -1,15 +1,15 @@
-"""Production-oriented generation presets for Plushbound asset benchmarking.
+"""Production-oriented generation presets for Plushbound assets.
 
-Prompt architecture deliberately puts the requested asset first. SDXL follows
-short subject/composition instructions more reliably than a long shared style
-preamble; Plushbound art direction is appended as a compact finishing language.
+V3.2 keeps the proven Plushbound style while separating subject generation from
+asset-format language. Character and beast prompts use photographic composition
+terms rather than concept-art/model-sheet vocabulary that SDXL can over-interpret.
 """
 from __future__ import annotations
 
 from dataclasses import dataclass, asdict
 
 
-PLUSHBOUND_STYLE_VERSION = "v3.1"
+PLUSHBOUND_STYLE_VERSION = "v3.2"
 PLUSHBOUND_STYLE = (
     "Plushbound Legends style, warm handcrafted fantasy JRPG, painterly anime-inspired game art, "
     "clean shapes, soft dimensional light, tactile natural materials, harmonious colors"
@@ -56,11 +56,12 @@ PRESETS = {
     "plushbound_character": ProductionPreset(
         name="plushbound_character",
         prompt_prefix=(
-            "SINGLE SUBJECT PORTRAIT: exactly one adult human, exactly one body, exactly one face, one pose, "
-            "full body head to toe, centered alone in the image, natural adult proportions, neutral standing pose, "
-            "normal anatomy, practical layered fantasy clothing, plain simple background, no alternate views. " + PLUSHBOUND_STYLE
+            "A single candid full-length scene containing one adult traveler standing naturally on a quiet dirt path, "
+            "camera at eye level, entire person visible from head through both boots, open empty space around the person, "
+            "one continuous background, natural adult anatomy and proportions, practical layered fantasy travel clothing. "
+            + PLUSHBOUND_STYLE
         ),
-        negative_prompt=BASE_NEGATIVE + ", child, chibi, mascot proportions, crowd, second person, two people, three people, group, twins, duplicate person, repeated person, lineup, contact sheet, design sheet, reference sheet, alternate outfit, alternate pose, companion creature",
+        negative_prompt=BASE_NEGATIVE + ", studio sheet, presentation board, reference board, panels, split screen, triptych, diptych, thumbnails, inset image, repeated figure, second figure, crowd, child, chibi, mannequin, companion creature",
         width=768,
         height=1024,
         steps=28,
@@ -81,13 +82,14 @@ PRESETS = {
     "plushbound_enemy": ProductionPreset(
         name="plushbound_enemy",
         prompt_prefix=(
-            "SINGLE NON-HUMANOID MONSTER: exactly one hostile quadrupedal creature, four-legged animal body plan, "
-            "moves on four legs, no human torso, no human hands, no clothing, no carried weapon, one pose only, "
-            "full creature visible, centered, readable battle silhouette, coherent creature anatomy, simple background. " + PLUSHBOUND_STYLE
+            "A single wild four-legged beast prowling horizontally across a forest clearing, animal spine parallel to the ground, "
+            "front paws and rear paws supporting the body, long animal torso between shoulder and hips, head projecting forward from the shoulders, "
+            "natural quadruped locomotion like a wolf or large cat, creature body filling most of the frame, one continuous forest background. "
+            + PLUSHBOUND_STYLE
         ),
-        negative_prompt=BASE_NEGATIVE + ", human, humanoid, biped, standing person, warrior, adventurer, clothing, armor suit, axe, sword, spear, staff, carried weapon, human hands, cute party, second monster, monster group, swarm, lineup, model sheet",
-        width=768,
-        height=768,
+        negative_prompt=BASE_NEGATIVE + ", gorilla, ape, monkey, bear standing upright, human, humanoid, biped, upright torso, standing on two legs, human shoulders, human hands, warrior, adventurer, clothing, armor suit, axe, sword, spear, staff, carried weapon, second monster, group, swarm, lineup, model sheet",
+        width=896,
+        height=640,
         steps=28,
         guidance_scale=6.0,
     ),
