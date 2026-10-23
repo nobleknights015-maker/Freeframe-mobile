@@ -57,11 +57,13 @@ jobs:
         run: |
           set -o pipefail
           modal run modal_worker/klein_l4_benchmark.py --case-id "$CASE_ID" | tee klein-l4-benchmark.log
-      - name: Upload benchmark log
+      - name: Upload benchmark product and log
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: klein-l4-benchmark-${{ github.run_id }}
-          path: klein-l4-benchmark.log
-          if-no-files-found: error
+          path: |
+            klein-l4-benchmark.log
+            klein-l4-output.png
+          if-no-files-found: warn
           retention-days: 7
