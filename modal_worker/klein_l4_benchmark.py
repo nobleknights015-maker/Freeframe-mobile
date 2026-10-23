@@ -23,6 +23,7 @@ OUTPUT_PNG = "klein-l4-output.png"
 QUALITY_CALIBRATION_STEPS = 4
 QUALITY_CALIBRATION_GUIDANCE = 1.0
 REFERENCE_CASE_ID = "penney_modeling_stress"
+MIN_REFERENCE_EDGE = 64
 
 image = (
     modal.Image.debian_slim(python_version="3.11")
@@ -71,16 +72,20 @@ def _decode_reference(encoded: str):
     from PIL import Image
 
     raw = base64.b64decode(encoded)
-    return Image.open(io.BytesIO(raw)).convert("RGB")
+    reference = Image.open(io.BytesIO(raw)).convert("RGB")
+    width, height = reference.size
+    shortest = min(width, height)
+    if shortest < MIN_REFERENCE_EDGE:
+        scale = MIN_REFERENCE_EDGE / shortest
+        target = (max(MIN_REFERENCE_EDGE, round(width * scale)), max(MIN_REFERENCE_EDGE, round(height * scale)))
+        reference = reference.resize(target, Image.Resampling.LANCZOS)
+    return reference
 
 
 def load_calibration_references():
     from modal_worker.calibration_reference_assets import PENNEY_CANON_REFERENCE_JPEG_BASE64
     from modal_worker.calibration_reference_modern import PENNEY_MODERN_FULLBODY_JPEG_BASE64
 
-    # Reference 1 anchors project-owned Plushbound identity/color language.
-    # Reference 2 contributes user-owned full-body proportion, lighting, skin,
-    # and material cues. Prompt language keeps the final result illustrated.
     return [
         _decode_reference(PENNEY_CANON_REFERENCE_JPEG_BASE64),
         _decode_reference(PENNEY_MODERN_FULLBODY_JPEG_BASE64),
@@ -134,7 +139,7 @@ class KleinBenchmarkRunner:
         result.save(out, format="PNG")
         raw = out.getvalue()
         return {
-            "benchmark_version": "klein-l4-v9-dual-reference-calibration",
+            "benchmark_version": "klein-l4-v10-dual-reference-normalized",
             "case_id": case_id,
             "model": MODEL_ID,
             "gpu": "L4",
