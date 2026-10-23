@@ -10,26 +10,33 @@ class GPURehearsalStylePolicyTests(unittest.TestCase):
         self.assertEqual(len(plan), 32)
         self.assertEqual(len({item["asset_id"] for item in plan}), 32)
 
-    def test_only_character_requests_use_validated_trinity_style(self):
+    def test_validated_categories_use_trinity_guardian_stays_unstyled(self):
         plan = rehearsal_requests()
-        characters = [item for item in plan if item["preset"] == "plushbound_character"]
-        others = [item for item in plan if item["preset"] != "plushbound_character"]
-        self.assertEqual(len(characters), 8)
-        self.assertEqual(len(others), 24)
+        validated = [
+            item for item in plan
+            if item["preset"] in {"plushbound_character", "plushbound_enemy", "plushbound_environment"}
+        ]
+        guardians = [item for item in plan if item["preset"] == "plushbound_guardian"]
+        self.assertEqual(len(validated), 24)
+        self.assertEqual(len(guardians), 8)
 
-        for item in characters:
+        for item in validated:
             request = item["request"]
             self.assertTrue(request["production_style_validated"])
             self.assertEqual(request["production_style_profile"], "plushbound_trinity")
             self.assertEqual(request["render_style_profile"], "plushbound_trinity")
             self.assertIn("bright modern fantasy JRPG key art", request["prompt"])
-            self.assertIn("single candid full-length scene", request["prompt"])
 
-        for item in others:
+        for item in guardians:
             request = item["request"]
             self.assertFalse(request["production_style_validated"])
             self.assertIsNone(request["production_style_profile"])
             self.assertNotIn("render_style_profile", request)
+
+    def test_character_requests_keep_full_length_composition_language(self):
+        for item in rehearsal_requests():
+            if item["preset"] == "plushbound_character":
+                self.assertIn("single candid full-length scene", item["request"]["prompt"])
 
 
 if __name__ == "__main__":
