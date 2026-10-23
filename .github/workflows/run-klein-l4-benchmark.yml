@@ -6,12 +6,12 @@ on:
       case_id:
         description: Representative benchmark case
         required: true
-        default: enemy_forest
+        default: penney_modeling_stress
         type: choice
         options:
+          - penney_modeling_stress
           - enemy_forest
           - environment_elyndor
-          - penney_modeling_stress
           - guardian_meadow
           - character_adventurer
   push:
@@ -38,7 +38,7 @@ jobs:
     env:
       MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
       MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
-      CASE_ID: ${{ github.event.inputs.case_id || 'enemy_forest' }}
+      CASE_ID: ${{ github.event.inputs.case_id || 'penney_modeling_stress' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
