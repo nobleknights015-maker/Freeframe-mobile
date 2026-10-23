@@ -62,7 +62,7 @@ jobs:
           buf = io.BytesIO(); image.save(buf, format='PNG'); raw = buf.getvalue()
           (out / 'synthetic-reference.png').write_bytes(raw)
 
-          store = modal.Function.from_name('freeframe-worker', 'store_reference')
+          store = modal.Function.from_name('freeframe-worker', 'store_reference_internal')
           stored = store.remote({'image_base64': base64.b64encode(raw).decode('ascii')})
           assert stored['stored'] is True
           assert stored['reference_id'] == hashlib.sha256(raw).hexdigest()
