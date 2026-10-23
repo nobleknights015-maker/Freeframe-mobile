@@ -55,24 +55,32 @@ class BiRefNetExtractor:
         except (UnidentifiedImageError, OSError, ValueError) as exc:
             raise ExtractionError(f"BiRefNet source is not a readable PNG: {exc}") from exc
 
-    def _predict_mask(self, image: Image.Image) -> Image.Image:
-        """Return an L-mode mask at source size using the official model's preprocessing.
+    def _preprocess(self, image: Image.Image):
+        """Apply BiRefNet's documented ImageNet normalization at policy resolution."""
+        torch = self._torch
+        if torch is None:
+            raise ExtractionError("BiRefNet backend is not initialized")
+        size = int(self.policy.inference_size)
+        resized = image.resize((size, size), Image.Resampling.LANCZOS)
+        # Avoid a torchvision runtime dependency: PIL bytes -> CHW float tensor.
+        channels = len(resized.getbands())
+        raw = torch.tensor(bytearray(resized.tobytes()), dtype=torch.uint8)
+        tensor = raw.reshape(size, size, channels).permute(2, 0, 1).float().div(255.0)
+        mean = torch.tensor([0.485, 0.456, 0.406], dtype=tensor.dtype).view(3, 1, 1)
+        std = torch.tensor([0.229, 0.224, 0.225], dtype=tensor.dtype).view(3, 1, 1)
+        return tensor.sub(mean).div(std).unsqueeze(0)
 
-        The official Hugging Face model exposes `preprocess_image` and returns the
-        segmentation logits as the last prediction tensor. Keeping this method
-        isolated makes the adapter easy to smoke-test against future upstream API
-        changes without touching routing or packaging code.
-        """
+    def _predict_mask(self, image: Image.Image) -> Image.Image:
         torch = self._torch
         if torch is None or self._model is None:
             raise ExtractionError("BiRefNet backend is not initialized")
 
         try:
-            inputs = self._model.preprocess_image(image)
-            if hasattr(inputs, "to"):
-                device = next(self._model.parameters()).device
-                inputs = inputs.to(device)
-            with torch.no_grad():
+            inputs = self._preprocess(image)
+            device = next(self._model.parameters()).device
+            dtype = next(self._model.parameters()).dtype
+            inputs = inputs.to(device=device, dtype=dtype)
+            with torch.inference_mode():
                 predictions = self._model(inputs)
             logits = predictions[-1] if isinstance(predictions, (list, tuple)) else predictions
             if isinstance(logits, (list, tuple)):
