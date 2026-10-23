@@ -20,6 +20,7 @@ MODEL_ID = "black-forest-labs/FLUX.2-klein-4B"
 CACHE_DIR = "/cache"
 MODEL_VOLUME = "freeframe-model-cache"
 OUTPUT_DIR = "klein-rehearsal-32"
+REHEARSAL_VERSION = "klein-rehearsal-32-v2-package-safe"
 
 image = (
     modal.Image.debian_slim(python_version="3.11")
@@ -113,6 +114,7 @@ class KleinRehearsalRunner:
                 if inspection["accepted"]:
                     accepted = True
                     break
+            assert final is not None
             final["accepted"] = accepted
             final["quarantined"] = not accepted
             outputs.append(final)
@@ -120,7 +122,7 @@ class KleinRehearsalRunner:
         accepted_count = sum(1 for x in outputs if x["accepted"])
         retry_count = sum(max(0, int(x["attempt"]) - 1) for x in outputs)
         return {
-            "version": "klein-rehearsal-32-v1",
+            "version": REHEARSAL_VERSION,
             "model": MODEL_ID,
             "gpu": "L4",
             "count": len(outputs),
