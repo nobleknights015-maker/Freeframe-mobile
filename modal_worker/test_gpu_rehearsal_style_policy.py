@@ -9,7 +9,13 @@ class GPURehearsalStylePolicyTests(unittest.TestCase):
         self.assertEqual(GPU_REHEARSAL_VERSION, "plushbound-gpu-rehearsal-v4")
         self.assertEqual(len(plan), 32)
         self.assertEqual(len({item["asset_id"] for item in plan}), 32)
-        self.assertTrue(all(item["request"]["production_request_builder_version"] == "production-request-v2" for item in plan))
+        self.assertTrue(
+            all(
+                item["request"]["production_request_builder_version"]
+                == "production-request-v3-living-fabric"
+                for item in plan
+            )
+        )
 
     def test_all_categories_use_validated_category_profiles(self):
         plan = rehearsal_requests()
@@ -30,9 +36,19 @@ class GPURehearsalStylePolicyTests(unittest.TestCase):
             self.assertIn("sharp", request["prompt"])
             if item["preset"] == "plushbound_guardian":
                 self.assertTrue(request["guardian_composition_repair"])
-                self.assertEqual(request["guardian_composition_version"], "guardian-single-view-v3")
+                self.assertEqual(
+                    request["guardian_composition_version"],
+                    "guardian-single-view-v4",
+                )
+                self.assertEqual(request["creature_family"], "guardian_friendly")
+                self.assertIn("creature first and textile second", request["prompt"])
                 self.assertIn("one complete creature body visible exactly once", request["prompt"])
+                self.assertIn("retail plush toy", request["negative_prompt"])
                 self.assertIn("contact sheet", request["negative_prompt"])
+            elif item["preset"] == "plushbound_enemy":
+                self.assertEqual(request["creature_family"], "enemy_creature")
+                self.assertIn("living textile ecosystem", request["prompt"])
+                self.assertIn("ordinary flesh-and-fur animal", request["negative_prompt"])
 
     def test_character_requests_keep_full_length_composition_language(self):
         for item in rehearsal_requests():

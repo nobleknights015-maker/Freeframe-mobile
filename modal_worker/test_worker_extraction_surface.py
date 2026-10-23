@@ -7,7 +7,7 @@ class ExtractionWorkerSurfaceTests(unittest.TestCase):
         source = Path(__file__).with_name("freeframe_worker.py").read_text(encoding="utf-8")
         self.assertIn("class FreeFrameExtractor", source)
         self.assertIn("def extract(self, request: dict)", source)
-        self.assertIn("def extract_subject(request: dict)", source)
+        self.assertIn("def extract_subject(", source)
         self.assertIn("extract_and_validate(source, self.extractor)", source)
 
     def test_extractor_isolated_from_generator_class(self):

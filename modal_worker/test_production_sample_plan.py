@@ -20,7 +20,7 @@ class ProductionSamplePlanTests(unittest.TestCase):
         manifest = sample_manifest()
         self.assertEqual(manifest["sample_plan_version"], SAMPLE_PLAN_VERSION)
         self.assertEqual(manifest["style_version"], PLUSHBOUND_STYLE_VERSION)
-        self.assertEqual(PLUSHBOUND_STYLE_VERSION, "v3.3")
+        self.assertEqual(PLUSHBOUND_STYLE_VERSION, "v3.4")
         self.assertEqual(manifest["count"], 4)
         self.assertTrue(all(item["style_version"] == PLUSHBOUND_STYLE_VERSION for item in manifest["samples"]))
 

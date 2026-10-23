@@ -40,16 +40,16 @@ SAMPLES = (
     ProductionSample(
         "guardian_master",
         "plushbound_guardian",
-        "small foxlike Plush Guardian, visible sewn fabric construction, embroidered accents, gentle magical glow",
+        "small foxlike living Guardian companion species with woven hide, subtle natural seam markings, expressive alert posture and gentle magical glow",
         8202,
-        "Validate single-creature reliability, plush identity, alpha-extraction readiness, and icon source suitability.",
+        "Validate living companion-creature identity, anti-toy behavior, alpha-extraction readiness, and icon source suitability.",
     ),
     ProductionSample(
         "enemy_master",
         "plushbound_enemy",
-        "mossback woodland prowler, quadruped forest monster, bark armor plates, leaf mane, threatening battle stance",
+        "mossback living-textile woodland prowler, low quadruped predator with woven hide, bark-like plates, thread-fiber mane and threatening hunting stance",
         8203,
-        "Validate single-monster silhouette, artifact rejection, and battle-sprite source suitability.",
+        "Validate hostile living-textile identity, single-monster silhouette, artifact rejection, and battle-sprite source suitability.",
     ),
     ProductionSample(
         "elyndor_environment",
