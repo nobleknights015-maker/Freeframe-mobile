@@ -16,12 +16,14 @@ class ProductionRequestBuilderTests(unittest.TestCase):
         self.assertNotIn("guardian_composition_repair", request)
         self.assertIsNone(request["production_reference_validated_mode"])
 
-    def test_guardian_gets_composition_repair_without_unvalidated_style(self):
+    def test_guardian_gets_composition_repair_and_validated_2d_style(self):
         request = build_production_request("plushbound_guardian", "small mossbun Plush Guardian", seed=2)
         self.assertTrue(request["guardian_composition_repair"])
         self.assertEqual(request["guardian_composition_version"], "guardian-single-view-v3")
-        self.assertIsNone(request["production_style_profile"])
-        self.assertFalse(request["production_style_validated"])
+        self.assertEqual(request["production_style_profile"], "plushbound_guardian_2d_candidate")
+        self.assertTrue(request["production_style_validated"])
+        self.assertEqual(request["render_style_profile"], "plushbound_guardian_2d_candidate")
+        self.assertIn("single-view 2D illustrated in-world fantasy companion scene", request["prompt"])
 
     def test_enemy_and_environment_get_category_specific_validated_styles(self):
         cases = {
