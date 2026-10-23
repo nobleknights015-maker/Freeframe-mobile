@@ -22,6 +22,7 @@ MODEL_VOLUME = "freeframe-model-cache"
 OUTPUT_PNG = "klein-l4-output.png"
 QUALITY_CALIBRATION_STEPS = 4
 QUALITY_CALIBRATION_GUIDANCE = 1.5
+REFERENCE_CASE_ID = "penney_modeling_stress"
 
 image = (
     modal.Image.debian_slim(python_version="3.11")
@@ -55,14 +56,24 @@ def select_case(case_id: str) -> dict:
     request = apply_production_style(case.preset, request)
     candidate = get_candidate("flux2_klein_4b_candidate")
     request = apply_model_defaults(request, candidate)
-    # Final bounded steering experiment before switching from text-only style
-    # calibration to reference-conditioned style locking.
     request["steps"] = QUALITY_CALIBRATION_STEPS
     request["guidance_scale"] = QUALITY_CALIBRATION_GUIDANCE
-    request["quality_calibration"] = "stronger-guidance"
+    request["quality_calibration"] = (
+        "canon-reference-conditioned" if case_id == REFERENCE_CASE_ID else "stronger-guidance"
+    )
+    request["reference_conditioned"] = case_id == REFERENCE_CASE_ID
     if request["width"] % 16 or request["height"] % 16:
         raise ValueError("Klein benchmark dimensions must be divisible by 16")
     return request
+
+
+def load_calibration_reference():
+    from PIL import Image
+    from modal_worker.calibration_reference_assets import PENNEY_CANON_REFERENCE_JPEG_BASE64
+
+    raw = base64.b64decode(PENNEY_CANON_REFERENCE_JPEG_BASE64)
+    image = Image.open(io.BytesIO(raw)).convert("RGB")
+    return image
 
 
 @app.cls(
@@ -94,21 +105,25 @@ class KleinBenchmarkRunner:
 
         request = select_case(case_id)
         generator = self.torch.Generator(device="cuda").manual_seed(int(request["seed"]))
+        kwargs = {
+            "prompt": str(request["prompt"]),
+            "width": int(request["width"]),
+            "height": int(request["height"]),
+            "guidance_scale": float(request["guidance_scale"]),
+            "num_inference_steps": int(request["steps"]),
+            "generator": generator,
+        }
+        if request["reference_conditioned"]:
+            kwargs["image"] = load_calibration_reference()
+
         started = time.monotonic()
-        result = self.pipe(
-            prompt=str(request["prompt"]),
-            width=int(request["width"]),
-            height=int(request["height"]),
-            guidance_scale=float(request["guidance_scale"]),
-            num_inference_steps=int(request["steps"]),
-            generator=generator,
-        ).images[0]
+        result = self.pipe(**kwargs).images[0]
         elapsed = round(time.monotonic() - started, 3)
         out = io.BytesIO()
         result.save(out, format="PNG")
         raw = out.getvalue()
         return {
-            "benchmark_version": "klein-l4-v6-guidance-calibration",
+            "benchmark_version": "klein-l4-v7-canon-reference-calibration",
             "case_id": case_id,
             "model": MODEL_ID,
             "gpu": "L4",
@@ -121,6 +136,8 @@ class KleinBenchmarkRunner:
             "guidance_scale": float(request["guidance_scale"]),
             "seed": int(request["seed"]),
             "quality_calibration": request.get("quality_calibration"),
+            "reference_conditioned": bool(request.get("reference_conditioned")),
+            "reference_source": "project-owned Plushbound Penney portrait crop" if request.get("reference_conditioned") else None,
             "style_profile": request.get("render_style_profile"),
             "style_version": request.get("render_style_version"),
             "style_policy_version": request.get("production_style_policy_version"),
