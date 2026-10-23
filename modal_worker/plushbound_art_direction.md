@@ -1,45 +1,35 @@
 # Plushbound MV-Cover / Trinity Art Direction
 
-Purpose: encode broad visual traits observed from official public RPG Maker MV / MV Trinity promotional and preview material into an original Plushbound production language. This file is descriptive only; no third-party image assets are stored here and it is not a license to redistribute or directly train on RPG Maker content.
+Purpose: encode broad RPG Maker MV / MV Trinity promotional traits into an original Plushbound production language. No third-party image assets are stored here.
 
-## Core target
+## Living-fabric ecosystem rule
 
-Plushbound production art should read as polished modern fantasy JRPG promotional/game art with:
+Every native non-human creature in Plushtopia belongs to a **living textile ecosystem**. The visual order is always **creature first, textile second**. A viewer should first read a living species with believable weight, locomotion, posture, awareness, and anatomy. Its hide, fibers, seams, patches, inner stuffing-like fibers, and Thread energy are biological materials, not evidence that somebody manufactured a toy.
 
-- crisp, readable anime facial construction and expressive but controlled eyes
-- clean, deliberate linework and clearly separated hair/clothing shapes
-- saturated but disciplined color palettes with strong local-color identity
-- cel-painted or hybrid cel/painterly shading with firm light-to-shadow grouping
-- selective material highlights on metal, leather, cloth, stitched plush, wood, stone, and magical accents
-- strong silhouette readability at game-asset sizes
-- polished key-art lighting without heavy bloom, fog, or photographic rendering
-- confident fantasy costume design with layered shapes and clear focal hierarchy
-- backgrounds that support the subject without competing with it
+Use sparse seam lines that follow anatomy, woven/felt/quilted hide that wraps believable living form, thread or fiber tufts that behave like fur/feathers/whiskers, and padded extremities that still function as locomotor anatomy.
 
-## Character masters
+Never allow either failure extreme:
 
-Favor a full-body or near-full-body single-character presentation with readable hands, footwear, costume layers, and silhouette. Faces should remain crisp and contemporary rather than soft airbrushed. Clothing should use a small number of large readable shapes plus a restrained amount of fine trim. Metal, cloth, leather, ribbons, and plush/fabric details should be visually distinct.
+- **toy drift:** retail plush toy, stuffed animal, teddy bear, rag doll, beanbag toy, product render, shelf display, catalog photo, inert object, plastic/vinyl collectible, mascot costume
+- **ordinary-animal drift:** normal flesh-and-fur wolf/fox/cat/bear, realistic mammal, taxidermy, or generic fantasy beast with no visible textile biology
 
-Avoid: generic visual-novel softness, hyperreal skin, photographic depth of field, muddy gradients, excessive tiny accessories, split panels, turnaround/model sheets, cropped feet, duplicated figures.
+## Friendly Guardians
+Friendly Guardians are approachable companion species. Keep intact textile hide, expressive creature faces, clean silhouettes, and elemental/biome traits integrated naturally into anatomy. They may be cute, but never use inert stuffed-toy posture or product presentation.
 
-## Guardians
+## Corrupted Guardians
+Corrupted Guardians still read as the same living species as healthy Guardians. Use recognizable anatomy plus torn seams, frayed cloth, exposed stuffing-like inner fiber at injuries, faded patches, dirt, overgrowth, and corrupted Thread energy. Damage reads as wounds/corruption, not a broken toy.
 
-Guardians must remain clearly 2D illustrated creatures, not toys or product renders. Use sewn/fabric cues sparingly as world-building texture while keeping an animated JRPG-creature silhouette. Prioritize one creature, one pose, readable face, clean limbs, and an in-world presentation.
+## Boss Guardians
+Boss Guardians keep the same living-fabric biology while increasing age, scale, silhouette authority, lore significance, corruption, relic-like detail, biome integration, and threat. A boss is not merely a normal Guardian scaled up.
 
-Avoid: CGI plush toys, collectible figurines, product photography, clay/plastic/vinyl surfaces, model sheets, duplicate poses.
+## Wild monsters
+Native creature enemies can be uglier, more feral, predatory, territorial, or alien than Guardians, but must remain visibly part of the living textile ecosystem. They should never collapse into ordinary fur/hide monsters and should not become stuffed toys simply because textile materials are visible.
 
-## Enemies
+## Human enemies
+Humans remain anatomically human. Their Plushtopia identity comes through faction, region, livelihood, relationship to Guardians, local materials, Thread/relic technology, tools, weapons, clothing, and symbols. Avoid generic JRPG enemies imported from another world.
 
-Enemies should have bold readable battle silhouettes, theme-specific materials, and clean shape language. Detail should cluster around focal anatomy or armor rather than spread uniformly. Preserve creature anatomy and locomotion clarity.
+## Environments and characters
+Keep crisp readable contemporary JRPG rendering, disciplined saturated palettes, clean shape hierarchy, material separation, traversable environment logic, and strong silhouettes. Avoid photorealism, product photography, muddy haze, clutter, duplicate figures, and impossible paths.
 
-Avoid: amorphous AI anatomy, extra limbs, decorative noise, overpainted fog, concept-sheet grids.
-
-## Environments
-
-Environments should feel like traversable JRPG spaces: strong foreground/midground/background separation, readable pathing, theme-specific architecture and vegetation, controlled atmospheric depth, and saturated but coherent color. The image should suggest usable game space rather than pure matte painting.
-
-Avoid: photoreal landscapes, excessive haze, bloom-heavy sunsets, unreadable clutter, impossible paths.
-
-## Originality rule
-
-Use MV / Trinity only as broad art-direction references. Do not recreate named RPG Maker characters, costumes, logos, layouts, or identifiable asset designs. Direct image conditioning should use project-owned Plushbound art or separately licensed references whose terms permit that use.
+## Originality
+Use MV / Trinity only as broad art-direction references. Do not recreate named characters, costumes, logos, layouts, or identifiable asset designs. Direct conditioning uses project-owned Plushbound art or separately licensed references whose terms permit it.

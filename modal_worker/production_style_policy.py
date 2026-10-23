@@ -1,10 +1,7 @@
 """Production render-style policy for Plushbound master generation.
 
-Only styles that have passed bounded GPU comparison are enabled here. Category
-routing prevents character key-art language from leaking into environment,
-creature, or Guardian generation. Each major asset class now has its own validated
-render profile; broader production remains separately gated by character style lock
-and rehearsal policy.
+Only category profiles that have passed bounded workflow validation are routed here.
+Creature semantic correctness is additionally enforced by creature_world_policy.
 """
 from __future__ import annotations
 
@@ -13,7 +10,7 @@ from typing import Any
 from modal_worker.style_profiles import STYLE_PROFILE_VERSION, get_style_profile
 
 
-PRODUCTION_STYLE_POLICY_VERSION = "style-policy-v4"
+PRODUCTION_STYLE_POLICY_VERSION = "style-policy-v5-living-fabric"
 
 VALIDATED_STYLE_BY_PRESET: dict[str, str] = {
     "plushbound_character": "plushbound_trinity",
@@ -36,9 +33,7 @@ def apply_production_style(preset_name: str, request: dict[str, Any]) -> dict[st
         result["production_style_validated"] = True
     else:
         result["production_style_validated"] = False
-
-    result["production_style_policy_version"] = PRODUCTION_STYLE_POLICY_VERSION
     result["production_style_profile"] = style_name
-    if style_name is not None:
-        result["production_style_profile_version"] = STYLE_PROFILE_VERSION
+    result["production_style_policy_version"] = PRODUCTION_STYLE_POLICY_VERSION
+    result["production_style_profile_version"] = STYLE_PROFILE_VERSION
     return result

@@ -1,10 +1,8 @@
 name: Deploy FreeFrame Modal Worker
-
 on:
   workflow_dispatch:
   push:
-    branches:
-      - freeframe-modal-worker
+    branches: [freeframe-modal-worker]
     paths:
       - 'modal_worker/freeframe_worker.py'
       - 'modal_worker/birefnet_extractor.py'
@@ -12,15 +10,20 @@ on:
       - 'modal_worker/extraction_provider.py'
       - 'modal_worker/reference_conditioning.py'
       - 'modal_worker/reference_store.py'
+      - 'modal_worker/plushbound_brain.py'
+      - 'modal_worker/mini_jarvis_controller.py'
+      - 'modal_worker/production_request_builder.py'
+      - 'modal_worker/creature_world_policy.py'
+      - 'modal_worker/guardian_composition_policy.py'
+      - 'modal_worker/production_presets.py'
+      - 'modal_worker/production_style_policy.py'
+      - 'modal_worker/style_profiles.py'
       - '.github/workflows/deploy-modal-worker.yml'
-
 permissions:
   contents: read
-
 concurrency:
   group: freeframe-modal-worker-deploy
   cancel-in-progress: false
-
 jobs:
   deploy:
     runs-on: ubuntu-24.04
@@ -31,8 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+        with: {python-version: '3.11'}
       - name: Require Modal credentials
         shell: bash
         run: |

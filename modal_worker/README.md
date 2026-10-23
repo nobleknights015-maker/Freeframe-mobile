@@ -1,59 +1,37 @@
 # FreeFrame Modal Worker
 
-This directory is the cloud/headless counterpart to FreeFrame Mobile. It is intentionally isolated from the Android application so development cannot destabilize the published APKs.
+FreeFrame's cloud/headless worker is isolated from the Android app and handles generation, extraction, validation, reference storage, and Plushbound production planning.
 
-## Purpose
+## Plushbound Brain / Mini-Jarvis
 
-- on-demand text-to-image inference;
-- batch inference for the Plushbound asset library;
-- persistent model caching in a Modal Volume;
-- CPU-side asset integrity checks before/after GPU work;
-- future image-to-image/inpainting and RPG Maker MV-specific validation;
-- future ChatGPT/plugin-facing API surface.
+`plushbound_brain.py` is the shared deterministic source of truth for asset-family contracts, required context, required outputs, pipeline state, and the catalog-wide production lock.
 
-## Current development model
+`mini_jarvis_controller.py` plans structured asset intents through the same `production_request_builder.py` used by batch generation. A future compact chat model can translate conversation into these intents, but it cannot override engine geometry, reference rights, family rules, or production authorization.
 
-The first deployment uses `stabilityai/sd-turbo` as a lightweight integration/test model on an NVIDIA L4. This is **not** a final Plushbound art model. It lets us benchmark the complete worker path before choosing larger weights and spending significant GPU credit.
+Authenticated CPU endpoints:
 
-Model weights are downloaded by Modal at runtime and cached in the `freeframe-model-cache` Volume. They are not committed to GitHub.
+- `GET get_plushbound_brain` — current shared contract snapshot.
+- `POST plan_asset_job` — validate/plan one structured asset intent without waking a GPU.
+- `POST validate_asset` — inspect PNG/profile metadata.
+- `POST store_reference` — persist an approved reference.
 
-## Safety/cost choices
+GPU endpoints:
 
-- GPU containers scale down after idle time instead of staying online continuously.
-- `/health` and `/validate_asset` are CPU functions, so simple checks do not wake a GPU.
-- one worker batch is capped at 32 requests to limit accidental oversized jobs;
-- generation dimensions and step counts are bounded;
-- validation inputs are capped at 32 MiB;
-- the initial GPU profile is L4 so we can benchmark before considering more expensive hardware.
+- `POST generate_image` — render an already-built request.
+- `POST extract_subject` — dedicated BiRefNet extraction.
 
-## Deploy
+The planner never starts the 22k+ catalog and always returns `automatic_full_production_authorized: false`.
 
-From an authenticated Modal development environment:
+## Living-fabric rule
 
-```bash
-modal deploy modal_worker/freeframe_worker.py
-```
+Native Plushtopia creatures use one shared contract: **creature first, textile second**. Friendly Guardians are living companion species rather than retail toys; corrupted/boss Guardians preserve that biology under corruption; wild monsters remain feral living textile organisms rather than normal flesh-and-fur fantasy animals.
 
-Modal will build the image, create/reuse the model cache volume, and publish the web endpoints. The first GPU request downloads and caches the configured model.
+## Deployment and tests
 
-The model can be overridden with the `FREEFRAME_MODEL` environment variable when we intentionally benchmark another compatible Diffusers checkpoint.
-
-## Tests
-
-The core tests intentionally avoid GPU inference and cover request validation and PNG serialization:
+The `freeframe-modal-worker` branch automatically recreates the worker when runtime/planner contract files change. Manual deployment remains available with:
 
 ```bash
-python -m unittest modal_worker/test_worker_core.py
+modal deploy --strategy recreate modal_worker/freeframe_worker.py
 ```
 
-GPU/model smoke tests are added after the first authenticated Modal deployment so they test the real runtime rather than pretending local CI has a GPU.
-
-## Next milestones
-
-1. authenticated Modal deployment and cold-start benchmark;
-2. generation smoke test and output validation;
-3. image-to-image/edit pipeline;
-4. RPG Maker MV asset-profile validator;
-5. resumable/checkpointed batch manifest;
-6. parallel worker benchmark and cost projection;
-7. secured ChatGPT-facing tool/API integration.
+Core CI compiles the worker and runs all `test_*.py` tests. GPU canaries are bounded and never authorize the full catalog.
