@@ -1,8 +1,9 @@
 """Reference-derived style steering for Plushbound production.
 
-The profiles describe visual qualities from the user's MV and Trinity references
-without copying characters, logos, or layouts. They remain separate from V3.2
-composition presets so proven anatomy/composition rules stay stable.
+The profiles describe broad visual qualities analyzed from official public MV and
+Trinity promotional references without copying characters, logos, costumes, or
+layouts. They remain separate from V3.2 composition presets so proven anatomy
+and composition rules stay stable.
 
 SDXL-family encoders have finite token windows. Style language is therefore kept
 compact and inserted immediately after the subject sentence: early enough to be
@@ -13,10 +14,11 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 
 
-STYLE_PROFILE_VERSION = "mt1.2"
+STYLE_PROFILE_VERSION = "mt1.3"
 
 COMMON_AVOID = (
-    "retro visual-novel softness, muddy airbrush, washed-out color, photorealism, excessive bloom"
+    "retro visual-novel softness, muddy airbrush, washed-out color, photorealism, "
+    "excessive bloom, photographic depth of field, indistinct material rendering"
 )
 
 
@@ -54,22 +56,25 @@ STYLE_PROFILES = {
     "plushbound_mv": StyleProfile(
         name="plushbound_mv",
         positive=(
-            "clean modern fantasy JRPG key art, crisp anime face and bright eyes, precise linework, "
-            "clean hair shapes, cel-painted shading, refined costume materials, restrained highlights"
+            "clean contemporary fantasy JRPG key art, crisp anime facial construction and bright controlled eyes, "
+            "deliberate linework, clearly separated hair and costume shapes, cel-painted light-shadow groups, "
+            "distinct cloth leather and metal materials, strong readable silhouette, restrained polished highlights"
         ),
     ),
     "plushbound_trinity": StyleProfile(
         name="plushbound_trinity",
         positive=(
-            "bright modern fantasy JRPG key art, crisp anime features, vivid controlled colors, "
-            "energetic clean lighting, rich costume materials, dimensional cel shading, polished promotional finish"
+            "polished modern fantasy JRPG promotional illustration, crisp anime features, saturated disciplined colors, "
+            "confident layered costume shapes, firm cel-painted shading, selective material highlights, energetic clean lighting, "
+            "strong silhouette hierarchy, contemporary game key-art finish"
         ),
     ),
     "plushbound_hybrid": StyleProfile(
         name="plushbound_hybrid",
         positive=(
-            "modern fantasy JRPG key art, crisp anime face and linework, vivid controlled colors, "
-            "clean hair shapes, cel-painted forms, distinct costume materials, restrained bloom, polished contemporary RPG finish"
+            "original Plushbound modern fantasy JRPG key art, crisp anime face and clean linework, saturated controlled palette, "
+            "clear hair and costume shape separation, cel-painted forms with selective painterly polish, distinct cloth leather metal "
+            "and stitched-fabric materials, readable silhouette, restrained bloom, polished contemporary RPG cover-art finish"
         ),
     ),
 }
