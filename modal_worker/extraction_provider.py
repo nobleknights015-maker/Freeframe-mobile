@@ -8,7 +8,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Callable
 
-from alpha_extraction_gate import validate_extracted_subject
+from alpha_extraction_gate import inspect_extracted_png
 
 
 @dataclass(frozen=True)
@@ -36,11 +36,12 @@ def extract_and_validate(source_png: bytes, extractor: Extractor) -> tuple[bytes
         raise ExtractionError("extractor returned invalid result type")
     if not result.provider.strip() or not result.model.strip():
         raise ExtractionError("extractor must identify provider and model")
-    inspection = validate_extracted_subject(result.png)
-    if not inspection.accepted:
-        raise ExtractionError("extracted subject rejected: " + "; ".join(inspection.reasons))
+    inspection = inspect_extracted_png(result.png)
+    if not inspection["accepted"]:
+        raise ExtractionError("extracted subject rejected: " + "; ".join(inspection["errors"]))
+    metrics = {key: value for key, value in inspection.items() if key not in {"accepted", "errors"}}
     return result.png, {
         "extraction_provider": result.provider,
         "extraction_model": result.model,
-        "extraction_metrics": inspection.metrics,
+        "extraction_metrics": metrics,
     }
