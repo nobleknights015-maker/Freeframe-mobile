@@ -9,7 +9,7 @@ class GPURehearsalStylePolicyTests(unittest.TestCase):
         self.assertEqual(GPU_REHEARSAL_VERSION, "plushbound-gpu-rehearsal-v4")
         self.assertEqual(len(plan), 32)
         self.assertEqual(len({item["asset_id"] for item in plan}), 32)
-        self.assertTrue(all(item["request"]["production_request_builder_version"] == "production-request-v1" for item in plan))
+        self.assertTrue(all(item["request"]["production_request_builder_version"] == "production-request-v2" for item in plan))
 
     def test_validated_categories_use_trinity_guardian_stays_unstyled(self):
         plan = rehearsal_requests()
