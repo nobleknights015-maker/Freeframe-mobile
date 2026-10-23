@@ -1,7 +1,7 @@
 """Small representative benchmark plan before any large Plushbound GPU batch.
 
-Touched for the mt1.8 same-seed contemporary-rendering calibration; benchmark
-subjects and seeds are otherwise unchanged so visual comparison stays meaningful.
+Touched for the mt1.9 same-seed key-art calibration; benchmark subjects and
+seeds are otherwise unchanged so visual comparison stays meaningful.
 """
 from __future__ import annotations
 
