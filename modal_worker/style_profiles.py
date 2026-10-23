@@ -15,11 +15,11 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 
 
-STYLE_PROFILE_VERSION = "mt1.7"
+STYLE_PROFILE_VERSION = "mt1.8"
 
 COMMON_AVOID = (
-    "early-2000s anime-game rendering, retro visual-novel softness, muddy airbrush, watercolor haze, "
-    "washed-out color, sepia cast, photorealism, excessive bloom, photographic depth of field, "
+    "early-2000s anime-game rendering, retro visual-novel softness, thick uniform black outlines, flat two-tone cel shading, "
+    "muddy airbrush, watercolor haze, washed-out color, sepia cast, photorealism, excessive bloom, photographic depth of field, "
     "indistinct material rendering, flat mobile-game vector art, generic stock-fantasy costume, plastic CGI surfaces"
 )
 
@@ -58,54 +58,56 @@ STYLE_PROFILES = {
     "plushbound_mv": StyleProfile(
         name="plushbound_mv",
         positive=(
-            "contemporary premium fantasy JRPG key art, modern anime facial construction with crisp controlled eyes, "
-            "razor-clean shape design and precise tapered linework, strong graphic light-shadow groups, "
-            "rich controlled color grading with clean local-color separation, finely resolved cloth leather metal and stitched-fabric materials, "
-            "sharp digital edge control, restrained atmospheric effects, readable silhouette at thumbnail size, polished current-generation 2D finish"
+            "contemporary premium fantasy JRPG key art, modern anime facial construction with detailed controlled eyes, "
+            "fine colored linework with selective line suppression on lit planes, crisp hair-clump design, strong graphic shape hierarchy, "
+            "layered cel shading with secondary reflected light and subtle skin-tone transitions, rich controlled color grading, "
+            "finely resolved cloth leather metal and stitched-fabric materials, precise edge control, restrained atmosphere, polished current-generation 2D finish"
         ),
     ),
     "plushbound_trinity": StyleProfile(
         name="plushbound_trinity",
         positive=(
-            "contemporary high-budget fantasy JRPG promotional character art, crisp modern anime features and expressive eyes, "
-            "clean geometric silhouette hierarchy, sophisticated saturated color grading, decisive graphic cel-shadow shapes with minimal soft blending, "
-            "finely differentiated cloth leather metal embroidery and stitched-fabric materials, precise highlights without glow haze, "
-            "clean rim separation, sharp controlled digital finish, current-generation console-RPG illustration"
+            "contemporary high-budget fantasy JRPG promotional character art, refined modern anime face with detailed eyes and natural skin-tone transitions, "
+            "fine colored contour lines rather than heavy black outlines, selective line disappearance on brightly lit edges, crisp layered hair shapes, "
+            "sophisticated saturated color grading, layered graphic cel shadows with secondary bounce light and tight ambient occlusion, "
+            "finely differentiated cloth leather metal embroidery and stitched-fabric materials, precise specular accents without glow haze, "
+            "clean cinematic separation, high-detail sharp digital finish, current-generation console-RPG 2D illustration"
         ),
     ),
     "plushbound_trinity_creature": StyleProfile(
         name="plushbound_trinity_creature",
         positive=(
-            "contemporary high-budget fantasy JRPG creature illustration, crisp readable anatomy and silhouette, sophisticated controlled color grading, "
-            "decisive graphic light-shadow shapes with restrained texture, finely resolved fur hide wood cloth and magical materials as appropriate, "
-            "sharp edge control and precise highlights without haze, one creature as the clear focal subject, natural in-world presentation, "
-            "current-generation 2D game-art finish, no poster layout and no typography"
+            "contemporary high-budget fantasy JRPG creature illustration, crisp readable anatomy and silhouette, fine colored edge work instead of heavy black contour, "
+            "layered graphic light-shadow shapes with secondary bounce light, sophisticated controlled color grading, finely resolved fur hide wood cloth and magical materials, "
+            "tight contact shadows and precise highlights without haze, one creature as the clear focal subject, natural in-world presentation, "
+            "high-detail current-generation 2D game-art finish, no poster layout and no typography"
         ),
     ),
     "plushbound_trinity_environment": StyleProfile(
         name="plushbound_trinity_environment",
         positive=(
-            "contemporary high-budget fantasy JRPG environment illustration, luminous controlled color grading, crisp readable architecture and vegetation, "
-            "clear foreground middle-ground and distance hierarchy, decisive painted light-shadow structure with clean atmospheric separation, "
-            "rich handcrafted world detail and textile motifs integrated naturally into structures, sharp modern digital finish, traversable game-world readability, "
-            "pure landscape illustration with no foreground hero, no character focal point, no poster composition, no title, no typography and no logo"
+            "contemporary high-budget fantasy JRPG environment illustration, luminous controlled color grading, crisp architecture and vegetation with fine selective linework, "
+            "clear foreground middle-ground and distance hierarchy, layered graphic light-shadow structure with reflected light and clean atmospheric separation, "
+            "rich handcrafted world detail and textile motifs integrated naturally into structures, precise material definition, sharp modern digital finish, "
+            "traversable game-world readability, pure landscape illustration with no foreground hero, no character focal point, no poster composition, no title, no typography and no logo"
         ),
     ),
     "plushbound_guardian_2d_candidate": StyleProfile(
         name="plushbound_guardian_2d_candidate",
         positive=(
             "original contemporary 2D fantasy JRPG companion-creature illustration, cute but not chibi-deformed, clean animal silhouette and readable face, "
-            "handcrafted sewn-fabric anatomy with subtle seams and graphic textile texture, crisp illustrated edges rather than photographed plush fibers, "
-            "decisive clean light-shadow shapes with minimal soft blending, restrained magical accents, sharp digital finish, natural in-world scale, "
-            "single creature presentation with no product-photo lighting, no collectible-toy staging, no model-sheet layout and no typography"
+            "fine colored illustrated edges instead of thick black contour, handcrafted sewn-fabric anatomy with subtle seams and graphic textile texture, "
+            "layered clean light-shadow shapes with secondary bounce light, restrained magical accents, precise material definition, sharp high-detail digital finish, "
+            "natural in-world scale, single creature presentation with no product-photo lighting, no collectible-toy staging, no model-sheet layout and no typography"
         ),
     ),
     "plushbound_hybrid": StyleProfile(
         name="plushbound_hybrid",
         positive=(
-            "original contemporary Plushbound fantasy JRPG key art, crisp modern anime face and precise tapered linework, sophisticated controlled palette, "
-            "clear hair and costume shape separation, decisive graphic light-shadow groups, layered handcrafted fantasy costume with finely differentiated materials, "
-            "clean directional lighting and precise highlights without bloom haze, strong silhouette readability, sharp current-generation 2D console-RPG finish"
+            "original contemporary Plushbound fantasy JRPG key art, refined modern anime face, fine colored tapered linework and selective line suppression, "
+            "crisp hair and costume shape separation, layered graphic shadows with secondary reflected light, sophisticated controlled palette, "
+            "layered handcrafted fantasy costume with finely differentiated materials, precise highlights without bloom haze, clean cinematic separation, "
+            "strong silhouette readability, high-detail current-generation 2D console-RPG finish"
         ),
     ),
 }
