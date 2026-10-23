@@ -14,7 +14,7 @@ permissions:
   actions: read
 
 concurrency:
-  group: freeframe-current-klein-extraction-smoke
+  group: freeframe-current-klein-extraction-smoke-v2
   cancel-in-progress: true
 
 jobs:
