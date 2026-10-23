@@ -2,6 +2,17 @@ name: Deploy FreeFrame Modal Worker
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - freeframe-modal-worker
+    paths:
+      - 'modal_worker/freeframe_worker.py'
+      - 'modal_worker/birefnet_extractor.py'
+      - 'modal_worker/extraction_backend_policy.py'
+      - 'modal_worker/extraction_provider.py'
+      - 'modal_worker/reference_conditioning.py'
+      - 'modal_worker/reference_store.py'
+      - '.github/workflows/deploy-modal-worker.yml'
 
 permissions:
   contents: read
