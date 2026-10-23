@@ -15,6 +15,22 @@ class ModelCatalogTests(unittest.TestCase):
         self.assertEqual(request["guidance_scale"], 0.0)
         self.assertEqual(request["model_candidate"], candidate.key)
 
+    def test_flux2_klein_4b_is_experimental_and_uses_official_distilled_defaults(self):
+        candidate = get_candidate("flux2_klein_4b_candidate")
+        self.assertEqual(candidate.model_id, "black-forest-labs/FLUX.2-klein-4B")
+        self.assertFalse(candidate.production_eligible)
+        request = apply_model_defaults({"prompt": "guardian", "steps": 28, "guidance_scale": 6.0}, candidate)
+        self.assertEqual(request["steps"], 4)
+        self.assertEqual(request["guidance_scale"], 4.0)
+        self.assertEqual(request["model_candidate"], candidate.key)
+        self.assertEqual(request["model_id"], candidate.model_id)
+
+    def test_flux2_klein_fp8_stays_experimental(self):
+        candidate = get_candidate("flux2_klein_4b_fp8_candidate")
+        self.assertEqual(candidate.dtype, "float8_e4m3fn")
+        self.assertFalse(candidate.production_eligible)
+        self.assertEqual(candidate.default_steps, 4)
+
     def test_unknown_candidate_rejected(self):
         with self.assertRaises(ValueError):
             get_candidate("nope")
