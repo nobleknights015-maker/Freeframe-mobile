@@ -1,4 +1,4 @@
-trigger: 2026-10-23T00:23:00-05:00
-purpose: validate persistent reference cache plus SDXL IP-Adapter conditioning with synthetic art after internal-store split
-count: 1
+trigger: 2026-10-23T00:36:00-05:00
+purpose: compare baseline versus balanced versus style-only IP-Adapter conditioning using the same synthetic reference and seed
+count: 3
 full_batch_authorized: false
