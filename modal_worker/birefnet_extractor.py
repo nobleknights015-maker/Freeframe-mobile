@@ -11,8 +11,15 @@ from typing import Any
 
 from PIL import Image, UnidentifiedImageError
 
-from extraction_backend_policy import production_extraction_backend
-from extraction_provider import ExtractionError, ExtractionResult
+# Modal mounts ``modal_worker`` as a real package under /root. Local unit tests
+# also import these modules directly from modal_worker/, so support both import
+# modes without depending on the process working directory.
+try:
+    from .extraction_backend_policy import production_extraction_backend
+    from .extraction_provider import ExtractionError, ExtractionResult
+except ImportError:  # pragma: no cover - direct-module compatibility for CI/tests
+    from extraction_backend_policy import production_extraction_backend
+    from extraction_provider import ExtractionError, ExtractionResult
 
 
 class BiRefNetExtractor:
