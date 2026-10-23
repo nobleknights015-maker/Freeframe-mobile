@@ -18,9 +18,9 @@ class ProductionSamplePlanTests(unittest.TestCase):
     def test_manifest_locks_current_style_identity(self):
         manifest = sample_manifest()
         self.assertEqual(manifest["sample_plan_version"], SAMPLE_PLAN_VERSION)
-        self.assertEqual(manifest["style_version"], "v3.1")
+        self.assertEqual(manifest["style_version"], "v3.2")
         self.assertEqual(manifest["count"], 4)
-        self.assertTrue(all(item["style_version"] == "v3.1" for item in manifest["samples"]))
+        self.assertTrue(all(item["style_version"] == "v3.2" for item in manifest["samples"]))
 
     def test_every_sample_has_a_production_purpose(self):
         for sample in SAMPLES:
