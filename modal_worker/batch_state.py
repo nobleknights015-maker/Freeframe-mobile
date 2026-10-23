@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import shutil
 import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -36,47 +37,60 @@ class BatchState:
         self.failed[asset_id] = {"error": error, "attempts": attempts}
 
     def to_dict(self) -> dict[str, Any]:
-        return {
-            "version": self.version,
-            "batch_id": self.batch_id,
-            "total": self.total,
-            "completed": self.completed,
-            "failed": self.failed,
-        }
+        return {"version": self.version, "batch_id": self.batch_id, "total": self.total, "completed": self.completed, "failed": self.failed}
 
     @classmethod
     def from_dict(cls, value: dict[str, Any]) -> "BatchState":
         if value.get("version") != 1:
             raise ValueError("unsupported batch manifest version")
-        return cls(
-            batch_id=str(value["batch_id"]),
-            total=int(value["total"]),
-            completed=dict(value.get("completed", {})),
-            failed=dict(value.get("failed", {})),
-        )
+        total = int(value["total"])
+        if total < 0:
+            raise ValueError("batch total cannot be negative")
+        completed = dict(value.get("completed", {})); failed = dict(value.get("failed", {}))
+        if set(completed) & set(failed):
+            raise ValueError("asset cannot be both completed and failed")
+        if len(completed) > total:
+            raise ValueError("completed asset count exceeds batch total")
+        return cls(batch_id=str(value["batch_id"]), total=total, completed=completed, failed=failed)
 
 
 def stable_asset_id(path: str, prompt: str, profile: str) -> str:
-    payload = f"{path}\0{prompt}\0{profile}".encode("utf-8")
-    return hashlib.sha256(payload).hexdigest()[:24]
+    return hashlib.sha256(f"{path}\0{prompt}\0{profile}".encode("utf-8")).hexdigest()[:24]
+
+
+def _encode(state: BatchState) -> bytes:
+    return json.dumps(state.to_dict(), sort_keys=True, indent=2).encode("utf-8")
 
 
 def save_atomic(path: str | Path, state: BatchState) -> None:
-    destination = Path(path)
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    encoded = json.dumps(state.to_dict(), sort_keys=True, indent=2).encode("utf-8")
+    destination = Path(path); destination.parent.mkdir(parents=True, exist_ok=True)
+    backup = destination.with_suffix(destination.suffix + ".bak")
+    encoded = _encode(state)
     fd, tmp_name = tempfile.mkstemp(prefix=destination.name + ".", dir=destination.parent)
     try:
         with os.fdopen(fd, "wb") as handle:
-            handle.write(encoded)
-            handle.flush()
-            os.fsync(handle.fileno())
+            handle.write(encoded); handle.flush(); os.fsync(handle.fileno())
+        if destination.exists():
+            shutil.copyfile(destination, backup)
         os.replace(tmp_name, destination)
     finally:
-        if os.path.exists(tmp_name):
-            os.unlink(tmp_name)
+        if os.path.exists(tmp_name): os.unlink(tmp_name)
+
+
+def _load_one(path: Path) -> BatchState:
+    with path.open("r", encoding="utf-8") as handle:
+        return BatchState.from_dict(json.load(handle))
 
 
 def load(path: str | Path) -> BatchState:
-    with Path(path).open("r", encoding="utf-8") as handle:
-        return BatchState.from_dict(json.load(handle))
+    source = Path(path)
+    try:
+        return _load_one(source)
+    except (OSError, UnicodeError, json.JSONDecodeError, KeyError, TypeError, ValueError) as primary:
+        backup = source.with_suffix(source.suffix + ".bak")
+        if not backup.exists():
+            raise
+        try:
+            return _load_one(backup)
+        except Exception as backup_error:
+            raise ValueError(f"primary and backup batch checkpoints are unreadable: {primary}; {backup_error}") from backup_error
