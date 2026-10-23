@@ -8,6 +8,7 @@ from PIL import Image
 from reference_conditioning import (
     DEFAULT_REFERENCE_MODE,
     DEFAULT_REFERENCE_SCALE,
+    adapter_scale_for,
     parse_reference_conditioning,
 )
 
@@ -39,6 +40,14 @@ class ReferenceConditioningTests(unittest.TestCase):
         self.assertIsNone(metadata["reference_id"])
         self.assertEqual(metadata["mode"], "style")
 
+    def test_style_mode_uses_block_specific_scale(self):
+        raw = _png()
+        parsed = parse_reference_conditioning({
+            "reference_image_base64": base64.b64encode(raw).decode("ascii"),
+            "reference_scale": 0.4,
+        })
+        self.assertEqual(adapter_scale_for(parsed), {"up": {"block_0": [0.0, 0.4, 0.0]}})
+
     def test_cached_reference_resolves_by_sha(self):
         raw = _png()
         digest = hashlib.sha256(raw).hexdigest()
@@ -56,8 +65,10 @@ class ReferenceConditioningTests(unittest.TestCase):
         parsed = parse_reference_conditioning({
             "reference_image_base64": base64.b64encode(raw).decode("ascii"),
             "reference_mode": "balanced",
+            "reference_scale": 0.55,
         })
         self.assertEqual(parsed.mode, "balanced")
+        self.assertEqual(adapter_scale_for(parsed), 0.55)
 
     def test_invalid_mode_is_rejected(self):
         raw = _png()
