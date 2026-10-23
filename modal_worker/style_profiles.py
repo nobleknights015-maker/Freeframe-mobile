@@ -15,7 +15,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 
 
-STYLE_PROFILE_VERSION = "mt1.5"
+STYLE_PROFILE_VERSION = "mt1.6"
 
 COMMON_AVOID = (
     "retro visual-novel softness, muddy airbrush, washed-out color, photorealism, "
@@ -88,6 +88,15 @@ STYLE_PROFILES = {
             "layered foreground middle ground and distance, firm painted light-shadow structure with selective soft atmospheric depth, "
             "rich handcrafted world details and textile motifs integrated naturally into structures, traversable game-world readability, "
             "pure landscape illustration with no foreground hero, no character focal point, no poster composition, no title, no typography, no logo"
+        ),
+    ),
+    "plushbound_guardian_2d_candidate": StyleProfile(
+        name="plushbound_guardian_2d_candidate",
+        positive=(
+            "original 2D fantasy JRPG companion-creature illustration, cute but not chibi-deformed, clean animal silhouette and readable face, "
+            "handcrafted sewn-fabric anatomy with subtle seams and soft textile texture, crisp illustrated edges rather than photographed plush fibers, "
+            "firm cel-painted light-shadow groups with selective painterly softness, restrained magical accent glow, natural in-world scale, "
+            "single creature presentation with no product-photo lighting, no collectible-toy staging, no model-sheet layout and no typography"
         ),
     ),
     "plushbound_hybrid": StyleProfile(
