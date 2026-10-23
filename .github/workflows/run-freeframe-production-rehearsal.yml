@@ -1,0 +1,97 @@
+name: Start FreeFrame Production Rehearsal
+
+on:
+  workflow_dispatch:
+    inputs:
+      start_workers:
+        description: 'START 32-asset bounded GPU rehearsal (this uses Modal GPU compute)'
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: freeframe-production-rehearsal
+  cancel-in-progress: false
+
+jobs:
+  rehearsal:
+    if: ${{ inputs.start_workers }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+    steps:
+      - name: Check out isolated cloud worker branch
+        uses: actions/checkout@v4
+        with:
+          ref: freeframe-modal-worker
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Require Modal credentials
+        shell: bash
+        run: |
+          test -n "$MODAL_TOKEN_ID" || { echo 'MODAL_TOKEN_ID secret is not configured.' >&2; exit 1; }
+          test -n "$MODAL_TOKEN_SECRET" || { echo 'MODAL_TOKEN_SECRET secret is not configured.' >&2; exit 1; }
+      - name: Install Modal CLI
+        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2'
+      - name: Compile rehearsal code
+        run: python -m compileall -q modal_worker
+      - name: Deploy current isolated worker
+        run: modal deploy --strategy recreate modal_worker/freeframe_worker.py
+      - name: Run exactly 32 bounded GPU generations
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import base64, hashlib, json, sys, time
+          from pathlib import Path
+          import modal
+          sys.path.insert(0, 'modal_worker')
+          from gpu_rehearsal_plan import GPU_REHEARSAL_VERSION, rehearsal_requests
+
+          plan = rehearsal_requests()
+          assert len(plan) == 32
+          out = Path('freeframe-production-rehearsal')
+          out.mkdir(exist_ok=True)
+          generator = modal.Cls.from_name('freeframe-worker', 'FreeFrameGenerator')()
+          results = []
+          started = time.monotonic()
+          for number, item in enumerate(plan, 1):
+              request = item['request']
+              payload = generator.generate.remote(request)
+              raw = base64.b64decode(payload['image_base64'], validate=True)
+              assert payload['mime_type'] == 'image/png'
+              assert payload['width'] == request['width'] and payload['height'] == request['height']
+              assert hashlib.sha256(raw).hexdigest() == payload['sha256']
+              assert len(raw) == payload['bytes']
+              filename = f"{number:02d}-{item['asset_id']}.png"
+              (out / filename).write_bytes(raw)
+              results.append({
+                  'number': number, 'asset_id': item['asset_id'], 'preset': item['preset'],
+                  'seed': payload['seed'], 'model': payload['model'], 'width': payload['width'],
+                  'height': payload['height'], 'bytes': payload['bytes'], 'sha256': payload['sha256'],
+                  'elapsed_seconds': payload['elapsed_seconds'], 'style_version': request['style_version'],
+                  'filename': filename,
+              })
+          manifest = {
+              'version': GPU_REHEARSAL_VERSION,
+              'bounded': True,
+              'count': len(results),
+              'full_batch_authorized': False,
+              'wall_seconds': round(time.monotonic() - started, 3),
+              'results': results,
+          }
+          (out / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
+          PY
+      - name: Upload rehearsal artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: freeframe-production-rehearsal
+          path: freeframe-production-rehearsal/
+          if-no-files-found: error
+          retention-days: 7
