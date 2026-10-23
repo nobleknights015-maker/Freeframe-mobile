@@ -142,8 +142,6 @@ class FreeFrameGenerator:
     def _load_cached_reference(self, reference_id: str) -> bytes:
         from modal_worker.reference_store import load_reference_bytes
 
-        # Modal Volumes require an explicit reload for a warm container to see
-        # references committed by another function/container.
         reference_cache.reload()
         return load_reference_bytes(reference_id, REFERENCE_DIR)
 
@@ -169,8 +167,6 @@ class FreeFrameGenerator:
             self.pipe.set_ip_adapter_scale(reference.scale)
             pipeline_kwargs["ip_adapter_image"] = reference.image
         elif self.ip_adapter_loaded:
-            # Keep ordinary text-only generations independent from a previous
-            # reference-guided request on the same warm worker.
             self.pipe.set_ip_adapter_scale(0.0)
 
         result = self.pipe(**pipeline_kwargs).images[0]
@@ -265,9 +261,8 @@ def validate_asset(request: dict) -> dict:
 
 
 @app.function(image=image, volumes={REFERENCE_DIR: reference_cache}, timeout=30)
-@modal.fastapi_endpoint(method="POST", requires_proxy_auth=True)
-def store_reference(request: dict) -> dict:
-    """Store one approved visual reference by content hash in Modal storage."""
+def store_reference_internal(request: dict) -> dict:
+    """Persist one approved visual reference for internal/tool use."""
     from modal_worker.reference_store import store_reference_bytes
 
     encoded = request.get("image_base64")
@@ -280,6 +275,13 @@ def store_reference(request: dict) -> dict:
     metadata = store_reference_bytes(raw, REFERENCE_DIR)
     reference_cache.commit()
     return {"stored": True, **metadata.metadata()}
+
+
+@app.function(image=image, timeout=30)
+@modal.fastapi_endpoint(method="POST", requires_proxy_auth=True)
+def store_reference(request: dict) -> dict:
+    """Authenticated HTTP wrapper for persistent reference storage."""
+    return store_reference_internal.remote(request)
 
 
 @app.function(image=image, timeout=930)
