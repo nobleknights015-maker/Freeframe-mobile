@@ -15,7 +15,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 
 
-STYLE_PROFILE_VERSION = "mt1.4"
+STYLE_PROFILE_VERSION = "mt1.5"
 
 COMMON_AVOID = (
     "retro visual-novel softness, muddy airbrush, washed-out color, photorealism, "
@@ -67,10 +67,27 @@ STYLE_PROFILES = {
     "plushbound_trinity": StyleProfile(
         name="plushbound_trinity",
         positive=(
-            "high-end modern fantasy JRPG promotional key art, crisp anime features and expressive eyes, saturated disciplined palette, "
+            "high-end modern fantasy JRPG promotional character key art, crisp anime features and expressive eyes, saturated disciplined palette, "
             "layered asymmetrical costume design with clear shape hierarchy, firm cel shading plus selective painterly blending, "
             "distinct cloth leather metal embroidery and stitched-fabric response, warm key light with restrained cool rim light, "
-            "precise specular accents instead of glow, strong silhouette separation, polished console-RPG cover illustration"
+            "precise specular accents instead of glow, strong silhouette separation, polished console-RPG character illustration"
+        ),
+    ),
+    "plushbound_trinity_creature": StyleProfile(
+        name="plushbound_trinity_creature",
+        positive=(
+            "high-end modern fantasy JRPG creature illustration, crisp readable anatomy and silhouette, saturated disciplined palette, "
+            "firm cel-painted lighting with selective painterly texture, distinct fur hide wood cloth or magical materials as appropriate, "
+            "controlled edge highlights, one creature as the clear focal subject, natural in-world presentation, no poster layout, no typography"
+        ),
+    ),
+    "plushbound_trinity_environment": StyleProfile(
+        name="plushbound_trinity_environment",
+        positive=(
+            "high-end modern fantasy JRPG environment painting, luminous disciplined color, crisp readable architecture and vegetation, "
+            "layered foreground middle ground and distance, firm painted light-shadow structure with selective soft atmospheric depth, "
+            "rich handcrafted world details and textile motifs integrated naturally into structures, traversable game-world readability, "
+            "pure landscape illustration with no foreground hero, no character focal point, no poster composition, no title, no typography, no logo"
         ),
     ),
     "plushbound_hybrid": StyleProfile(
