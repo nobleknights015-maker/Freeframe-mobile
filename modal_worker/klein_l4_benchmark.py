@@ -44,14 +44,28 @@ app = modal.App(APP_NAME)
 model_cache = modal.Volume.from_name(MODEL_VOLUME, create_if_missing=True)
 
 
+# Mirrors the current production style policy for renderer calibration.
+# Guardians remain unstyled until the dedicated 2D creature treatment is proven.
+BENCHMARK_STYLE_POLICY = {
+    "plushbound_character": "plushbound_trinity",
+    "plushbound_enemy": "plushbound_trinity",
+    "plushbound_environment": "plushbound_trinity",
+}
+
+
 def select_case(case_id: str) -> dict:
     from modal_worker.benchmark_plan import CASES
     from modal_worker.model_catalog import apply_model_defaults, get_candidate
+    from modal_worker.style_profiles import get_style_profile
 
     matches = [case for case in CASES if case.case_id == case_id]
     if len(matches) != 1:
         raise ValueError(f"unknown benchmark case: {case_id}")
-    request = matches[0].request()
+    case = matches[0]
+    request = case.request()
+    style_name = BENCHMARK_STYLE_POLICY.get(case.preset)
+    if style_name:
+        request = get_style_profile(style_name).apply(request)
     candidate = get_candidate("flux2_klein_4b_candidate")
     request = apply_model_defaults(request, candidate)
     if request["width"] % 16 or request["height"] % 16:
@@ -102,7 +116,7 @@ class KleinBenchmarkRunner:
         result.save(out, format="PNG")
         raw = out.getvalue()
         return {
-            "benchmark_version": "klein-l4-v2",
+            "benchmark_version": "klein-l4-v3-style-calibration",
             "case_id": case_id,
             "model": MODEL_ID,
             "gpu": "L4",
@@ -114,6 +128,8 @@ class KleinBenchmarkRunner:
             "steps": int(request["steps"]),
             "guidance_scale": float(request["guidance_scale"]),
             "seed": int(request["seed"]),
+            "style_profile": request.get("render_style_profile"),
+            "style_version": request.get("render_style_version"),
             "budget": benchmark_decision(elapsed),
             "production_authorized": False,
             "png_base64": base64.b64encode(raw).decode("ascii"),
