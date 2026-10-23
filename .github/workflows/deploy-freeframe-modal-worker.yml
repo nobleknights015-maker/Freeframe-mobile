@@ -18,8 +18,8 @@ on:
         required: true
         default: false
         type: boolean
-      run_v31_repair_test:
-        description: 'Run targeted V3.1 character + enemy repair validation'
+      run_v32_repair_test:
+        description: 'Run targeted V3.2 character + enemy composition validation'
         required: true
         default: false
         type: boolean
@@ -43,26 +43,20 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: freeframe-modal-worker
-
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
       - name: Require Modal credentials
         shell: bash
         run: |
           test -n "$MODAL_TOKEN_ID" || { echo 'MODAL_TOKEN_ID secret is not configured.' >&2; exit 1; }
           test -n "$MODAL_TOKEN_SECRET" || { echo 'MODAL_TOKEN_SECRET secret is not configured.' >&2; exit 1; }
-
       - name: Install Modal CLI
         run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2'
-
       - name: Compile isolated worker before deployment
         run: python -m compileall -q modal_worker
-
       - name: Deploy isolated worker
         run: modal deploy --strategy recreate modal_worker/freeframe_worker.py
-
       - name: Run one controlled L4 GPU smoke test
         if: ${{ inputs.run_gpu_smoke_test }}
         shell: bash
@@ -72,24 +66,11 @@ jobs:
           import base64, hashlib, json
           from pathlib import Path
           import modal
-          request = {
-              "prompt": "original cozy fantasy JRPG meadow, small plush guardian beside wildflowers, clean game concept art, no text",
-              "negative_prompt": "text, watermark, malformed anatomy, extra limbs",
-              "width": 512, "height": 512, "steps": 4, "guidance_scale": 0.0, "seed": 1842,
-          }
-          Generator = modal.Cls.from_name("freeframe-worker", "FreeFrameGenerator")
-          payload = Generator().generate.remote(request)
-          raw = base64.b64decode(payload["image_base64"], validate=True)
-          assert payload["mime_type"] == "image/png"
-          assert payload["width"] == 512 and payload["height"] == 512
-          assert hashlib.sha256(raw).hexdigest() == payload["sha256"]
-          assert len(raw) == payload["bytes"]
-          Path("freeframe-smoke.png").write_bytes(raw)
-          summary = {k: payload[k] for k in ("model", "seed", "width", "height", "bytes", "sha256", "elapsed_seconds")}
-          Path("freeframe-smoke-summary.json").write_text(json.dumps(summary, indent=2) + "\n")
-          print(json.dumps(summary, indent=2))
+          request = {"prompt":"original cozy fantasy JRPG meadow, small plush guardian beside wildflowers, clean game concept art, no text","negative_prompt":"text, watermark, malformed anatomy, extra limbs","width":512,"height":512,"steps":4,"guidance_scale":0.0,"seed":1842}
+          Generator=modal.Cls.from_name("freeframe-worker","FreeFrameGenerator"); payload=Generator().generate.remote(request); raw=base64.b64decode(payload["image_base64"],validate=True)
+          assert payload["mime_type"]=="image/png" and payload["width"]==512 and payload["height"]==512 and hashlib.sha256(raw).hexdigest()==payload["sha256"] and len(raw)==payload["bytes"]
+          Path("freeframe-smoke.png").write_bytes(raw); summary={k:payload[k] for k in ("model","seed","width","height","bytes","sha256","elapsed_seconds")}; Path("freeframe-smoke-summary.json").write_text(json.dumps(summary,indent=2)+"\n")
           PY
-
       - name: Upload GPU smoke-test result
         if: ${{ inputs.run_gpu_smoke_test }}
         uses: actions/upload-artifact@v4
@@ -100,29 +81,19 @@ jobs:
             freeframe-smoke-summary.json
           if-no-files-found: error
           retention-days: 7
-
       - name: Run controlled Plushbound quality benchmark
         if: ${{ inputs.run_quality_benchmark }}
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
-          import base64, hashlib, json, sys
-          from pathlib import Path
-          import modal
-          sys.path.insert(0, "modal_worker")
-          from benchmark_plan import CASES
-          out = Path("freeframe-quality-benchmark"); out.mkdir(exist_ok=True)
-          Generator = modal.Cls.from_name("freeframe-worker", "FreeFrameGenerator"); generator = Generator(); summaries = []
+          import base64,hashlib,json,sys; from pathlib import Path; import modal
+          sys.path.insert(0,"modal_worker"); from benchmark_plan import CASES
+          out=Path("freeframe-quality-benchmark"); out.mkdir(exist_ok=True); G=modal.Cls.from_name("freeframe-worker","FreeFrameGenerator")(); summaries=[]
           for case in CASES:
-              request = case.request(); payload = generator.generate.remote(request); raw = base64.b64decode(payload["image_base64"], validate=True)
-              assert payload["mime_type"] == "image/png" and payload["width"] == request["width"] and payload["height"] == request["height"]
-              assert hashlib.sha256(raw).hexdigest() == payload["sha256"] and len(raw) == payload["bytes"]
-              (out / f"{case.case_id}.png").write_bytes(raw)
-              summaries.append({"case_id": case.case_id, "preset": case.preset, "model": payload["model"], "seed": payload["seed"], "width": payload["width"], "height": payload["height"], "bytes": payload["bytes"], "sha256": payload["sha256"], "elapsed_seconds": payload["elapsed_seconds"]})
-          (out / "summary.json").write_text(json.dumps(summaries, indent=2) + "\n")
+              request=case.request(); payload=G.generate.remote(request); raw=base64.b64decode(payload["image_base64"],validate=True); assert payload["mime_type"]=="image/png" and payload["width"]==request["width"] and payload["height"]==request["height"] and hashlib.sha256(raw).hexdigest()==payload["sha256"] and len(raw)==payload["bytes"]; (out/f"{case.case_id}.png").write_bytes(raw); summaries.append({"case_id":case.case_id,"preset":case.preset,"model":payload["model"],"seed":payload["seed"],"width":payload["width"],"height":payload["height"],"bytes":payload["bytes"],"sha256":payload["sha256"],"elapsed_seconds":payload["elapsed_seconds"]})
+          (out/"summary.json").write_text(json.dumps(summaries,indent=2)+"\n")
           PY
-
       - name: Upload quality benchmark
         if: ${{ inputs.run_quality_benchmark }}
         uses: actions/upload-artifact@v4
@@ -131,31 +102,19 @@ jobs:
           path: freeframe-quality-benchmark/
           if-no-files-found: error
           retention-days: 7
-
       - name: Run controlled Plushbound production sample
         if: ${{ inputs.run_production_sample }}
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
-          import base64, hashlib, json, sys
-          from pathlib import Path
-          import modal
-          sys.path.insert(0, "modal_worker")
-          from production_presets import get_preset
-          from production_sample_plan import SAMPLES, sample_manifest
-          out = Path("freeframe-production-sample"); out.mkdir(exist_ok=True)
-          Generator = modal.Cls.from_name("freeframe-worker", "FreeFrameGenerator"); generator = Generator(); summaries = []
+          import base64,hashlib,json,sys; from pathlib import Path; import modal
+          sys.path.insert(0,"modal_worker"); from production_presets import get_preset; from production_sample_plan import SAMPLES,sample_manifest
+          out=Path("freeframe-production-sample"); out.mkdir(exist_ok=True); G=modal.Cls.from_name("freeframe-worker","FreeFrameGenerator")(); summaries=[]
           for sample in SAMPLES:
-              request = get_preset(sample.preset).apply(sample.prompt, seed=sample.seed); payload = generator.generate.remote(request); raw = base64.b64decode(payload["image_base64"], validate=True)
-              assert payload["mime_type"] == "image/png" and payload["width"] == request["width"] and payload["height"] == request["height"]
-              assert hashlib.sha256(raw).hexdigest() == payload["sha256"] and len(raw) == payload["bytes"]
-              (out / f"{sample.sample_id}.png").write_bytes(raw)
-              summaries.append({**sample.metadata(), "model": payload["model"], "width": payload["width"], "height": payload["height"], "bytes": payload["bytes"], "sha256": payload["sha256"], "elapsed_seconds": payload["elapsed_seconds"]})
-          manifest = sample_manifest(); manifest["results"] = summaries
-          (out / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
+              request=get_preset(sample.preset).apply(sample.prompt,seed=sample.seed); payload=G.generate.remote(request); raw=base64.b64decode(payload["image_base64"],validate=True); assert payload["mime_type"]=="image/png" and payload["width"]==request["width"] and payload["height"]==request["height"] and hashlib.sha256(raw).hexdigest()==payload["sha256"] and len(raw)==payload["bytes"]; (out/f"{sample.sample_id}.png").write_bytes(raw); summaries.append({**sample.metadata(),"model":payload["model"],"width":payload["width"],"height":payload["height"],"bytes":payload["bytes"],"sha256":payload["sha256"],"elapsed_seconds":payload["elapsed_seconds"]})
+          manifest=sample_manifest(); manifest["results"]=summaries; (out/"manifest.json").write_text(json.dumps(manifest,indent=2)+"\n")
           PY
-
       - name: Upload production sample
         if: ${{ inputs.run_production_sample }}
         uses: actions/upload-artifact@v4
@@ -164,42 +123,25 @@ jobs:
           path: freeframe-production-sample/
           if-no-files-found: error
           retention-days: 7
-
-      - name: Run targeted V3.1 repair validation
-        if: ${{ inputs.run_v31_repair_test }}
+      - name: Run targeted V3.2 composition validation
+        if: ${{ inputs.run_v32_repair_test }}
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
-          import base64, hashlib, json, sys
-          from pathlib import Path
-          import modal
-          sys.path.insert(0, "modal_worker")
-          from production_presets import get_preset
-          from production_sample_plan import SAMPLES
-          wanted = {"character_master", "enemy_master"}
-          selected = [s for s in SAMPLES if s.sample_id in wanted]
-          assert {s.sample_id for s in selected} == wanted
-          out = Path("freeframe-v31-repair-test"); out.mkdir(exist_ok=True)
-          Generator = modal.Cls.from_name("freeframe-worker", "FreeFrameGenerator"); generator = Generator(); results = []
+          import base64,hashlib,json,sys; from pathlib import Path; import modal
+          sys.path.insert(0,"modal_worker"); from production_presets import get_preset; from production_sample_plan import SAMPLES
+          wanted={"character_master","enemy_master"}; selected=[s for s in SAMPLES if s.sample_id in wanted]; assert {s.sample_id for s in selected}==wanted
+          out=Path("freeframe-v32-repair-test"); out.mkdir(exist_ok=True); G=modal.Cls.from_name("freeframe-worker","FreeFrameGenerator")(); results=[]
           for sample in selected:
-              request = get_preset(sample.preset).apply(sample.prompt, seed=sample.seed)
-              assert request["style_version"] == "v3.1"
-              payload = generator.generate.remote(request)
-              raw = base64.b64decode(payload["image_base64"], validate=True)
-              assert payload["mime_type"] == "image/png"
-              assert payload["width"] == request["width"] and payload["height"] == request["height"]
-              assert hashlib.sha256(raw).hexdigest() == payload["sha256"] and len(raw) == payload["bytes"]
-              (out / f"{sample.sample_id}.png").write_bytes(raw)
-              results.append({**sample.metadata(), "style_version": request["style_version"], "model": payload["model"], "width": payload["width"], "height": payload["height"], "bytes": payload["bytes"], "sha256": payload["sha256"], "elapsed_seconds": payload["elapsed_seconds"]})
-          (out / "manifest.json").write_text(json.dumps({"validation": "v3.1-targeted-repair", "count": len(results), "results": results}, indent=2) + "\n")
+              request=get_preset(sample.preset).apply(sample.prompt,seed=sample.seed); assert request["style_version"]=="v3.2"; payload=G.generate.remote(request); raw=base64.b64decode(payload["image_base64"],validate=True); assert payload["mime_type"]=="image/png" and payload["width"]==request["width"] and payload["height"]==request["height"] and hashlib.sha256(raw).hexdigest()==payload["sha256"] and len(raw)==payload["bytes"]; (out/f"{sample.sample_id}.png").write_bytes(raw); results.append({**sample.metadata(),"style_version":request["style_version"],"model":payload["model"],"width":payload["width"],"height":payload["height"],"bytes":payload["bytes"],"sha256":payload["sha256"],"elapsed_seconds":payload["elapsed_seconds"]})
+          (out/"manifest.json").write_text(json.dumps({"validation":"v3.2-targeted-composition","count":len(results),"results":results},indent=2)+"\n")
           PY
-
-      - name: Upload V3.1 repair validation
-        if: ${{ inputs.run_v31_repair_test }}
+      - name: Upload V3.2 composition validation
+        if: ${{ inputs.run_v32_repair_test }}
         uses: actions/upload-artifact@v4
         with:
-          name: freeframe-v31-repair-test
-          path: freeframe-v31-repair-test/
+          name: freeframe-v32-repair-test
+          path: freeframe-v32-repair-test/
           if-no-files-found: error
           retention-days: 7
