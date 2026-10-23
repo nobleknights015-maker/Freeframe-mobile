@@ -2,14 +2,18 @@
 
 Exactly one deterministic request is selected from each major Plushbound asset
 class. The plan is intentionally fail-closed: every asset class needs a validated
-production style and the character lane needs an explicitly validated style lock
+production style and the character lane needs an evidence-backed visual-QA lock
 before any paid four-image canary may run. Passing never authorizes the 22k batch.
 """
 from __future__ import annotations
 
+from modal_worker.character_style_lock import (
+    CharacterStyleLockReceipt,
+    evaluate_character_style_lock,
+)
 from modal_worker.production_request_builder import build_production_request
 
-CANARY_REHEARSAL_VERSION = "plushbound-canary-v2"
+CANARY_REHEARSAL_VERSION = "plushbound-canary-v3"
 CHARACTER_STYLE_LOCK_BLOCKER = "plushbound_character_style_lock"
 
 _CASES = (
@@ -28,14 +32,15 @@ def canary_requests() -> list[dict]:
     return items
 
 
-def canary_readiness(*, character_style_lock_ready: bool = False) -> dict:
+def canary_readiness(*, character_style_lock: CharacterStyleLockReceipt | None = None) -> dict:
     items = canary_requests()
     blocked = [
         item["preset"]
         for item in items
         if not bool(item["request"].get("production_style_validated"))
     ]
-    if not character_style_lock_ready:
+    style_lock = evaluate_character_style_lock(character_style_lock)
+    if not style_lock["ready"]:
         blocked.append(CHARACTER_STYLE_LOCK_BLOCKER)
     blocked = list(dict.fromkeys(blocked))
     return {
@@ -43,7 +48,8 @@ def canary_readiness(*, character_style_lock_ready: bool = False) -> dict:
         "count": len(items),
         "presets": [item["preset"] for item in items],
         "blocked_presets": blocked,
-        "character_style_lock_ready": bool(character_style_lock_ready),
+        "character_style_lock_ready": bool(style_lock["ready"]),
+        "character_style_lock": style_lock,
         "ready_for_four_gpu_canary": not blocked,
         "full_production_authorized": False,
     }
