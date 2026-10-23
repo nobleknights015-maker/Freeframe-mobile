@@ -12,6 +12,7 @@ class ProductionStylePolicyTests(unittest.TestCase):
     def test_validated_presets_use_category_specific_styles(self):
         cases = (
             ("plushbound_character", "adult traveler", "plushbound_trinity"),
+            ("plushbound_guardian", "small foxlike plush guardian", "plushbound_guardian_2d_candidate"),
             ("plushbound_enemy", "quadruped forest beast", "plushbound_trinity_creature"),
             ("plushbound_environment", "sunny plains and winding road", "plushbound_trinity_environment"),
         )
@@ -32,14 +33,13 @@ class ProductionStylePolicyTests(unittest.TestCase):
         self.assertIn("single candid full-length scene", styled["prompt"])
         self.assertIn("current-generation console-RPG promotional art", styled["prompt"])
 
-    def test_guardian_remains_unstyled_and_unchanged(self):
+    def test_guardian_uses_validated_companion_style(self):
         base = get_preset("plushbound_guardian").apply("small foxlike plush guardian", seed=9)
         styled = apply_production_style("plushbound_guardian", base)
-        self.assertEqual(styled["prompt"], base["prompt"])
-        self.assertEqual(styled["negative_prompt"], base["negative_prompt"])
-        self.assertFalse(styled["production_style_validated"])
-        self.assertIsNone(styled["production_style_profile"])
-        self.assertNotIn("render_style_profile", styled)
+        self.assertTrue(styled["production_style_validated"])
+        self.assertEqual(styled["production_style_profile"], "plushbound_guardian_2d_candidate")
+        self.assertEqual(styled["render_style_profile"], "plushbound_guardian_2d_candidate")
+        self.assertIn("companion-creature key art", styled["prompt"])
 
     def test_unknown_preset_fails_closed_to_no_style(self):
         request = {"prompt": "test", "negative_prompt": ""}
