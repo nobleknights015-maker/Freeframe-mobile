@@ -28,20 +28,31 @@ class StyleProfileTests(unittest.TestCase):
                     applied["prompt"].index("A single candid full-length scene"),
                 )
                 self.assertTrue(applied["negative_prompt"].startswith(profile.negative))
-                self.assertIn("retro visual-novel softness", applied["negative_prompt"])
+                self.assertIn("early-2000s anime-game rendering", applied["negative_prompt"])
+                self.assertIn("watercolor haze", applied["negative_prompt"])
                 self.assertEqual(profile.metadata()["version"], STYLE_PROFILE_VERSION)
 
-    def test_trinity_character_keeps_modern_jrpg_target(self):
+    def test_trinity_character_keeps_contemporary_jrpg_target(self):
         text = get_style_profile("plushbound_trinity").positive
-        self.assertIn("modern fantasy JRPG promotional character key art", text)
-        self.assertIn("crisp anime features", text)
-        self.assertIn("saturated disciplined palette", text)
-        self.assertIn("polished console-RPG character illustration", text)
+        self.assertIn("contemporary high-budget fantasy JRPG promotional character art", text)
+        self.assertIn("crisp modern anime features", text)
+        self.assertIn("sophisticated saturated color grading", text)
+        self.assertIn("sharp controlled digital finish", text)
+        self.assertIn("current-generation console-RPG illustration", text)
+        self.assertNotIn("painterly blending", text)
+
+    def test_environment_is_modern_without_poster_cues(self):
+        text = get_style_profile("plushbound_trinity_environment").positive
+        self.assertIn("contemporary high-budget fantasy JRPG environment illustration", text)
+        self.assertIn("sharp modern digital finish", text)
+        self.assertIn("no foreground hero", text)
+        self.assertIn("no poster composition", text)
 
     def test_guardian_candidate_is_explicitly_2d_and_non_product(self):
         text = get_style_profile("plushbound_guardian_2d_candidate").positive
-        self.assertIn("2D fantasy JRPG companion-creature illustration", text)
+        self.assertIn("contemporary 2D fantasy JRPG companion-creature illustration", text)
         self.assertIn("sewn-fabric anatomy", text)
+        self.assertIn("sharp digital finish", text)
         self.assertIn("no product-photo lighting", text)
         self.assertIn("no model-sheet layout", text)
 
