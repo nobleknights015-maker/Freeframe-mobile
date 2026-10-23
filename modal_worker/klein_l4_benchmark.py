@@ -21,7 +21,7 @@ MODEL_VOLUME = "freeframe-model-cache"
 
 image = (
     modal.Image.debian_slim(python_version="3.11")
-    .apt_install("libgl1", "libglib2.0-0")
+    .apt_install("git", "libgl1", "libglib2.0-0")
     .pip_install(
         "accelerate>=1.5,<2",
         "git+https://github.com/huggingface/diffusers.git",
@@ -49,8 +49,6 @@ def select_case(case_id: str) -> dict:
     request = matches[0].request()
     candidate = get_candidate("flux2_klein_4b_candidate")
     request = apply_model_defaults(request, candidate)
-    # Klein requires dimensions divisible by 16. Current production presets already
-    # satisfy this; fail closed instead of silently resizing.
     if request["width"] % 16 or request["height"] % 16:
         raise ValueError("Klein benchmark dimensions must be divisible by 16")
     return request
