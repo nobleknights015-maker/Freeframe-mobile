@@ -146,7 +146,7 @@ class FreeFrameGenerator:
         return load_reference_bytes(reference_id, REFERENCE_DIR)
 
     def _generate_one(self, request: dict) -> dict:
-        from modal_worker.reference_conditioning import parse_reference_conditioning
+        from modal_worker.reference_conditioning import adapter_scale_for, parse_reference_conditioning
 
         started = time.monotonic()
         spec = GenerationSpec.from_request(request)
@@ -164,7 +164,7 @@ class FreeFrameGenerator:
         }
         if reference is not None:
             self._ensure_ip_adapter()
-            self.pipe.set_ip_adapter_scale(reference.scale)
+            self.pipe.set_ip_adapter_scale(adapter_scale_for(reference))
             pipeline_kwargs["ip_adapter_image"] = reference.image
         elif self.ip_adapter_loaded:
             self.pipe.set_ip_adapter_scale(0.0)
