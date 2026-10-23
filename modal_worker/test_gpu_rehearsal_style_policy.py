@@ -6,7 +6,7 @@ from gpu_rehearsal_plan import GPU_REHEARSAL_VERSION, rehearsal_requests
 class GPURehearsalStylePolicyTests(unittest.TestCase):
     def test_rehearsal_remains_exactly_32_assets(self):
         plan = rehearsal_requests()
-        self.assertEqual(GPU_REHEARSAL_VERSION, "plushbound-gpu-rehearsal-v2")
+        self.assertEqual(GPU_REHEARSAL_VERSION, "plushbound-gpu-rehearsal-v3")
         self.assertEqual(len(plan), 32)
         self.assertEqual(len({item["asset_id"] for item in plan}), 32)
 
@@ -32,6 +32,10 @@ class GPURehearsalStylePolicyTests(unittest.TestCase):
             self.assertFalse(request["production_style_validated"])
             self.assertIsNone(request["production_style_profile"])
             self.assertNotIn("render_style_profile", request)
+            self.assertTrue(request["guardian_composition_repair"])
+            self.assertEqual(request["guardian_composition_version"], "guardian-single-view-v1")
+            self.assertIn("exactly one creature", request["prompt"])
+            self.assertIn("front side back views", request["negative_prompt"])
 
     def test_character_requests_keep_full_length_composition_language(self):
         for item in rehearsal_requests():
