@@ -20,6 +20,9 @@ APP_NAME = "freeframe-worker"
 MODEL_VOLUME = "freeframe-model-cache"
 CACHE_DIR = "/cache"
 DEFAULT_MODEL = os.environ.get("FREEFRAME_MODEL", "stabilityai/stable-diffusion-xl-base-1.0")
+IP_ADAPTER_MODEL = "h94/IP-Adapter"
+IP_ADAPTER_SUBFOLDER = "sdxl_models"
+IP_ADAPTER_WEIGHT = "ip-adapter_sdxl.bin"
 
 image = (
     modal.Image.debian_slim(python_version="3.11")
@@ -108,27 +111,60 @@ class FreeFrameGenerator:
         os.environ.setdefault("HF_HUB_CACHE", f"{CACHE_DIR}/hub")
         self.torch = torch
         self.model_name = DEFAULT_MODEL
+        self.ip_adapter_loaded = False
         load_kwargs = {"torch_dtype": torch.float16, "cache_dir": CACHE_DIR}
         if self.model_name == "stabilityai/stable-diffusion-xl-base-1.0":
             load_kwargs.update({"variant": "fp16", "use_safetensors": True})
         self.pipe = AutoPipelineForText2Image.from_pretrained(self.model_name, **load_kwargs).to("cuda")
 
+    def _ensure_ip_adapter(self) -> None:
+        if self.ip_adapter_loaded:
+            return
+        if self.model_name != "stabilityai/stable-diffusion-xl-base-1.0":
+            raise ValueError("reference-image conditioning is currently validated only for SDXL base 1.0")
+        self.pipe.load_ip_adapter(
+            IP_ADAPTER_MODEL,
+            subfolder=IP_ADAPTER_SUBFOLDER,
+            weight_name=IP_ADAPTER_WEIGHT,
+            cache_dir=CACHE_DIR,
+        )
+        self.ip_adapter_loaded = True
+
     def _generate_one(self, request: dict) -> dict:
+        from modal_worker.reference_conditioning import parse_reference_conditioning
+
         started = time.monotonic()
         spec = GenerationSpec.from_request(request)
         spec.validate()
+        reference = parse_reference_conditioning(request)
         generator = self.torch.Generator(device="cuda").manual_seed(spec.seed)
-        result = self.pipe(
-            prompt=spec.prompt,
-            negative_prompt=spec.negative_prompt or None,
-            width=spec.width,
-            height=spec.height,
-            num_inference_steps=spec.steps,
-            guidance_scale=spec.guidance_scale,
-            generator=generator,
-        ).images[0]
+        pipeline_kwargs = {
+            "prompt": spec.prompt,
+            "negative_prompt": spec.negative_prompt or None,
+            "width": spec.width,
+            "height": spec.height,
+            "num_inference_steps": spec.steps,
+            "guidance_scale": spec.guidance_scale,
+            "generator": generator,
+        }
+        if reference is not None:
+            self._ensure_ip_adapter()
+            self.pipe.set_ip_adapter_scale(reference.scale)
+            pipeline_kwargs["ip_adapter_image"] = reference.image
+        elif self.ip_adapter_loaded:
+            # Keep ordinary text-only generations independent from a previous
+            # reference-guided request on the same warm worker.
+            self.pipe.set_ip_adapter_scale(0.0)
+
+        result = self.pipe(**pipeline_kwargs).images[0]
         payload = _png_payload(result)
-        payload.update({"seed": spec.seed, "model": self.model_name, "elapsed_seconds": round(time.monotonic() - started, 3), "generation_spec": asdict(spec)})
+        payload.update({
+            "seed": spec.seed,
+            "model": self.model_name,
+            "elapsed_seconds": round(time.monotonic() - started, 3),
+            "generation_spec": asdict(spec),
+            "reference_conditioning": reference.metadata() if reference is not None else None,
+        })
         return payload
 
     @modal.method()
