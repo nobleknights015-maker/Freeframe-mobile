@@ -6,7 +6,7 @@ from style_profiles import STYLE_PROFILE_VERSION, STYLE_PROFILES, get_style_prof
 class StyleProfileTests(unittest.TestCase):
     def test_profiles_apply_without_mutating_input(self):
         base = {
-            "prompt": "adult fantasy traveler",
+            "prompt": "adult fantasy traveler. A single candid full-length scene containing one adult traveler",
             "negative_prompt": "text, watermark",
             "width": 768,
             "height": 1024,
@@ -15,21 +15,26 @@ class StyleProfileTests(unittest.TestCase):
         for name, profile in STYLE_PROFILES.items():
             with self.subTest(name=name):
                 applied = profile.apply(base)
-                self.assertEqual(base["prompt"], "adult fantasy traveler")
+                self.assertEqual(
+                    base["prompt"],
+                    "adult fantasy traveler. A single candid full-length scene containing one adult traveler",
+                )
                 self.assertEqual(applied["render_style_profile"], name)
-                self.assertEqual(applied["render_style_version"], "mt1.1")
+                self.assertEqual(applied["render_style_version"], "mt1.2")
                 self.assertEqual(applied["seed"], 42)
-                self.assertTrue(applied["prompt"].startswith(profile.positive))
-                self.assertIn("adult fantasy traveler", applied["prompt"])
+                self.assertTrue(applied["prompt"].startswith("adult fantasy traveler. "))
+                self.assertLess(applied["prompt"].index(profile.positive), applied["prompt"].index("A single candid full-length scene"))
                 self.assertTrue(applied["negative_prompt"].startswith(profile.negative))
-                self.assertIn("early-2000s visual novel look", applied["negative_prompt"])
+                self.assertIn("retro visual-novel softness", applied["negative_prompt"])
                 self.assertEqual(profile.metadata()["version"], STYLE_PROFILE_VERSION)
 
-    def test_hybrid_encodes_mv_readability_and_trinity_polish(self):
+    def test_hybrid_keeps_compact_modern_jrpg_target(self):
         text = get_style_profile("plushbound_hybrid").positive
-        self.assertIn("MV-like character readability", text)
-        self.assertIn("Trinity-like color and material polish", text)
+        self.assertIn("modern fantasy JRPG key art", text)
+        self.assertIn("crisp anime face and linework", text)
+        self.assertIn("vivid controlled colors", text)
         self.assertIn("restrained bloom", text)
+        self.assertLessEqual(len(text.split()), 32)
 
     def test_profiles_are_visually_distinct(self):
         positives = {profile.positive for profile in STYLE_PROFILES.values()}
