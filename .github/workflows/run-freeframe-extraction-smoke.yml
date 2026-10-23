@@ -8,6 +8,11 @@ on:
         required: true
         default: false
         type: boolean
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/freeframe/extraction-smoke-trigger.txt'
 
 permissions:
   contents: read
@@ -18,7 +23,7 @@ concurrency:
 
 jobs:
   extraction-smoke:
-    if: ${{ inputs.start_extraction_smoke }}
+    if: ${{ github.event_name == 'push' || inputs.start_extraction_smoke }}
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     env:
