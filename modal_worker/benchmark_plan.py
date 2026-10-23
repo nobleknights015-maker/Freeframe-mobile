@@ -38,10 +38,13 @@ CASES = (
         preset="plushbound_character",
         prompt=(
             "Penney Nguyen, clearly adult woman age 25, accurate 4 foot 11 inch petite height, "
-            "naturally plump proportional build, fitted black spandex shorts and a fitted violet "
-            "sleeveless athletic crop top, tasteful confident fashion-model pose, full body from "
-            "head through feet, both hands fully visible, natural fingers and limbs, anatomically "
-            "normal body, clean single-person composition, mature non-explicit modeling presentation"
+            "naturally plump proportional build, extremely short low-rise fitted black spandex shorts, "
+            "very deep-cut violet spaghetti-strap crop top fitted closely across the bust with a loose "
+            "waist and bare midriff, pronounced but covered cleavage, confident mature pin-up fashion pose, "
+            "playful over-the-shoulder body angle while keeping the full body visible from head through feet, "
+            "both hands fully visible, natural fingers and limbs, anatomically normal body, realistic fabric "
+            "tension and folds, clean single-person composition, sensual adult modeling presentation, no nudity, "
+            "no exposed nipples, no exposed genitals, no sexual activity"
         ),
         seed=6116,
     ),
