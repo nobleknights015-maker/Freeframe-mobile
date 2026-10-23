@@ -1,3 +1,3 @@
-trigger: 2026-10-23T03:38Z
-purpose: bounded one-asset extraction validation after package/runtime fixes
+trigger: 2026-10-23T03:43Z
+purpose: bounded one-asset extraction validation on fresh concurrency lane after package/runtime fixes
 full_batch_authorized: false
