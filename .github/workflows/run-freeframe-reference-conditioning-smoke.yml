@@ -1,0 +1,109 @@
+name: Start FreeFrame Reference Conditioning Smoke
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/freeframe/reference-conditioning-trigger.txt'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: freeframe-reference-conditioning-smoke-v1
+  cancel-in-progress: true
+
+jobs:
+  reference-smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+    steps:
+      - name: Check out isolated cloud worker branch
+        uses: actions/checkout@v4
+        with:
+          ref: freeframe-modal-worker
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Modal CLI and Pillow
+        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
+      - name: Compile current isolated worker
+        run: python -m compileall -q modal_worker
+      - name: Deploy current isolated worker
+        run: modal deploy --strategy recreate modal_worker/freeframe_worker.py
+      - name: Store synthetic reference and generate one conditioned image
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -u - <<'PY'
+          import base64, hashlib, io, json
+          from pathlib import Path
+
+          import modal
+          from PIL import Image, ImageDraw
+
+          out = Path('freeframe-reference-conditioning-smoke')
+          out.mkdir(exist_ok=True)
+
+          # Synthetic project-neutral 2D reference: no external/user art is persisted.
+          image = Image.new('RGB', (256, 256), (241, 236, 221))
+          draw = ImageDraw.Draw(image)
+          draw.ellipse((42, 54, 214, 226), fill=(111, 75, 133), outline=(39, 34, 57), width=8)
+          draw.polygon([(74, 80), (105, 26), (126, 91)], fill=(111, 75, 133), outline=(39, 34, 57))
+          draw.polygon([(130, 91), (153, 26), (187, 80)], fill=(111, 75, 133), outline=(39, 34, 57))
+          draw.ellipse((91, 117, 111, 137), fill=(255, 195, 87))
+          draw.ellipse((147, 117, 167, 137), fill=(255, 195, 87))
+          draw.arc((105, 132, 151, 168), 10, 170, fill=(39, 34, 57), width=5)
+          buf = io.BytesIO(); image.save(buf, format='PNG'); raw = buf.getvalue()
+          (out / 'synthetic-reference.png').write_bytes(raw)
+
+          store = modal.Function.from_name('freeframe-worker', 'store_reference')
+          stored = store.remote({'image_base64': base64.b64encode(raw).decode('ascii')})
+          assert stored['stored'] is True
+          assert stored['reference_id'] == hashlib.sha256(raw).hexdigest()
+          print('[reference] stored', stored['reference_id'], flush=True)
+
+          generator = modal.Cls.from_name('freeframe-worker', 'FreeFrameGenerator')()
+          request = {
+              'prompt': 'one small magical stitched fox guardian in a candid 2D fantasy JRPG scene, hand-drawn anime creature illustration, clean ink-like edges, cel-shaded color, one creature only',
+              'negative_prompt': '3D, CGI, toy photography, product render, figurine, character sheet, multiple views, duplicate creature, text, watermark',
+              'width': 512,
+              'height': 512,
+              'steps': 28,
+              'guidance_scale': 6.0,
+              'seed': 4411,
+              'reference_id': stored['reference_id'],
+              'reference_scale': 0.35,
+          }
+          result = generator.generate.remote(request)
+          generated = base64.b64decode(result['image_base64'], validate=True)
+          assert hashlib.sha256(generated).hexdigest() == result['sha256']
+          assert result['reference_conditioning']['reference_id'] == stored['reference_id']
+          assert result['reference_conditioning']['sha256'] == stored['reference_id']
+          (out / 'conditioned-output.png').write_bytes(generated)
+          (out / 'manifest.json').write_text(json.dumps({
+              'bounded': True,
+              'full_batch_authorized': False,
+              'reference': stored,
+              'generation': {
+                  'sha256': result['sha256'],
+                  'width': result['width'],
+                  'height': result['height'],
+                  'elapsed_seconds': result['elapsed_seconds'],
+                  'reference_conditioning': result['reference_conditioning'],
+              },
+          }, indent=2) + '\n')
+          print('[reference] conditioned generation complete', flush=True)
+          PY
+      - name: Upload reference smoke artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: freeframe-reference-conditioning-smoke
+          path: freeframe-reference-conditioning-smoke/
+          if-no-files-found: error
+          retention-days: 7
