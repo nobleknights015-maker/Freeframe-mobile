@@ -34,25 +34,25 @@ class StyleProfileTests(unittest.TestCase):
 
     def test_trinity_character_keeps_contemporary_jrpg_target(self):
         text = get_style_profile("plushbound_trinity").positive
-        self.assertIn("contemporary high-budget fantasy JRPG promotional character art", text)
-        self.assertIn("crisp modern anime features", text)
+        self.assertIn("premium contemporary fantasy JRPG character key-art illustration", text)
+        self.assertIn("refined painted skin planes", text)
         self.assertIn("sophisticated saturated color grading", text)
-        self.assertIn("sharp controlled digital finish", text)
-        self.assertIn("current-generation console-RPG illustration", text)
+        self.assertIn("sharp high-detail digital finish", text)
+        self.assertIn("current-generation console-RPG promotional art", text)
         self.assertNotIn("painterly blending", text)
 
     def test_environment_is_modern_without_poster_cues(self):
         text = get_style_profile("plushbound_trinity_environment").positive
-        self.assertIn("contemporary high-budget fantasy JRPG environment illustration", text)
+        self.assertIn("premium contemporary fantasy JRPG environment key art", text)
         self.assertIn("sharp modern digital finish", text)
         self.assertIn("no foreground hero", text)
         self.assertIn("no poster composition", text)
 
     def test_guardian_candidate_is_explicitly_2d_and_non_product(self):
         text = get_style_profile("plushbound_guardian_2d_candidate").positive
-        self.assertIn("contemporary 2D fantasy JRPG companion-creature illustration", text)
-        self.assertIn("sewn-fabric anatomy", text)
-        self.assertIn("sharp digital finish", text)
+        self.assertIn("original contemporary 2D fantasy JRPG companion-creature key art", text)
+        self.assertIn("handcrafted sewn-fabric body", text)
+        self.assertIn("sharp high-detail digital finish", text)
         self.assertIn("no product-photo lighting", text)
         self.assertIn("no model-sheet layout", text)
 
