@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, asdict
 
-from production_presets import get_preset
+from modal_worker.production_presets import get_preset
 
 
 @dataclass(frozen=True)
