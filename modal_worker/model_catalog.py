@@ -53,13 +53,14 @@ CANDIDATES = {
         model_id="black-forest-labs/FLUX.2-klein-4B",
         dtype="bfloat16",
         default_steps=4,
-        default_guidance=4.0,
+        default_guidance=1.0,
         max_test_resolution=1024,
         production_eligible=False,
         notes=(
             "Primary budget-conscious quality-upgrade candidate. Official model card lists Apache-2.0, "
             "Diffusers Flux2KleinPipeline support, roughly 13GB VRAM, four-step distilled inference, "
-            "and text/image multi-reference capability. Benchmark on L4 before any production promotion."
+            "guidance 1.0 in the reference example, and text/image multi-reference capability. "
+            "Benchmark on L4 before any production promotion."
         ),
     ),
     "flux2_klein_4b_fp8_candidate": ModelCandidate(
@@ -67,12 +68,12 @@ CANDIDATES = {
         model_id="black-forest-labs/FLUX.2-klein-4b-fp8",
         dtype="float8_e4m3fn",
         default_steps=4,
-        default_guidance=4.0,
+        default_guidance=1.0,
         max_test_resolution=1024,
         production_eligible=False,
         notes=(
-            "Secondary low-memory benchmark candidate. Apache-2.0 FP8 weights are roughly 4.1GB; "
-            "use only if the full 4B candidate is slower or less memory-efficient than expected."
+            "Secondary low-memory benchmark candidate. Apache-2.0 FP8 weights are retained only as a "
+            "fallback if the full BF16 candidate is slower or less memory-efficient than expected."
         ),
     ),
 }
