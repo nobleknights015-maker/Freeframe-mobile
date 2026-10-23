@@ -32,6 +32,19 @@ jobs:
         run: python -m compileall -q modal_worker
       - name: Run worker core tests
         run: PYTHONPATH=modal_worker python -m unittest discover -s modal_worker -p 'test_*.py' -v
+      - name: Verify Modal package import path
+        run: |
+          PYTHONPATH=. python - <<'PY'
+          from modal_worker.birefnet_extractor import BiRefNetExtractor
+          from modal_worker.extraction_provider import ExtractionError, ExtractionResult, extract_and_validate
+          from modal_worker.extraction_backend_policy import production_extraction_backend
+          assert BiRefNetExtractor is not None
+          assert ExtractionError is not None
+          assert ExtractionResult is not None
+          assert extract_and_validate is not None
+          assert production_extraction_backend().provider == 'birefnet'
+          print('Modal package import path OK')
+          PY
       - name: Guard against committed model weights
         shell: bash
         run: |
