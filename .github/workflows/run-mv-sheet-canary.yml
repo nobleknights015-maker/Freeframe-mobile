@@ -68,5 +68,6 @@ jobs:
           path: |
             mv-sheet-canary.log
             $plushbound_sheet_canary.png
+            mv-sheet-reference.png
           if-no-files-found: warn
           retention-days: 7
