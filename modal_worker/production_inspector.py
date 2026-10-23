@@ -13,8 +13,12 @@ from typing import Any
 
 from PIL import Image
 
-from composition_detector import inspect_panel_grid
-from production_pipeline import POLICIES, inspect_master
+try:
+    from .composition_detector import inspect_panel_grid
+    from .production_pipeline import POLICIES, inspect_master
+except ImportError:  # direct-module compatibility for local CI/tests
+    from composition_detector import inspect_panel_grid
+    from production_pipeline import POLICIES, inspect_master
 
 _PRESET_TO_ASSET_CLASS = {
     "plushbound_character": "character_master",
