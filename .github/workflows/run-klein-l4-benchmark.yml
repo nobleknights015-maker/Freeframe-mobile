@@ -6,7 +6,7 @@ on:
       case_id:
         description: Representative benchmark case
         required: true
-        default: penney_modeling_stress
+        default: guardian_meadow
         type: choice
         options:
           - penney_modeling_stress
@@ -38,7 +38,7 @@ jobs:
     env:
       MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
       MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
-      CASE_ID: ${{ github.event.inputs.case_id || 'penney_modeling_stress' }}
+      CASE_ID: ${{ github.event.inputs.case_id || 'guardian_meadow' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
