@@ -20,7 +20,8 @@ MODEL_ID = "black-forest-labs/FLUX.2-klein-4B"
 CACHE_DIR = "/cache"
 MODEL_VOLUME = "freeframe-model-cache"
 OUTPUT_PNG = "klein-l4-output.png"
-QUALITY_CALIBRATION_STEPS = 6
+QUALITY_CALIBRATION_STEPS = 4
+QUALITY_CALIBRATION_GUIDANCE = 1.5
 
 image = (
     modal.Image.debian_slim(python_version="3.11")
@@ -54,10 +55,11 @@ def select_case(case_id: str) -> dict:
     request = apply_production_style(case.preset, request)
     candidate = get_candidate("flux2_klein_4b_candidate")
     request = apply_model_defaults(request, candidate)
-    # Bounded quality experiment only. Production remains locked to candidate defaults
-    # until visual QA proves the extra denoising steps are worth their cost.
+    # Final bounded steering experiment before switching from text-only style
+    # calibration to reference-conditioned style locking.
     request["steps"] = QUALITY_CALIBRATION_STEPS
-    request["quality_calibration"] = "six-step"
+    request["guidance_scale"] = QUALITY_CALIBRATION_GUIDANCE
+    request["quality_calibration"] = "stronger-guidance"
     if request["width"] % 16 or request["height"] % 16:
         raise ValueError("Klein benchmark dimensions must be divisible by 16")
     return request
@@ -106,7 +108,7 @@ class KleinBenchmarkRunner:
         result.save(out, format="PNG")
         raw = out.getvalue()
         return {
-            "benchmark_version": "klein-l4-v5-six-step-quality-calibration",
+            "benchmark_version": "klein-l4-v6-guidance-calibration",
             "case_id": case_id,
             "model": MODEL_ID,
             "gpu": "L4",
