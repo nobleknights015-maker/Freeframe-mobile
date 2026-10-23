@@ -13,12 +13,19 @@ class AssetProfileTests(unittest.TestCase):
         self.assertFalse(result["valid"])
         self.assertIn("width must be 576", result["errors"])
 
-    def test_regular_character_grid(self):
+    def test_regular_character_sheet_is_exact_editor_size(self):
         self.assertTrue(validate_metadata(profile_name="mv_character_sheet", fmt="PNG", width=576, height=384, has_alpha=True)["valid"])
-        self.assertFalse(validate_metadata(profile_name="mv_character_sheet", fmt="PNG", width=575, height=384, has_alpha=True)["valid"])
+        too_large = validate_metadata(profile_name="mv_character_sheet", fmt="PNG", width=1152, height=768, has_alpha=True)
+        self.assertFalse(too_large["valid"])
+        self.assertIn("width must be 576", too_large["errors"])
+        self.assertIn("height must be 384", too_large["errors"])
 
-    def test_single_character_grid(self):
+    def test_single_character_sheet_is_exact_editor_size(self):
         self.assertTrue(validate_metadata(profile_name="mv_single_character", fmt="PNG", width=144, height=192, has_alpha=True)["valid"])
+        merely_divisible = validate_metadata(profile_name="mv_single_character", fmt="PNG", width=288, height=384, has_alpha=True)
+        self.assertFalse(merely_divisible["valid"])
+        self.assertIn("width must be 144", merely_divisible["errors"])
+        self.assertIn("height must be 192", merely_divisible["errors"])
 
     def test_alpha_required(self):
         result = validate_metadata(profile_name="generic_rgba_png", fmt="PNG", width=64, height=64, has_alpha=False)
