@@ -20,11 +20,8 @@ MODEL_ID = "black-forest-labs/FLUX.2-klein-4B"
 CACHE_DIR = "/cache"
 MODEL_VOLUME = "freeframe-model-cache"
 OUTPUT_PNG = "klein-l4-output.png"
+QUALITY_CALIBRATION_STEPS = 6
 
-# Follow the model card's supported install path: current Diffusers,
-# Transformers, and Accelerate resolve together. Avoid cross-generation pins
-# between huggingface-hub and Transformers that can make the image impossible
-# to solve before GPU inference even begins.
 image = (
     modal.Image.debian_slim(python_version="3.11")
     .apt_install("libgl1", "libglib2.0-0")
@@ -54,12 +51,13 @@ def select_case(case_id: str) -> dict:
         raise ValueError(f"unknown benchmark case: {case_id}")
     case = matches[0]
     request = case.request()
-    # Use the exact production routing instead of a duplicated benchmark map.
-    # This prevents calibration from silently drifting away from the profiles
-    # that production would actually use.
     request = apply_production_style(case.preset, request)
     candidate = get_candidate("flux2_klein_4b_candidate")
     request = apply_model_defaults(request, candidate)
+    # Bounded quality experiment only. Production remains locked to candidate defaults
+    # until visual QA proves the extra denoising steps are worth their cost.
+    request["steps"] = QUALITY_CALIBRATION_STEPS
+    request["quality_calibration"] = "six-step"
     if request["width"] % 16 or request["height"] % 16:
         raise ValueError("Klein benchmark dimensions must be divisible by 16")
     return request
@@ -108,7 +106,7 @@ class KleinBenchmarkRunner:
         result.save(out, format="PNG")
         raw = out.getvalue()
         return {
-            "benchmark_version": "klein-l4-v4-production-style-routing",
+            "benchmark_version": "klein-l4-v5-six-step-quality-calibration",
             "case_id": case_id,
             "model": MODEL_ID,
             "gpu": "L4",
@@ -120,6 +118,7 @@ class KleinBenchmarkRunner:
             "steps": int(request["steps"]),
             "guidance_scale": float(request["guidance_scale"]),
             "seed": int(request["seed"]),
+            "quality_calibration": request.get("quality_calibration"),
             "style_profile": request.get("render_style_profile"),
             "style_version": request.get("render_style_version"),
             "style_policy_version": request.get("production_style_policy_version"),
@@ -130,7 +129,7 @@ class KleinBenchmarkRunner:
 
 
 @app.local_entrypoint()
-def main(case_id: str = "environment_elyndor"):
+def main(case_id: str = "penney_modeling_stress"):
     result = KleinBenchmarkRunner().run_case.remote(case_id)
     png_base64 = result.pop("png_base64")
     with open(OUTPUT_PNG, "wb") as handle:
