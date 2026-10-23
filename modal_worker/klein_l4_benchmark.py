@@ -21,7 +21,7 @@ CACHE_DIR = "/cache"
 MODEL_VOLUME = "freeframe-model-cache"
 OUTPUT_PNG = "klein-l4-output.png"
 QUALITY_CALIBRATION_STEPS = 4
-QUALITY_CALIBRATION_GUIDANCE = 1.5
+QUALITY_CALIBRATION_GUIDANCE = 1.0
 REFERENCE_CASE_ID = "penney_modeling_stress"
 
 image = (
@@ -59,7 +59,7 @@ def select_case(case_id: str) -> dict:
     request["steps"] = QUALITY_CALIBRATION_STEPS
     request["guidance_scale"] = QUALITY_CALIBRATION_GUIDANCE
     request["quality_calibration"] = (
-        "canon-reference-conditioned" if case_id == REFERENCE_CASE_ID else "stronger-guidance"
+        "dual-user-reference-conditioned" if case_id == REFERENCE_CASE_ID else "official-distilled-defaults"
     )
     request["reference_conditioned"] = case_id == REFERENCE_CASE_ID
     if request["width"] % 16 or request["height"] % 16:
@@ -67,13 +67,24 @@ def select_case(case_id: str) -> dict:
     return request
 
 
-def load_calibration_reference():
+def _decode_reference(encoded: str):
     from PIL import Image
-    from modal_worker.calibration_reference_assets import PENNEY_CANON_REFERENCE_JPEG_BASE64
 
-    raw = base64.b64decode(PENNEY_CANON_REFERENCE_JPEG_BASE64)
-    image = Image.open(io.BytesIO(raw)).convert("RGB")
-    return image
+    raw = base64.b64decode(encoded)
+    return Image.open(io.BytesIO(raw)).convert("RGB")
+
+
+def load_calibration_references():
+    from modal_worker.calibration_reference_assets import PENNEY_CANON_REFERENCE_JPEG_BASE64
+    from modal_worker.calibration_reference_modern import PENNEY_MODERN_FULLBODY_JPEG_BASE64
+
+    # Reference 1 anchors project-owned Plushbound identity/color language.
+    # Reference 2 contributes user-owned full-body proportion, lighting, skin,
+    # and material cues. Prompt language keeps the final result illustrated.
+    return [
+        _decode_reference(PENNEY_CANON_REFERENCE_JPEG_BASE64),
+        _decode_reference(PENNEY_MODERN_FULLBODY_JPEG_BASE64),
+    ]
 
 
 @app.cls(
@@ -114,7 +125,7 @@ class KleinBenchmarkRunner:
             "generator": generator,
         }
         if request["reference_conditioned"]:
-            kwargs["image"] = load_calibration_reference()
+            kwargs["image"] = load_calibration_references()
 
         started = time.monotonic()
         result = self.pipe(**kwargs).images[0]
@@ -123,7 +134,7 @@ class KleinBenchmarkRunner:
         result.save(out, format="PNG")
         raw = out.getvalue()
         return {
-            "benchmark_version": "klein-l4-v8-canon-reference-calibration",
+            "benchmark_version": "klein-l4-v9-dual-reference-calibration",
             "case_id": case_id,
             "model": MODEL_ID,
             "gpu": "L4",
@@ -137,7 +148,11 @@ class KleinBenchmarkRunner:
             "seed": int(request["seed"]),
             "quality_calibration": request.get("quality_calibration"),
             "reference_conditioned": bool(request.get("reference_conditioned")),
-            "reference_source": "project-owned Plushbound Penney portrait crop" if request.get("reference_conditioned") else None,
+            "reference_count": 2 if request.get("reference_conditioned") else 0,
+            "reference_source": (
+                "project-owned Plushbound Penney portrait + user-owned modern full-body Penney crop"
+                if request.get("reference_conditioned") else None
+            ),
             "style_profile": request.get("render_style_profile"),
             "style_version": request.get("render_style_version"),
             "style_policy_version": request.get("production_style_policy_version"),
