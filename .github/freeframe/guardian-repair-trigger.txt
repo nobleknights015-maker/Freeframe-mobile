@@ -1,0 +1,4 @@
+trigger: 2026-10-22T23:00:00-05:00
+purpose: compare Guardian baseline versus targeted single-view composition repair across four subjects
+count: 8
+full_batch_authorized: false
