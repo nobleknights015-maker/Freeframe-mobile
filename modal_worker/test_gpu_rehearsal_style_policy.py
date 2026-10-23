@@ -6,9 +6,10 @@ from gpu_rehearsal_plan import GPU_REHEARSAL_VERSION, rehearsal_requests
 class GPURehearsalStylePolicyTests(unittest.TestCase):
     def test_rehearsal_remains_exactly_32_assets(self):
         plan = rehearsal_requests()
-        self.assertEqual(GPU_REHEARSAL_VERSION, "plushbound-gpu-rehearsal-v3")
+        self.assertEqual(GPU_REHEARSAL_VERSION, "plushbound-gpu-rehearsal-v4")
         self.assertEqual(len(plan), 32)
         self.assertEqual(len({item["asset_id"] for item in plan}), 32)
+        self.assertTrue(all(item["request"]["production_request_builder_version"] == "production-request-v1" for item in plan))
 
     def test_validated_categories_use_trinity_guardian_stays_unstyled(self):
         plan = rehearsal_requests()
