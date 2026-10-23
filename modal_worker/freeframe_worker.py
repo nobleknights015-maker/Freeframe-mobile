@@ -27,11 +27,16 @@ image = (
     .pip_install(
         "accelerate>=1.1,<2",
         "diffusers>=0.31,<1",
+        "einops>=0.8,<1",
         "fastapi>=0.115,<1",
         "huggingface-hub>=0.26,<1",
+        "kornia>=0.7,<1",
+        "numpy>=1.26,<2",
         "pillow>=10.4,<12",
         "safetensors>=0.4,<1",
+        "timm>=1.0.23,<2",
         "torch>=2.4,<3",
+        "torchvision>=0.19,<1",
         "transformers>=4.46,<5",
     )
     .add_local_python_source("modal_worker")
