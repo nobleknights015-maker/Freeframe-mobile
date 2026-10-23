@@ -19,18 +19,21 @@ MODEL_ID = "black-forest-labs/FLUX.2-klein-4B"
 CACHE_DIR = "/cache"
 MODEL_VOLUME = "freeframe-model-cache"
 
+# Follow the model card's supported install path: current Diffusers,
+# Transformers, and Accelerate resolve together. Avoid cross-generation pins
+# between huggingface-hub and Transformers that can make the image impossible
+# to solve before GPU inference even begins.
 image = (
     modal.Image.debian_slim(python_version="3.11")
-    .apt_install("git", "libgl1", "libglib2.0-0")
+    .apt_install("libgl1", "libglib2.0-0")
     .pip_install(
-        "accelerate>=1.5,<2",
-        "git+https://github.com/huggingface/diffusers.git",
-        "huggingface-hub>=1.32,<3",
+        "accelerate",
+        "diffusers",
         "pillow>=10.4,<12",
-        "safetensors>=0.5,<1",
-        "sentencepiece>=0.2,<1",
+        "safetensors",
+        "sentencepiece",
         "torch>=2.6,<3",
-        "transformers>=4.57,<5",
+        "transformers",
     )
     .add_local_python_source("modal_worker")
 )
@@ -65,12 +68,12 @@ class KleinBenchmarkRunner:
     @modal.enter()
     def load(self):
         import torch
-        from diffusers import Flux2KleinPipeline
+        from diffusers import DiffusionPipeline
 
         os.environ.setdefault("HF_HOME", CACHE_DIR)
         os.environ.setdefault("HF_HUB_CACHE", f"{CACHE_DIR}/hub")
         self.torch = torch
-        self.pipe = Flux2KleinPipeline.from_pretrained(
+        self.pipe = DiffusionPipeline.from_pretrained(
             MODEL_ID,
             torch_dtype=torch.bfloat16,
             cache_dir=CACHE_DIR,
