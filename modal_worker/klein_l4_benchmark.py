@@ -25,7 +25,7 @@ image = (
     .pip_install(
         "accelerate>=1.5,<2",
         "git+https://github.com/huggingface/diffusers.git",
-        "huggingface-hub>=0.30,<1",
+        "huggingface-hub>=1.32,<3",
         "pillow>=10.4,<12",
         "safetensors>=0.5,<1",
         "sentencepiece>=0.2,<1",
