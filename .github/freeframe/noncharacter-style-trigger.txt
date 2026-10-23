@@ -1,0 +1,4 @@
+trigger: 2026-10-23T04:12Z
+purpose: compare frozen V3.2 baseline versus Trinity steering for guardian, enemy, and environment masters
+count: 6
+full_batch_authorized: false
