@@ -1,0 +1,100 @@
+name: Start FreeFrame MV Trinity Style Comparison
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/freeframe/style-comparison-trigger.txt'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: freeframe-style-comparison-v1
+  cancel-in-progress: true
+
+jobs:
+  style-comparison:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+    steps:
+      - name: Check out isolated cloud worker branch
+        uses: actions/checkout@v4
+        with:
+          ref: freeframe-modal-worker
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Modal CLI
+        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2'
+      - name: Compile current isolated worker
+        run: python -m compileall -q modal_worker
+      - name: Deploy current isolated worker
+        run: modal deploy --strategy recreate modal_worker/freeframe_worker.py
+      - name: Generate bounded MV Trinity comparison
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -u - <<'PY'
+          import base64, hashlib, json, sys
+          from pathlib import Path
+          import modal
+
+          sys.path.insert(0, 'modal_worker')
+          from production_presets import get_preset
+          from style_profiles import STYLE_PROFILE_VERSION, get_style_profile
+
+          out = Path('freeframe-style-comparison'); out.mkdir(exist_ok=True)
+          generator = modal.Cls.from_name('freeframe-worker', 'FreeFrameGenerator')()
+
+          base = get_preset('plushbound_character').apply(
+              'one clearly adult woman adventurer with dark hair and an elegant violet-and-black layered fantasy outfit, tasteful jewelry accents, confident relaxed expression',
+              seed=220218,
+          )
+          profiles = ['plushbound_mv', 'plushbound_trinity', 'plushbound_hybrid']
+          results = []
+          for index, profile_name in enumerate(profiles, 1):
+              request = get_style_profile(profile_name).apply(base)
+              print(f'[style] {profile_name}: generation start', flush=True)
+              result = generator.generate.remote(request)
+              raw = base64.b64decode(result['image_base64'], validate=True)
+              assert hashlib.sha256(raw).hexdigest() == result['sha256']
+              filename = f'{index:02d}-{profile_name}.png'
+              (out / filename).write_bytes(raw)
+              results.append({
+                  'profile': profile_name,
+                  'file': filename,
+                  'sha256': result['sha256'],
+                  'width': result['width'],
+                  'height': result['height'],
+                  'seed': result['seed'],
+                  'model': result['model'],
+                  'elapsed_seconds': result['elapsed_seconds'],
+                  'render_style_version': request['render_style_version'],
+              })
+              print(f"[style] {profile_name}: complete in {result['elapsed_seconds']}s", flush=True)
+
+          manifest = {
+              'bounded': True,
+              'count': len(results),
+              'same_seed': True,
+              'seed': 220218,
+              'style_profile_version': STYLE_PROFILE_VERSION,
+              'full_batch_authorized': False,
+              'results': results,
+          }
+          (out / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
+          print('[style] bounded three-image comparison complete', flush=True)
+          PY
+      - name: Upload style comparison artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: freeframe-style-comparison
+          path: freeframe-style-comparison/
+          if-no-files-found: error
+          retention-days: 7
