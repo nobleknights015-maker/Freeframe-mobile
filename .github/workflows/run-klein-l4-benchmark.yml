@@ -18,6 +18,7 @@ on:
     branches:
       - freeframe-modal-worker
     paths:
+      - 'modal_worker/benchmark_plan.py'
       - 'modal_worker/klein_l4_benchmark.py'
       - 'modal_worker/test_klein_l4_benchmark.py'
       - 'modal_worker/model_catalog.py'
