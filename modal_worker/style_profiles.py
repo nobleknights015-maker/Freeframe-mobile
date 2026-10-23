@@ -1,25 +1,22 @@
 """Reference-derived style steering for Plushbound production.
 
-These profiles describe visual qualities observed in the user's RPG Maker MV and
-Trinity references without copying characters, logos, or layouts. They are kept
-separate from V3.2 composition presets so proven anatomy/composition constraints
-remain frozen while rendering style is calibrated independently.
+The profiles describe visual qualities from the user's MV and Trinity references
+without copying characters, logos, or layouts. They remain separate from V3.2
+composition presets so proven anatomy/composition rules stay stable.
 
-Style language is intentionally placed *before* the long V3.2 production prompt.
-SDXL-family text encoders have finite token windows, and appending style language
-after a long composition prompt can make distinct profiles tokenize identically.
+SDXL-family encoders have finite token windows. Style language is therefore kept
+compact and inserted immediately after the subject sentence: early enough to be
+seen, but before the V3.2 framing/anatomy language gets pushed out.
 """
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 
 
-STYLE_PROFILE_VERSION = "mt1.1"
+STYLE_PROFILE_VERSION = "mt1.2"
 
 COMMON_AVOID = (
-    "early-2000s visual novel look, retro anime wallpaper, soft airbrushed face, "
-    "muddy painterly blending, hazy soft focus, washed-out colors, sepia cast, "
-    "plastic skin, photorealistic rendering, excessive bloom, indistinct costume materials"
+    "retro visual-novel softness, muddy airbrush, washed-out color, photorealism, excessive bloom"
 )
 
 
@@ -30,15 +27,18 @@ class StyleProfile:
     negative: str = COMMON_AVOID
 
     def apply(self, request: dict) -> dict:
-        """Return a copy of a generation request with style tokens given priority."""
+        """Return a copy with compact style tokens inserted after the subject."""
         result = dict(request)
         prompt = str(result.get("prompt", "")).strip()
         if not prompt:
             raise ValueError("request prompt must not be empty")
         existing_negative = str(result.get("negative_prompt", "")).strip()
 
-        # Put style steering first so it survives finite CLIP tokenizer windows.
-        result["prompt"] = f"{self.positive}. {prompt}"
+        head, sep, tail = prompt.partition(". ")
+        if sep:
+            result["prompt"] = f"{head}. {self.positive}. {tail}"
+        else:
+            result["prompt"] = f"{prompt}. {self.positive}"
         result["negative_prompt"] = ", ".join(
             part for part in (self.negative, existing_negative) if part
         )
@@ -54,31 +54,22 @@ STYLE_PROFILES = {
     "plushbound_mv": StyleProfile(
         name="plushbound_mv",
         positive=(
-            "clean polished fantasy JRPG character key art inspired by the visual qualities of RPG Maker MV cover art, "
-            "precise anime facial construction, bright expressive eyes, crisp deliberate line definition, "
-            "clean separated hair shapes, cel-painted shading with controlled soft gradients, elegant readable silhouette, "
-            "refined fabric folds and jewelry details, sharp material boundaries, restrained highlights, "
-            "professional promotional illustration finish, contemporary high-resolution rendering"
+            "clean modern fantasy JRPG key art, crisp anime face and bright eyes, precise linework, "
+            "clean hair shapes, cel-painted shading, refined costume materials, restrained highlights"
         ),
     ),
     "plushbound_trinity": StyleProfile(
         name="plushbound_trinity",
         positive=(
-            "bright modern fantasy JRPG promotional illustration inspired by the visual qualities of RPG Maker Trinity cover art, "
-            "crisp anime features, vivid controlled color palette, energetic but clean lighting, "
-            "richly separated cloth leather metal and ornament materials, luminous accent highlights, "
-            "strong costume shape language, clean hair clumps, dimensional cel-painted rendering, "
-            "colorful contemporary console-and-mobile RPG key-art polish without excessive gloss"
+            "bright modern fantasy JRPG key art, crisp anime features, vivid controlled colors, "
+            "energetic clean lighting, rich costume materials, dimensional cel shading, polished promotional finish"
         ),
     ),
     "plushbound_hybrid": StyleProfile(
         name="plushbound_hybrid",
         positive=(
-            "modern Plushbound fantasy JRPG promotional key art combining MV-like character readability with Trinity-like color and material polish, "
-            "precise attractive anime face, bright detailed eyes, crisp controlled line definition, clean separated hair shapes, "
-            "cel-painted forms with subtle smooth gradients, vivid but harmonious fantasy colors, "
-            "distinct cloth leather metal lace and jewelry materials, elegant silhouette, confident focal lighting, "
-            "sharp readable details, restrained bloom, premium contemporary console-and-mobile RPG illustration finish"
+            "modern fantasy JRPG key art, crisp anime face and linework, vivid controlled colors, "
+            "clean hair shapes, cel-painted forms, distinct costume materials, restrained bloom, polished contemporary RPG finish"
         ),
     ),
 }
