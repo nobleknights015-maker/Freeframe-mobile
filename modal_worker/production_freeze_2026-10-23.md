@@ -1,8 +1,8 @@
 # Plushbound FreeFrame production freeze — 2026-10-23
 
-Status: **READY FOR EXPLICIT FULL-BATCH LAUNCH**
+Status: **MASTER-GENERATION STACK VALIDATED; CATALOG-WIDE LAUNCH REMAINS GATED**
 
-Automatic full-production authorization remains **false**. This freeze records that the bounded production evidence has passed; it does not silently start the 22k+ asset run.
+Automatic full-production authorization remains **false**. This freeze records the bounded evidence that passed for the current Klein master-generation, extraction, and MV single-character packaging stack. It does **not** authorize every specialized asset family in the 22,582-entry replacement catalog.
 
 ## Frozen generation stack
 
@@ -28,7 +28,7 @@ Any change to the model, production style policy/profile versions, presets, requ
 - Receipt file: `approved_character_style_lock.py`
 - Visual result: one full-body adult adventurer in one continuous scene; no turnaround/contact-sheet duplication or anatomy failure.
 
-### 2. Four major asset lanes
+### 2. Four major master-generation lanes
 
 Run `39974097252` completed real L4 generation for character, Guardian, enemy, and environment. Visual review passed all four lanes:
 
@@ -37,13 +37,13 @@ Run `39974097252` completed real L4 generation for character, Guardian, enemy, a
 - enemy remained a low quadruped monster rather than the previous humanoid/weapon drift;
 - environment remained one coherent traversable scene rather than a collage/panel layout.
 
-### 3. Current 32-asset production rehearsal
+### 3. Current 32-asset master rehearsal
 
 - GitHub Actions run: `39975668399`
 - Artifact ID: `12510563985`
 - Artifact ZIP digest: `sha256:cfdb0dbd9717bf5779f8ca783d022986bf4ace03259db6ca19b01b39a25c4f3c`
 - Rehearsal version: `klein-rehearsal-32-v2-package-safe`
-- Count: 32 (8 per major asset class)
+- Count: 32 (8 per major master-generation class)
 - Accepted: 32/32
 - Completion rate: 1.0
 - Quarantined: 0
@@ -71,7 +71,7 @@ Results:
 
 Visual inspection confirmed clean transparent subject silhouettes for all three current Klein samples.
 
-### 5. Real GPU RPG Maker MV sheet canary
+### 5. Real GPU RPG Maker MV single-character sheet canary
 
 - Successful GitHub Actions run: `39977703274`
 - Artifact ID: `12511588055`
@@ -90,21 +90,29 @@ The generated sheet was visually inspected and retained the same dark-coat/gold-
 
 ## Cost/readiness projection
 
-The 32-asset rehearsal measured ~2.616 generation GPU-seconds per image. With the current L4 budget constant (`$0.000222/GPU-second`), raw generation for 22,000 assets projects to approximately **$12.78** before extraction, retries, storage, transfer, and other overhead. This remains below the existing $30 raw-generation target and $40 hard ceiling. The budget calculation by itself never authorizes production.
+The 32-asset master rehearsal measured ~2.616 generation GPU-seconds per image. With the current L4 budget constant (`$0.000222/GPU-second`), 22,000 generations at that same cost profile would project to approximately **$12.78** in raw generation GPU time before extraction, retries, specialized sheet/tile generation, storage, transfer, and other overhead. This extrapolation is informative only; catalog families with different pipelines may have materially different costs.
 
-## Launch boundary
+## Catalog-wide launch boundary
 
-The bounded gates required before a full run have now passed:
+The validated stack above is ready to produce its covered asset families. The complete Plushbound replacement ledger, however, contains specialized contracts beyond these proofs, including character-creator layers, 48px-grid region/tileset assets, items/icons, UI, VFX, portraits/faces, Guardian derivative assets, and audio. Those families must be routed through their own deterministic production/derivation contracts rather than being treated as ordinary single-image master generation.
 
-- style lock: PASS
-- four-lane real GPU canary: PASS
-- 32-asset balanced rehearsal: PASS (32/32, zero quarantine)
+Passed gates:
+
+- character style lock: PASS
+- four-lane real GPU master canary: PASS
+- 32-asset balanced master rehearsal: PASS (32/32, zero quarantine)
 - current subject extraction: PASS
-- real editor-ready MV package canary: PASS
+- real editor-ready MV single-character package canary: PASS
 - retry/checkpoint/sharding/factory/inspector automated tests: PASS in worker CI
 
-Therefore this frozen configuration is **ready for an explicit full-batch launch**.
+Still required before catalog-wide launch:
+
+- bind the real replacement ledger to a production manifest with generation/derivation briefs;
+- classify every visual entry into an explicitly supported pipeline contract;
+- add and canary any currently unsupported specialized families, especially creator-layer compositing and 48px-grid/tileset production;
+- exclude or separately route the 592 audio-source ledger entries;
+- only then construct the sharded/resumable full-catalog launcher.
 
 `automatic_full_production_authorized = false`
 
-The 22k+ run must remain checkpointed/sharded/resumable, must quarantine failed assets instead of poisoning the batch, and must not regenerate already-completed asset IDs after resume. A future configuration change invalidates the relevant evidence above before another large launch.
+No 22k+ launch should occur by forcing unsupported ledger entries through the four validated master presets. Large runs must remain checkpointed, sharded, resumable, quarantine failures instead of poisoning a batch, and never regenerate completed asset IDs after resume.
