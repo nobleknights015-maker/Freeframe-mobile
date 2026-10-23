@@ -3,6 +3,7 @@ import unittest
 from plushbound_lora_readiness import (
     INFERENCE_TARGET,
     LORA_READINESS_VERSION,
+    MIN_LONG_EDGE,
     REQUIRED_TRIGGER,
     TRAINING_TARGET,
     TrainingImage,
@@ -10,13 +11,23 @@ from plushbound_lora_readiness import (
 )
 
 
-def sample(index: int, category: str = "character", rights: str = "project_owned") -> TrainingImage:
+def sample(
+    index: int,
+    category: str = "character",
+    rights: str = "project_owned",
+    *,
+    width: int = 1024,
+    height: int = 1024,
+    caption: str | None = None,
+) -> TrainingImage:
     return TrainingImage(
         asset_id=f"asset-{index:02d}",
         category=category,
-        caption=f"{REQUIRED_TRIGGER}, original Plushbound subject {index}",
+        caption=caption or f"{REQUIRED_TRIGGER}, original Plushbound subject {index}",
         rights=rights,
         sha256=f"{index + 1:064x}",
+        width=width,
+        height=height,
     )
 
 
@@ -31,8 +42,10 @@ class PlushboundLoRAReadinessTests(unittest.TestCase):
         self.assertTrue(result["ready"])
         self.assertFalse(result["training_authorized"])
         self.assertEqual(result["version"], LORA_READINESS_VERSION)
+        self.assertEqual(LORA_READINESS_VERSION, "plushbound-lora-readiness-v2")
         self.assertEqual(result["training_target"], TRAINING_TARGET)
         self.assertEqual(result["inference_target"], INFERENCE_TARGET)
+        self.assertEqual(result["minimum_long_edge"], MIN_LONG_EDGE)
 
     def test_third_party_rights_fail_closed(self):
         items = [sample(i, ("character", "guardian", "environment")[i % 3]) for i in range(15)]
@@ -54,11 +67,38 @@ class PlushboundLoRAReadinessTests(unittest.TestCase):
             caption="original subject without trigger",
             rights=items[1].rights,
             sha256=items[0].sha256,
+            width=1024,
+            height=1024,
         )
         result = evaluate_training_manifest(items)
         self.assertFalse(result["ready"])
         self.assertTrue(any("duplicate image hashes" in reason for reason in result["reasons"]))
         self.assertTrue(any("trigger" in reason for reason in result["reasons"]))
+
+    def test_low_resolution_image_fails_closed(self):
+        items = [sample(i, ("character", "guardian", "environment")[i % 3]) for i in range(15)]
+        items[4] = sample(4, "guardian", width=768, height=768)
+        result = evaluate_training_manifest(items)
+        self.assertFalse(result["ready"])
+        self.assertTrue(any("1024px" in reason for reason in result["reasons"]))
+
+    def test_style_words_in_caption_fail_closed(self):
+        items = [sample(i, ("character", "guardian", "environment")[i % 3]) for i in range(15)]
+        items[7] = sample(
+            7,
+            "guardian",
+            caption=f"{REQUIRED_TRIGGER}, fox companion in JRPG style on a forest path",
+        )
+        result = evaluate_training_manifest(items)
+        self.assertFalse(result["ready"])
+        self.assertTrue(any("describe content rather than naming the visual style" in reason for reason in result["reasons"]))
+
+    def test_portrait_or_landscape_can_pass_if_long_edge_is_large_enough(self):
+        items = [sample(i, ("character", "guardian", "environment")[i % 3]) for i in range(15)]
+        items[0] = sample(0, "character", width=768, height=1024)
+        items[1] = sample(1, "guardian", width=1280, height=720)
+        result = evaluate_training_manifest(items)
+        self.assertTrue(result["ready"])
 
 
 if __name__ == "__main__":
