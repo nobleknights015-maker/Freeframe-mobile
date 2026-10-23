@@ -1,0 +1,99 @@
+name: Start FreeFrame Guardian Repair Comparison
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/freeframe/guardian-repair-trigger.txt'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: freeframe-guardian-repair-comparison-v1
+  cancel-in-progress: true
+
+jobs:
+  guardian-repair:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+    steps:
+      - name: Check out isolated cloud worker branch
+        uses: actions/checkout@v4
+        with:
+          ref: freeframe-modal-worker
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Modal CLI
+        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2'
+      - name: Compile current isolated worker
+        run: python -m compileall -q modal_worker
+      - name: Deploy current isolated worker
+        run: modal deploy --strategy recreate modal_worker/freeframe_worker.py
+      - name: Generate bounded Guardian baseline versus repair comparison
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -u - <<'PY'
+          import base64, hashlib, json, sys
+          from pathlib import Path
+          import modal
+
+          sys.path.insert(0, 'modal_worker')
+          from guardian_composition_policy import GUARDIAN_COMPOSITION_VERSION, apply_guardian_composition
+          from production_presets import get_preset
+
+          cases = [
+              ('emberfox', 'small emberfox Plush Guardian with warm stitched fur and tiny glowing accents', 4401),
+              ('mossbun', 'small mossbun Plush Guardian with leaf-shaped ears and green thread seams', 4402),
+              ('cloudram', 'small cloudram Plush Guardian with curled fleece and pale blue magical accents', 4403),
+              ('riverotter', 'small riverotter Plush Guardian with smooth sewn body and aqua thread accents', 4404),
+          ]
+          out = Path('freeframe-guardian-repair-comparison'); out.mkdir(exist_ok=True)
+          generator = modal.Cls.from_name('freeframe-worker', 'FreeFrameGenerator')()
+          results = []
+
+          for label, prompt, seed in cases:
+              base = get_preset('plushbound_guardian').apply(prompt, seed=seed)
+              requests = [('baseline', base), ('repair', apply_guardian_composition(base))]
+              for variant, request in requests:
+                  print(f'[guardian] {label}/{variant}: start', flush=True)
+                  result = generator.generate.remote(request)
+                  raw = base64.b64decode(result['image_base64'], validate=True)
+                  assert hashlib.sha256(raw).hexdigest() == result['sha256']
+                  filename = f'{label}-{variant}.png'
+                  (out / filename).write_bytes(raw)
+                  results.append({
+                      'guardian': label,
+                      'variant': variant,
+                      'file': filename,
+                      'seed': seed,
+                      'sha256': result['sha256'],
+                      'width': result['width'],
+                      'height': result['height'],
+                      'elapsed_seconds': result['elapsed_seconds'],
+                      'guardian_composition_version': request.get('guardian_composition_version'),
+                  })
+                  print(f"[guardian] {label}/{variant}: complete in {result['elapsed_seconds']}s", flush=True)
+
+          (out / 'manifest.json').write_text(json.dumps({
+              'bounded': True,
+              'count': len(results),
+              'guardian_composition_version': GUARDIAN_COMPOSITION_VERSION,
+              'full_batch_authorized': False,
+              'results': results,
+          }, indent=2) + '\n')
+          PY
+      - name: Upload comparison artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: freeframe-guardian-repair-comparison
+          path: freeframe-guardian-repair-comparison/
+          if-no-files-found: error
+          retention-days: 7
