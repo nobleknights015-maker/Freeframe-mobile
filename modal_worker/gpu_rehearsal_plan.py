@@ -1,11 +1,9 @@
-"""Deterministic 32-generation rehearsal using the four GPU-proven master presets."""
+"""Deterministic 32-generation rehearsal using production request policy."""
 from __future__ import annotations
 
-from guardian_composition_policy import apply_guardian_composition
-from production_presets import get_preset
-from production_style_policy import apply_production_style
+from production_request_builder import build_production_request
 
-GPU_REHEARSAL_VERSION = "plushbound-gpu-rehearsal-v3"
+GPU_REHEARSAL_VERSION = "plushbound-gpu-rehearsal-v4"
 
 _PROMPTS = {
     "plushbound_character": [
@@ -57,10 +55,7 @@ def rehearsal_requests() -> list[dict]:
     for preset_name in sorted(_PROMPTS):
         for index, prompt in enumerate(_PROMPTS[preset_name]):
             seed += 1
-            base_request = get_preset(preset_name).apply(prompt, seed=seed)
-            if preset_name == "plushbound_guardian":
-                base_request = apply_guardian_composition(base_request)
-            request = apply_production_style(preset_name, base_request)
+            request = build_production_request(preset_name, prompt, seed=seed)
             requests.append({"asset_id": f"{preset_name}-{index+1:02d}", "preset": preset_name, "request": request})
     assert len(requests) == 32
     return requests
