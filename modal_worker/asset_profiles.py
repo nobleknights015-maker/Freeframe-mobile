@@ -25,10 +25,10 @@ PROFILES = {
     "mv_tileset_a4": AssetProfile("mv_tileset_a4", exact_width=768, exact_height=720),
     "mv_tileset_a5": AssetProfile("mv_tileset_a5", exact_width=384, exact_height=768),
     "mv_tileset_b_e": AssetProfile("mv_tileset_b_e", exact_width=768, exact_height=768),
-    # Character sheets vary by sprite size; enforce the 12x8 regular-sheet grid.
-    "mv_character_sheet": AssetProfile("mv_character_sheet", width_multiple=12, height_multiple=8),
-    # Single-character $ sheets use a 3x4 grid.
-    "mv_single_character": AssetProfile("mv_single_character", width_multiple=3, height_multiple=4),
+    # Plushbound editor contract: regular sheets use eight 3x4 actors at 48x48 per frame.
+    "mv_character_sheet": AssetProfile("mv_character_sheet", exact_width=576, exact_height=384),
+    # Plushbound editor contract: one $-prefixed actor, 3x4 frames at exactly 48x48.
+    "mv_single_character": AssetProfile("mv_single_character", exact_width=144, exact_height=192),
     "generic_rgba_png": AssetProfile("generic_rgba_png"),
 }
 
