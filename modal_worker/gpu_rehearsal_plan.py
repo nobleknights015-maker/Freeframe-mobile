@@ -1,7 +1,10 @@
 """Deterministic 32-generation rehearsal using production request policy."""
 from __future__ import annotations
 
-from production_request_builder import build_production_request
+try:
+    from .production_request_builder import build_production_request
+except ImportError:  # direct-module compatibility for local CI/tests
+    from production_request_builder import build_production_request
 
 GPU_REHEARSAL_VERSION = "plushbound-gpu-rehearsal-v4"
 
