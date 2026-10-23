@@ -1,0 +1,64 @@
+name: FreeFrame Four-Lane Production Canary
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - freeframe-modal-worker
+    paths:
+      - '.github/workflows/run-production-canary.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: freeframe-four-lane-production-canary
+  cancel-in-progress: false
+
+jobs:
+  canary:
+    name: canary-${{ matrix.case_id }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        case_id:
+          - character_adventurer
+          - guardian_meadow
+          - enemy_forest
+          - environment_elyndor
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+      CASE_ID: ${{ matrix.case_id }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Require Modal credentials
+        shell: bash
+        run: |
+          test -n "$MODAL_TOKEN_ID" || { echo 'MODAL_TOKEN_ID secret is not configured.' >&2; exit 1; }
+          test -n "$MODAL_TOKEN_SECRET" || { echo 'MODAL_TOKEN_SECRET secret is not configured.' >&2; exit 1; }
+      - name: Install Modal CLI
+        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2'
+      - name: Compile canary surface
+        run: python -m compileall -q modal_worker
+      - name: Run one bounded production representative
+        shell: bash
+        run: |
+          set -o pipefail
+          modal run modal_worker/klein_l4_benchmark.py --case-id "$CASE_ID" | tee "canary-${CASE_ID}.log"
+          mv klein-l4-output.png "canary-${CASE_ID}.png"
+      - name: Upload canary product and log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-canary-${{ matrix.case_id }}-${{ github.run_id }}
+          path: |
+            canary-${{ matrix.case_id }}.log
+            canary-${{ matrix.case_id }}.png
+          if-no-files-found: warn
+          retention-days: 7
