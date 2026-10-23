@@ -4,13 +4,17 @@ These profiles describe visual qualities observed in the user's RPG Maker MV and
 Trinity references without copying characters, logos, or layouts. They are kept
 separate from V3.2 composition presets so proven anatomy/composition constraints
 remain frozen while rendering style is calibrated independently.
+
+Style language is intentionally placed *before* the long V3.2 production prompt.
+SDXL-family text encoders have finite token windows, and appending style language
+after a long composition prompt can make distinct profiles tokenize identically.
 """
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 
 
-STYLE_PROFILE_VERSION = "mt1.0"
+STYLE_PROFILE_VERSION = "mt1.1"
 
 COMMON_AVOID = (
     "early-2000s visual novel look, retro anime wallpaper, soft airbrushed face, "
@@ -26,15 +30,17 @@ class StyleProfile:
     negative: str = COMMON_AVOID
 
     def apply(self, request: dict) -> dict:
-        """Return a copy of a generation request with deterministic style steering."""
+        """Return a copy of a generation request with style tokens given priority."""
         result = dict(request)
         prompt = str(result.get("prompt", "")).strip()
         if not prompt:
             raise ValueError("request prompt must not be empty")
         existing_negative = str(result.get("negative_prompt", "")).strip()
-        result["prompt"] = f"{prompt}. {self.positive}"
+
+        # Put style steering first so it survives finite CLIP tokenizer windows.
+        result["prompt"] = f"{self.positive}. {prompt}"
         result["negative_prompt"] = ", ".join(
-            part for part in (existing_negative, self.negative) if part
+            part for part in (self.negative, existing_negative) if part
         )
         result["render_style_profile"] = self.name
         result["render_style_version"] = STYLE_PROFILE_VERSION
