@@ -1,10 +1,4 @@
-"""FreeFrame headless Modal worker.
-
-This is deliberately isolated from the Android app. It provides a serverless GPU
-execution surface for FreeFrame-compatible image generation and asset batches.
-Model weights are cached in a persistent Modal Volume and are never committed to
-this repository.
-"""
+"""FreeFrame Modal GPU worker."""
 from __future__ import annotations
 
 import base64
@@ -17,13 +11,13 @@ from dataclasses import asdict, dataclass
 import modal
 
 APP_NAME = "freeframe-worker"
-MODEL_VOLUME = "freeframe-model-cache"
-CACHE_DIR = "/cache"
 DEFAULT_MODEL = os.environ.get("FREEFRAME_MODEL", "stabilityai/stable-diffusion-xl-base-1.0")
+CACHE_DIR = "/model-cache"
 
+app = modal.App(APP_NAME)
+model_cache = modal.Volume.from_name("freeframe-model-cache", create_if_missing=True)
 image = (
     modal.Image.debian_slim(python_version="3.11")
-    .apt_install("libgl1", "libglib2.0-0")
     .pip_install(
         "accelerate>=1.1,<2",
         "diffusers>=0.31,<1",
@@ -37,58 +31,55 @@ image = (
     .add_local_python_source("modal_worker")
 )
 
-app = modal.App(APP_NAME)
-model_cache = modal.Volume.from_name(MODEL_VOLUME, create_if_missing=True)
-
 
 @dataclass(frozen=True)
 class GenerationSpec:
     prompt: str
-    negative_prompt: str = ""
-    width: int = 512
-    height: int = 512
-    steps: int = 4
-    guidance_scale: float = 0.0
-    seed: int = 0
+    negative_prompt: str
+    width: int
+    height: int
+    steps: int
+    guidance_scale: float
+    seed: int
 
     @classmethod
     def from_request(cls, request: dict) -> "GenerationSpec":
         return cls(
-            prompt=str(request.get("prompt", "")),
-            negative_prompt=str(request.get("negative_prompt", "")),
-            width=int(request.get("width", 512)),
-            height=int(request.get("height", 512)),
-            steps=int(request.get("steps", 4)),
-            guidance_scale=float(request.get("guidance_scale", 0.0)),
+            prompt=str(request.get("prompt", "")).strip(),
+            negative_prompt=str(request.get("negative_prompt", "")).strip(),
+            width=int(request.get("width", 768)),
+            height=int(request.get("height", 768)),
+            steps=int(request.get("steps", 28)),
+            guidance_scale=float(request.get("guidance_scale", 6.0)),
             seed=int(request.get("seed", 0)),
         )
 
     def validate(self) -> None:
-        if not self.prompt.strip():
-            raise ValueError("prompt must not be empty")
-        if self.width < 64 or self.height < 64 or self.width > 1536 or self.height > 1536:
-            raise ValueError("width/height must be between 64 and 1536")
+        if not self.prompt:
+            raise ValueError("prompt is required")
+        if self.width < 256 or self.height < 256 or self.width > 1536 or self.height > 1536:
+            raise ValueError("width and height must be between 256 and 1536")
         if self.width % 8 or self.height % 8:
-            raise ValueError("width/height must be divisible by 8")
-        if not 1 <= self.steps <= 100:
+            raise ValueError("width and height must be divisible by 8")
+        if self.steps < 1 or self.steps > 100:
             raise ValueError("steps must be between 1 and 100")
-        if not 0 <= self.guidance_scale <= 30:
+        if self.guidance_scale < 0 or self.guidance_scale > 30:
             raise ValueError("guidance_scale must be between 0 and 30")
-        if not 0 <= self.seed <= 2**63 - 1:
-            raise ValueError("seed must be between 0 and 2^63-1")
+        if self.seed < 0 or self.seed > 2**32 - 1:
+            raise ValueError("seed must be a uint32")
 
 
-def _png_payload(rendered_image) -> dict:
+def _png_payload(image_obj) -> dict:
     out = io.BytesIO()
-    rendered_image.save(out, format="PNG")
+    image_obj.save(out, format="PNG", optimize=False)
     raw = out.getvalue()
     return {
         "mime_type": "image/png",
-        "sha256": hashlib.sha256(raw).hexdigest(),
-        "bytes": len(raw),
         "image_base64": base64.b64encode(raw).decode("ascii"),
-        "width": rendered_image.width,
-        "height": rendered_image.height,
+        "bytes": len(raw),
+        "sha256": hashlib.sha256(raw).hexdigest(),
+        "width": image_obj.width,
+        "height": image_obj.height,
     }
 
 
@@ -161,14 +152,17 @@ class FreeFrameExtractor:
         if len(source) > 32 * 1024 * 1024:
             raise ValueError("image exceeds 32 MiB extraction limit")
         started = time.monotonic()
-        result = extract_and_validate(source, self.extractor)
+        output_png, metadata = extract_and_validate(source, self.extractor)
         return {
             "mime_type": "image/png",
-            "image_base64": base64.b64encode(result.png).decode("ascii"),
-            "bytes": len(result.png),
-            "provider": result.provider,
-            "model": result.model,
-            "metadata": result.metadata,
+            "image_base64": base64.b64encode(output_png).decode("ascii"),
+            "bytes": len(output_png),
+            "sha256": metadata["output_sha256"],
+            "width": metadata["output_width"],
+            "height": metadata["output_height"],
+            "provider": metadata["extraction_provider"],
+            "model": metadata["extraction_model"],
+            "metadata": metadata,
             "elapsed_seconds": round(time.monotonic() - started, 3),
         }
 
