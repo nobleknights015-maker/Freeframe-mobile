@@ -6,17 +6,18 @@ from extraction_smoke_plan import (
     SMOKE_ASSET_IDS,
     extraction_smoke_requests,
 )
+from production_presets import PLUSHBOUND_STYLE_VERSION
 
 
 class ExtractionSmokePlanTests(unittest.TestCase):
-    def test_plan_is_exactly_two_v32_subject_assets(self):
+    def test_plan_is_exactly_two_current_subject_assets(self):
         plan = extraction_smoke_requests()
-        self.assertEqual(EXTRACTION_SMOKE_VERSION, "plushbound-extraction-smoke-v1")
+        self.assertEqual(EXTRACTION_SMOKE_VERSION, "plushbound-extraction-smoke-v2")
         self.assertEqual(tuple(item["asset_id"] for item in plan), SMOKE_ASSET_IDS)
         self.assertEqual(len(plan), 2)
         for item in plan:
             self.assertTrue(requires_subject_extraction(item["asset_id"]))
-            self.assertEqual(item["request"]["style_version"], "v3.2")
+            self.assertEqual(item["request"]["style_version"], PLUSHBOUND_STYLE_VERSION)
             self.assertEqual(item["request"]["seed"], item["seed"])
 
     def test_environment_is_never_in_smoke_plan(self):
