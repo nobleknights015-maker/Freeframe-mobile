@@ -6,14 +6,14 @@ on:
       case_id:
         description: Representative benchmark case
         required: true
-        default: environment_elyndor
+        default: enemy_forest
         type: choice
         options:
+          - enemy_forest
           - environment_elyndor
           - penney_modeling_stress
           - guardian_meadow
           - character_adventurer
-          - enemy_forest
   push:
     branches:
       - freeframe-modal-worker
@@ -38,7 +38,7 @@ jobs:
     env:
       MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
       MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
-      CASE_ID: ${{ github.event.inputs.case_id || 'environment_elyndor' }}
+      CASE_ID: ${{ github.event.inputs.case_id || 'enemy_forest' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
