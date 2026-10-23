@@ -17,9 +17,11 @@ class StyleProfileTests(unittest.TestCase):
                 applied = profile.apply(base)
                 self.assertEqual(base["prompt"], "adult fantasy traveler")
                 self.assertEqual(applied["render_style_profile"], name)
-                self.assertEqual(applied["render_style_version"], "mt1.0")
+                self.assertEqual(applied["render_style_version"], "mt1.1")
                 self.assertEqual(applied["seed"], 42)
+                self.assertTrue(applied["prompt"].startswith(profile.positive))
                 self.assertIn("adult fantasy traveler", applied["prompt"])
+                self.assertTrue(applied["negative_prompt"].startswith(profile.negative))
                 self.assertIn("early-2000s visual novel look", applied["negative_prompt"])
                 self.assertEqual(profile.metadata()["version"], STYLE_PROFILE_VERSION)
 
