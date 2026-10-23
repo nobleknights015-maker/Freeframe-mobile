@@ -37,14 +37,13 @@ CASES = (
         case_id="penney_modeling_stress",
         preset="plushbound_character",
         prompt=(
-            "Penney Nguyen, clearly adult woman age 25, accurate 4 foot 11 inch petite height, "
-            "naturally plump proportional build, extremely short low-rise fitted black spandex shorts, "
-            "very deep-cut violet spaghetti-strap crop top fitted closely across the bust with a loose "
-            "waist and bare midriff, pronounced but covered cleavage, confident mature pin-up fashion pose, "
-            "playful over-the-shoulder body angle while keeping the full body visible from head through feet, "
-            "both hands fully visible, natural fingers and limbs, anatomically normal body, realistic fabric "
-            "tension and folds, clean single-person composition, sensual adult modeling presentation, no nudity, "
-            "no exposed nipples, no exposed genitals, no sexual activity"
+            "Penney Nguyen, clearly adult woman age 25, petite 4 foot 11 inch height and naturally plump proportional build, "
+            "original Plushbound Legends field-adventurer design, short black bob haircut, expressive dark eyes, "
+            "violet fitted travel tunic with asymmetric wrapped front, cropped charcoal bolero jacket with subtle stitched trim, "
+            "layered utility belt and small leather pouches, fitted black travel shorts over opaque dark thigh wraps, "
+            "knee-high brown lace-up field boots, restrained brass hardware, tiny spool-and-thread motif worked into one belt charm, "
+            "handcrafted fantasy tailoring that feels practical rather than cosplay, confident relaxed stance, full body visible, "
+            "both hands fully visible with natural fingers, normal anatomy, one original character only, no logo and no text"
         ),
         seed=6116,
     ),
