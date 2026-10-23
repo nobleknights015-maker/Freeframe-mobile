@@ -34,6 +34,18 @@ CASES = (
         seed=2718,
     ),
     BenchmarkCase(
+        case_id="penney_modeling_stress",
+        preset="plushbound_character",
+        prompt=(
+            "Penney Nguyen, clearly adult woman age 25, accurate 4 foot 11 inch petite height, "
+            "naturally plump proportional build, fitted black spandex shorts and a fitted violet "
+            "sleeveless athletic crop top, tasteful confident fashion-model pose, full body from "
+            "head through feet, both hands fully visible, natural fingers and limbs, anatomically "
+            "normal body, clean single-person composition, mature non-explicit modeling presentation"
+        ),
+        seed=6116,
+    ),
+    BenchmarkCase(
         case_id="enemy_forest",
         preset="plushbound_enemy",
         prompt="mossy woodland prowler with wooden mask-like facial plating, full creature visible",
