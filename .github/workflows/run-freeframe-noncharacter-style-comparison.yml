@@ -1,0 +1,102 @@
+name: Start FreeFrame Noncharacter Trinity Style Comparison
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/freeframe/noncharacter-style-trigger.txt'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: freeframe-noncharacter-style-comparison-v1
+  cancel-in-progress: true
+
+jobs:
+  style-comparison:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+    steps:
+      - name: Check out isolated cloud worker branch
+        uses: actions/checkout@v4
+        with:
+          ref: freeframe-modal-worker
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Modal CLI
+        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2'
+      - name: Compile current isolated worker
+        run: python -m compileall -q modal_worker
+      - name: Deploy current isolated worker
+        run: modal deploy --strategy recreate modal_worker/freeframe_worker.py
+      - name: Generate bounded baseline versus Trinity comparisons
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -u - <<'PY'
+          import base64, hashlib, json, sys
+          from pathlib import Path
+          import modal
+
+          sys.path.insert(0, 'modal_worker')
+          from production_presets import get_preset
+          from style_profiles import STYLE_PROFILE_VERSION, get_style_profile
+
+          cases = [
+              ('guardian', 'plushbound_guardian', 'small emberfox Plush Guardian with warm stitched fur and tiny glowing accents', 3301),
+              ('enemy', 'plushbound_enemy', 'mossback woodland prowler, quadruped forest monster, bark armor plates and leaf mane', 3302),
+              ('environment', 'plushbound_environment', 'sunny plains of Elyndor with a winding path, wildflowers and distant handcrafted village', 3303),
+          ]
+          out = Path('freeframe-noncharacter-style-comparison'); out.mkdir(exist_ok=True)
+          generator = modal.Cls.from_name('freeframe-worker', 'FreeFrameGenerator')()
+          results = []
+
+          for label, preset_name, prompt, seed in cases:
+              base = get_preset(preset_name).apply(prompt, seed=seed)
+              requests = [
+                  ('baseline', base),
+                  ('trinity', get_style_profile('plushbound_trinity').apply(base)),
+              ]
+              for variant, request in requests:
+                  print(f'[style] {label}/{variant}: start', flush=True)
+                  result = generator.generate.remote(request)
+                  raw = base64.b64decode(result['image_base64'], validate=True)
+                  assert hashlib.sha256(raw).hexdigest() == result['sha256']
+                  filename = f'{label}-{variant}.png'
+                  (out / filename).write_bytes(raw)
+                  results.append({
+                      'asset_class': label,
+                      'preset': preset_name,
+                      'variant': variant,
+                      'file': filename,
+                      'seed': seed,
+                      'sha256': result['sha256'],
+                      'width': result['width'],
+                      'height': result['height'],
+                      'elapsed_seconds': result['elapsed_seconds'],
+                      'style_profile': request.get('render_style_profile'),
+                  })
+                  print(f"[style] {label}/{variant}: complete in {result['elapsed_seconds']}s", flush=True)
+
+          (out / 'manifest.json').write_text(json.dumps({
+              'bounded': True,
+              'count': len(results),
+              'style_profile_version': STYLE_PROFILE_VERSION,
+              'full_batch_authorized': False,
+              'results': results,
+          }, indent=2) + '\n')
+          PY
+      - name: Upload comparison artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: freeframe-noncharacter-style-comparison
+          path: freeframe-noncharacter-style-comparison/
+          if-no-files-found: error
+          retention-days: 7
