@@ -10,6 +10,8 @@ from __future__ import annotations
 from dataclasses import dataclass, asdict
 from typing import Literal
 
+from extraction_routing import requires_subject_extraction
+
 
 AssetClass = Literal[
     "character_master",
@@ -43,7 +45,7 @@ POLICIES: dict[str, ProductionPolicy] = {
     "portrait_master": ProductionPolicy("portrait_master", single_subject=True, target_aspect="1:1"),
     "sprite_master": ProductionPolicy("sprite_master", require_alpha=True, single_subject=True),
     "tileset_master": ProductionPolicy("tileset_master", require_alpha=True),
-    "icon_master": ProductionPolicy("icon_master", require_alpha=True, single_subject=True, target_aspect="1:1"),
+    "icon_master": ProductionPolicy("icon_master", single_subject=True, target_aspect="1:1"),
 }
 
 
@@ -97,9 +99,14 @@ def inspect_master(
     if text_artifact_detected and not policy.allow_text:
         warnings.append("text-like artifact requires cleanup")
 
-    needs_background_removal = policy.require_alpha and not has_alpha
+    # Raw subject masters deliberately route through semantic extraction even when
+    # their PNG container happens to carry an opaque alpha channel. Scene masters
+    # and downstream composites do not. This is the single routing authority.
+    needs_background_removal = requires_subject_extraction(asset_class)
     if needs_background_removal:
-        warnings.append("transparent production asset requires background removal")
+        warnings.append("subject master requires semantic background removal")
+    elif policy.require_alpha and not has_alpha:
+        warnings.append("downstream engine asset requires alpha before packaging")
 
     return InspectionResult(
         accepted=not errors,
@@ -116,7 +123,7 @@ def production_stage(asset_class: str) -> str:
     """Describe the next deterministic stage after a clean generated master."""
     if asset_class in {"sprite_master", "tileset_master"}:
         return "composite_and_validate_engine_sheet"
-    if asset_class in {"character_master", "guardian_master", "enemy_master", "portrait_master", "icon_master"}:
+    if requires_subject_extraction(asset_class):
         return "cleanup_extract_and_package"
     if asset_class == "environment_master":
         return "cleanup_resize_and_package"
