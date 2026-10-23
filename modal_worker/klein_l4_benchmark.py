@@ -44,28 +44,20 @@ app = modal.App(APP_NAME)
 model_cache = modal.Volume.from_name(MODEL_VOLUME, create_if_missing=True)
 
 
-# Mirrors the current production style policy for renderer calibration.
-# Guardians remain unstyled until the dedicated 2D creature treatment is proven.
-BENCHMARK_STYLE_POLICY = {
-    "plushbound_character": "plushbound_trinity",
-    "plushbound_enemy": "plushbound_trinity",
-    "plushbound_environment": "plushbound_trinity",
-}
-
-
 def select_case(case_id: str) -> dict:
     from modal_worker.benchmark_plan import CASES
     from modal_worker.model_catalog import apply_model_defaults, get_candidate
-    from modal_worker.style_profiles import get_style_profile
+    from modal_worker.production_style_policy import apply_production_style
 
     matches = [case for case in CASES if case.case_id == case_id]
     if len(matches) != 1:
         raise ValueError(f"unknown benchmark case: {case_id}")
     case = matches[0]
     request = case.request()
-    style_name = BENCHMARK_STYLE_POLICY.get(case.preset)
-    if style_name:
-        request = get_style_profile(style_name).apply(request)
+    # Use the exact production routing instead of a duplicated benchmark map.
+    # This prevents calibration from silently drifting away from the profiles
+    # that production would actually use.
+    request = apply_production_style(case.preset, request)
     candidate = get_candidate("flux2_klein_4b_candidate")
     request = apply_model_defaults(request, candidate)
     if request["width"] % 16 or request["height"] % 16:
@@ -116,7 +108,7 @@ class KleinBenchmarkRunner:
         result.save(out, format="PNG")
         raw = out.getvalue()
         return {
-            "benchmark_version": "klein-l4-v3-style-calibration",
+            "benchmark_version": "klein-l4-v4-production-style-routing",
             "case_id": case_id,
             "model": MODEL_ID,
             "gpu": "L4",
@@ -130,6 +122,7 @@ class KleinBenchmarkRunner:
             "seed": int(request["seed"]),
             "style_profile": request.get("render_style_profile"),
             "style_version": request.get("render_style_version"),
+            "style_policy_version": request.get("production_style_policy_version"),
             "budget": benchmark_decision(elapsed),
             "production_authorized": False,
             "png_base64": base64.b64encode(raw).decode("ascii"),
@@ -137,7 +130,7 @@ class KleinBenchmarkRunner:
 
 
 @app.local_entrypoint()
-def main(case_id: str = "penney_modeling_stress"):
+def main(case_id: str = "environment_elyndor"):
     result = KleinBenchmarkRunner().run_case.remote(case_id)
     png_base64 = result.pop("png_base64")
     with open(OUTPUT_PNG, "wb") as handle:
