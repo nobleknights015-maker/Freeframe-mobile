@@ -123,7 +123,7 @@ class KleinBenchmarkRunner:
         result.save(out, format="PNG")
         raw = out.getvalue()
         return {
-            "benchmark_version": "klein-l4-v7-canon-reference-calibration",
+            "benchmark_version": "klein-l4-v8-canon-reference-calibration",
             "case_id": case_id,
             "model": MODEL_ID,
             "gpu": "L4",
