@@ -1,0 +1,77 @@
+name: Start FreeFrame Extraction Smoke Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      start_extraction_smoke:
+        description: 'START bounded 2-asset extraction smoke test'
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: freeframe-extraction-smoke
+  cancel-in-progress: false
+
+jobs:
+  extraction-smoke:
+    if: ${{ inputs.start_extraction_smoke }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+    steps:
+      - name: Check out isolated cloud worker branch
+        uses: actions/checkout@v4
+        with:
+          ref: freeframe-modal-worker
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Modal CLI
+        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2'
+      - name: Compile current isolated worker
+        run: python -m compileall -q modal_worker
+      - name: Deploy current isolated worker
+        run: modal deploy --strategy recreate modal_worker/freeframe_worker.py
+      - name: Run bounded generation and extraction validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import base64, hashlib, json, sys
+          from pathlib import Path
+          import modal
+          sys.path.insert(0, 'modal_worker')
+          from extraction_smoke_plan import EXTRACTION_SMOKE_VERSION, extraction_smoke_requests
+          plan = extraction_smoke_requests(); assert len(plan) == 2
+          out = Path('freeframe-extraction-smoke'); out.mkdir(exist_ok=True)
+          generator = modal.Cls.from_name('freeframe-worker', 'FreeFrameGenerator')()
+          extractor = modal.Cls.from_name('freeframe-worker', 'FreeFrameExtractor')()
+          results = []
+          for number, item in enumerate(plan, 1):
+              generated = generator.generate.remote(item['request'])
+              source = base64.b64decode(generated['image_base64'], validate=True)
+              extracted = extractor.extract.remote(generated['image_base64'])
+              cutout = base64.b64decode(extracted['image_base64'], validate=True)
+              assert hashlib.sha256(source).hexdigest() == generated['sha256']
+              assert hashlib.sha256(cutout).hexdigest() == extracted['sha256']
+              assert extracted['width'] == generated['width'] and extracted['height'] == generated['height']
+              assert extracted['metadata']['source_sha256'] == generated['sha256']
+              stem = f"{number:02d}-{item['asset_id']}"
+              (out / f'{stem}-source.png').write_bytes(source)
+              (out / f'{stem}-cutout.png').write_bytes(cutout)
+              results.append({'asset_id':item['asset_id'],'seed':item['seed'],'source_sha256':generated['sha256'],'output_sha256':extracted['sha256'],'width':extracted['width'],'height':extracted['height'],'generation_seconds':generated['elapsed_seconds'],'extraction_seconds':extracted['elapsed_seconds'],'provider':extracted['metadata']['extraction_provider'],'model':extracted['metadata']['extraction_model'],'metrics':extracted['metadata']['extraction_metrics']})
+          (out / 'manifest.json').write_text(json.dumps({'version':EXTRACTION_SMOKE_VERSION,'bounded':True,'count':2,'full_batch_authorized':False,'results':results},indent=2)+'\n')
+          PY
+      - name: Upload extraction smoke artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: freeframe-extraction-smoke
+          path: freeframe-extraction-smoke/
+          if-no-files-found: error
+          retention-days: 7
