@@ -36,6 +36,18 @@ class ReferenceConditioning:
         return data
 
 
+def adapter_scale_for(reference: ReferenceConditioning) -> float | dict[str, Any]:
+    """Return the Diffusers IP-Adapter scale for the requested reference mode.
+
+    Style mode restricts adapter influence to the up block's style-sensitive
+    attention path so text remains dominant for subject identity/composition.
+    Balanced mode intentionally applies the scalar to all supported blocks.
+    """
+    if reference.mode == "style":
+        return {"up": {"block_0": [0.0, reference.scale, 0.0]}}
+    return reference.scale
+
+
 def _decode_reference(
     raw: bytes,
     *,
