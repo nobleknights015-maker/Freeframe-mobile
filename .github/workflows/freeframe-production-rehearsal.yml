@@ -1,0 +1,82 @@
+name: Run FreeFrame 32-Asset Production Rehearsal
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: freeframe-production-rehearsal
+  cancel-in-progress: false
+
+jobs:
+  rehearsal:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+    steps:
+      - name: Check out isolated cloud worker branch
+        uses: actions/checkout@v4
+        with:
+          ref: freeframe-modal-worker
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Require Modal credentials
+        shell: bash
+        run: |
+          test -n "$MODAL_TOKEN_ID" || { echo 'MODAL_TOKEN_ID secret is not configured.' >&2; exit 1; }
+          test -n "$MODAL_TOKEN_SECRET" || { echo 'MODAL_TOKEN_SECRET secret is not configured.' >&2; exit 1; }
+      - name: Install Modal CLI
+        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2'
+      - name: Compile worker and production modules
+        run: python -m compileall -q modal_worker
+      - name: Deploy current isolated worker
+        run: modal deploy --strategy recreate modal_worker/freeframe_worker.py
+      - name: Run bounded 32-asset GPU rehearsal
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import base64, hashlib, json, sys, time
+          from pathlib import Path
+          import modal
+          sys.path.insert(0, 'modal_worker')
+          from production_presets import get_preset, PLUSHBOUND_STYLE_VERSION
+
+          cases = [
+              ('character', 'plushbound_character', 'adult Plushtopia field adventurer, practical layered travel clothes, leather satchel, calm neutral stance'),
+              ('guardian', 'plushbound_guardian', 'small foxlike Plush Guardian, moss green fabric accents, embroidered leaf charm, alert friendly pose'),
+              ('enemy', 'plushbound_enemy', 'mossback woodland prowler, quadruped forest monster, bark armor plates, leaf mane, threatening battle stance'),
+              ('environment', 'plushbound_environment', 'sunny plains of Elyndor, rolling grassland, wildflowers, winding trail, distant handcrafted fantasy village'),
+          ]
+          out = Path('freeframe-production-rehearsal'); out.mkdir(exist_ok=True)
+          G = modal.Cls.from_name('freeframe-worker', 'FreeFrameGenerator')()
+          results=[]; started=time.time()
+          for i in range(32):
+              kind, preset_name, prompt = cases[i % len(cases)]
+              seed = 9100 + i
+              request = get_preset(preset_name).apply(prompt, seed=seed)
+              assert request['style_version'] == PLUSHBOUND_STYLE_VERSION
+              payload = G.generate.remote(request)
+              raw = base64.b64decode(payload['image_base64'], validate=True)
+              assert payload['mime_type']=='image/png'
+              assert payload['width']==request['width'] and payload['height']==request['height']
+              assert hashlib.sha256(raw).hexdigest()==payload['sha256'] and len(raw)==payload['bytes']
+              asset_id=f'{kind}-{i:02d}'
+              (out/f'{asset_id}.png').write_bytes(raw)
+              results.append({'asset_id':asset_id,'kind':kind,'preset':preset_name,'style_version':request['style_version'],'seed':seed,'model':payload['model'],'width':payload['width'],'height':payload['height'],'bytes':payload['bytes'],'sha256':payload['sha256'],'elapsed_seconds':payload['elapsed_seconds']})
+          manifest={'validation':'bounded-32-asset-gpu-rehearsal','count':len(results),'style_version':PLUSHBOUND_STYLE_VERSION,'wall_seconds':round(time.time()-started,3),'requires_explicit_full_batch_approval':True,'results':results}
+          assert len(results)==32
+          (out/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+          PY
+      - name: Upload rehearsal artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: freeframe-production-rehearsal-32
+          path: freeframe-production-rehearsal/
+          if-no-files-found: error
+          retention-days: 7
