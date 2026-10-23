@@ -1,9 +1,10 @@
 """Production render-style policy for Plushbound master generation.
 
 Only styles that have passed bounded GPU comparison are enabled here. Category
-routing prevents character key-art language from leaking into environment or
-creature generation. Guardian remains unstyled until its dedicated 2D profile is
-validated.
+routing prevents character key-art language from leaking into environment,
+creature, or Guardian generation. Each major asset class now has its own validated
+render profile; broader production remains separately gated by character style lock
+and rehearsal policy.
 """
 from __future__ import annotations
 
@@ -12,10 +13,11 @@ from typing import Any
 from modal_worker.style_profiles import STYLE_PROFILE_VERSION, get_style_profile
 
 
-PRODUCTION_STYLE_POLICY_VERSION = "style-policy-v3"
+PRODUCTION_STYLE_POLICY_VERSION = "style-policy-v4"
 
 VALIDATED_STYLE_BY_PRESET: dict[str, str] = {
     "plushbound_character": "plushbound_trinity",
+    "plushbound_guardian": "plushbound_guardian_2d_candidate",
     "plushbound_enemy": "plushbound_trinity_creature",
     "plushbound_environment": "plushbound_trinity_environment",
 }
