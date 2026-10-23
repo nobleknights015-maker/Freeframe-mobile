@@ -56,7 +56,11 @@ CASES = (
     BenchmarkCase(
         case_id="environment_elyndor",
         preset="plushbound_environment",
-        prompt="sunny plains of Elyndor, rolling flower fields, distant village, ancient cloth banners and winding road",
+        prompt=(
+            "sunny plains of Elyndor, broad rolling flower fields crossed by a winding dirt road, distant handcrafted fantasy village, "
+            "low wooded hills and far blue mountains, a few weathered cloth way-banners beside the road with purely decorative stitched motifs, "
+            "empty landscape with no people or creatures anywhere, no foreground hero, no title or lettering, no logo, no poster framing"
+        ),
         seed=5772,
     ),
 )
