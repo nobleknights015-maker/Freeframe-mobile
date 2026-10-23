@@ -6,6 +6,7 @@ import unittest
 from PIL import Image
 
 from reference_conditioning import (
+    DEFAULT_REFERENCE_MODE,
     DEFAULT_REFERENCE_SCALE,
     parse_reference_conditioning,
 )
@@ -30,11 +31,13 @@ class ReferenceConditioningTests(unittest.TestCase):
         self.assertEqual(parsed.width, 96)
         self.assertEqual(parsed.height, 80)
         self.assertEqual(parsed.scale, DEFAULT_REFERENCE_SCALE)
+        self.assertEqual(parsed.mode, DEFAULT_REFERENCE_MODE)
         self.assertEqual(len(parsed.sha256), 64)
         metadata = parsed.metadata()
         self.assertNotIn("image", metadata)
         self.assertEqual(metadata["width"], 96)
         self.assertIsNone(metadata["reference_id"])
+        self.assertEqual(metadata["mode"], "style")
 
     def test_cached_reference_resolves_by_sha(self):
         raw = _png()
@@ -46,6 +49,23 @@ class ReferenceConditioningTests(unittest.TestCase):
         self.assertEqual(parsed.reference_id, digest)
         self.assertEqual(parsed.sha256, digest)
         self.assertEqual(parsed.scale, 0.4)
+        self.assertEqual(parsed.mode, "style")
+
+    def test_balanced_mode_is_available_explicitly(self):
+        raw = _png()
+        parsed = parse_reference_conditioning({
+            "reference_image_base64": base64.b64encode(raw).decode("ascii"),
+            "reference_mode": "balanced",
+        })
+        self.assertEqual(parsed.mode, "balanced")
+
+    def test_invalid_mode_is_rejected(self):
+        raw = _png()
+        with self.assertRaises(ValueError):
+            parse_reference_conditioning({
+                "reference_image_base64": base64.b64encode(raw).decode("ascii"),
+                "reference_mode": "copy",
+            })
 
     def test_cached_reference_without_resolver_is_rejected(self):
         raw = _png()
