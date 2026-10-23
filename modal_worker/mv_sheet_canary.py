@@ -1,9 +1,10 @@
 """Bounded real-GPU canary for one editor-ready 3x4 Plushbound character sheet.
 
-The diffusion model generates twelve independent source frames on a near-white
-background.  The local entrypoint converts that background to alpha, then sends
-all twelve cells through the real production factory.  Success requires the final
-$ sheet to be exactly 144x192 RGBA PNG (48x48 cells) and engine-valid.
+The diffusion model first creates one canonical character reference, then uses that
+same reference to condition twelve directional/movement source frames. The local
+entrypoint converts the near-white background to alpha, sends all twelve cells
+through the real production factory, and requires an exact 144x192 RGBA PNG
+(48x48 cells) that passes the editor profile.
 
 This is a capability canary, not authorization for the 22k production run.
 """
@@ -26,6 +27,8 @@ CELL_WIDTH = 48
 CELL_HEIGHT = 48
 SHEET_WIDTH = 144
 SHEET_HEIGHT = 192
+REFERENCE_SEED = 18419
+BASE_SEED = 18420
 
 DIRECTIONS = (
     ("down", "facing toward the viewer"),
@@ -58,12 +61,22 @@ app = modal.App(APP_NAME)
 model_cache = modal.Volume.from_name(MODEL_VOLUME, create_if_missing=True)
 
 
+def identity_prompt() -> str:
+    return (
+        "single original Plushbound fantasy adventurer, adult, short dark travel coat with gold-brown trim, "
+        "tan leather cross-body satchel, dark trousers, practical brown boots, short dark hair, clean contemporary 2D JRPG game art, "
+        "full body visible, centered, one character only, no extra figures, no turnaround sheet, no contact sheet, "
+        "no text, no frame border, simple pure white background, strong readable silhouette"
+    )
+
+
 def frame_prompt(direction_text: str, phase_text: str) -> str:
     return (
-        "single original Plushbound fantasy adventurer game sprite source, same adult adventurer identity in every frame, "
-        "short dark travel coat, tan leather satchel, practical boots, clean contemporary 2D JRPG game art, "
+        "Preserve the exact same character identity, face, hair, coat design, satchel, colors, proportions and equipment from the reference image. "
+        "Render that same original Plushbound adventurer as a game sprite source, "
         f"{direction_text}, {phase_text}, full body visible, centered, one character only, no extra figures, "
-        "no turnaround sheet, no contact sheet, no text, no frame border, simple pure white background, strong readable silhouette"
+        "clean contemporary 2D JRPG game art, no turnaround sheet, no contact sheet, no text, no frame border, "
+        "simple pure white background, strong readable silhouette"
     )
 
 
@@ -90,34 +103,53 @@ class SheetCanaryRunner:
         )
         self.pipe.to("cuda")
 
+    def _generate(self, *, prompt: str, seed: int, image=None):
+        generator = self.torch.Generator(device="cuda").manual_seed(seed)
+        kwargs = {
+            "prompt": prompt,
+            "width": 512,
+            "height": 512,
+            "guidance_scale": 1.0,
+            "num_inference_steps": 4,
+            "generator": generator,
+        }
+        if image is not None:
+            kwargs["image"] = [image]
+        started = time.monotonic()
+        result = self.pipe(**kwargs).images[0]
+        return result, round(time.monotonic() - started, 3)
+
     @modal.method()
     def generate_cells(self) -> dict:
+        reference, reference_seconds = self._generate(prompt=identity_prompt(), seed=REFERENCE_SEED)
+
         encoded: list[str] = []
         timings: list[float] = []
         frame_meta: list[dict] = []
-        base_seed = 18420
         index = 0
         for direction, direction_text in DIRECTIONS:
             for phase, phase_text in PHASES:
-                seed = base_seed + index
-                generator = self.torch.Generator(device="cuda").manual_seed(seed)
-                started = time.monotonic()
-                result = self.pipe(
+                seed = BASE_SEED + index
+                result, elapsed = self._generate(
                     prompt=frame_prompt(direction_text, phase_text),
-                    width=512,
-                    height=512,
-                    guidance_scale=1.0,
-                    num_inference_steps=4,
-                    generator=generator,
-                ).images[0]
-                timings.append(round(time.monotonic() - started, 3))
+                    seed=seed,
+                    image=reference,
+                )
+                timings.append(elapsed)
                 out = io.BytesIO()
                 result.save(out, format="PNG")
                 encoded.append(base64.b64encode(out.getvalue()).decode("ascii"))
                 frame_meta.append({"index": index, "direction": direction, "phase": phase, "seed": seed})
                 index += 1
+
+        reference_out = io.BytesIO()
+        reference.save(reference_out, format="PNG")
         return {
             "model": MODEL_ID,
+            "reference_seed": REFERENCE_SEED,
+            "reference_seconds": reference_seconds,
+            "reference_png": base64.b64encode(reference_out.getvalue()).decode("ascii"),
+            "reference_conditioned": True,
             "cells": encoded,
             "frames": frame_meta,
             "timings": timings,
@@ -131,8 +163,6 @@ def _white_to_alpha(raw: bytes) -> bytes:
     source = Image.open(io.BytesIO(raw)).convert("RGBA")
     pixels = []
     for r, g, b, _ in source.getdata():
-        # Conservative near-white key. Soft off-white fringe stays partially visible
-        # and is then cropped/normalized by the production factory.
         alpha = 0 if r >= 245 and g >= 245 and b >= 245 else 255
         pixels.append((r, g, b, alpha))
     source.putdata(pixels)
@@ -160,15 +190,21 @@ def main():
 
     with open(OUTPUT_PNG, "wb") as handle:
         handle.write(package["png"])
+    with open("mv-sheet-reference.png", "wb") as handle:
+        handle.write(base64.b64decode(remote["reference_png"]))
 
     report = {
-        "version": "plushbound-mv-sheet-canary-v1",
+        "version": "plushbound-mv-sheet-canary-v2-reference-conditioned",
         "model": remote["model"],
         "source_frame_count": len(remote["cells"]),
+        "reference_conditioned": remote["reference_conditioned"],
+        "reference_seed": remote["reference_seed"],
+        "reference_seconds": remote["reference_seconds"],
         "frame_manifest": remote["frames"],
         "generation_seconds": remote["timings"],
         "sheet": metadata,
         "output_png": OUTPUT_PNG,
+        "reference_png": "mv-sheet-reference.png",
         "editor_ready_geometry": True,
         "production_authorized": False,
     }
