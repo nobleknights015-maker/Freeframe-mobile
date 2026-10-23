@@ -1,8 +1,8 @@
 """Fail-closed readiness checks for a future Plushbound FLUX.2 Klein 4B style LoRA.
 
 This module never trains a model. It validates that a proposed training manifest is
-large enough, diverse enough, and explicitly user/project-owned before any paid
-training workflow may be enabled.
+large enough, diverse enough, high-resolution enough, content-captioned, and
+explicitly user/project-owned before any paid training workflow may be enabled.
 """
 from __future__ import annotations
 
@@ -12,12 +12,26 @@ from typing import Iterable
 
 TRAINING_TARGET = "black-forest-labs/FLUX.2-klein-base-4B"
 INFERENCE_TARGET = "black-forest-labs/FLUX.2-klein-4B"
-LORA_READINESS_VERSION = "plushbound-lora-readiness-v1"
+LORA_READINESS_VERSION = "plushbound-lora-readiness-v2"
 MIN_IMAGES = 15
 MAX_IMAGES = 40
 MIN_CATEGORIES = 3
+MIN_LONG_EDGE = 1024
 ALLOWED_RIGHTS = {"user_owned", "project_owned"}
 REQUIRED_TRIGGER = "PLUSHBOUNDMT"
+
+# Style captions should describe content and let the shared visual treatment bake
+# into the adapter. These phrases are common accidental style leakage for this project.
+FORBIDDEN_STYLE_CAPTION_TERMS = (
+    "anime style",
+    "jrpg style",
+    "rpg maker",
+    "mv style",
+    "trinity style",
+    "painterly style",
+    "rendering style",
+    "plushbound style",
+)
 
 
 @dataclass(frozen=True)
@@ -27,6 +41,8 @@ class TrainingImage:
     caption: str
     rights: str
     sha256: str
+    width: int
+    height: int
 
 
 def _valid_sha256(value: str) -> bool:
@@ -59,11 +75,22 @@ def evaluate_training_manifest(images: Iterable[TrainingImage]) -> dict:
     if any(item.rights not in ALLOWED_RIGHTS for item in items):
         reasons.append("all images must be explicitly user-owned or project-owned")
 
+    if any(item.width <= 0 or item.height <= 0 for item in items):
+        reasons.append("every image requires positive pixel dimensions")
+    if any(max(item.width, item.height) < MIN_LONG_EDGE for item in items):
+        reasons.append(f"every image must be at least {MIN_LONG_EDGE}px on its long edge")
+
     captions = [item.caption.strip() for item in items]
     if any(not caption for caption in captions):
         reasons.append("every image requires a non-empty content caption")
     if any(REQUIRED_TRIGGER.lower() not in caption.lower() for caption in captions if caption):
         reasons.append(f"every caption must include the trigger {REQUIRED_TRIGGER}")
+    if any(
+        term in caption.lower()
+        for caption in captions
+        for term in FORBIDDEN_STYLE_CAPTION_TERMS
+    ):
+        reasons.append("style captions must describe content rather than naming the visual style")
 
     categories = Counter(item.category.strip() for item in items if item.category.strip())
     if len(categories) < MIN_CATEGORIES:
@@ -81,6 +108,7 @@ def evaluate_training_manifest(images: Iterable[TrainingImage]) -> dict:
         "trigger": REQUIRED_TRIGGER,
         "image_count": len(items),
         "categories": dict(sorted(categories.items())),
+        "minimum_long_edge": MIN_LONG_EDGE,
         "rights_allowed": sorted(ALLOWED_RIGHTS),
         "ready": not reasons,
         "reasons": reasons,
