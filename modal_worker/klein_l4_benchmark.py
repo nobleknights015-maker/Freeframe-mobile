@@ -60,9 +60,16 @@ def select_case(case_id: str) -> dict:
     request["steps"] = QUALITY_CALIBRATION_STEPS
     request["guidance_scale"] = QUALITY_CALIBRATION_GUIDANCE
     request["quality_calibration"] = (
-        "dual-user-reference-conditioned" if case_id == REFERENCE_CASE_ID else "official-distilled-defaults"
+        "ordered-dual-user-reference" if case_id == REFERENCE_CASE_ID else "official-distilled-defaults"
     )
     request["reference_conditioned"] = case_id == REFERENCE_CASE_ID
+    if case_id == REFERENCE_CASE_ID:
+        request["prompt"] = (
+            "Use reference image 1 only for contemporary rendering quality, realistic material response, dimensional skin lighting, "
+            "body proportion and polished high-end digital finish while keeping the final image a stylized 2D JRPG illustration, not photorealistic. "
+            "Use reference image 2 for Penney's Plushbound identity, pink hair, flower ornaments, face language and character canon. "
+            + str(request["prompt"])
+        )
     if request["width"] % 16 or request["height"] % 16:
         raise ValueError("Klein benchmark dimensions must be divisible by 16")
     return request
@@ -86,9 +93,10 @@ def load_calibration_references():
     from modal_worker.calibration_reference_assets import PENNEY_CANON_REFERENCE_JPEG_BASE64
     from modal_worker.calibration_reference_modern import PENNEY_MODERN_FULLBODY_JPEG_BASE64
 
+    # Order matters for this calibration: modern rendering first, project canon second.
     return [
-        _decode_reference(PENNEY_CANON_REFERENCE_JPEG_BASE64),
         _decode_reference(PENNEY_MODERN_FULLBODY_JPEG_BASE64),
+        _decode_reference(PENNEY_CANON_REFERENCE_JPEG_BASE64),
     ]
 
 
@@ -139,7 +147,7 @@ class KleinBenchmarkRunner:
         result.save(out, format="PNG")
         raw = out.getvalue()
         return {
-            "benchmark_version": "klein-l4-v10-dual-reference-normalized",
+            "benchmark_version": "klein-l4-v11-ordered-dual-reference",
             "case_id": case_id,
             "model": MODEL_ID,
             "gpu": "L4",
@@ -155,7 +163,7 @@ class KleinBenchmarkRunner:
             "reference_conditioned": bool(request.get("reference_conditioned")),
             "reference_count": 2 if request.get("reference_conditioned") else 0,
             "reference_source": (
-                "project-owned Plushbound Penney portrait + user-owned modern full-body Penney crop"
+                "user-owned modern full-body Penney crop first + project-owned Plushbound Penney portrait second"
                 if request.get("reference_conditioned") else None
             ),
             "style_profile": request.get("render_style_profile"),
