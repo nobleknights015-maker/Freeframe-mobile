@@ -1,0 +1,4 @@
+trigger: 2026-10-23T04:01Z
+purpose: compare MV, Trinity, and hybrid render steering with same seed and composition
+count: 3
+full_batch_authorized: false
