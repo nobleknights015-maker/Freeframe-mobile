@@ -50,7 +50,13 @@ CASES = (
     BenchmarkCase(
         case_id="enemy_forest",
         preset="plushbound_enemy",
-        prompt="mossy woodland prowler with wooden mask-like facial plating, full creature visible",
+        prompt=(
+            "one original Plushbound woodland prowler creature only, low four-legged wolf-sized beast with a long horizontal animal torso, "
+            "moss-flecked dark fur, bark-and-wood mask-like facial plating grown naturally around the brow and cheeks, amber animal eyes, "
+            "rootlike ridges along the shoulders, four clearly visible paws planted on the ground, natural quadruped anatomy and locomotion, "
+            "full creature visible from nose through tail in a forest clearing, no human anatomy, no humanoid pose, no clothing, no armor, "
+            "no carried weapon, no rider, no second creature, no title, no lettering, no logo, no poster framing"
+        ),
         seed=3141,
     ),
     BenchmarkCase(
