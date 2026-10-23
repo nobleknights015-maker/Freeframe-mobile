@@ -1,14 +1,14 @@
 # Plushbound MV / Trinity Style Calibration
 
-Status: bounded character-style calibration complete; full production remains locked.
+Status: bounded style calibration complete for character, enemy, and environment masters; guardian remains unresolved. Full production remains locked.
 
 ## Goal
 
-Move FreeFrame character rendering away from soft early-2000s anime / visual-novel styling and toward the user's reference target: modern fantasy JRPG promotional art with MV-like character readability and Trinity-like color/material polish.
+Move FreeFrame rendering away from soft early-2000s anime / visual-novel styling and toward the user's reference target: modern fantasy JRPG promotional art with MV-like readability and Trinity-like color/material polish.
 
-## Bounded comparisons
+## Character comparison
 
-All comparisons used the same adult character subject, seed `220218`, dimensions `768x1024`, V3.2 character composition preset, SDXL base 1.0, and three render profiles: `plushbound_mv`, `plushbound_trinity`, and `plushbound_hybrid`.
+All character comparisons used the same adult subject, seed `220218`, dimensions `768x1024`, V3.2 character composition preset, SDXL base 1.0, and three render profiles: `plushbound_mv`, `plushbound_trinity`, and `plushbound_hybrid`.
 
 ### Run 1 — trailing style tokens
 
@@ -27,17 +27,39 @@ Result:
 - Trinity: full-body adult character, coherent anatomy, vivid controlled colors, clean anime features, stronger material separation, and the closest match to the supplied MV/Trinity references.
 - Hybrid: polished portrait, but still biased toward close framing.
 
+Decision: `plushbound_trinity` is the validated default for `plushbound_character` masters.
+
+## Guardian / enemy / environment comparison
+
+A bounded six-image same-seed comparison tested frozen V3.2 baseline versus `plushbound_trinity` for one representative Guardian, enemy, and environment master.
+
+### Guardian
+
+Both baseline and Trinity produced an unacceptable four-view/model-sheet composition instead of one centered Guardian. Trinity also introduced unwanted wing-like morphology. Trinity is therefore **not** promoted for Guardians. Guardian remains on the frozen V3.2 style path and requires a dedicated composition repair before another style decision.
+
+### Enemy
+
+Baseline produced a coherent quadruped but with a mostly monochrome sketch-like finish. Trinity preserved a single four-legged battle creature while adding stronger modern anime/JRPG color, lighting, silhouette definition, and environmental separation. Trinity is promoted for `plushbound_enemy` masters.
+
+### Environment
+
+Both versions produced coherent outdoor Elyndor landscapes. Trinity retained the traversable landscape/path composition while improving color separation and the brighter contemporary JRPG promotional finish. Trinity is promoted for `plushbound_environment` masters.
+
 ## Production decision
 
-`plushbound_trinity` is the validated default render style for `plushbound_character` masters.
+Validated Trinity defaults:
+- `plushbound_character`
+- `plushbound_enemy`
+- `plushbound_environment`
 
-This decision is intentionally scoped to character masters only. Guardian, enemy, and environment masters remain on the frozen V3.2 rendering behavior until each category receives its own bounded style validation.
+Not validated / unchanged:
+- `plushbound_guardian` — V3.2 baseline retained pending composition repair.
 
-MV and Hybrid remain available as optional profiles for portrait-oriented experiments; they are not the default full-body character production style.
+MV and Hybrid remain available as optional profiles for portrait-oriented experiments; they are not current full-production defaults.
 
 ## Safety / authorization
 
 - Full 22k+ production batch: **not authorized**.
-- Production style policy version: `style-policy-v1`.
-- Character render style version: `mt1.2`.
+- Production style policy version: `style-policy-v2`.
+- Render style version: `mt1.2`.
 - V3.2 composition constraints remain intact.
