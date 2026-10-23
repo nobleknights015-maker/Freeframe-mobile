@@ -74,6 +74,7 @@ def inspect_master(
     text_artifact_detected: bool = False,
     subject_count: int | None = None,
     indoor_detected: bool = False,
+    panel_grid_detected: bool = False,
 ) -> InspectionResult:
     """Apply deterministic/externally measured facts to a production policy.
 
@@ -90,6 +91,8 @@ def inspect_master(
         errors.append("master must be PNG")
     if width <= 0 or height <= 0:
         errors.append("master dimensions must be positive")
+    if panel_grid_detected:
+        errors.append("multi-panel or model-sheet composition detected")
     if policy.single_subject and subject_count is not None and subject_count != 1:
         errors.append(f"expected one subject, detected {subject_count}")
     if policy.outdoor_only and indoor_detected:
