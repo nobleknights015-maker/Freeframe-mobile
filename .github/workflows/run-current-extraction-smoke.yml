@@ -15,7 +15,7 @@ permissions:
 
 concurrency:
   group: freeframe-current-klein-extraction-smoke
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   extraction-smoke:
