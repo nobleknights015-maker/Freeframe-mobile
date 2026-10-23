@@ -9,9 +9,14 @@ from __future__ import annotations
 
 import re
 
-from guardian_composition_policy import apply_guardian_composition
-from production_presets import get_preset
-from production_style_policy import apply_production_style
+try:
+    from .guardian_composition_policy import apply_guardian_composition
+    from .production_presets import get_preset
+    from .production_style_policy import apply_production_style
+except ImportError:  # direct-module compatibility for local CI/tests
+    from guardian_composition_policy import apply_guardian_composition
+    from production_presets import get_preset
+    from production_style_policy import apply_production_style
 
 PRODUCTION_REQUEST_BUILDER_VERSION = "production-request-v2"
 _REFERENCE_ID_RE = re.compile(r"^[0-9a-f]{64}$")
