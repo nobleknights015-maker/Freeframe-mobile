@@ -47,6 +47,7 @@ model_cache = modal.Volume.from_name(MODEL_VOLUME, create_if_missing=True)
 
 def select_case(case_id: str) -> dict:
     from modal_worker.benchmark_plan import CASES
+    from modal_worker.guardian_composition_policy import apply_guardian_composition
     from modal_worker.model_catalog import apply_model_defaults, get_candidate
     from modal_worker.production_style_policy import apply_production_style
     from modal_worker.style_profiles import get_style_profile
@@ -56,6 +57,11 @@ def select_case(case_id: str) -> dict:
         raise ValueError(f"unknown benchmark case: {case_id}")
     case = matches[0]
     request = case.request()
+
+    # Match the production request-builder composition path before style routing.
+    if case_id == GUARDIAN_CASE_ID:
+        request = apply_guardian_composition(request)
+
     request = apply_production_style(case.preset, request)
 
     # Guardian remains intentionally unpromoted in production. Apply its candidate
@@ -71,7 +77,7 @@ def select_case(case_id: str) -> dict:
     if case_id == REFERENCE_CASE_ID:
         request["quality_calibration"] = "ordered-dual-user-reference"
     elif case_id == GUARDIAN_CASE_ID:
-        request["quality_calibration"] = "guardian-candidate-style"
+        request["quality_calibration"] = "guardian-production-composition-candidate-style"
     else:
         request["quality_calibration"] = "official-distilled-defaults"
     request["reference_conditioned"] = case_id == REFERENCE_CASE_ID
@@ -161,7 +167,7 @@ class KleinBenchmarkRunner:
         result.save(out, format="PNG")
         raw = out.getvalue()
         return {
-            "benchmark_version": "klein-l4-v13-guardian-candidate-calibration",
+            "benchmark_version": "klein-l4-v14-guardian-production-composition",
             "case_id": case_id,
             "model": MODEL_ID,
             "gpu": "L4",
@@ -184,6 +190,7 @@ class KleinBenchmarkRunner:
             "style_profile": request.get("render_style_profile"),
             "style_version": request.get("render_style_version"),
             "style_policy_version": request.get("production_style_policy_version"),
+            "guardian_composition_version": request.get("guardian_composition_version"),
             "benchmark_candidate_style": request.get("benchmark_candidate_style"),
             "budget": benchmark_decision(elapsed),
             "production_authorized": False,
