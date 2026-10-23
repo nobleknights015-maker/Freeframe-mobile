@@ -1,18 +1,18 @@
 """Production-oriented generation presets for Plushbound assets.
 
-V3.2 keeps the proven Plushbound style while separating subject generation from
-asset-format language. Character and beast prompts use photographic composition
-terms rather than concept-art/model-sheet vocabulary that SDXL can over-interpret.
+V3.3 keeps the proven Plushbound composition rules while modernizing the shared
+visual language. Asset classes remain composition-stable; style profiles provide
+the category-specific rendering treatment.
 """
 from __future__ import annotations
 
 from dataclasses import dataclass, asdict
 
 
-PLUSHBOUND_STYLE_VERSION = "v3.2"
+PLUSHBOUND_STYLE_VERSION = "v3.3"
 PLUSHBOUND_STYLE = (
-    "Plushbound Legends style, warm handcrafted fantasy JRPG, painterly anime-inspired game art, "
-    "clean shapes, soft dimensional light, tactile natural materials, harmonious colors"
+    "Plushbound Legends style, warm handcrafted fantasy JRPG world, clean contemporary 2D game illustration, "
+    "crisp readable shapes, controlled directional lighting, tactile natural materials, rich disciplined color, sharp digital finish"
 )
 
 BASE_NEGATIVE = (
