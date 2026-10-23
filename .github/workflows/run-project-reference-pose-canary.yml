@@ -36,8 +36,8 @@ jobs:
         run: |
           test -n "$MODAL_TOKEN_ID" || { echo 'MODAL_TOKEN_ID secret is not configured.' >&2; exit 1; }
           test -n "$MODAL_TOKEN_SECRET" || { echo 'MODAL_TOKEN_SECRET secret is not configured.' >&2; exit 1; }
-      - name: Install Modal CLI
-        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2'
+      - name: Install Modal CLI and preflight imaging dependency
+        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
       - name: Compile control surface
         run: python -m compileall -q modal_worker
       - name: Verify style references and procedural pose guides
