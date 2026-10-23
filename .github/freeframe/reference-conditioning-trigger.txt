@@ -1,0 +1,4 @@
+trigger: 2026-10-23T00:20:00-05:00
+purpose: validate persistent reference cache plus SDXL IP-Adapter conditioning with synthetic art
+count: 1
+full_batch_authorized: false
