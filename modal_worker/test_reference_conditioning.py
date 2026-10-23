@@ -1,4 +1,5 @@
 import base64
+import hashlib
 import io
 import unittest
 
@@ -33,6 +34,24 @@ class ReferenceConditioningTests(unittest.TestCase):
         metadata = parsed.metadata()
         self.assertNotIn("image", metadata)
         self.assertEqual(metadata["width"], 96)
+        self.assertIsNone(metadata["reference_id"])
+
+    def test_cached_reference_resolves_by_sha(self):
+        raw = _png()
+        digest = hashlib.sha256(raw).hexdigest()
+        parsed = parse_reference_conditioning(
+            {"reference_id": digest, "reference_scale": 0.4},
+            resolver=lambda reference_id: raw if reference_id == digest else b"",
+        )
+        self.assertEqual(parsed.reference_id, digest)
+        self.assertEqual(parsed.sha256, digest)
+        self.assertEqual(parsed.scale, 0.4)
+
+    def test_cached_reference_without_resolver_is_rejected(self):
+        raw = _png()
+        digest = hashlib.sha256(raw).hexdigest()
+        with self.assertRaises(ValueError):
+            parse_reference_conditioning({"reference_id": digest})
 
     def test_custom_scale(self):
         raw = _png()
