@@ -19,15 +19,19 @@ class ProductionRequestBuilderTests(unittest.TestCase):
     def test_guardian_gets_composition_repair_without_unvalidated_style(self):
         request = build_production_request("plushbound_guardian", "small mossbun Plush Guardian", seed=2)
         self.assertTrue(request["guardian_composition_repair"])
-        self.assertEqual(request["guardian_composition_version"], "guardian-single-view-v2")
+        self.assertEqual(request["guardian_composition_version"], "guardian-single-view-v3")
         self.assertIsNone(request["production_style_profile"])
         self.assertFalse(request["production_style_validated"])
 
-    def test_enemy_and_environment_get_validated_trinity_style(self):
-        for preset in ("plushbound_enemy", "plushbound_environment"):
+    def test_enemy_and_environment_get_category_specific_validated_styles(self):
+        cases = {
+            "plushbound_enemy": "plushbound_trinity_creature",
+            "plushbound_environment": "plushbound_trinity_environment",
+        }
+        for preset, expected_profile in cases.items():
             with self.subTest(preset=preset):
                 request = build_production_request(preset, "test subject", seed=3)
-                self.assertEqual(request["production_style_profile"], "plushbound_trinity")
+                self.assertEqual(request["production_style_profile"], expected_profile)
                 self.assertTrue(request["production_style_validated"])
 
     def test_approved_reference_is_always_style_only(self):
