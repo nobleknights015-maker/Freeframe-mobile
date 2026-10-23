@@ -1,4 +1,4 @@
-trigger: 2026-10-22T23:00:00-05:00
-purpose: compare Guardian baseline versus targeted single-view composition repair across four subjects
+trigger: 2026-10-22T23:25:00-05:00
+purpose: compare Guardian baseline versus candid in-world single-view repair v2 across four subjects
 count: 8
 full_batch_authorized: false
