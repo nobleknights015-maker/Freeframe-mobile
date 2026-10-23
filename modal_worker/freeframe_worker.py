@@ -2,8 +2,8 @@
 
 This is deliberately isolated from the Android app. It provides a serverless GPU
 execution surface for FreeFrame-compatible image generation and asset batches.
-Model weights are cached in a persistent Modal Volume and are never committed to
-this repository.
+Model weights and approved visual references are cached in persistent Modal
+Volumes and are never committed to this repository.
 """
 from __future__ import annotations
 
@@ -18,7 +18,9 @@ import modal
 
 APP_NAME = "freeframe-worker"
 MODEL_VOLUME = "freeframe-model-cache"
+REFERENCE_VOLUME = "freeframe-reference-cache"
 CACHE_DIR = "/cache"
+REFERENCE_DIR = "/references"
 DEFAULT_MODEL = os.environ.get("FREEFRAME_MODEL", "stabilityai/stable-diffusion-xl-base-1.0")
 IP_ADAPTER_MODEL = "h94/IP-Adapter"
 IP_ADAPTER_SUBFOLDER = "sdxl_models"
@@ -47,6 +49,7 @@ image = (
 
 app = modal.App(APP_NAME)
 model_cache = modal.Volume.from_name(MODEL_VOLUME, create_if_missing=True)
+reference_cache = modal.Volume.from_name(REFERENCE_VOLUME, create_if_missing=True)
 
 
 @dataclass(frozen=True)
@@ -100,7 +103,13 @@ def _png_payload(rendered_image) -> dict:
     }
 
 
-@app.cls(gpu="L4", image=image, volumes={CACHE_DIR: model_cache}, scaledown_window=120, timeout=900)
+@app.cls(
+    gpu="L4",
+    image=image,
+    volumes={CACHE_DIR: model_cache, REFERENCE_DIR: reference_cache},
+    scaledown_window=120,
+    timeout=900,
+)
 class FreeFrameGenerator:
     @modal.enter()
     def load(self):
@@ -130,13 +139,21 @@ class FreeFrameGenerator:
         )
         self.ip_adapter_loaded = True
 
+    def _load_cached_reference(self, reference_id: str) -> bytes:
+        from modal_worker.reference_store import load_reference_bytes
+
+        # Modal Volumes require an explicit reload for a warm container to see
+        # references committed by another function/container.
+        reference_cache.reload()
+        return load_reference_bytes(reference_id, REFERENCE_DIR)
+
     def _generate_one(self, request: dict) -> dict:
         from modal_worker.reference_conditioning import parse_reference_conditioning
 
         started = time.monotonic()
         spec = GenerationSpec.from_request(request)
         spec.validate()
-        reference = parse_reference_conditioning(request)
+        reference = parse_reference_conditioning(request, resolver=self._load_cached_reference)
         generator = self.torch.Generator(device="cuda").manual_seed(spec.seed)
         pipeline_kwargs = {
             "prompt": spec.prompt,
@@ -245,6 +262,24 @@ def validate_asset(request: dict) -> dict:
     if profile_name:
         profile_result = validate_metadata(profile_name=str(profile_name), fmt=str(metadata["format"] or ""), width=int(metadata["width"]), height=int(metadata["height"]), has_alpha=bool(metadata["has_alpha"]))
     return {"valid": profile_result["valid"] if profile_result else True, **metadata, "profile_validation": profile_result}
+
+
+@app.function(image=image, volumes={REFERENCE_DIR: reference_cache}, timeout=30)
+@modal.fastapi_endpoint(method="POST", requires_proxy_auth=True)
+def store_reference(request: dict) -> dict:
+    """Store one approved visual reference by content hash in Modal storage."""
+    from modal_worker.reference_store import store_reference_bytes
+
+    encoded = request.get("image_base64")
+    if not encoded:
+        raise ValueError("image_base64 is required")
+    try:
+        raw = base64.b64decode(str(encoded), validate=True)
+    except Exception as exc:
+        raise ValueError("image_base64 must be valid base64") from exc
+    metadata = store_reference_bytes(raw, REFERENCE_DIR)
+    reference_cache.commit()
+    return {"stored": True, **metadata.metadata()}
 
 
 @app.function(image=image, timeout=930)
