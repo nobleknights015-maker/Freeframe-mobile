@@ -33,9 +33,9 @@ class GPURehearsalStylePolicyTests(unittest.TestCase):
             self.assertIsNone(request["production_style_profile"])
             self.assertNotIn("render_style_profile", request)
             self.assertTrue(request["guardian_composition_repair"])
-            self.assertEqual(request["guardian_composition_version"], "guardian-single-view-v1")
-            self.assertIn("exactly one creature", request["prompt"])
-            self.assertIn("front side back views", request["negative_prompt"])
+            self.assertEqual(request["guardian_composition_version"], "guardian-single-view-v2")
+            self.assertIn("candid in-world fantasy scene", request["prompt"])
+            self.assertIn("contact sheet", request["negative_prompt"])
 
     def test_character_requests_keep_full_length_composition_language(self):
         for item in rehearsal_requests():
