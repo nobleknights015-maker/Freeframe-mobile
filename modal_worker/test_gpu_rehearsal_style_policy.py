@@ -38,7 +38,7 @@ class GPURehearsalStylePolicyTests(unittest.TestCase):
             self.assertNotIn("render_style_profile", request)
             self.assertTrue(request["guardian_composition_repair"])
             self.assertEqual(request["guardian_composition_version"], "guardian-single-view-v3")
-            self.assertIn("single complete creature", request["prompt"])
+            self.assertIn("one complete creature body visible exactly once", request["prompt"])
             self.assertIn("contact sheet", request["negative_prompt"])
 
     def test_character_requests_keep_full_length_composition_language(self):
