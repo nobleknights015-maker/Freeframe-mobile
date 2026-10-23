@@ -1,7 +1,8 @@
 """Small representative benchmark plan before any large Plushbound GPU batch.
 
-Touched for the mt1.9 same-seed key-art calibration; benchmark subjects and
-seeds are otherwise unchanged so visual comparison stays meaningful.
+Penney's bounded calibration now aligns its text description with the user's
+project-owned Plushbound portrait so reference-conditioned tests do not fight
+contradictory identity cues.
 """
 from __future__ import annotations
 
@@ -42,12 +43,13 @@ CASES = (
         preset="plushbound_character",
         prompt=(
             "Penney Nguyen, clearly adult woman age 25, petite 4 foot 11 inch height and naturally plump proportional build, "
-            "original Plushbound Legends field-adventurer design, short black bob haircut, expressive dark eyes, "
-            "violet fitted travel tunic with asymmetric wrapped front, cropped charcoal bolero jacket with subtle stitched trim, "
-            "layered utility belt and small leather pouches, fitted black travel shorts over opaque dark thigh wraps, "
-            "knee-high brown lace-up field boots, restrained brass hardware, tiny spool-and-thread motif worked into one belt charm, "
-            "handcrafted fantasy tailoring that feels practical rather than cosplay, confident relaxed stance, full body visible, "
-            "both hands fully visible with natural fingers, normal anatomy, one original character only, no logo and no text"
+            "match the supplied project-owned Plushbound portrait for her facial identity, pink hair, flower ornaments and overall character language, "
+            "original Plushbound Legends field-adventurer design, violet fitted travel tunic with asymmetric wrapped front, "
+            "cropped charcoal bolero jacket with subtle stitched trim, layered utility belt and small leather pouches, "
+            "fitted black travel shorts over opaque dark thigh wraps, knee-high brown lace-up field boots, restrained brass hardware, "
+            "tiny spool-and-thread motif worked into one belt charm, handcrafted fantasy tailoring that feels practical rather than cosplay, "
+            "confident relaxed stance, full body visible, both hands fully visible with natural fingers, normal anatomy, "
+            "one original character only, no logo and no text"
         ),
         seed=6116,
     ),
