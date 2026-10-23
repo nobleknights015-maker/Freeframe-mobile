@@ -1,5 +1,5 @@
-trigger: 2026-10-23T04:06Z
-purpose: rerun MV, Trinity, and hybrid comparison after moving style tokens ahead of V3.2 prompt
+trigger: 2026-10-23T04:09Z
+purpose: compare compact MV, Trinity, and hybrid style steering inserted after subject before V3.2 composition
 count: 3
 same_seed: true
 full_batch_authorized: false
