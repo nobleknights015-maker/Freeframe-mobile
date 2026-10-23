@@ -1,8 +1,9 @@
 """Production render-style policy for Plushbound master generation.
 
 Only styles that have passed bounded GPU comparison are enabled here. The policy
-is deliberately conservative: a style win for character masters does not imply
-that the same steering is appropriate for guardians, enemies, or environments.
+is deliberately conservative: each preset must earn its production style through
+its own same-seed comparison. Guardian remains unstyled because its bounded test
+still produced multi-view/model-sheet compositions and unwanted morphology.
 """
 from __future__ import annotations
 
@@ -11,11 +12,13 @@ from typing import Any
 from style_profiles import STYLE_PROFILE_VERSION, get_style_profile
 
 
-PRODUCTION_STYLE_POLICY_VERSION = "style-policy-v1"
+PRODUCTION_STYLE_POLICY_VERSION = "style-policy-v2"
 
-# Validated by the bounded same-seed MV/Trinity/Hybrid character comparison.
+# Validated by bounded same-seed GPU comparisons.
 VALIDATED_STYLE_BY_PRESET: dict[str, str] = {
     "plushbound_character": "plushbound_trinity",
+    "plushbound_enemy": "plushbound_trinity",
+    "plushbound_environment": "plushbound_trinity",
 }
 
 
