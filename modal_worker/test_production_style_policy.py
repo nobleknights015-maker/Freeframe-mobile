@@ -30,7 +30,7 @@ class ProductionStylePolicyTests(unittest.TestCase):
         base = get_preset("plushbound_character").apply("adult traveler", seed=7)
         styled = apply_production_style("plushbound_character", base)
         self.assertIn("single candid full-length scene", styled["prompt"])
-        self.assertIn("current-generation console-RPG illustration", styled["prompt"])
+        self.assertIn("current-generation console-RPG promotional art", styled["prompt"])
 
     def test_guardian_remains_unstyled_and_unchanged(self):
         base = get_preset("plushbound_guardian").apply("small foxlike plush guardian", seed=9)
