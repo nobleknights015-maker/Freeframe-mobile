@@ -1,0 +1,72 @@
+name: FreeFrame Project-Reference Pose Canary
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [freeframe-modal-worker]
+    paths:
+      - 'modal_worker/project_reference_pose_canary.py'
+      - 'modal_worker/creature_pose_guides.py'
+      - 'modal_worker/test_creature_pose_guides.py'
+      - 'modal_worker/project_references/**'
+      - 'modal_worker/plushbound_project_references.py'
+      - '.github/workflows/run-project-reference-pose-canary.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: freeframe-project-reference-pose-canary
+  cancel-in-progress: false
+
+jobs:
+  project-reference-pose-canary:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Require Modal credentials
+        shell: bash
+        run: |
+          test -n "$MODAL_TOKEN_ID" || { echo 'MODAL_TOKEN_ID secret is not configured.' >&2; exit 1; }
+          test -n "$MODAL_TOKEN_SECRET" || { echo 'MODAL_TOKEN_SECRET secret is not configured.' >&2; exit 1; }
+      - name: Install Modal CLI
+        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2'
+      - name: Compile control surface
+        run: python -m compileall -q modal_worker
+      - name: Verify style references and procedural pose guides
+        run: |
+          PYTHONPATH=. python - <<'PY'
+          from modal_worker.creature_pose_guides import build_pose_guide
+          from modal_worker.plushbound_project_references import REFERENCES, get_project_reference
+          for family in REFERENCES:
+              ref = get_project_reference(family)
+              assert ref.ownership == 'project_owned'
+              guide = build_pose_guide(family)
+              assert guide.size == (512, 512)
+              print(family, ref.sha256)
+          PY
+      - name: Run four-case style-plus-pose canary in one L4 app
+        run: modal run modal_worker/project_reference_pose_canary.py
+      - name: Require all outputs
+        shell: bash
+        run: |
+          test -s project-reference-pose-canary/guardian_friendly_style_pose.png
+          test -s project-reference-pose-canary/guardian_corrupt_style_pose.png
+          test -s project-reference-pose-canary/guardian_boss_style_pose.png
+          test -s project-reference-pose-canary/enemy_creature_style_pose.png
+          test -s project-reference-pose-canary/report.json
+      - name: Upload style-plus-pose evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: project-reference-pose-canary-${{ github.run_id }}
+          path: project-reference-pose-canary/
+          if-no-files-found: warn
+          retention-days: 7
