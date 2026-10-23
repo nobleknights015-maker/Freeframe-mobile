@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "purpose": "Reference-material map for FreeFrame style conditioning and production semantics.",
+  "visual_references": {
+    "mv_character_reference": {
+      "role": ["clean 2D JRPG character readability", "portrait line clarity", "costume separation"],
+      "storage": "conversation-only reference; do not commit third-party artwork",
+      "direct_conditioning": false
+    },
+    "trinity_party_reference": {
+      "role": ["modern JRPG color energy", "2D promotional finish", "material separation", "fantasy ensemble polish"],
+      "storage": "conversation-only reference; do not commit third-party artwork",
+      "direct_conditioning": false
+    },
+    "plushbound_enemy_boss_sheet": {
+      "role": ["project-owned Plushbound creature language", "2D stitched-material rendering", "enemy and Guardian silhouette target", "in-world game presentation"],
+      "storage": "project-owned source supplied by user; bounded crop may be used for reference-conditioning tests",
+      "direct_conditioning": true
+    }
+  },
+  "semantic_references_from_asset_library": {
+    "production_catalog": "whole-game style, engine, and completion contract",
+    "guardian_roster": "Guardian family, silhouette, animation, and QA contract",
+    "enemy_boss_visual_library": "enemy ecology, variation, and boss package contract",
+    "environment_world_art_library": "world-art and MV-compatible environment contract",
+    "npc_visual_library": "NPC identity, age-band, fashion, and portrait contract"
+  },
+  "placeholder_policy": {
+    "placeholder_pngs_are_visual_references": false,
+    "reason": "The uploaded library contains 22,943 tiny placeholder image files. They define slots and structure, not finished art quality.",
+    "use_placeholders_for": ["asset IDs", "paths", "dimensions", "coverage", "slot semantics"]
+  },
+  "conditioning_policy": {
+    "adapter": "h94/IP-Adapter SDXL",
+    "default_reference_scale": 0.35,
+    "start_low": true,
+    "composition_text_remains_authoritative": true,
+    "full_production_authorized": false
+  }
+}
