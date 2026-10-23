@@ -9,27 +9,28 @@ from production_style_policy import (
 
 
 class ProductionStylePolicyTests(unittest.TestCase):
-    def test_validated_presets_use_trinity_style(self):
+    def test_validated_presets_use_category_specific_styles(self):
         cases = (
-            ("plushbound_character", "adult traveler"),
-            ("plushbound_enemy", "quadruped forest beast"),
-            ("plushbound_environment", "sunny plains and winding road"),
+            ("plushbound_character", "adult traveler", "plushbound_trinity"),
+            ("plushbound_enemy", "quadruped forest beast", "plushbound_trinity_creature"),
+            ("plushbound_environment", "sunny plains and winding road", "plushbound_trinity_environment"),
         )
-        for preset_name, prompt in cases:
+        for preset_name, prompt, expected_profile in cases:
             with self.subTest(preset=preset_name):
                 base = get_preset(preset_name).apply(prompt, seed=7)
                 styled = apply_production_style(preset_name, base)
-                self.assertEqual(style_for_preset(preset_name), "plushbound_trinity")
+                self.assertEqual(style_for_preset(preset_name), expected_profile)
                 self.assertTrue(styled["production_style_validated"])
-                self.assertEqual(styled["production_style_profile"], "plushbound_trinity")
-                self.assertEqual(styled["render_style_profile"], "plushbound_trinity")
+                self.assertEqual(styled["production_style_profile"], expected_profile)
+                self.assertEqual(styled["render_style_profile"], expected_profile)
                 self.assertEqual(styled["production_style_policy_version"], PRODUCTION_STYLE_POLICY_VERSION)
-                self.assertIn("bright modern fantasy JRPG key art", styled["prompt"])
+                self.assertIn("sharp", styled["prompt"])
 
     def test_character_preserves_full_length_composition_language(self):
         base = get_preset("plushbound_character").apply("adult traveler", seed=7)
         styled = apply_production_style("plushbound_character", base)
         self.assertIn("single candid full-length scene", styled["prompt"])
+        self.assertIn("current-generation console-RPG illustration", styled["prompt"])
 
     def test_guardian_remains_unstyled_and_unchanged(self):
         base = get_preset("plushbound_guardian").apply("small foxlike plush guardian", seed=9)
