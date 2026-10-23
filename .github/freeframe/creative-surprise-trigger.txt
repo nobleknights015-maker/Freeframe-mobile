@@ -1,0 +1,3 @@
+trigger: 2026-10-23T03:44Z
+purpose: bounded one-image adult non-explicit FreeFrame capability test
+full_batch_authorized: false
