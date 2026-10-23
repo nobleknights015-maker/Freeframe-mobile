@@ -2,10 +2,11 @@
 
 This app is intentionally separate from the production worker. It can measure one
 representative Plushbound case at a time, project raw 22k GPU cost through the
-budget gate, and never authorizes production.
+budget gate, preserve the generated PNG for visual QA, and never authorize production.
 """
 from __future__ import annotations
 
+import base64
 import hashlib
 import io
 import json
@@ -18,6 +19,7 @@ APP_NAME = "freeframe-klein-benchmark"
 MODEL_ID = "black-forest-labs/FLUX.2-klein-4B"
 CACHE_DIR = "/cache"
 MODEL_VOLUME = "freeframe-model-cache"
+OUTPUT_PNG = "klein-l4-output.png"
 
 # Follow the model card's supported install path: current Diffusers,
 # Transformers, and Accelerate resolve together. Avoid cross-generation pins
@@ -100,7 +102,7 @@ class KleinBenchmarkRunner:
         result.save(out, format="PNG")
         raw = out.getvalue()
         return {
-            "benchmark_version": "klein-l4-v1",
+            "benchmark_version": "klein-l4-v2",
             "case_id": case_id,
             "model": MODEL_ID,
             "gpu": "L4",
@@ -114,10 +116,15 @@ class KleinBenchmarkRunner:
             "seed": int(request["seed"]),
             "budget": benchmark_decision(elapsed),
             "production_authorized": False,
+            "png_base64": base64.b64encode(raw).decode("ascii"),
         }
 
 
 @app.local_entrypoint()
-def main(case_id: str = "guardian_meadow"):
+def main(case_id: str = "penney_modeling_stress"):
     result = KleinBenchmarkRunner().run_case.remote(case_id)
+    png_base64 = result.pop("png_base64")
+    with open(OUTPUT_PNG, "wb") as handle:
+        handle.write(base64.b64decode(png_base64))
+    result["output_png"] = OUTPUT_PNG
     print(json.dumps(result, sort_keys=True))
