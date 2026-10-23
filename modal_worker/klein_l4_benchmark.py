@@ -23,6 +23,7 @@ OUTPUT_PNG = "klein-l4-output.png"
 QUALITY_CALIBRATION_STEPS = 4
 QUALITY_CALIBRATION_GUIDANCE = 1.0
 REFERENCE_CASE_ID = "penney_modeling_stress"
+GUARDIAN_CASE_ID = "guardian_meadow"
 MIN_REFERENCE_EDGE = 64
 
 image = (
@@ -48,6 +49,7 @@ def select_case(case_id: str) -> dict:
     from modal_worker.benchmark_plan import CASES
     from modal_worker.model_catalog import apply_model_defaults, get_candidate
     from modal_worker.production_style_policy import apply_production_style
+    from modal_worker.style_profiles import get_style_profile
 
     matches = [case for case in CASES if case.case_id == case_id]
     if len(matches) != 1:
@@ -55,13 +57,23 @@ def select_case(case_id: str) -> dict:
     case = matches[0]
     request = case.request()
     request = apply_production_style(case.preset, request)
+
+    # Guardian remains intentionally unpromoted in production. Apply its candidate
+    # profile only inside this bounded calibration so visual QA can earn promotion.
+    if case_id == GUARDIAN_CASE_ID:
+        request = get_style_profile("plushbound_guardian_2d_candidate").apply(request)
+        request["benchmark_candidate_style"] = "plushbound_guardian_2d_candidate"
+
     candidate = get_candidate("flux2_klein_4b_candidate")
     request = apply_model_defaults(request, candidate)
     request["steps"] = QUALITY_CALIBRATION_STEPS
     request["guidance_scale"] = QUALITY_CALIBRATION_GUIDANCE
-    request["quality_calibration"] = (
-        "ordered-dual-user-reference" if case_id == REFERENCE_CASE_ID else "official-distilled-defaults"
-    )
+    if case_id == REFERENCE_CASE_ID:
+        request["quality_calibration"] = "ordered-dual-user-reference"
+    elif case_id == GUARDIAN_CASE_ID:
+        request["quality_calibration"] = "guardian-candidate-style"
+    else:
+        request["quality_calibration"] = "official-distilled-defaults"
     request["reference_conditioned"] = case_id == REFERENCE_CASE_ID
     if case_id == REFERENCE_CASE_ID:
         request["prompt"] = (
@@ -149,7 +161,7 @@ class KleinBenchmarkRunner:
         result.save(out, format="PNG")
         raw = out.getvalue()
         return {
-            "benchmark_version": "klein-l4-v12-ordered-dual-proven-bytes",
+            "benchmark_version": "klein-l4-v13-guardian-candidate-calibration",
             "case_id": case_id,
             "model": MODEL_ID,
             "gpu": "L4",
@@ -172,6 +184,7 @@ class KleinBenchmarkRunner:
             "style_profile": request.get("render_style_profile"),
             "style_version": request.get("render_style_version"),
             "style_policy_version": request.get("production_style_policy_version"),
+            "benchmark_candidate_style": request.get("benchmark_candidate_style"),
             "budget": benchmark_decision(elapsed),
             "production_authorized": False,
             "png_base64": base64.b64encode(raw).decode("ascii"),
@@ -179,7 +192,7 @@ class KleinBenchmarkRunner:
 
 
 @app.local_entrypoint()
-def main(case_id: str = "penney_modeling_stress"):
+def main(case_id: str = "guardian_meadow"):
     result = KleinBenchmarkRunner().run_case.remote(case_id)
     png_base64 = result.pop("png_base64")
     with open(OUTPUT_PNG, "wb") as handle:
