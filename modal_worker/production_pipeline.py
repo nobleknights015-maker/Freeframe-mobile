@@ -10,7 +10,10 @@ from __future__ import annotations
 from dataclasses import dataclass, asdict
 from typing import Literal
 
-from extraction_routing import requires_subject_extraction
+try:
+    from .extraction_routing import requires_subject_extraction
+except ImportError:  # direct-module compatibility for local CI/tests
+    from extraction_routing import requires_subject_extraction
 
 
 AssetClass = Literal[
