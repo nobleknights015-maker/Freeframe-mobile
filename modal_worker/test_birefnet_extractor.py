@@ -20,7 +20,6 @@ class FakeBiRefNetExtractor(BiRefNetExtractor):
 
     def _predict_mask(self, image):
         mask = Image.new("L", image.size, 0)
-        # centered foreground that satisfies the alpha quality gate
         for x in range(image.width // 4, image.width * 3 // 4):
             for y in range(image.height // 8, image.height * 7 // 8):
                 mask.putpixel((x, y), 255)
@@ -49,6 +48,12 @@ class BiRefNetExtractorTests(unittest.TestCase):
         with patch.dict("sys.modules", {"torch": None, "transformers": None}):
             with self.assertRaisesRegex(ExtractionError, "requires torch and transformers"):
                 BiRefNetExtractor()
+
+    def test_adapter_does_not_depend_on_nonstandard_preprocess_image_method(self):
+        import inspect
+        source = inspect.getsource(BiRefNetExtractor._predict_mask)
+        self.assertNotIn("preprocess_image", source)
+        self.assertIn("self._preprocess(image)", source)
 
 
 if __name__ == "__main__":
