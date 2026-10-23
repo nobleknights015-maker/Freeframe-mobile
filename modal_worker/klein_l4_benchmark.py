@@ -84,7 +84,10 @@ def _decode_reference(encoded: str):
     shortest = min(width, height)
     if shortest < MIN_REFERENCE_EDGE:
         scale = MIN_REFERENCE_EDGE / shortest
-        target = (max(MIN_REFERENCE_EDGE, round(width * scale)), max(MIN_REFERENCE_EDGE, round(height * scale)))
+        target = (
+            max(MIN_REFERENCE_EDGE, round(width * scale)),
+            max(MIN_REFERENCE_EDGE, round(height * scale)),
+        )
         reference = reference.resize(target, Image.Resampling.LANCZOS)
     return reference
 
@@ -93,7 +96,6 @@ def load_calibration_references():
     from modal_worker.calibration_reference_assets import PENNEY_CANON_REFERENCE_JPEG_BASE64
     from modal_worker.calibration_reference_modern import PENNEY_MODERN_FULLBODY_JPEG_BASE64
 
-    # Order matters for this calibration: modern rendering first, project canon second.
     return [
         _decode_reference(PENNEY_MODERN_FULLBODY_JPEG_BASE64),
         _decode_reference(PENNEY_CANON_REFERENCE_JPEG_BASE64),
@@ -147,7 +149,7 @@ class KleinBenchmarkRunner:
         result.save(out, format="PNG")
         raw = out.getvalue()
         return {
-            "benchmark_version": "klein-l4-v11-ordered-dual-reference",
+            "benchmark_version": "klein-l4-v12-ordered-dual-proven-bytes",
             "case_id": case_id,
             "model": MODEL_ID,
             "gpu": "L4",
@@ -164,7 +166,8 @@ class KleinBenchmarkRunner:
             "reference_count": 2 if request.get("reference_conditioned") else 0,
             "reference_source": (
                 "user-owned modern full-body Penney crop first + project-owned Plushbound Penney portrait second"
-                if request.get("reference_conditioned") else None
+                if request.get("reference_conditioned")
+                else None
             ),
             "style_profile": request.get("render_style_profile"),
             "style_version": request.get("render_style_version"),
