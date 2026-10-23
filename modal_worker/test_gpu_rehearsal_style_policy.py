@@ -1,60 +1,15 @@
 import unittest
-
-from gpu_rehearsal_plan import GPU_REHEARSAL_VERSION, rehearsal_requests
-
-
+from gpu_rehearsal_plan import GPU_REHEARSAL_VERSION,rehearsal_requests
 class GPURehearsalStylePolicyTests(unittest.TestCase):
-    def test_rehearsal_remains_exactly_32_assets(self):
-        plan = rehearsal_requests()
-        self.assertEqual(GPU_REHEARSAL_VERSION, "plushbound-gpu-rehearsal-v4")
-        self.assertEqual(len(plan), 32)
-        self.assertEqual(len({item["asset_id"] for item in plan}), 32)
-        self.assertTrue(
-            all(
-                item["request"]["production_request_builder_version"]
-                == "production-request-v3-living-fabric"
-                for item in plan
-            )
-        )
-
-    def test_all_categories_use_validated_category_profiles(self):
-        plan = rehearsal_requests()
-        expected_profiles = {
-            "plushbound_character": "plushbound_trinity",
-            "plushbound_guardian": "plushbound_guardian_2d_candidate",
-            "plushbound_enemy": "plushbound_trinity_creature",
-            "plushbound_environment": "plushbound_trinity_environment",
-        }
-        self.assertEqual(len(plan), 32)
-
-        for item in plan:
-            request = item["request"]
-            expected = expected_profiles[item["preset"]]
-            self.assertTrue(request["production_style_validated"])
-            self.assertEqual(request["production_style_profile"], expected)
-            self.assertEqual(request["render_style_profile"], expected)
-            self.assertIn("sharp", request["prompt"])
-            if item["preset"] == "plushbound_guardian":
-                self.assertTrue(request["guardian_composition_repair"])
-                self.assertEqual(
-                    request["guardian_composition_version"],
-                    "guardian-single-view-v4",
-                )
-                self.assertEqual(request["creature_family"], "guardian_friendly")
-                self.assertIn("creature first and textile second", request["prompt"])
-                self.assertIn("one complete creature body visible exactly once", request["prompt"])
-                self.assertIn("retail plush toy", request["negative_prompt"])
-                self.assertIn("contact sheet", request["negative_prompt"])
-            elif item["preset"] == "plushbound_enemy":
-                self.assertEqual(request["creature_family"], "enemy_creature")
-                self.assertIn("living textile ecosystem", request["prompt"])
-                self.assertIn("ordinary flesh-and-fur animal", request["negative_prompt"])
-
-    def test_character_requests_keep_full_length_composition_language(self):
-        for item in rehearsal_requests():
-            if item["preset"] == "plushbound_character":
-                self.assertIn("single candid full-length scene", item["request"]["prompt"])
-
-
-if __name__ == "__main__":
-    unittest.main()
+ def test_rehearsal_remains_exactly_32_assets(self):
+  plan=rehearsal_requests(); self.assertEqual(GPU_REHEARSAL_VERSION,"plushbound-gpu-rehearsal-v4"); self.assertEqual(len(plan),32); self.assertEqual(len({i["asset_id"] for i in plan}),32); self.assertTrue(all(i["request"]["production_request_builder_version"]=="production-request-v4-family-aware" for i in plan))
+ def test_all_categories_use_validated_category_profiles(self):
+  plan=rehearsal_requests(); expected={"plushbound_character":"plushbound_trinity","plushbound_guardian":"plushbound_guardian_2d_candidate","plushbound_enemy":"plushbound_trinity_creature","plushbound_environment":"plushbound_trinity_environment"}
+  for item in plan:
+   r=item["request"]; self.assertTrue(r["production_style_validated"]); self.assertEqual(r["production_style_profile"],expected[item["preset"]]); self.assertEqual(r["render_style_profile"],expected[item["preset"]]); self.assertIn("sharp",r["prompt"])
+   if item["preset"]=="plushbound_guardian": self.assertEqual(r["guardian_composition_version"],"guardian-family-composition-v5"); self.assertEqual(r["guardian_composition_family"],"guardian_friendly"); self.assertIn("matte woven textile skin",r["prompt"]); self.assertIn("retail plush toy",r["negative_prompt"])
+   elif item["preset"]=="plushbound_enemy": self.assertEqual(r["creature_family"],"enemy_creature"); self.assertIn("living textile ecosystem",r["prompt"]); self.assertIn("ordinary flesh-and-fur animal",r["negative_prompt"])
+ def test_character_requests_keep_full_length_composition_language(self):
+  for item in rehearsal_requests():
+   if item["preset"]=="plushbound_character": self.assertIn("single candid full-length scene",item["request"]["prompt"])
+if __name__=="__main__": unittest.main()
