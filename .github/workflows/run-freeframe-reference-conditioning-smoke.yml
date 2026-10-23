@@ -36,7 +36,7 @@ jobs:
         run: python -m compileall -q modal_worker
       - name: Deploy current isolated worker
         run: modal deploy --strategy recreate modal_worker/freeframe_worker.py
-      - name: Store synthetic reference and generate one conditioned image
+      - name: Compare baseline, balanced, and style-only conditioning
         shell: bash
         run: |
           set -euo pipefail
@@ -69,36 +69,52 @@ jobs:
           print('[reference] stored', stored['reference_id'], flush=True)
 
           generator = modal.Cls.from_name('freeframe-worker', 'FreeFrameGenerator')()
-          request = {
-              'prompt': 'one small magical stitched fox guardian in a candid 2D fantasy JRPG scene, hand-drawn anime creature illustration, clean ink-like edges, cel-shaded color, one creature only',
+          base = {
+              'prompt': 'one small magical stitched fox guardian walking through a flowered fantasy woodland, candid 2D JRPG creature illustration, clean ink-like edges, cel-shaded color, full creature visible, one creature only',
               'negative_prompt': '3D, CGI, toy photography, product render, figurine, character sheet, multiple views, duplicate creature, text, watermark',
               'width': 512,
               'height': 512,
               'steps': 28,
               'guidance_scale': 6.0,
               'seed': 4411,
-              'reference_id': stored['reference_id'],
-              'reference_scale': 0.35,
           }
-          result = generator.generate.remote(request)
-          generated = base64.b64decode(result['image_base64'], validate=True)
-          assert hashlib.sha256(generated).hexdigest() == result['sha256']
-          assert result['reference_conditioning']['reference_id'] == stored['reference_id']
-          assert result['reference_conditioning']['sha256'] == stored['reference_id']
-          (out / 'conditioned-output.png').write_bytes(generated)
-          (out / 'manifest.json').write_text(json.dumps({
-              'bounded': True,
-              'full_batch_authorized': False,
-              'reference': stored,
-              'generation': {
+          variants = [
+              ('baseline', dict(base)),
+              ('balanced', {**base, 'reference_id': stored['reference_id'], 'reference_scale': 0.35, 'reference_mode': 'balanced'}),
+              ('style', {**base, 'reference_id': stored['reference_id'], 'reference_scale': 0.35, 'reference_mode': 'style'}),
+          ]
+          results = []
+          for label, request in variants:
+              print(f'[reference] {label}: start', flush=True)
+              result = generator.generate.remote(request)
+              generated = base64.b64decode(result['image_base64'], validate=True)
+              assert hashlib.sha256(generated).hexdigest() == result['sha256']
+              if label == 'baseline':
+                  assert result['reference_conditioning'] is None
+              else:
+                  assert result['reference_conditioning']['reference_id'] == stored['reference_id']
+                  assert result['reference_conditioning']['sha256'] == stored['reference_id']
+                  assert result['reference_conditioning']['mode'] == label
+              filename = f'{label}.png'
+              (out / filename).write_bytes(generated)
+              results.append({
+                  'variant': label,
+                  'file': filename,
                   'sha256': result['sha256'],
                   'width': result['width'],
                   'height': result['height'],
                   'elapsed_seconds': result['elapsed_seconds'],
                   'reference_conditioning': result['reference_conditioning'],
-              },
+              })
+              print(f"[reference] {label}: complete in {result['elapsed_seconds']}s", flush=True)
+
+          (out / 'manifest.json').write_text(json.dumps({
+              'bounded': True,
+              'full_batch_authorized': False,
+              'reference': stored,
+              'same_seed': 4411,
+              'results': results,
           }, indent=2) + '\n')
-          print('[reference] conditioned generation complete', flush=True)
           PY
       - name: Upload reference smoke artifact
         uses: actions/upload-artifact@v4
