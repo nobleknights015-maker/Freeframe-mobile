@@ -2,6 +2,21 @@ name: FreeFrame Project-Reference Pose Canary
 
 on:
   workflow_dispatch:
+  push:
+    branches: [freeframe-modal-worker]
+    paths:
+      - 'modal_worker/project_reference_pose_canary.py'
+      - 'modal_worker/creature_pose_guides.py'
+      - 'modal_worker/test_creature_pose_guides.py'
+      - 'modal_worker/creature_world_policy.py'
+      - 'modal_worker/test_creature_world_policy.py'
+      - 'modal_worker/production_request_builder.py'
+      - 'modal_worker/production_presets.py'
+      - 'modal_worker/production_style_policy.py'
+      - 'modal_worker/style_profiles.py'
+      - 'modal_worker/project_references/**'
+      - 'modal_worker/plushbound_project_references.py'
+      - '.github/workflows/run-project-reference-pose-canary.yml'
 
 permissions:
   contents: read
@@ -31,7 +46,7 @@ jobs:
         run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
       - name: Compile control surface
         run: python -m compileall -q modal_worker
-      - name: Verify style references and procedural pose guides
+      - name: Verify style references and exterior silhouette guides
         run: |
           PYTHONPATH=. python - <<'PY'
           from modal_worker.creature_pose_guides import build_pose_guide
@@ -50,7 +65,7 @@ jobs:
                   assert guide.size == (512, 512)
               print(family, ref.sha256)
           PY
-      - name: Run seven-case organism-first style-plus-pose canary in one L4 app
+      - name: Run seven-case enclosed-body style-plus-pose canary in one L4 app
         run: modal run modal_worker/project_reference_pose_canary.py
       - name: Require all outputs
         shell: bash
