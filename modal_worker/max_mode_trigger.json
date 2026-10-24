@@ -1,16 +1,16 @@
 {
   "schema": "plushbound.max_mode_trigger.v1",
-  "enabled": true,
+  "enabled": false,
   "round": 19,
   "mode": "MAX_MODE_12_STREAM_4X",
   "jobs_per_shard": 128,
   "jobs_per_sublane": 32,
   "sublanes_per_shard": 4,
   "parallel_streams": 12,
-  "shards": [0],
+  "shards": [],
   "authorized_by_user": true,
   "full_catalog_completion_authorized_by_user": true,
-  "resume_reason": "turbo round 18 artifact reports verified: NPC sublane 0 accepted 32/32 and sublane 1 accepted 32/32, 0 quarantined, effective legacy rounds 39-40, both lane_complete=false; sublanes 2-3 accepted 0, quarantined 0, effective legacy rounds 41-42, both lane_complete=true/no remaining mapped IDs. Enemy, environment and Guardian master families remain globally complete and retired. Advance exactly one turbo round to 19 using only NPC shard 0, preserving four non-overlapping 32-item sublanes and accepted-ID exclusion; completed ranges must return lane_complete/no remaining IDs rather than regenerate. Preserve MAX_MODE_12_STREAM_4X target parallel_streams=12 even though only one active shard remains.",
+  "resume_reason": "turbo round 19 artifact reports verified for NPC shard 0 sublanes 0-3: accepted 0, quarantined 0, effective legacy rounds 43-46, all lane_complete=true with no remaining mapped IDs. NPC, Guardian, enemy, and environment master-generation families are now globally complete. Master trigger retired to prevent duplicate paid generation. Full-catalog authorization remains active; next work must use specialized generation/derivation contracts and the 592 audio entries must remain outside Vera image generation.",
   "stop_conditions": [
     "planned_visual_production_complete",
     "modal_allowance_exhausted_or_next_launch_would_exceed_it"
