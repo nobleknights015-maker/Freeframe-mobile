@@ -50,6 +50,41 @@ class ProductionModelPolicyTests(unittest.TestCase):
                 self.assertEqual(request["model_id"], "black-forest-labs/FLUX.2-klein-4B")
                 self.assertEqual(request["steps"], 4)
                 self.assertEqual(request["guidance_scale"], 1.0)
+                self.assertEqual(request["renderer_compliance_profile"], f"{preset}-klein-v4")
+
+    def test_character_compliance_requires_blank_unmarked_hems(self):
+        request = build_production_request("plushbound_character", "adult traveler", seed=10)
+        prompt = request["prompt"]
+        self.assertIn("smooth uninterrupted plain fabric edge", prompt)
+        self.assertIn("zero decorative stitching", prompt)
+        self.assertIn("Leave the lower tunic hem visually blank", prompt)
+
+    def test_guardian_compliance_blocks_fuzzy_mascot_drift(self):
+        request = build_production_request(
+            "plushbound_guardian",
+            "small meadow guardian",
+            seed=11,
+            creature_family="guardian_friendly",
+        )
+        prompt = request["prompt"]
+        self.assertIn("hairless and pile-free", prompt)
+        self.assertIn("visibly interlaced warp-and-weft fibers", prompt)
+        self.assertIn("small-to-medium natural creature eyes", prompt)
+        self.assertIn("no button nose", prompt)
+
+    def test_enemy_compliance_blocks_furry_cat_drift(self):
+        request = build_production_request(
+            "plushbound_enemy",
+            "woodland stalker",
+            seed=12,
+            creature_family="enemy_creature",
+        )
+        prompt = request["prompt"]
+        self.assertIn("hairless and pile-free matte woven textile hide", prompt)
+        self.assertIn("original non-feline, non-canine head silhouette", prompt)
+        self.assertIn("no cat ears", prompt)
+        self.assertIn("four separated weight-bearing legs", prompt)
+        self.assertIn("four visible ground-contact feet", prompt)
 
     def test_policy_fails_closed_for_unsupported_preset(self):
         with self.assertRaisesRegex(ValueError, "not routed"):
