@@ -1,13 +1,13 @@
 {
   "schema": "plushbound.max_mode_trigger.v1",
   "enabled": true,
-  "round": 4,
+  "round": 5,
   "mode": "MAX_MODE_4_LANE",
   "jobs_per_shard": 32,
   "parallel_shards": 4,
-  "shards": [0, 1, 2, 3],
+  "shards": [0, 2, 3],
   "authorized_by_user": true,
-  "resume_reason": "round 3 artifact reports verified: 128 accepted, 0 quarantined; estimated raw generation spend $0.108126; advance exactly one round",
+  "resume_reason": "round 4 artifact reports verified: shards 0/2/3 accepted 96 total with 0 quarantined and estimated raw generation spend $0.083153; shard 1 reported lane_complete with 0 remaining IDs; advance exactly one round without rerunning completed guardian lane",
   "stop_conditions": [
     "planned_visual_production_complete",
     "modal_allowance_exhausted_or_next_launch_would_exceed_it"
