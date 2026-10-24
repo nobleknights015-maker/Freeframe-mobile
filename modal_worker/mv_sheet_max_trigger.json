@@ -17,13 +17,14 @@
   "authorized_by_user": true,
   "full_catalog_completion_authorized_by_user": true,
   "identity_source": "accepted_master_png_reference",
+  "launch_nonce": 2,
   "canary_gate": {
     "workflow_run_id": 40135050321,
     "conclusion": "success",
     "geometry": "144x192_rgba_3x4",
     "engine_validation": true
   },
-  "resume_reason": "Specialized MV sheet canary succeeded and actual output was visually inspected. Promote the validated 144x192 RGBA single-character contract to a 12-stream identity-preserving Max round using four verified Round 16 NPC master artifacts split into three non-overlapping sublanes each. Do not regenerate master identities; each accepted master PNG is the strict character reference.",
+  "resume_reason": "Specialized MV sheet canary succeeded and actual output was visually inspected. Promote the validated 144x192 RGBA single-character contract to a 12-stream identity-preserving Max round using four verified Round 16 NPC master artifacts split into three non-overlapping sublanes each. Do not regenerate master identities; each accepted master PNG is the strict character reference. launch_nonce=2 retriggers after workflow registration.",
   "stop_conditions": [
     "technical_quarantine_requires_targeted_repair",
     "visual_qa_rejects_scaled_contract",
