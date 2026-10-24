@@ -36,6 +36,7 @@ image = (
         "torch>=2.4,<3", "torchvision>=0.19,<1", "transformers>=4.46,<5",
     )
     .add_local_python_source("modal_worker")
+    .add_local_dir("modal_worker/project_references", remote_path="/root/modal_worker/project_references")
 )
 
 app = modal.App(APP_NAME)
@@ -122,7 +123,7 @@ class FreeFrameGenerator:
 
 @app.cls(gpu="L4", image=image, volumes={CACHE_DIR:model_cache, REFERENCE_DIR:reference_cache}, scaledown_window=120, timeout=1200)
 class FreeFrameProductionGenerator:
-    """Bounded-production FLUX.2 Klein renderer used by Atlas-routed image jobs."""
+    """Bounded-production FLUX.2 Klein renderer used by production-routed image jobs."""
     @modal.enter()
     def load(self):
         import torch
@@ -144,22 +145,50 @@ class FreeFrameProductionGenerator:
         model_id=str(request.get("model_id","")).strip()
         if model_id != PRODUCTION_MODEL: raise ValueError("production request model_id does not match deployed production renderer")
         if spec.width % 16 or spec.height % 16: raise ValueError("FLUX.2 Klein dimensions must be divisible by 16")
+
         generator=self.torch.Generator(device="cuda").manual_seed(spec.seed)
         prompt=spec.prompt
         reference_metadata=None
+        structural_conditioning=None
+        images=[]
+
+        family=str(request.get("creature_family","")).strip()
+        if family in {"guardian_friendly","guardian_corrupt","guardian_boss","enemy_creature"}:
+            from modal_worker.creature_structure_conditioning import build_conditioning
+            style_image, pose_image, control_prompt, conditioning = build_conditioning(family, prompt, size=512)
+            prompt=f"{control_prompt} {prompt}"
+            images.extend([style_image, pose_image])
+            structural_conditioning=conditioning.metadata()
+
         reference_id=str(request.get("reference_id","")).strip().lower()
         if reference_id:
             scale=float(request.get("reference_scale",0.35))
             if not 0.0 <= scale <= 1.0: raise ValueError("reference_scale must be between 0 and 1")
             if scale > 0:
                 strength=_reference_strength_text(scale)
-                prompt=(f"Use the supplied reference image {strength} as a visual reference while following the written production brief exactly. " + prompt)
+                if structural_conditioning is None:
+                    prompt=(f"Use the supplied reference image {strength} as a visual reference while following the written production brief exactly. " + prompt)
+                else:
+                    prompt=(f"A third user-provided reference image is also supplied; use it {strength} for requested visual identity or style only, without overriding reference image 2's exterior body plan. " + prompt)
                 reference=self._load_cached_reference_image(reference_id)
+                images.append(reference)
                 reference_metadata={"reference_id":reference_id,"reference_mode":request.get("reference_mode","style"),"requested_scale":scale,"scale_behavior":"prompt-steered-strength"}
+
         kwargs={"prompt":prompt,"width":spec.width,"height":spec.height,"num_inference_steps":spec.steps,"guidance_scale":spec.guidance_scale,"generator":generator}
-        if reference_metadata is not None: kwargs["image"]=[reference]
+        if images: kwargs["image"]=images
         result=self.pipe(**kwargs).images[0]; payload=_png_payload(result)
-        payload.update({"seed":spec.seed,"model":self.model_name,"renderer_route":PRODUCTION_RENDERER_ROUTE,"elapsed_seconds":round(time.monotonic()-started,3),"generation_spec":asdict(spec),"reference_conditioning":reference_metadata,"negative_prompt_applied":False,"bounded_production":True,"automatic_full_production_authorized":False}); return payload
+        payload.update({
+            "seed":spec.seed,
+            "model":self.model_name,
+            "renderer_route":PRODUCTION_RENDERER_ROUTE,
+            "elapsed_seconds":round(time.monotonic()-started,3),
+            "generation_spec":asdict(spec),
+            "reference_conditioning":reference_metadata,
+            "structural_conditioning":structural_conditioning,
+            "negative_prompt_applied":False,
+            "bounded_production":True,
+            "automatic_full_production_authorized":False,
+        }); return payload
 
     @modal.method()
     def generate(self, request:dict)->dict: return self._generate_one(request)
@@ -238,6 +267,18 @@ def record_atlas_visual_review(request:dict)->dict:
         head_sha=str(request.get("head_sha","")),
         artifact_digest=str(request.get("artifact_digest","")),
         canary_version=str(request.get("canary_version","")),
+        judgments=request.get("judgments"),
+    )
+
+@app.function(image=image, timeout=30)
+@modal.fastapi_endpoint(method="POST", requires_proxy_auth=True)
+def record_atlas_master_visual_review(request:dict)->dict:
+    from modal_worker.atlas_visual_gate import record_master_visual_review
+    return record_master_visual_review(
+        workflow_run_id=int(request.get("workflow_run_id",0)),
+        head_sha=str(request.get("head_sha","")),
+        artifact_digest=str(request.get("artifact_digest","")),
+        canary_version=str(request.get("canary_version", "")),
         judgments=request.get("judgments"),
     )
 
