@@ -16,7 +16,7 @@ import modal
 from modal_worker.atlas_controller import plan_asset
 from modal_worker.atlas_production_ledger import AssetProductionRecord, transition, verify_history
 
-CANARY_VERSION = "atlas-generation-e2e-v3-klein-internal-gateway"
+CANARY_VERSION = "atlas-generation-e2e-v4-civilian-fantasy-character"
 OUTPUT_PNG = Path("atlas-e2e-character.png")
 REPORT_JSON = Path("atlas-e2e-report.json")
 EXPECTED_MODEL = "black-forest-labs/FLUX.2-klein-4B"
@@ -53,8 +53,9 @@ def main() -> None:
     intent = {
         "family": "character_master",
         "description": (
-            "original adult Elyndor field courier and junior adventurer, practical layered travel clothes, "
-            "sun-warmed plains palette, satchel and weathered boots, approachable but capable, full body"
+            "original adult Elyndor civilian pathfinder and message-runner wearing handcrafted fantasy travel attire: "
+            "layered linen tunic, short asymmetrical woven mantle, leather shoulder satchel, simple belt pouches, cloth wrist wraps, "
+            "soft travel trousers and weathered leather boots, warm plains palette, approachable and capable, full body"
         ),
         "seed": 826104,
     }
