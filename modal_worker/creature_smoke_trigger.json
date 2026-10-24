@@ -1,6 +1,7 @@
 {
   "schema": "plushbound.creature_smoke_trigger.v1",
+  "run": 2,
   "authorized": true,
   "cases": ["guardian", "enemy"],
-  "purpose": "verify current deployed Vera worker before max-mode creature-lane repair"
+  "purpose": "verify family-routed creature conditioning before max-mode round-1 repair"
 }
