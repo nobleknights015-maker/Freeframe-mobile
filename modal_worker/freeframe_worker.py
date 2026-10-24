@@ -149,6 +149,28 @@ def plan_asset_job(request:dict)->dict:
 
 @app.function(image=image, timeout=30)
 @modal.fastapi_endpoint(method="POST", requires_proxy_auth=True)
+def advance_atlas_record(request:dict)->dict:
+    from modal_worker.atlas_production_ledger import AssetProductionRecord, transition
+    record_data=request.get("record")
+    if not isinstance(record_data,dict): raise ValueError("record must be an object")
+    event=str(request.get("event","")).strip()
+    if not event: raise ValueError("event is required")
+    metadata=request.get("metadata")
+    if metadata is not None and not isinstance(metadata,dict): raise ValueError("metadata must be an object")
+    record=AssetProductionRecord.from_dict(record_data)
+    transition(record,event,metadata)
+    return record.to_dict()
+
+@app.function(image=image, timeout=30)
+@modal.fastapi_endpoint(method="POST", requires_proxy_auth=True)
+def summarize_atlas_records(request:dict)->dict:
+    from modal_worker.atlas_production_ledger import AssetProductionRecord, summarize
+    raw=request.get("records")
+    if not isinstance(raw,list): raise ValueError("records must be a list")
+    return summarize([AssetProductionRecord.from_dict(item) for item in raw])
+
+@app.function(image=image, timeout=30)
+@modal.fastapi_endpoint(method="POST", requires_proxy_auth=True)
 def validate_asset(request:dict)->dict:
     from PIL import Image
     from modal_worker.asset_profiles import validate_metadata
