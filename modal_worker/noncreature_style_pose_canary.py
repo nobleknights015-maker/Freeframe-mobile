@@ -13,7 +13,7 @@ import modal
 APP_NAME="freeframe-noncreature-style-pose-canary"
 MODEL_ID="black-forest-labs/FLUX.2-klein-4B"
 CACHE_DIR="/cache"; MODEL_VOLUME="freeframe-model-cache"
-CANARY_VERSION="noncreature-style-pose-v1"
+CANARY_VERSION="noncreature-style-pose-v2-git-pinned"
 STEPS=4; GUIDANCE=1.0
 
 CASES=(
@@ -50,14 +50,14 @@ class Runner:
  def run_all(self):
   from modal_worker.creature_pose_guides import POSE_GUIDE_VERSION, build_pose_guide
   from modal_worker.plushbound_style_anchors import get_style_anchor
-  anchor=get_style_anchor(); style=anchor.load_image()
+  anchor=get_style_anchor(); style=anchor.load_image(); anchor_sha256=anchor.sha256()
   results=[]
   for case in CASES:
    req=request_for(case); pose=build_pose_guide(case["family"],size=512,variant=case["pose_variant"])
    gen=self.torch.Generator(device="cuda").manual_seed(req["seed"]); started=time.monotonic()
    rendered=self.pipe(image=[style,pose],prompt=f"{CONTROL} {req['prompt']}",width=req["width"],height=req["height"],guidance_scale=req["guidance_scale"],num_inference_steps=req["steps"],generator=gen).images[0]
    out=io.BytesIO(); rendered.save(out,format="PNG"); raw=out.getvalue()
-   results.append({"canary_version":CANARY_VERSION,"case_id":case["case_id"],"family":case["family"],"pose_guide_version":POSE_GUIDE_VERSION,"style_anchor_id":anchor.anchor_id,"style_anchor_sha256":anchor.sha256,"style_anchor_ownership":anchor.ownership,"creature_policy_version":req["creature_world_policy_version"],"seed":req["seed"],"model":MODEL_ID,"elapsed_seconds":round(time.monotonic()-started,3),"sha256":hashlib.sha256(raw).hexdigest(),"bytes":len(raw),"production_authorized":False,"png_base64":base64.b64encode(raw).decode("ascii")})
+   results.append({"canary_version":CANARY_VERSION,"case_id":case["case_id"],"family":case["family"],"pose_guide_version":POSE_GUIDE_VERSION,"style_anchor_id":anchor.anchor_id,"style_anchor_sha256":anchor_sha256,"style_anchor_git_blob_sha1":anchor.git_blob_sha1,"style_anchor_ownership":anchor.ownership,"creature_policy_version":req["creature_world_policy_version"],"seed":req["seed"],"model":MODEL_ID,"elapsed_seconds":round(time.monotonic()-started,3),"sha256":hashlib.sha256(raw).hexdigest(),"bytes":len(raw),"production_authorized":False,"png_base64":base64.b64encode(raw).decode("ascii")})
   return results
 
 @app.local_entrypoint()
