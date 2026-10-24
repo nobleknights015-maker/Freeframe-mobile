@@ -1,0 +1,4 @@
+{
+  "schema": "plushbound.style_anchor_verify.v1",
+  "purpose": "distinguish repository corruption from Modal packaging corruption"
+}
