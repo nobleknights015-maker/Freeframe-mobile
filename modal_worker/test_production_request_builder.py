@@ -5,10 +5,15 @@ from production_request_builder import PRODUCTION_REQUEST_BUILDER_VERSION, build
 class ProductionRequestBuilderTests(unittest.TestCase):
     def test_character_gets_validated_style_without_creature_policy(self):
         request = build_production_request("plushbound_character", "adult traveler", seed=1)
-        self.assertEqual(PRODUCTION_REQUEST_BUILDER_VERSION, "production-request-v4-family-aware")
+        self.assertEqual(PRODUCTION_REQUEST_BUILDER_VERSION, "production-request-v5-klein-routed")
         self.assertEqual(request["production_style_profile"], "plushbound_trinity")
         self.assertFalse(request["creature_world_policy_applied"])
         self.assertIsNone(request["creature_family"])
+        self.assertEqual(request["renderer_route"], "flux2_klein")
+        self.assertEqual(request["model_id"], "black-forest-labs/FLUX.2-klein-4B")
+        self.assertEqual(request["steps"], 4)
+        self.assertEqual(request["guidance_scale"], 1.0)
+        self.assertFalse(request["catalog_wide_launch_authorized"])
 
     def test_friendly_guardian_gets_friendly_enclosed_composition(self):
         request = build_production_request("plushbound_guardian", "small leaf-eared Guardian", seed=2)
@@ -20,6 +25,7 @@ class ProductionRequestBuilderTests(unittest.TestCase):
         self.assertIn("intact continuous textile integument completely encloses", request["prompt"])
         self.assertIn("visible skeleton", request["negative_prompt"])
         self.assertIn("random patches", request["negative_prompt"])
+        self.assertEqual(request["renderer_route"], "flux2_klein")
 
     def test_corrupt_and_boss_use_distinct_composition(self):
         corrupt = build_production_request("plushbound_guardian", "damaged woodland Guardian", seed=3, creature_family="guardian_corrupt")
@@ -41,12 +47,14 @@ class ProductionRequestBuilderTests(unittest.TestCase):
         self.assertIn("no bones ribs spine skull", request["prompt"])
         self.assertIn("realistic fur coat", request["negative_prompt"])
         self.assertIn("smiling mascot face", request["negative_prompt"])
+        self.assertEqual(request["renderer_route"], "flux2_klein")
 
     def test_reference_is_style_only(self):
         reference_id = "a" * 64
         request = build_production_request("plushbound_guardian", "emberfox", seed=6, reference_id=reference_id, reference_scale=0.42)
         self.assertEqual(request["reference_mode"], "style")
         self.assertEqual(request["production_reference_validated_mode"], "style")
+        self.assertEqual(request["renderer_route"], "flux2_klein")
 
     def test_invalid_inputs_fail_closed(self):
         with self.assertRaises(ValueError):
