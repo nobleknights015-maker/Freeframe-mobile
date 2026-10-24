@@ -18,19 +18,20 @@ from modal_worker.atlas_controller import plan_asset
 from modal_worker.atlas_production_ledger import AssetProductionRecord, transition, verify_history
 from modal_worker.production_inspector import inspect_generation
 
-CANARY_VERSION = "atlas-generation-matrix-v1-klein-bounded"
+CANARY_VERSION = "atlas-generation-matrix-v2-clean-character"
 EXPECTED_MODEL = "black-forest-labs/FLUX.2-klein-4B"
 EXPECTED_ROUTE = "flux2_klein"
 REPORT_JSON = Path("atlas-generation-matrix-report.json")
 
 CASES = (
     {
-        "case_id": "character_elyndor_courier",
+        "case_id": "character_elyndor_pathfinder",
         "intent": {
             "family": "character_master",
             "description": (
-                "original adult Elyndor field courier and junior adventurer, practical layered travel clothes, "
-                "sun-warmed plains palette, satchel and weathered boots, approachable but capable, full body"
+                "original adult Elyndor civilian pathfinder and message-runner wearing handcrafted fantasy travel attire: "
+                "layered linen tunic, short asymmetrical woven mantle, leather shoulder satchel, simple belt pouches, cloth wrist wraps, "
+                "soft travel trousers and weathered leather boots, warm plains palette, approachable and capable, full body"
             ),
             "seed": 826104,
         },
