@@ -98,12 +98,17 @@ jobs:
           set -euo pipefail
           SAFE_ARTIFACT="$(printf '%s' '${{ matrix.artifact }}' | tr -cs 'A-Za-z0-9._-' '_')"
           LOG="specialized-npc-mv-${SAFE_ARTIFACT}-sublane-${{ matrix.sublane }}.log"
-          python -m modal_worker.mv_sheet_max_production \
+          PYTHONPATH=modal_worker modal run modal_worker/mv_sheet_max_production.py \
             --master-dir master-input \
             --round-number "$ROUND_NUMBER" \
             --source-artifact '${{ matrix.artifact }}' \
             --sublane '${{ matrix.sublane }}' \
             --sublanes '${{ matrix.sublanes }}' | tee "$LOG"
+      - name: Require specialized report and PNG output
+        shell: bash
+        run: |
+          test -n "$(find specialized-output -name report.json -type f -print -quit)" || { echo 'missing specialized report' >&2; exit 1; }
+          test -n "$(find specialized-output -name '*.png' -type f -print -quit)" || { echo 'missing specialized PNG output' >&2; exit 1; }
       - name: Upload specialized stream
         if: always()
         uses: actions/upload-artifact@v4
