@@ -8,9 +8,9 @@ from __future__ import annotations
 
 import hashlib
 import json
-from typing import Any
+from typing import Any, Iterable
 
-VISUAL_GATE_VERSION = "atlas-visual-gate-v1"
+VISUAL_GATE_VERSION = "atlas-visual-gate-v2-master-matrix"
 CREATURE_CANARY_CASES = (
     "guardian_friendly_quadruped",
     "guardian_friendly_winged",
@@ -20,19 +20,27 @@ CREATURE_CANARY_CASES = (
     "guardian_boss_hexapod",
     "enemy_creature_hexapod",
 )
+MASTER_CANARY_CASES = (
+    "character_elyndor_pathfinder",
+    "guardian_elyndor_meadow",
+    "enemy_elyndor_prowler",
+    "environment_elyndor_road",
+)
 
 
 def _canonical(value: Any) -> bytes:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode("utf-8")
 
 
-def record_creature_visual_review(
+def _record_visual_review(
     *,
     workflow_run_id: int,
     head_sha: str,
     artifact_digest: str,
     canary_version: str,
     judgments: dict[str, dict[str, Any]],
+    expected_cases: Iterable[str],
+    scope: str,
 ) -> dict[str, Any]:
     if workflow_run_id <= 0:
         raise ValueError("workflow_run_id must be positive")
@@ -45,7 +53,8 @@ def record_creature_visual_review(
     if not isinstance(judgments, dict):
         raise ValueError("judgments must be an object")
 
-    expected = set(CREATURE_CANARY_CASES)
+    required_cases = tuple(expected_cases)
+    expected = set(required_cases)
     supplied = set(judgments)
     missing = sorted(expected - supplied)
     extra = sorted(supplied - expected)
@@ -53,7 +62,7 @@ def record_creature_visual_review(
         raise ValueError(f"visual review case mismatch; missing={missing}, extra={extra}")
 
     normalized: dict[str, dict[str, Any]] = {}
-    for case_id in CREATURE_CANARY_CASES:
+    for case_id in required_cases:
         item = judgments[case_id]
         if not isinstance(item, dict) or not isinstance(item.get("passed"), bool):
             raise ValueError(f"{case_id} must include boolean passed")
@@ -69,20 +78,58 @@ def record_creature_visual_review(
 
     passed_cases = [case_id for case_id, value in normalized.items() if value["passed"]]
     failed_cases = [case_id for case_id, value in normalized.items() if not value["passed"]]
-    bounded_gate_passed = not failed_cases
     body = {
         "visual_gate_version": VISUAL_GATE_VERSION,
         "workflow_run_id": workflow_run_id,
-        "head_sha": head_sha,
-        "artifact_digest": artifact_digest,
-        "canary_version": canary_version,
-        "required_cases": list(CREATURE_CANARY_CASES),
+        "head_sha": str(head_sha).strip(),
+        "artifact_digest": str(artifact_digest),
+        "canary_version": str(canary_version).strip(),
+        "required_cases": list(required_cases),
         "judgments": normalized,
         "passed_cases": passed_cases,
         "failed_cases": failed_cases,
-        "bounded_gate_passed": bounded_gate_passed,
-        "scope": "creature-master visual canary only",
+        "bounded_gate_passed": not failed_cases,
+        "scope": scope,
         "automatic_full_production_authorized": False,
+        "catalog_wide_launch_authorized": False,
     }
     body["review_digest"] = hashlib.sha256(_canonical(body)).hexdigest()
     return body
+
+
+def record_creature_visual_review(
+    *,
+    workflow_run_id: int,
+    head_sha: str,
+    artifact_digest: str,
+    canary_version: str,
+    judgments: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
+    return _record_visual_review(
+        workflow_run_id=workflow_run_id,
+        head_sha=head_sha,
+        artifact_digest=artifact_digest,
+        canary_version=canary_version,
+        judgments=judgments,
+        expected_cases=CREATURE_CANARY_CASES,
+        scope="creature-master visual canary only",
+    )
+
+
+def record_master_visual_review(
+    *,
+    workflow_run_id: int,
+    head_sha: str,
+    artifact_digest: str,
+    canary_version: str,
+    judgments: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
+    return _record_visual_review(
+        workflow_run_id=workflow_run_id,
+        head_sha=head_sha,
+        artifact_digest=artifact_digest,
+        canary_version=canary_version,
+        judgments=judgments,
+        expected_cases=MASTER_CANARY_CASES,
+        scope="bounded four-lane generated-master visual canary",
+    )
