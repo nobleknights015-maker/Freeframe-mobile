@@ -127,7 +127,7 @@ jobs:
             --master-root master-input \
             --lane-specs-json "$LANE_SPECS_JSON" \
             --round-number "$ROUND_NUMBER" \
-            --max-parallel 12 | tee specialized-npc-mv-unified.log
+            --max-parallel 10 | tee specialized-npc-mv-unified.log
       - name: Require specialized batch report and PNG output
         shell: bash
         run: |
