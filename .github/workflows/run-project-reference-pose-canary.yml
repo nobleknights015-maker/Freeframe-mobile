@@ -2,15 +2,6 @@ name: FreeFrame Project-Reference Pose Canary
 
 on:
   workflow_dispatch:
-  push:
-    branches: [freeframe-modal-worker]
-    paths:
-      - 'modal_worker/project_reference_pose_canary.py'
-      - 'modal_worker/creature_pose_guides.py'
-      - 'modal_worker/test_creature_pose_guides.py'
-      - 'modal_worker/project_references/**'
-      - 'modal_worker/plushbound_project_references.py'
-      - '.github/workflows/run-project-reference-pose-canary.yml'
 
 permissions:
   contents: read
@@ -45,22 +36,32 @@ jobs:
           PYTHONPATH=. python - <<'PY'
           from modal_worker.creature_pose_guides import build_pose_guide
           from modal_worker.plushbound_project_references import REFERENCES, get_project_reference
+          variants = {
+              'guardian_friendly': ('quadruped', 'winged', 'biped', 'long_low'),
+              'guardian_corrupt': ('low_quadruped',),
+              'guardian_boss': ('hexapod',),
+              'enemy_creature': ('hexapod',),
+          }
           for family in REFERENCES:
               ref = get_project_reference(family)
               assert ref.ownership == 'project_owned'
-              guide = build_pose_guide(family)
-              assert guide.size == (512, 512)
+              for variant in variants[family]:
+                  guide = build_pose_guide(family, variant=variant)
+                  assert guide.size == (512, 512)
               print(family, ref.sha256)
           PY
-      - name: Run four-case style-plus-pose canary in one L4 app
+      - name: Run seven-case organism-first style-plus-pose canary in one L4 app
         run: modal run modal_worker/project_reference_pose_canary.py
       - name: Require all outputs
         shell: bash
         run: |
-          test -s project-reference-pose-canary/guardian_friendly_style_pose.png
-          test -s project-reference-pose-canary/guardian_corrupt_style_pose.png
-          test -s project-reference-pose-canary/guardian_boss_style_pose.png
-          test -s project-reference-pose-canary/enemy_creature_style_pose.png
+          test -s project-reference-pose-canary/guardian_friendly_quadruped.png
+          test -s project-reference-pose-canary/guardian_friendly_winged.png
+          test -s project-reference-pose-canary/guardian_friendly_biped.png
+          test -s project-reference-pose-canary/guardian_friendly_long_low.png
+          test -s project-reference-pose-canary/guardian_corrupt_low.png
+          test -s project-reference-pose-canary/guardian_boss_hexapod.png
+          test -s project-reference-pose-canary/enemy_creature_hexapod.png
           test -s project-reference-pose-canary/report.json
       - name: Upload style-plus-pose evidence
         if: always()
