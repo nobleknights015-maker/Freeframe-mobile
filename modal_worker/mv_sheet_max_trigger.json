@@ -3,7 +3,7 @@
   "enabled": true,
   "round": 1,
   "phase": "npc_mv_single_character_sheets",
-  "mode": "SPECIALIZED_MAX_12_STREAM",
+  "mode": "SPECIALIZED_MAX_SINGLE_APP_12_LANE_REPAIR",
   "source_run_id": 40104354795,
   "source_artifacts": [
     "plushbound-max-round-16-shard-0-sublane-0-40104354795",
@@ -13,18 +13,28 @@
   ],
   "sublanes_per_artifact": 3,
   "parallel_streams": 12,
-  "expected_unique_masters": 128,
+  "lane_specs": [
+    {"artifact":"plushbound-max-round-16-shard-0-sublane-0-40104354795","sublane":0,"sublanes":3},
+    {"artifact":"plushbound-max-round-16-shard-0-sublane-0-40104354795","sublane":1,"sublanes":3},
+    {"artifact":"plushbound-max-round-16-shard-0-sublane-0-40104354795","sublane":2,"sublanes":3},
+    {"artifact":"plushbound-max-round-16-shard-0-sublane-1-40104354795","sublane":0,"sublanes":3},
+    {"artifact":"plushbound-max-round-16-shard-0-sublane-1-40104354795","sublane":1,"sublanes":3},
+    {"artifact":"plushbound-max-round-16-shard-0-sublane-2-40104354795","sublane":0,"sublanes":3},
+    {"artifact":"plushbound-max-round-16-shard-0-sublane-3-40104354795","sublane":0,"sublanes":3},
+    {"artifact":"plushbound-max-round-16-shard-0-sublane-3-40104354795","sublane":2,"sublanes":3}
+  ],
+  "expected_unique_masters": 86,
   "authorized_by_user": true,
   "full_catalog_completion_authorized_by_user": true,
   "identity_source": "accepted_master_png_reference",
-  "launch_nonce": 3,
+  "launch_nonce": 4,
   "canary_gate": {
     "workflow_run_id": 40135050321,
     "conclusion": "success",
     "geometry": "144x192_rgba_3x4",
     "engine_validation": true
   },
-  "resume_reason": "Retry specialized round 1 after verifying the prior workflow-level success was an empty-output launcher bug: python -m imported the Modal app without executing @app.local_entrypoint. The workflow is now fixed to invoke modal run and hard-fail if no report or PNG is produced. Reuse the exact same four Round 16 source artifacts and sublane mapping because no generation occurred and no masters were consumed.",
+  "resume_reason": "Repair only the eight Round 1 lanes that failed before generation because Modal rejected simultaneous AppCreate requests. Three lanes already completed successfully and are excluded. One legacy lane is still active and is also excluded. The new unified dispatcher creates one Modal app and fans these eight missing lane ranges out internally, preventing AppCreate rate-limit duplication while preserving stable seeds, source-master identity, and exact MV sheet validation.",
   "stop_conditions": [
     "technical_quarantine_requires_targeted_repair",
     "visual_qa_rejects_scaled_contract",
