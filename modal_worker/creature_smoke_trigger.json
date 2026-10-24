@@ -1,7 +1,7 @@
 {
   "schema": "plushbound.creature_smoke_trigger.v1",
-  "run": 2,
+  "run": 3,
   "authorized": true,
   "cases": ["guardian", "enemy"],
-  "purpose": "verify family-routed creature conditioning before max-mode round-1 repair"
+  "purpose": "verify normalized family references before max-mode round-1 repair"
 }
