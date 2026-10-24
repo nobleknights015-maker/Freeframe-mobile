@@ -39,7 +39,10 @@ jobs:
       - name: Compile smoke surface
         run: python -m compileall -q modal_worker
       - name: Run two-image creature smoke
-        run: python -m modal_worker.creature_smoke_direct | tee creature-smoke.log
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m modal_worker.creature_smoke_direct | tee creature-smoke.log
       - name: Upload smoke evidence
         if: always()
         uses: actions/upload-artifact@v4
