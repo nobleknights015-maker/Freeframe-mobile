@@ -4,6 +4,7 @@ Atlas owns deterministic production structure for Plushbound assets: required ou
 job identity, ledger state, downstream packaging/manifest expectations, and QA
 acceptance state. Atlas never directs, conditions, or collaborates in Vera's visual
 creation process. Vera owns visual asset creation and art direction independently.
+Atlas personality is presentation-only and cannot alter any production decision.
 """
 from __future__ import annotations
 
@@ -11,15 +12,17 @@ import hashlib
 import json
 
 try:
+    from .atlas_personality import ATLAS_PERSONALITY_VERSION, speak
     from .atlas_production_ledger import LEDGER_VERSION, new_record
     from .plushbound_brain import ASSISTANT_NAME, BRAIN_VERSION, WORLD_NAME, get_family_contract, missing_context
     from .production_request_builder import build_production_request
 except ImportError:
+    from atlas_personality import ATLAS_PERSONALITY_VERSION, speak
     from atlas_production_ledger import LEDGER_VERSION, new_record
     from plushbound_brain import ASSISTANT_NAME, BRAIN_VERSION, WORLD_NAME, get_family_contract, missing_context
     from production_request_builder import build_production_request
 
-ATLAS_VERSION = "atlas-controller-v4-hard-responsibility-boundary"
+ATLAS_VERSION = "atlas-controller-v5-personality-isolated"
 MAX_SEED = 2**63 - 1
 
 RESPONSIBILITY_BOUNDARY = {
@@ -35,6 +38,7 @@ RESPONSIBILITY_BOUNDARY = {
     "atlas_may_condition_visual_generation": False,
     "atlas_may_override_vera_art_direction": False,
     "vera_may_override_atlas_geometry_or_manifest": False,
+    "atlas_personality_is_presentation_only": True,
 }
 
 
@@ -124,10 +128,12 @@ def plan_asset(intent: dict) -> dict:
 
     atlas_job_id, plan_digest = _identity(family, description, context, seed, request)
     ledger_record = new_record(atlas_job_id, family, plan_digest).to_dict()
+    atlas_voice = speak("plan_ready", subject=family.replace("_", " "))
 
     return {
         "assistant_name": ASSISTANT_NAME,
         "controller_version": ATLAS_VERSION,
+        "personality_version": ATLAS_PERSONALITY_VERSION,
         "brain_version": BRAIN_VERSION,
         "ledger_version": LEDGER_VERSION,
         "world": WORLD_NAME,
@@ -145,6 +151,7 @@ def plan_asset(intent: dict) -> dict:
         "visual_generation_owned_by": "Vera",
         "deterministic_compilation_owned_by": "Atlas",
         "atlas_visual_conditioning": None,
+        "atlas_voice": atlas_voice,
         "ledger_record": ledger_record,
         "chat_model_attached": False,
         "automatic_full_production_authorized": False,
