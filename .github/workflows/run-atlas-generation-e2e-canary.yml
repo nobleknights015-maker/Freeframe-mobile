@@ -1,0 +1,50 @@
+name: Atlas End-to-End Generation Canary
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - freeframe-modal-worker
+    paths:
+      - '.github/workflows/run-atlas-generation-e2e-canary.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: atlas-generation-e2e-canary
+  cancel-in-progress: false
+
+jobs:
+  canary:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Require Modal credentials
+        shell: bash
+        run: |
+          test -n "$MODAL_TOKEN_ID" || { echo 'MODAL_TOKEN_ID secret is not configured.' >&2; exit 1; }
+          test -n "$MODAL_TOKEN_SECRET" || { echo 'MODAL_TOKEN_SECRET secret is not configured.' >&2; exit 1; }
+      - name: Install Modal CLI
+        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2'
+      - name: Compile Atlas canary surface
+        run: python -m compileall -q modal_worker
+      - name: Run Atlas end-to-end canary
+        run: python modal_worker/atlas_generation_e2e_canary.py
+      - name: Upload Atlas canary evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: atlas-generation-e2e-${{ github.run_id }}
+          path: |
+            atlas-e2e-character.png
+            atlas-e2e-report.json
+          if-no-files-found: warn
+          retention-days: 7
