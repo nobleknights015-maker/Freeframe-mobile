@@ -1,11 +1,11 @@
-"""Project-owned non-creature style anchors for Plushbound conditioning."""
+"""Project-owned style anchors for Plushbound production conditioning."""
 from __future__ import annotations
 
 import hashlib
 from dataclasses import dataclass
 from pathlib import Path
 
-STYLE_ANCHOR_LIBRARY_VERSION = "plushbound-style-anchor-v2-git-pinned"
+STYLE_ANCHOR_LIBRARY_VERSION = "plushbound-style-anchor-v3-family-routed"
 BASE_DIR = Path(__file__).with_name("project_references")
 
 
@@ -32,9 +32,10 @@ class StyleAnchor:
     def load_image(self):
         from PIL import Image
         import io
-        image = Image.open(io.BytesIO(self.load_bytes()))
-        image.verify()
-        return Image.open(io.BytesIO(self.load_bytes())).convert("RGB")
+        raw = self.load_bytes()
+        with Image.open(io.BytesIO(raw)) as image:
+            image.verify()
+        return Image.open(io.BytesIO(raw)).convert("RGB")
 
     def metadata(self) -> dict:
         return {
@@ -49,17 +50,56 @@ class StyleAnchor:
         }
 
 
-ELYNDOR_NONCREATURE = StyleAnchor(
-    anchor_id="elyndor_noncreature_style_v1",
+# Retained for provenance only. This legacy environment JPEG has valid JPEG markers
+# but is structurally undecodable by Pillow and MUST NOT be selected for production.
+ELYNDOR_NONCREATURE_LEGACY = StyleAnchor(
+    anchor_id="elyndor_noncreature_style_v1_legacy_invalid",
     path="elyndor_noncreature_style_anchor.jpg",
     git_blob_sha1="cd5c514ba2a6bf59485143d94ebdd36ae9616f4a",
     ownership="project_owned",
-    role="render_palette_material_style_only",
-    source_description="derived only from the user/project-owned Elyndor environment asset sheet; contains environment art and no creature anatomy",
+    role="provenance_only_invalid_do_not_render",
+    source_description="legacy project-owned Elyndor environment anchor retained only for provenance; failed Pillow verification on 2026-10-24",
 )
 
+FAMILY_STYLE_ANCHORS: dict[str, StyleAnchor] = {
+    "guardian_friendly": StyleAnchor(
+        anchor_id="guardian_friendly_bramblebuck_v1",
+        path="guardian_friendly_bramblebuck.jpg",
+        git_blob_sha1="1286660450bbefe6bf2473d3d4dd8b82263a39d1",
+        ownership="project_owned",
+        role="creature_family_render_material_style",
+        source_description="project-owned friendly Guardian reference used for family-level rendering and living-textile material cues",
+    ),
+    "guardian_corrupt": StyleAnchor(
+        anchor_id="guardian_corrupt_bramble_v1",
+        path="guardian_corrupt_bramble.jpg",
+        git_blob_sha1="6d848a78e27c9503379321c374905e9738b9b932",
+        ownership="project_owned",
+        role="creature_family_render_material_style",
+        source_description="project-owned corrupt Guardian reference used for family-level rendering and living-textile material cues",
+    ),
+    "guardian_boss": StyleAnchor(
+        anchor_id="guardian_boss_warden_v1",
+        path="guardian_boss_warden.jpg",
+        git_blob_sha1="5fc9faa41c0624dc741aeb1bd0776cc0be88b8f9",
+        ownership="project_owned",
+        role="creature_family_render_material_style",
+        source_description="project-owned Guardian boss reference used for family-level rendering and living-textile material cues",
+    ),
+    "enemy_creature": StyleAnchor(
+        anchor_id="enemy_creature_snag_v1",
+        path="enemy_creature_snag.jpg",
+        git_blob_sha1="275226ca2af8f95ba692cc080820cb09b126393e",
+        ownership="project_owned",
+        role="creature_family_render_material_style",
+        source_description="project-owned enemy creature reference used for family-level rendering and living-textile material cues",
+    ),
+}
 
-def get_style_anchor(anchor_id: str = "elyndor_noncreature_style_v1") -> StyleAnchor:
-    if anchor_id != ELYNDOR_NONCREATURE.anchor_id:
-        raise ValueError(f"unknown Plushbound style anchor: {anchor_id}")
-    return ELYNDOR_NONCREATURE
+
+def get_style_anchor(family: str) -> StyleAnchor:
+    family = str(family).strip()
+    try:
+        return FAMILY_STYLE_ANCHORS[family]
+    except KeyError as exc:
+        raise ValueError(f"unknown Plushbound creature style-anchor family: {family}") from exc
