@@ -10,16 +10,18 @@ import json
 from dataclasses import dataclass, field
 from typing import Any
 
-LEDGER_VERSION = "atlas-production-ledger-v1"
+LEDGER_VERSION = "atlas-production-ledger-v2"
 INITIAL_STATE = "planned"
 FINAL_STATES = {"accepted", "quarantined"}
+ATTEMPT_EVENTS = {"generation_succeeded", "generation_failed"}
 
 ALLOWED_TRANSITIONS: dict[str, dict[str, str]] = {
     "planned": {"plan_validated": "ready"},
-    "ready": {"generation_succeeded": "generated", "quarantine": "quarantined"},
+    "ready": {"generation_succeeded": "generated", "generation_failed": "generation_failed", "quarantine": "quarantined"},
     "generated": {"qa_passed": "accepted", "qa_failed": "qa_failed", "quarantine": "quarantined"},
+    "generation_failed": {"queue_retry": "retry_queued", "quarantine": "quarantined"},
     "qa_failed": {"queue_retry": "retry_queued", "quarantine": "quarantined"},
-    "retry_queued": {"generation_succeeded": "generated", "quarantine": "quarantined"},
+    "retry_queued": {"generation_succeeded": "generated", "generation_failed": "generation_failed", "quarantine": "quarantined"},
     "accepted": {},
     "quarantined": {},
 }
@@ -91,7 +93,7 @@ def transition(record: AssetProductionRecord, event: str, metadata: dict[str, An
         raise ValueError(f"event {event!r} is not valid from state {record.state!r}")
     metadata = dict(metadata or {})
     previous_hash = record.history[-1]["receipt_hash"] if record.history else "GENESIS"
-    if event == "generation_succeeded":
+    if event in ATTEMPT_EVENTS:
         record.attempts += 1
     receipt_hash = _receipt_hash(previous_hash, event, target, metadata)
     record.state = target
@@ -125,7 +127,7 @@ def verify_history(record: AssetProductionRecord) -> None:
         calculated = _receipt_hash(previous_hash, event, target, metadata)
         if receipt.get("receipt_hash") != calculated:
             raise ValueError("Atlas receipt hash mismatch")
-        if event == "generation_succeeded":
+        if event in ATTEMPT_EVENTS:
             attempts += 1
         previous_hash = calculated
         replay_state = target
@@ -148,6 +150,6 @@ def summarize(records: list[AssetProductionRecord]) -> dict[str, Any]:
         "states": counts,
         "attempts": attempts,
         "complete": counts["accepted"],
-        "needs_attention": counts["qa_failed"] + counts["quarantined"],
+        "needs_attention": counts["qa_failed"] + counts["generation_failed"] + counts["quarantined"],
         "automatic_full_production_authorized": False,
     }
