@@ -12,7 +12,7 @@ try:
 except ImportError:
     from model_catalog import apply_model_defaults, get_production_renderer
 
-PRODUCTION_MODEL_POLICY_VERSION = "production-model-policy-v2-klein-compliance"
+PRODUCTION_MODEL_POLICY_VERSION = "production-model-policy-v3-klein-clean-hems"
 PRODUCTION_RENDERER_ROUTE = "flux2_klein"
 SUPPORTED_PRESETS = frozenset({
     "plushbound_character",
@@ -25,8 +25,9 @@ _KLEIN_COMPLIANCE = {
     "plushbound_character": (
         "Klein production constraint: render one character only in one continuous in-world scene. "
         "All garment and accessory surfaces are plain, clean, unlettered and unmarked; cloth panels are solid woven material "
-        "with ordinary construction seams only. The tunic and mantle hems are simple continuous fabric edges with no decorative "
-        "border, embroidery, glyph-like shapes, name tapes, badges, insignia, symbols, logos, numbers or writing anywhere."
+        "with restrained construction seams only where pieces join. The visible lower edge of every tunic, mantle, sleeve and trouser cuff "
+        "is a smooth uninterrupted plain fabric edge with zero decorative stitching, cross-stitching, border marks, embroidery, trim, "
+        "glyph-like shapes, name tapes, badges, insignia, symbols, logos, numbers or writing. Leave the lower tunic hem visually blank."
     ),
     "plushbound_guardian": (
         "Klein production constraint: render one living Guardian only in its natural habitat. Surface variation is organic woven "
@@ -64,7 +65,7 @@ def apply_production_model_policy(preset_name: str, request: dict) -> dict:
     result["renderer_route"] = PRODUCTION_RENDERER_ROUTE
     result["renderer_class"] = "FreeFrameProductionGenerator"
     result["production_model_policy_version"] = PRODUCTION_MODEL_POLICY_VERSION
-    result["renderer_compliance_profile"] = f"{preset_name}-klein-v2"
+    result["renderer_compliance_profile"] = f"{preset_name}-klein-v3"
     result["bounded_production_authorized"] = True
     result["automatic_full_production_authorized"] = False
     result["catalog_wide_launch_authorized"] = False
