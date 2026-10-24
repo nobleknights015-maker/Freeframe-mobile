@@ -171,6 +171,18 @@ def summarize_atlas_records(request:dict)->dict:
 
 @app.function(image=image, timeout=30)
 @modal.fastapi_endpoint(method="POST", requires_proxy_auth=True)
+def record_atlas_visual_review(request:dict)->dict:
+    from modal_worker.atlas_visual_gate import record_creature_visual_review
+    return record_creature_visual_review(
+        workflow_run_id=int(request.get("workflow_run_id",0)),
+        head_sha=str(request.get("head_sha","")),
+        artifact_digest=str(request.get("artifact_digest","")),
+        canary_version=str(request.get("canary_version","")),
+        judgments=request.get("judgments"),
+    )
+
+@app.function(image=image, timeout=30)
+@modal.fastapi_endpoint(method="POST", requires_proxy_auth=True)
 def validate_asset(request:dict)->dict:
     from PIL import Image
     from modal_worker.asset_profiles import validate_metadata
