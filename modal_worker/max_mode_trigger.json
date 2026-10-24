@@ -1,7 +1,7 @@
 {
   "schema": "plushbound.max_mode_trigger.v1",
   "enabled": true,
-  "round": 11,
+  "round": 12,
   "mode": "MAX_MODE_12_STREAM_4X",
   "jobs_per_shard": 128,
   "jobs_per_sublane": 32,
@@ -10,7 +10,7 @@
   "shards": [0, 2, 3],
   "authorized_by_user": true,
   "full_catalog_completion_authorized_by_user": true,
-  "resume_reason": "round 10 artifact reports verified: shards 0/2/3 accepted 96 total with 0 quarantined and measured raw generation spend $0.082781; rounds 1-10 are banked; user delegated throughput control; cut over at round 11 to four non-overlapping 32-item sublanes per active family, preserving stable IDs, seeds, validation, retry and quarantine behavior without rerunning accepted IDs",
+  "resume_reason": "turbo round 11 artifact reports verified: 12/12 streams present, 384/384 accepted, 0 quarantined, measured raw generation spend $0.328213; effective legacy rounds 11-14 banked with no overlap; advance exactly one turbo round to 12 on shards 0/2/3 without rerunning accepted IDs",
   "stop_conditions": [
     "planned_visual_production_complete",
     "modal_allowance_exhausted_or_next_launch_would_exceed_it"
