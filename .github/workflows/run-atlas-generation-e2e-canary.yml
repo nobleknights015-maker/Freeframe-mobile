@@ -15,6 +15,7 @@ on:
       - 'modal_worker/production_style_policy.py'
       - 'modal_worker/style_profiles.py'
       - 'modal_worker/atlas_generation_e2e_canary.py'
+      - 'modal_worker/atlas_canary_trigger.json'
       - '.github/workflows/run-atlas-generation-e2e-canary.yml'
 
 permissions:
