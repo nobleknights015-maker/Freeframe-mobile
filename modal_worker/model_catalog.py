@@ -1,8 +1,8 @@
 """Explicit model candidates and model-aware inference defaults for FreeFrame.
 
-A candidate must be deliberately promoted before it is used for large production
-runs. This keeps experimental quality tests from silently changing the 22k-asset
-pipeline.
+A renderer can be eligible for bounded production without authorizing a catalog-wide
+launch. Atlas and the worker still keep the 22k+ rollout behind separate QA/budget
+and launch gates.
 """
 from __future__ import annotations
 
@@ -22,6 +22,9 @@ class ModelCandidate:
 
     def metadata(self) -> dict:
         return asdict(self)
+
+
+PRODUCTION_RENDERER_KEY = "flux2_klein_4b_candidate"
 
 
 CANDIDATES = {
@@ -55,12 +58,11 @@ CANDIDATES = {
         default_steps=4,
         default_guidance=1.0,
         max_test_resolution=1024,
-        production_eligible=False,
+        production_eligible=True,
         notes=(
-            "Primary budget-conscious quality-upgrade candidate. Official model card lists Apache-2.0, "
-            "Diffusers Flux2KleinPipeline support, roughly 13GB VRAM, four-step distilled inference, "
-            "guidance 1.0 in the reference example, and text/image multi-reference capability. "
-            "Benchmark on L4 before any production promotion."
+            "Promoted for bounded FreeFrame production jobs after L4 quality/cost validation. "
+            "Apache-2.0 weights; roughly 13GB VRAM; four-step distilled inference; guidance 1.0. "
+            "This promotion does not authorize the catalog-wide 22k+ launch."
         ),
     ),
     "flux2_klein_4b_fp8_candidate": ModelCandidate(
@@ -72,8 +74,8 @@ CANDIDATES = {
         max_test_resolution=1024,
         production_eligible=False,
         notes=(
-            "Secondary low-memory benchmark candidate. Apache-2.0 FP8 weights are retained only as a "
-            "fallback if the full BF16 candidate is slower or less memory-efficient than expected."
+            "Secondary low-memory benchmark candidate. Retained only as a fallback if the full BF16 "
+            "renderer becomes unsuitable for the active GPU profile."
         ),
     ),
 }
@@ -84,6 +86,13 @@ def get_candidate(key: str) -> ModelCandidate:
         return CANDIDATES[key]
     except KeyError as exc:
         raise ValueError(f"unknown model candidate: {key}") from exc
+
+
+def get_production_renderer() -> ModelCandidate:
+    candidate = get_candidate(PRODUCTION_RENDERER_KEY)
+    if not candidate.production_eligible:
+        raise RuntimeError("configured FreeFrame production renderer is not production eligible")
+    return candidate
 
 
 def apply_model_defaults(request: dict, candidate: ModelCandidate) -> dict:
