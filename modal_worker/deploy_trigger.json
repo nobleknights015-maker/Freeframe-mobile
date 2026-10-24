@@ -1,0 +1,6 @@
+{
+  "schema": "plushbound.vera_deploy_trigger.v1",
+  "reason": "refresh deployed worker with current validated style-anchor and creature-conditioning files",
+  "authorized": true,
+  "requested_for": "max-mode-round-1-creature-repair"
+}
