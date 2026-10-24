@@ -1,7 +1,7 @@
 import unittest
 
 from benchmark_report import BenchmarkResult, summarize
-from model_catalog import apply_model_defaults, get_candidate
+from model_catalog import apply_model_defaults, get_candidate, get_production_renderer
 
 
 class ModelCatalogTests(unittest.TestCase):
@@ -15,10 +15,11 @@ class ModelCatalogTests(unittest.TestCase):
         self.assertEqual(request["guidance_scale"], 0.0)
         self.assertEqual(request["model_candidate"], candidate.key)
 
-    def test_flux2_klein_4b_is_experimental_and_uses_official_distilled_defaults(self):
+    def test_flux2_klein_4b_is_bounded_production_renderer_with_distilled_defaults(self):
         candidate = get_candidate("flux2_klein_4b_candidate")
         self.assertEqual(candidate.model_id, "black-forest-labs/FLUX.2-klein-4B")
-        self.assertFalse(candidate.production_eligible)
+        self.assertTrue(candidate.production_eligible)
+        self.assertEqual(get_production_renderer(), candidate)
         request = apply_model_defaults({"prompt": "guardian", "steps": 28, "guidance_scale": 6.0}, candidate)
         self.assertEqual(request["steps"], 4)
         self.assertEqual(request["guidance_scale"], 1.0)
