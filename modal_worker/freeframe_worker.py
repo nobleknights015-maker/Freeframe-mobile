@@ -20,7 +20,9 @@ MODEL_VOLUME = "freeframe-model-cache"
 REFERENCE_VOLUME = "freeframe-reference-cache"
 CACHE_DIR = "/cache"
 REFERENCE_DIR = "/references"
-DEFAULT_MODEL = os.environ.get("FREEFRAME_MODEL", "stabilityai/stable-diffusion-xl-base-1.0")
+LEGACY_MODEL = os.environ.get("FREEFRAME_LEGACY_MODEL", "stabilityai/stable-diffusion-xl-base-1.0")
+PRODUCTION_MODEL = "black-forest-labs/FLUX.2-klein-4B"
+PRODUCTION_RENDERER_ROUTE = "flux2_klein"
 IP_ADAPTER_MODEL = "h94/IP-Adapter"
 IP_ADAPTER_SUBFOLDER = "sdxl_models"
 IP_ADAPTER_WEIGHT = "ip-adapter_sdxl.bin"
@@ -30,7 +32,7 @@ image = (
     .apt_install("libgl1", "libglib2.0-0")
     .pip_install(
         "accelerate>=1.1,<2", "diffusers>=0.31,<1", "einops>=0.8,<1", "fastapi>=0.115,<1", "huggingface-hub>=0.26,<1",
-        "kornia>=0.7,<1", "numpy>=1.26,<2", "pillow>=10.4,<12", "safetensors>=0.4,<1", "timm>=1.0.23,<2",
+        "kornia>=0.7,<1", "numpy>=1.26,<2", "pillow>=10.4,<12", "safetensors>=0.4,<1", "sentencepiece>=0.2,<1", "timm>=1.0.23,<2",
         "torch>=2.4,<3", "torchvision>=0.19,<1", "transformers>=4.46,<5",
     )
     .add_local_python_source("modal_worker")
@@ -69,14 +71,21 @@ def _png_payload(rendered_image) -> dict:
     return {"mime_type":"image/png","sha256":hashlib.sha256(raw).hexdigest(),"bytes":len(raw),"image_base64":base64.b64encode(raw).decode("ascii"),"width":rendered_image.width,"height":rendered_image.height}
 
 
+def _reference_strength_text(scale: float) -> str:
+    if scale < 0.25: return "lightly"
+    if scale < 0.60: return "moderately"
+    return "strongly"
+
+
 @app.cls(gpu="L4", image=image, volumes={CACHE_DIR:model_cache, REFERENCE_DIR:reference_cache}, scaledown_window=120, timeout=900)
 class FreeFrameGenerator:
+    """Legacy SDXL path retained for compatibility and isolated experiments."""
     @modal.enter()
     def load(self):
         import torch
         from diffusers import AutoPipelineForText2Image
         os.environ.setdefault("HF_HOME", CACHE_DIR); os.environ.setdefault("HF_HUB_CACHE", f"{CACHE_DIR}/hub")
-        self.torch=torch; self.model_name=DEFAULT_MODEL; self.ip_adapter_loaded=False
+        self.torch=torch; self.model_name=LEGACY_MODEL; self.ip_adapter_loaded=False
         load_kwargs={"torch_dtype":torch.float16,"cache_dir":CACHE_DIR}
         if self.model_name=="stabilityai/stable-diffusion-xl-base-1.0": load_kwargs.update({"variant":"fp16","use_safetensors":True})
         self.pipe=AutoPipelineForText2Image.from_pretrained(self.model_name, **load_kwargs).to("cuda")
@@ -99,7 +108,7 @@ class FreeFrameGenerator:
             self._ensure_ip_adapter(); self.pipe.set_ip_adapter_scale(adapter_scale_for(reference)); kwargs["ip_adapter_image"]=reference.image
         elif self.ip_adapter_loaded: self.pipe.set_ip_adapter_scale(0.0)
         result=self.pipe(**kwargs).images[0]; payload=_png_payload(result)
-        payload.update({"seed":spec.seed,"model":self.model_name,"elapsed_seconds":round(time.monotonic()-started,3),"generation_spec":asdict(spec),"reference_conditioning":reference.metadata() if reference is not None else None}); return payload
+        payload.update({"seed":spec.seed,"model":self.model_name,"renderer_route":"legacy_sdxl","elapsed_seconds":round(time.monotonic()-started,3),"generation_spec":asdict(spec),"reference_conditioning":reference.metadata() if reference is not None else None,"negative_prompt_applied":True}); return payload
 
     @modal.method()
     def generate(self, request:dict)->dict: return self._generate_one(request)
@@ -108,6 +117,57 @@ class FreeFrameGenerator:
     def generate_batch(self, requests:list[dict])->list[dict]:
         if not requests: return []
         if len(requests)>32: raise ValueError("single worker batch is limited to 32 items")
+        return [self._generate_one(req) for req in requests]
+
+
+@app.cls(gpu="L4", image=image, volumes={CACHE_DIR:model_cache, REFERENCE_DIR:reference_cache}, scaledown_window=120, timeout=1200)
+class FreeFrameProductionGenerator:
+    """Bounded-production FLUX.2 Klein renderer used by Atlas-routed image jobs."""
+    @modal.enter()
+    def load(self):
+        import torch
+        from diffusers import DiffusionPipeline
+        os.environ.setdefault("HF_HOME", CACHE_DIR); os.environ.setdefault("HF_HUB_CACHE", f"{CACHE_DIR}/hub")
+        self.torch=torch; self.model_name=PRODUCTION_MODEL
+        self.pipe=DiffusionPipeline.from_pretrained(PRODUCTION_MODEL, torch_dtype=torch.bfloat16, cache_dir=CACHE_DIR).to("cuda")
+
+    def _load_cached_reference_image(self, reference_id:str):
+        from PIL import Image
+        from modal_worker.reference_store import load_reference_bytes
+        reference_cache.reload(); raw=load_reference_bytes(reference_id, REFERENCE_DIR)
+        return Image.open(io.BytesIO(raw)).convert("RGB")
+
+    def _generate_one(self, request:dict)->dict:
+        started=time.monotonic(); spec=GenerationSpec.from_request(request); spec.validate()
+        route=str(request.get("renderer_route","")).strip()
+        if route != PRODUCTION_RENDERER_ROUTE: raise ValueError("production generator requires flux2_klein renderer_route")
+        model_id=str(request.get("model_id","")).strip()
+        if model_id != PRODUCTION_MODEL: raise ValueError("production request model_id does not match deployed production renderer")
+        if spec.width % 16 or spec.height % 16: raise ValueError("FLUX.2 Klein dimensions must be divisible by 16")
+        generator=self.torch.Generator(device="cuda").manual_seed(spec.seed)
+        prompt=spec.prompt
+        reference_metadata=None
+        reference_id=str(request.get("reference_id","")).strip().lower()
+        if reference_id:
+            scale=float(request.get("reference_scale",0.35))
+            if not 0.0 <= scale <= 1.0: raise ValueError("reference_scale must be between 0 and 1")
+            if scale > 0:
+                strength=_reference_strength_text(scale)
+                prompt=(f"Use the supplied reference image {strength} as a visual reference while following the written production brief exactly. " + prompt)
+                reference=self._load_cached_reference_image(reference_id)
+                reference_metadata={"reference_id":reference_id,"reference_mode":request.get("reference_mode","style"),"requested_scale":scale,"scale_behavior":"prompt-steered-strength"}
+        kwargs={"prompt":prompt,"width":spec.width,"height":spec.height,"num_inference_steps":spec.steps,"guidance_scale":spec.guidance_scale,"generator":generator}
+        if reference_metadata is not None: kwargs["image"]=[reference]
+        result=self.pipe(**kwargs).images[0]; payload=_png_payload(result)
+        payload.update({"seed":spec.seed,"model":self.model_name,"renderer_route":PRODUCTION_RENDERER_ROUTE,"elapsed_seconds":round(time.monotonic()-started,3),"generation_spec":asdict(spec),"reference_conditioning":reference_metadata,"negative_prompt_applied":False,"bounded_production":True,"automatic_full_production_authorized":False}); return payload
+
+    @modal.method()
+    def generate(self, request:dict)->dict: return self._generate_one(request)
+
+    @modal.method()
+    def generate_batch(self, requests:list[dict])->list[dict]:
+        if not requests: return []
+        if len(requests)>32: raise ValueError("single production worker batch is limited to 32 items")
         return [self._generate_one(req) for req in requests]
 
 
@@ -133,7 +193,7 @@ class FreeFrameExtractor:
 
 @app.function(image=image)
 @modal.fastapi_endpoint(method="GET", requires_proxy_auth=True)
-def health()->dict: return {"service":APP_NAME,"status":"ok","model":DEFAULT_MODEL,"gpu_profile":"L4"}
+def health()->dict: return {"service":APP_NAME,"status":"ok","production_model":PRODUCTION_MODEL,"production_renderer_route":PRODUCTION_RENDERER_ROUTE,"legacy_model":LEGACY_MODEL,"gpu_profile":"L4","automatic_full_production_authorized":False}
 
 @app.function(image=image, timeout=30)
 @modal.fastapi_endpoint(method="GET", requires_proxy_auth=True)
@@ -209,10 +269,16 @@ def store_reference_internal(request:dict)->dict:
 @modal.fastapi_endpoint(method="POST", requires_proxy_auth=True)
 def store_reference(request:dict)->dict: return store_reference_internal.remote(request)
 
-@app.function(image=image, timeout=930)
+@app.function(image=image, timeout=1230)
 @modal.fastapi_endpoint(method="POST", requires_proxy_auth=True)
 def generate_image(request:dict)->dict:
-    spec=GenerationSpec.from_request(request); spec.validate(); return FreeFrameGenerator().generate.remote(request)
+    spec=GenerationSpec.from_request(request); spec.validate()
+    route=str(request.get("renderer_route","")).strip()
+    if route == PRODUCTION_RENDERER_ROUTE:
+        return FreeFrameProductionGenerator().generate.remote(request)
+    if route in ("", "legacy_sdxl"):
+        return FreeFrameGenerator().generate.remote(request)
+    raise ValueError(f"unknown FreeFrame renderer_route: {route}")
 
 @app.function(image=image, timeout=930)
 @modal.fastapi_endpoint(method="POST", requires_proxy_auth=True)
