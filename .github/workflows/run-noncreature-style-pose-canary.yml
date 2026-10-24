@@ -36,14 +36,18 @@ jobs:
           test -n "$MODAL_TOKEN_SECRET"
       - name: Install Modal CLI and Pillow
         run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
-      - name: Verify style anchor ownership and hash
+      - name: Verify style anchor ownership and exact Git bytes
         run: |
           PYTHONPATH=. python - <<'PY'
           from modal_worker.plushbound_style_anchors import get_style_anchor
           anchor=get_style_anchor()
           assert anchor.ownership == 'project_owned'
-          assert anchor.sha256 == '91544df958737c23040eac4bb46296355176f62c88a8bb1cec7d4917f55ec340'
-          assert len(anchor.load_bytes()) > 10000
+          assert anchor.git_blob_sha1 == 'cd5c514ba2a6bf59485143d94ebdd36ae9616f4a'
+          raw=anchor.load_bytes()
+          assert len(raw) > 10000
+          assert len(anchor.sha256()) == 64
+          image=anchor.load_image()
+          assert image.width > 0 and image.height > 0
           print(anchor.metadata())
           PY
       - name: Compile confirmation canary
