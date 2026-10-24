@@ -1,8 +1,9 @@
-"""Two-reference L4 canary: project visual bible + procedural anatomy guide.
+"""Bounded L4 semantic canary for living-textile creature art direction.
 
-Image 1 carries Plushbound art/material language. Image 2 carries only body layout.
-The experiment tests whether splitting style and anatomy control solves the remaining
-friendly-toy and boss-humanoid drift seen in earlier canaries.
+Reference image 1 carries project-owned Plushbound render/material language. Reference
+image 2 is a procedural anatomy silhouette. Seven cases deliberately cover diverse
+healthy Guardian anatomy plus corruption, boss scale and a hostile wild monster.
+Nothing in this canary authorizes catalog production.
 """
 from __future__ import annotations
 
@@ -20,47 +21,75 @@ APP_NAME = "freeframe-project-reference-pose-canary"
 MODEL_ID = "black-forest-labs/FLUX.2-klein-4B"
 CACHE_DIR = "/cache"
 MODEL_VOLUME = "freeframe-model-cache"
-CANARY_VERSION = "project-reference-pose-canary-v1"
+CANARY_VERSION = "project-reference-pose-canary-v2-organism-first"
 STEPS = 4
 GUIDANCE = 1.0
 
 CASES = (
     {
-        "case_id": "guardian_friendly_style_pose",
+        "case_id": "guardian_friendly_quadruped",
         "preset": "plushbound_guardian",
         "family": "guardian_friendly",
-        "seed": 73401,
-        "prompt": "new Elyndor meadow Guardian with short rounded ears, leaf-like cheek fins, padded paws and a glowing seed-shaped brow mark, running happily along a path",
+        "pose_variant": "quadruped",
+        "seed": 73501,
+        "prompt": "new healthy Elyndor meadow Guardian species with short leaf-shaped ears, four articulated running legs, a counterbalancing tail and a small glowing seed-shaped brow organ, sprinting naturally along a path, intact skin with no repairs or wounds",
     },
     {
-        "case_id": "guardian_corrupt_style_pose",
+        "case_id": "guardian_friendly_winged",
+        "preset": "plushbound_guardian",
+        "family": "guardian_friendly",
+        "pose_variant": "winged",
+        "seed": 73502,
+        "prompt": "new healthy Elyndor winged Guardian species with two broad living textile wings, two grasping feet, a compact aerodynamic body, antenna-like thread sensory crests and luminous pollen markings, banking through a sunny grove, intact skin with no repairs or wounds",
+    },
+    {
+        "case_id": "guardian_friendly_biped",
+        "preset": "plushbound_guardian",
+        "family": "guardian_friendly",
+        "pose_variant": "biped",
+        "seed": 73503,
+        "prompt": "new healthy Elyndor small bipedal Guardian species with two digitigrade jumping legs, tiny nonhuman forelimbs, a long counterbalancing tail and reed-like sensory crest, hopping over stones with alert natural posture, intact skin with no repairs or wounds",
+    },
+    {
+        "case_id": "guardian_friendly_long_low",
+        "preset": "plushbound_guardian",
+        "family": "guardian_friendly",
+        "pose_variant": "long_low",
+        "seed": 73504,
+        "prompt": "new healthy Brooktail-like river Guardian species with a long flexible low torso, four short articulated legs, broad steering tail and flowing thread-fin crest, bounding beside shallow water, intact skin with no repairs or wounds",
+    },
+    {
+        "case_id": "guardian_corrupt_low",
         "preset": "plushbound_guardian",
         "family": "guardian_corrupt",
-        "seed": 73402,
-        "prompt": "new corrupted woodland Guardian with broad leaf tail, old seam wounds exposing pale inner fibers, moss and roots growing through damaged fabric-like living tissue, prowling low to the ground",
+        "pose_variant": "low_quadruped",
+        "seed": 73505,
+        "prompt": "new corrupted woodland Guardian species with a broad leaf tail, functional low quadruped anatomy, a few localized old seam wounds exposing pale inner fibers, moss and roots growing only through damaged areas, prowling under corrupted Thread influence",
     },
     {
-        "case_id": "guardian_boss_style_pose",
+        "case_id": "guardian_boss_hexapod",
         "preset": "plushbound_guardian",
         "family": "guardian_boss",
-        "seed": 73403,
-        "prompt": "new ancient Elyndor grove Guardian boss with six weight-bearing legs, a long low torso, root-antler crown, layered old repairs and corrupted Thread wounds, guarding a ruined shrine",
+        "pose_variant": "hexapod",
+        "seed": 73506,
+        "prompt": "new ancient Elyndor grove Guardian boss with exactly three clearly separated pairs of weight-bearing legs, six distinct feet visible, a long low torso, root-antler crown, localized layered old repairs and corrupted Thread wounds, advancing heavily while guarding a ruined shrine",
     },
     {
-        "case_id": "enemy_creature_style_pose",
+        "case_id": "enemy_creature_hexapod",
         "preset": "plushbound_enemy",
         "family": "enemy_creature",
-        "seed": 73404,
-        "prompt": "new wild Plushtopia thicket predator with six legs, long low body, blunt mask-like face, oversized digging foreclaws, patches and sparse thread bristles, stalking through an Elyndor clearing",
+        "pose_variant": "hexapod",
+        "seed": 73507,
+        "prompt": "new healthy wild Plushtopia thicket predator with exactly three clearly separated pairs of legs, six distinct feet, a long low body, narrow focused predator eyes, blunt armored face and oversized digging foreclaws, stalking with tense weight-bearing posture, intact textile integument with no repairs wounds patches or exposed filling",
     },
 )
 
-CONTROL_INSTRUCTION = (
-    "There are two reference images. Reference image 1 is project-owned Plushbound visual art direction only: follow its polished 2D fantasy JRPG illustration language, soft plush-inspired creature design, color treatment and handcrafted world identity, but create a different original species. "
-    "Reference image 2 is a strict black silhouette anatomy guide only: follow its horizontal body plan, limb count, grounded stance and nonhuman proportions, but do not copy its black-and-white graphic style. "
-    "Render one living animated fantasy creature in the game world. Plush/fabric qualities should read through soft padded body volumes, subtle stitched seams, patches, thread tufts and exposed stuffing-like fibers where damaged. "
-    "Do not render literal burlap weave, photoreal cloth macro texture, realistic animal fur, a store-bought plush toy, doll, merchandise product, mascot suit, human torso, bodybuilder, gorilla or werewolf. "
-    "Keep the result clearly 2D illustrated and game-art-like rather than a photographed physical object."
+REFERENCE_CONTROL = (
+    "Two reference images are supplied. Reference image 1 is project-owned Plushbound art direction: use only its polished 2D fantasy JRPG rendering, color harmony and living-textile material vocabulary; create a different original species and do not inherit its exact body proportions, repair marks, pose or toy-like construction. "
+    "Reference image 2 is a strict black silhouette anatomy guide: obey its body orientation, broad proportions and limb count while ignoring its black-and-white graphic style. "
+    "The subject is a self-propelled living organism, not an object brought to life. Build the silhouette from functional skeleton, joints, weight and locomotion first; let textile qualities appear only as living integument conforming over that anatomy. "
+    "Do not use inflated padding, tubular stuffed limbs, oversized baby head, glossy doll eyes, round mascot muzzle, sewing-pattern panel borders or decorative repair stitches on healthy creatures. "
+    "Do not show a store-bought plush toy, stuffed animal, doll, merchandise product, mascot suit, product-photo staging, ordinary flesh-and-fur animal, human torso, gorilla or werewolf. Keep one clearly 2D illustrated creature acting naturally inside the game world."
 )
 
 image = (
@@ -131,8 +160,10 @@ class ProjectReferencePoseCanaryRunner:
             request = request_for(case)
             project_reference = get_project_reference(case["family"])
             style_reference = _upscale_preserving_aspect(project_reference.load_image())
-            pose_reference = build_pose_guide(case["family"], size=512)
-            prompt = f"{CONTROL_INSTRUCTION} {request['prompt']}"
+            pose_reference = build_pose_guide(
+                case["family"], size=512, variant=case.get("pose_variant")
+            )
+            prompt = f"{REFERENCE_CONTROL} {request['prompt']}"
             generator = self.torch.Generator(device="cuda").manual_seed(int(request["seed"]))
             started = time.monotonic()
             rendered = self.pipe(
@@ -153,6 +184,7 @@ class ProjectReferencePoseCanaryRunner:
                     "canary_version": CANARY_VERSION,
                     "case_id": case["case_id"],
                     "family": case["family"],
+                    "pose_variant": case.get("pose_variant"),
                     "pose_guide_version": POSE_GUIDE_VERSION,
                     "reference_library_version": project_reference.metadata()["library_version"],
                     "reference_sha256": project_reference.sha256,
@@ -179,12 +211,19 @@ def main():
     output_dir = Path("project-reference-pose-canary")
     output_dir.mkdir(exist_ok=True)
     results = ProjectReferencePoseCanaryRunner().run_all.remote()
-    report = {"canary_version": CANARY_VERSION, "count": len(results), "production_authorized": False, "assets": []}
+    report = {
+        "canary_version": CANARY_VERSION,
+        "count": len(results),
+        "production_authorized": False,
+        "assets": [],
+    }
     for result in results:
         raw = base64.b64decode(result.pop("png_base64"))
         output_path = output_dir / f"{result['case_id']}.png"
         output_path.write_bytes(raw)
         result["output_path"] = str(output_path)
         report["assets"].append(result)
-    (output_dir / "report.json").write_text(json.dumps(report, indent=2, sort_keys=True), encoding="utf-8")
+    (output_dir / "report.json").write_text(
+        json.dumps(report, indent=2, sort_keys=True), encoding="utf-8"
+    )
     print(json.dumps(report, sort_keys=True))
