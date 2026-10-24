@@ -1,15 +1,16 @@
 """Shared source of truth for Plushbound production planning.
 
-This is intentionally deterministic data, not an LLM prompt. Jarvis-facing tools,
-Mini-Jarvis, the mobile client, and batch automation can all read the same family
-contracts and pipeline states. A small conversational model may translate natural
-language into these intents later, but it never gets to invent the production rules.
+This is intentionally deterministic data, not an LLM prompt. Atlas-facing tools,
+the mobile client, and batch automation can all read the same family contracts and
+pipeline states. A small conversational model may translate natural language into
+these intents later, but it never gets to invent the production rules.
 """
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 
 BRAIN_VERSION = "plushbound-brain-v1"
+ASSISTANT_NAME = "Atlas"
 WORLD_NAME = "Plushtopia"
 CATALOG_SCOPE = "22k+ replacement entries"
 
@@ -142,6 +143,7 @@ def missing_context(family: str, context: dict | None) -> list[str]:
 
 def brain_snapshot() -> dict:
     return {
+        "assistant_name": ASSISTANT_NAME,
         "brain_version": BRAIN_VERSION,
         "world": WORLD_NAME,
         "catalog_scope": CATALOG_SCOPE,
