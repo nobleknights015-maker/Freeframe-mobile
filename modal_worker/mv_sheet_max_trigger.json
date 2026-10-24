@@ -1,40 +1,30 @@
 {
   "schema": "plushbound.specialized_npc_mv_max_trigger.v1",
   "enabled": true,
-  "round": 1,
+  "round": 2,
   "phase": "npc_mv_single_character_sheets",
-  "mode": "SPECIALIZED_MAX_SINGLE_APP_12_LANE_REPAIR",
-  "source_run_id": 40104354795,
+  "mode": "SPECIALIZED_MAX_SINGLE_APP_12_LANE",
+  "source_run_id": 40104944672,
   "source_artifacts": [
-    "plushbound-max-round-16-shard-0-sublane-0-40104354795",
-    "plushbound-max-round-16-shard-0-sublane-1-40104354795",
-    "plushbound-max-round-16-shard-0-sublane-2-40104354795",
-    "plushbound-max-round-16-shard-0-sublane-3-40104354795"
+    "plushbound-max-round-17-shard-0-sublane-0-40104944672",
+    "plushbound-max-round-17-shard-0-sublane-1-40104944672",
+    "plushbound-max-round-17-shard-0-sublane-2-40104944672",
+    "plushbound-max-round-17-shard-0-sublane-3-40104944672"
   ],
   "sublanes_per_artifact": 3,
   "parallel_streams": 12,
-  "lane_specs": [
-    {"artifact":"plushbound-max-round-16-shard-0-sublane-0-40104354795","sublane":0,"sublanes":3},
-    {"artifact":"plushbound-max-round-16-shard-0-sublane-0-40104354795","sublane":1,"sublanes":3},
-    {"artifact":"plushbound-max-round-16-shard-0-sublane-0-40104354795","sublane":2,"sublanes":3},
-    {"artifact":"plushbound-max-round-16-shard-0-sublane-1-40104354795","sublane":0,"sublanes":3},
-    {"artifact":"plushbound-max-round-16-shard-0-sublane-1-40104354795","sublane":1,"sublanes":3},
-    {"artifact":"plushbound-max-round-16-shard-0-sublane-2-40104354795","sublane":0,"sublanes":3},
-    {"artifact":"plushbound-max-round-16-shard-0-sublane-3-40104354795","sublane":0,"sublanes":3},
-    {"artifact":"plushbound-max-round-16-shard-0-sublane-3-40104354795","sublane":2,"sublanes":3}
-  ],
-  "expected_unique_masters": 86,
+  "expected_unique_masters": 128,
   "authorized_by_user": true,
   "full_catalog_completion_authorized_by_user": true,
   "identity_source": "accepted_master_png_reference",
-  "launch_nonce": 4,
+  "launch_nonce": 5,
   "canary_gate": {
     "workflow_run_id": 40135050321,
     "conclusion": "success",
     "geometry": "144x192_rgba_3x4",
     "engine_validation": true
   },
-  "resume_reason": "Repair only the eight Round 1 lanes that failed before generation because Modal rejected simultaneous AppCreate requests. Three lanes already completed successfully and are excluded. One legacy lane is still active and is also excluded. The new unified dispatcher creates one Modal app and fans these eight missing lane ranges out internally, preventing AppCreate rate-limit duplication while preserving stable seeds, source-master identity, and exact MV sheet validation.",
+  "resume_reason": "Specialized NPC MV Round 1 is fully banked and reconciled: 128/128 unique source masters produced validated 144x192 RGBA 3x4 sheets, 0 duplicate master filenames, 0 quarantined outputs, actual visual samples passed identity/anatomy/silhouette/directional/alpha QA, and measured raw specialized generation spend was approximately $0.684. Advance exactly one specialized round to Round 2 using the next untouched verified Round 17 NPC master production run 40104944672 across its four source artifacts. Use the single-app unified dispatcher with the default 12 non-overlapping internal lanes, preserve strict source-master reference identity and stable seeds, and do not reuse any Round 1 source master filenames.",
   "stop_conditions": [
     "technical_quarantine_requires_targeted_repair",
     "visual_qa_rejects_scaled_contract",
