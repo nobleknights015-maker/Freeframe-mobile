@@ -5,7 +5,9 @@
   "mode": "MAX_MODE_4_LANE",
   "jobs_per_shard": 32,
   "parallel_shards": 4,
+  "shards": [1, 2, 3],
   "authorized_by_user": true,
+  "resume_reason": "shard 0 already accepted 32/32; creature conditioning repaired and smoke-verified 2/2",
   "stop_conditions": [
     "planned_visual_production_complete",
     "modal_allowance_exhausted_or_next_launch_would_exceed_it"
