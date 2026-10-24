@@ -1,16 +1,16 @@
 {
   "schema": "plushbound.max_mode_trigger.v1",
   "enabled": true,
-  "round": 17,
+  "round": 18,
   "mode": "MAX_MODE_12_STREAM_4X",
   "jobs_per_shard": 128,
   "jobs_per_sublane": 32,
   "sublanes_per_shard": 4,
-  "parallel_streams": 4,
+  "parallel_streams": 12,
   "shards": [0],
   "authorized_by_user": true,
   "full_catalog_completion_authorized_by_user": true,
-  "resume_reason": "turbo round 16 artifact reports verified: NPC sublanes 0-3 accepted 128/128, 0 quarantined, 128 unique intended asset IDs and 128 unique seeds, measured raw generation spend $0.099932; effective legacy rounds 31-34 are banked. Enemy, environment and Guardian master families remain globally complete and retired. Advance exactly one turbo round to 17 using only NPC shard 0 across four non-overlapping 32-item sublanes mapping legacy rounds 35-38, without rerunning accepted IDs.",
+  "resume_reason": "turbo round 17 artifact reports verified: NPC sublanes 0-3 accepted 128/128, 0 quarantined; turbo_round=17, shard=0, sublanes=0-3, effective legacy rounds 35-38 verified. All four reports remain lane_complete=false, so NPC master production is not yet globally complete. Enemy, environment and Guardian master families remain globally complete and retired. Advance exactly one turbo round to 18 using only NPC shard 0 across four non-overlapping 32-item sublanes mapping legacy rounds 39-42, without rerunning accepted IDs. Preserve MAX_MODE_12_STREAM_4X target parallel_streams=12 even though only one active shard currently yields four runnable streams.",
   "stop_conditions": [
     "planned_visual_production_complete",
     "modal_allowance_exhausted_or_next_launch_would_exceed_it"
