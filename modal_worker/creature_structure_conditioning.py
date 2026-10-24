@@ -16,7 +16,7 @@ except ImportError:
     from creature_pose_guides import POSE_GUIDE_VERSION, build_pose_guide
     from plushbound_style_anchors import STYLE_ANCHOR_LIBRARY_VERSION, get_style_anchor
 
-CREATURE_STRUCTURE_CONDITIONING_VERSION = "creature-structure-conditioning-v1"
+CREATURE_STRUCTURE_CONDITIONING_VERSION = "creature-structure-conditioning-v2-family-anchor"
 SUPPORTED_FAMILIES = frozenset({
     "guardian_friendly",
     "guardian_corrupt",
@@ -26,12 +26,15 @@ SUPPORTED_FAMILIES = frozenset({
 
 CONTROL_PROMPT = (
     "Two project-owned reference images are supplied with separate responsibilities. "
-    "Reference image 1 is environment-only Elyndor art: copy only its polished colorful 2D fantasy JRPG rendering language, "
-    "outline treatment, painterly shading, material richness, lighting and color harmony. Do not copy buildings, trees, shrines, props or architecture into the creature. "
-    "Reference image 2 is a plain black exterior silhouette: obey only its broad outside body shape, orientation and visible limb count; ignore its graphic style and do not render it as a shadow. "
+    "Reference image 1 is a validated Plushbound creature-family reference: use its polished colorful 2D fantasy JRPG rendering language, "
+    "outline treatment, painterly shading, living-textile material language, lighting and color discipline as family-level guidance only. "
+    "Do not copy its exact identity, markings or silhouette unless independently required by the written brief. "
+    "Reference image 2 is a plain black exterior silhouette: obey only its broad outside body shape, orientation and visible limb count; "
+    "ignore its graphic style and do not render it as a shadow. "
     "Create one self-propelled living fantasy organism in a natural habitat. Its body is solid and fully enclosed. "
-    "Living textile material is biological integument with visible woven fiber structure conforming to joints and mass, not fur, plush pile, stuffing, patchwork toy panels or retail merchandise. "
-    "Eyes are proportionate living eyes, not oversized glossy doll eyes. No collars, tags, pet accessories, catalog layout, labels or typography."
+    "Living textile material is biological integument with visible woven fiber structure conforming to joints and mass, not fur, plush pile, "
+    "stuffing, patchwork toy panels or retail merchandise. Eyes are proportionate living eyes, not oversized glossy doll eyes. "
+    "No collars, tags, pet accessories, catalog layout, labels or typography."
 )
 
 
@@ -57,7 +60,7 @@ class CreatureConditioning:
             "style_anchor_sha256": self.style_anchor_sha256,
             "style_anchor_git_blob_sha1": self.style_anchor_git_blob_sha1,
             "style_anchor_ownership": self.style_anchor_ownership,
-            "reference_roles": ["render_style_only", "exterior_body_plan_only"],
+            "reference_roles": ["creature_family_render_material_style", "exterior_body_plan_only"],
         }
 
 
@@ -69,7 +72,7 @@ def infer_pose_variant(family: str, prompt: str) -> str:
 
     six_legged = any(token in text for token in ("six-legged", "six legged", "six weight-bearing legs", "exactly six"))
     if family == "guardian_boss":
-        return "hexapod" if six_legged or "hexapod" in text else "hexapod"
+        return "hexapod"
     if family == "guardian_corrupt":
         return "low_quadruped"
     if family == "enemy_creature":
@@ -85,10 +88,10 @@ def infer_pose_variant(family: str, prompt: str) -> str:
 
 
 def build_conditioning(family: str, prompt: str, *, size: int = 512):
-    """Return style image, pose image, control prompt and immutable provenance."""
+    """Return family style image, pose image, control prompt and immutable provenance."""
     family = str(family).strip()
     pose_variant = infer_pose_variant(family, prompt)
-    anchor = get_style_anchor()
+    anchor = get_style_anchor(family)
     style_image = anchor.load_image()
     pose_image = build_pose_guide(family, size=size, variant=pose_variant)
     metadata = CreatureConditioning(
