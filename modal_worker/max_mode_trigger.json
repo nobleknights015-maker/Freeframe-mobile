@@ -1,0 +1,13 @@
+{
+  "schema": "plushbound.max_mode_trigger.v1",
+  "enabled": true,
+  "round": 1,
+  "mode": "MAX_MODE_4_LANE",
+  "jobs_per_shard": 32,
+  "parallel_shards": 4,
+  "authorized_by_user": true,
+  "stop_conditions": [
+    "planned_visual_production_complete",
+    "modal_allowance_exhausted_or_next_launch_would_exceed_it"
+  ]
+}
