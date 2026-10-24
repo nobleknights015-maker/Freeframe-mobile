@@ -1,7 +1,7 @@
 {
   "schema": "plushbound.vera_deploy_trigger.v1",
-  "run": 2,
-  "reason": "deploy family-specific valid creature anchors and conditioning v2",
+  "run": 3,
+  "reason": "deploy safe minimum-dimension normalization for verified family creature references",
   "authorized": true,
   "requested_for": "max-mode-round-1-creature-repair"
 }
