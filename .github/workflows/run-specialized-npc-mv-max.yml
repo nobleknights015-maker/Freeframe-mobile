@@ -44,8 +44,8 @@ jobs:
           sublanes=int(data.get('sublanes_per_artifact',3))
           if round_number < 1 or source_run_id < 1:
               raise SystemExit('round and source_run_id must be positive')
-          if len(artifacts) != 4 or len(set(artifacts)) != 4:
-              raise SystemExit('exactly four unique source artifacts are required for this max contract')
+          if not (1 <= len(artifacts) <= 4) or len(set(artifacts)) != len(artifacts):
+              raise SystemExit('1..4 unique source artifacts are required for this max contract')
           if sublanes != 3:
               raise SystemExit('validated specialized max contract requires three sublanes per artifact')
           lanes=data.get('lane_specs')
