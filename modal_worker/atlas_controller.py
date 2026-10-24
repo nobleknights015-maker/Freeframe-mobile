@@ -11,14 +11,20 @@ import hashlib
 import json
 
 try:
+    from .atlas_production_ledger import LEDGER_VERSION, new_record
     from .plushbound_brain import ASSISTANT_NAME, BRAIN_VERSION, WORLD_NAME, get_family_contract, missing_context
     from .production_request_builder import build_production_request
 except ImportError:
+    from atlas_production_ledger import LEDGER_VERSION, new_record
     from plushbound_brain import ASSISTANT_NAME, BRAIN_VERSION, WORLD_NAME, get_family_contract, missing_context
     from production_request_builder import build_production_request
 
-ATLAS_VERSION = "atlas-controller-v1"
+ATLAS_VERSION = "atlas-controller-v2"
 MAX_SEED = 2**63 - 1
+
+
+def _canonical(value: object) -> bytes:
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode("utf-8")
 
 
 def _normalized_context(value: object) -> dict[str, str]:
@@ -30,7 +36,7 @@ def _normalized_context(value: object) -> dict[str, str]:
 
 
 def _deterministic_seed(family: str, description: str, context: dict[str, str]) -> int:
-    payload = json.dumps({"family": family, "description": description, "context": context}, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    payload = _canonical({"family": family, "description": description, "context": context})
     value = int.from_bytes(hashlib.sha256(payload).digest()[:8], "big")
     return value & MAX_SEED
 
@@ -43,6 +49,21 @@ def _build_prompt(description: str, family_rules: tuple[str, ...], context: dict
     if family_rules:
         parts.append("Family contract: " + "; ".join(family_rules))
     return ". ".join(parts)
+
+
+def _identity(family: str, description: str, context: dict[str, str], seed: int, request: dict | None) -> tuple[str, str]:
+    material = {
+        "atlas_version": ATLAS_VERSION,
+        "brain_version": BRAIN_VERSION,
+        "family": family,
+        "description": description,
+        "context": context,
+        "seed": seed,
+        "generation_request": request,
+    }
+    plan_digest = hashlib.sha256(_canonical(material)).hexdigest()
+    atlas_job_id = hashlib.sha256(f"{family}\0{plan_digest}".encode("utf-8")).hexdigest()[:24]
+    return atlas_job_id, plan_digest
 
 
 def plan_asset(intent: dict) -> dict:
@@ -83,11 +104,17 @@ def plan_asset(intent: dict) -> dict:
             creature_family=contract.creature_family,
         )
 
+    atlas_job_id, plan_digest = _identity(family, description, context, seed, request)
+    ledger_record = new_record(atlas_job_id, family, plan_digest).to_dict()
+
     return {
         "assistant_name": ASSISTANT_NAME,
         "controller_version": ATLAS_VERSION,
         "brain_version": BRAIN_VERSION,
+        "ledger_version": LEDGER_VERSION,
         "world": WORLD_NAME,
+        "atlas_job_id": atlas_job_id,
+        "plan_digest": plan_digest,
         "family": family,
         "production_state": contract.production_state,
         "required_outputs": list(contract.required_outputs),
@@ -96,6 +123,7 @@ def plan_asset(intent: dict) -> dict:
         "seed_source": seed_source,
         "generation_request": request,
         "generation_supported": request is not None,
+        "ledger_record": ledger_record,
         "chat_model_attached": False,
         "automatic_full_production_authorized": False,
     }
