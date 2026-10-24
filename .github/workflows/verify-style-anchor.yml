@@ -1,0 +1,44 @@
+name: Verify Plushbound Style Anchor
+
+on:
+  push:
+    branches:
+      - freeframe-modal-worker
+    paths:
+      - 'modal_worker/style_anchor_verify_trigger.json'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: freeframe-modal-worker
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --disable-pip-version-check 'pillow>=10.4,<12'
+      - name: Verify repository anchor bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          p='modal_worker/project_references/elyndor_noncreature_style_anchor.jpg'
+          wc -c "$p"
+          sha256sum "$p"
+          file "$p"
+          xxd -l 32 "$p"
+          tail -c 32 "$p" | xxd
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          p=Path('modal_worker/project_references/elyndor_noncreature_style_anchor.jpg')
+          b=p.read_bytes()
+          print('bytes',len(b),'soi',b[:2].hex(),'eoi',b[-2:].hex())
+          with Image.open(p) as im:
+              print('format',im.format,'size',im.size,'mode',im.mode)
+              im.verify()
+          print('PIL_VERIFY_OK')
+          PY
