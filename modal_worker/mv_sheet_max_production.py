@@ -4,18 +4,20 @@ Consumes accepted NPC master PNGs from prior master-generation artifacts, uses e
 master as the identity reference for twelve directional/movement frames, then
 packages an exact 144x192 RGBA RPG-Maker-MV-compatible single-character sheet.
 
-One GitHub Actions lane handles one source artifact sublane. The workflow fans out
-four source artifacts x three sublanes = twelve concurrent Modal L4 streams.
+The preferred unified mode creates one Modal app and dispatches up to twelve
+artifact+sublane lanes concurrently inside that app. This preserves Max Mode GPU
+parallelism without tripping Modal AppCreate rate limits.
 """
 from __future__ import annotations
 
-import argparse
 import base64
 import hashlib
 import io
 import json
 import os
+import re
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 import modal
@@ -30,6 +32,7 @@ SHEET_WIDTH = 144
 SHEET_HEIGHT = 192
 GPU_SECOND_COST_USD = 0.000222
 MAX_ATTEMPTS = 2
+MAX_PARALLEL_LANES = 12
 
 DIRECTIONS = (
     ("down", "facing toward the viewer"),
@@ -65,6 +68,10 @@ model_cache = modal.Volume.from_name(MODEL_VOLUME, create_if_missing=True)
 def _stable_seed(asset_name: str) -> int:
     value = int(hashlib.sha256(asset_name.encode("utf-8")).hexdigest()[:12], 16)
     return 100_000 + (value % 1_900_000_000)
+
+
+def _safe(value: str) -> str:
+    return re.sub(r"[^A-Za-z0-9._-]+", "_", value).strip("_") or "lane"
 
 
 def _frame_prompt(direction_text: str, phase_text: str) -> str:
@@ -243,22 +250,19 @@ def _find_masters(root: Path) -> list[Path]:
     )
 
 
-@app.local_entrypoint()
-def main(
-    master_dir: str = "master-input",
-    round_number: int = 1,
-    source_artifact: str = "",
-    sublane: int = 0,
-    sublanes: int = 1,
-):
-    if round_number < 1:
-        raise ValueError("round_number must be >= 1")
+def _run_lane(
+    *,
+    root: Path,
+    round_number: int,
+    source_artifact: str,
+    sublane: int,
+    sublanes: int,
+) -> dict:
     if sublanes < 1 or sublanes > 4:
         raise ValueError("sublanes must be between 1 and 4")
     if sublane < 0 or sublane >= sublanes:
         raise ValueError("sublane is outside the configured sublane count")
 
-    root = Path(master_dir)
     masters = _find_masters(root)
     if not masters:
         raise RuntimeError(f"no accepted NPC master PNGs found below {root}")
@@ -266,7 +270,8 @@ def main(
     if not selected:
         raise RuntimeError("sublane received no masters")
 
-    out_dir = Path("specialized-output") / f"npc-mv-round-{round_number:04d}" / f"lane-{sublane}"
+    lane_tag = f"{_safe(source_artifact)}__sublane-{sublane}"
+    out_dir = Path("specialized-output") / f"npc-mv-round-{round_number:04d}" / lane_tag
     out_dir.mkdir(parents=True, exist_ok=True)
 
     runner = SheetProductionRunner()
@@ -277,8 +282,8 @@ def main(
     cost = round(sum(float(item.get("estimated_generation_cost_usd", 0.0)) for item in accepted), 6)
 
     report = {
-        "version": "plushbound-specialized-npc-mv-max-v1",
-        "mode": "SPECIALIZED_MAX_12_STREAM",
+        "version": "plushbound-specialized-npc-mv-max-v2-unified",
+        "mode": "SPECIALIZED_MAX_SINGLE_APP_12_LANE",
         "round": int(round_number),
         "source_artifact": source_artifact,
         "sublane": int(sublane),
@@ -296,6 +301,96 @@ def main(
     }
     report_path = out_dir / "report.json"
     report_path.write_text(json.dumps(report, indent=2, sort_keys=True), encoding="utf-8")
+    return report
+
+
+@app.local_entrypoint()
+def main(
+    master_dir: str = "master-input",
+    master_root: str = "",
+    lane_specs_json: str = "",
+    round_number: int = 1,
+    source_artifact: str = "",
+    sublane: int = 0,
+    sublanes: int = 1,
+    max_parallel: int = MAX_PARALLEL_LANES,
+):
+    if round_number < 1:
+        raise ValueError("round_number must be >= 1")
+
+    if lane_specs_json:
+        specs = json.loads(lane_specs_json)
+        if not isinstance(specs, list) or not specs:
+            raise ValueError("lane_specs_json must be a non-empty JSON list")
+        if len(specs) > MAX_PARALLEL_LANES:
+            raise ValueError(f"at most {MAX_PARALLEL_LANES} lane specs are allowed")
+        if max_parallel < 1 or max_parallel > MAX_PARALLEL_LANES:
+            raise ValueError(f"max_parallel must be between 1 and {MAX_PARALLEL_LANES}")
+        root = Path(master_root or master_dir)
+        normalized = []
+        seen = set()
+        for raw in specs:
+            artifact = str(raw["artifact"])
+            lane = int(raw["sublane"])
+            lane_count = int(raw.get("sublanes", 3))
+            key = (artifact, lane, lane_count)
+            if key in seen:
+                raise ValueError(f"duplicate lane spec: {key}")
+            seen.add(key)
+            normalized.append((artifact, lane, lane_count))
+
+        lane_reports = []
+        failures = []
+        with ThreadPoolExecutor(max_workers=min(max_parallel, len(normalized))) as pool:
+            futures = {
+                pool.submit(
+                    _run_lane,
+                    root=root / artifact,
+                    round_number=round_number,
+                    source_artifact=artifact,
+                    sublane=lane,
+                    sublanes=lane_count,
+                ): (artifact, lane, lane_count)
+                for artifact, lane, lane_count in normalized
+            }
+            for future in as_completed(futures):
+                key = futures[future]
+                try:
+                    lane_reports.append(future.result())
+                except Exception as exc:
+                    failures.append({"lane": key, "error": f"{type(exc).__name__}: {exc}"})
+
+        lane_reports.sort(key=lambda r: (r["source_artifact"], r["sublane"]))
+        accepted = sum(int(r.get("accepted", 0)) for r in lane_reports)
+        quarantined = sum(int(r.get("quarantined", 0)) for r in lane_reports)
+        cost = round(sum(float(r.get("estimated_generation_cost_usd", 0.0)) for r in lane_reports), 6)
+        summary = {
+            "version": "plushbound-specialized-npc-mv-unified-batch-v1",
+            "mode": "SPECIALIZED_MAX_SINGLE_APP_12_LANE",
+            "round": int(round_number),
+            "requested_lanes": len(normalized),
+            "completed_lane_reports": len(lane_reports),
+            "lane_failures": failures,
+            "accepted": accepted,
+            "quarantined": quarantined,
+            "estimated_generation_cost_usd": cost,
+            "lane_reports": lane_reports,
+        }
+        batch_dir = Path("specialized-output") / f"npc-mv-round-{round_number:04d}"
+        batch_dir.mkdir(parents=True, exist_ok=True)
+        (batch_dir / "batch-report.json").write_text(json.dumps(summary, indent=2, sort_keys=True), encoding="utf-8")
+        print(json.dumps(summary, sort_keys=True))
+        if failures or quarantined:
+            raise RuntimeError(f"unified batch incomplete: lane_failures={len(failures)} quarantined={quarantined}")
+        return
+
+    report = _run_lane(
+        root=Path(master_dir),
+        round_number=round_number,
+        source_artifact=source_artifact,
+        sublane=sublane,
+        sublanes=sublanes,
+    )
     print(json.dumps(report, sort_keys=True))
-    if quarantined:
-        raise RuntimeError(f"{len(quarantined)} specialized NPC sheet(s) quarantined")
+    if report["quarantined"]:
+        raise RuntimeError(f"{report['quarantined']} specialized NPC sheet(s) quarantined")
