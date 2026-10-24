@@ -1,5 +1,6 @@
 import unittest
 from atlas_controller import ATLAS_VERSION, RESPONSIBILITY_BOUNDARY, plan_asset
+from atlas_personality import ATLAS_PERSONALITY_VERSION
 
 
 class AtlasControllerTests(unittest.TestCase):
@@ -8,6 +9,10 @@ class AtlasControllerTests(unittest.TestCase):
         request = plan["generation_request"]
         self.assertEqual(plan["assistant_name"], "Atlas")
         self.assertEqual(plan["controller_version"], ATLAS_VERSION)
+        self.assertEqual(plan["personality_version"], ATLAS_PERSONALITY_VERSION)
+        self.assertEqual(plan["atlas_voice"]["speaker"], "Atlas")
+        self.assertTrue(plan["atlas_voice"]["presentation_only"])
+        self.assertFalse(plan["atlas_voice"]["authority_changed"])
         self.assertTrue(plan["generation_supported"])
         self.assertEqual(request["creature_family"], "guardian_friendly")
         self.assertEqual(request["guardian_composition_family"], "guardian_friendly")
@@ -32,6 +37,7 @@ class AtlasControllerTests(unittest.TestCase):
         self.assertTrue(RESPONSIBILITY_BOUNDARY["atlas_owns_manifest_mapping"])
         self.assertTrue(RESPONSIBILITY_BOUNDARY["atlas_owns_version_validation"])
         self.assertTrue(RESPONSIBILITY_BOUNDARY["atlas_owns_qa_acceptance_state"])
+        self.assertTrue(RESPONSIBILITY_BOUNDARY["atlas_personality_is_presentation_only"])
         self.assertFalse(RESPONSIBILITY_BOUNDARY["atlas_may_direct_visual_generation"])
         self.assertFalse(RESPONSIBILITY_BOUNDARY["atlas_may_condition_visual_generation"])
         self.assertFalse(RESPONSIBILITY_BOUNDARY["atlas_may_override_vera_art_direction"])
@@ -44,6 +50,7 @@ class AtlasControllerTests(unittest.TestCase):
         for plan in (corrupt, enemy, boss):
             self.assertIsNone(plan["atlas_visual_conditioning"])
             self.assertEqual(plan["visual_generation_owned_by"], "Vera")
+            self.assertEqual(plan["atlas_voice"]["speaker"], "Atlas")
         self.assertIn("cotton-like inner fiber", corrupt["generation_request"]["prompt"])
         self.assertIn("wild hostile Plushtopia species", enemy["generation_request"]["prompt"])
         self.assertIn("large imposing nonhuman Guardian boss", boss["generation_request"]["prompt"])
@@ -58,12 +65,14 @@ class AtlasControllerTests(unittest.TestCase):
         self.assertIsNone(plan["generation_request"])
         self.assertIsNone(plan["atlas_visual_conditioning"])
         self.assertEqual(plan["visual_generation_owned_by"], "Vera")
+        self.assertEqual(plan["atlas_voice"]["speaker"], "Atlas")
 
     def test_plan_identity_is_deterministic_and_changes_with_seed(self):
         intent={"family":"guardian_boss","description":"ancient woodland warden","context":{"region":"Elyndor"}}
         first=plan_asset(intent); second=plan_asset(intent)
         self.assertEqual(first["atlas_job_id"], second["atlas_job_id"])
         self.assertEqual(first["plan_digest"], second["plan_digest"])
+        self.assertEqual(first["atlas_voice"], second["atlas_voice"])
         altered=plan_asset({**intent,"seed":first["seed"]+1})
         self.assertNotEqual(first["atlas_job_id"], altered["atlas_job_id"])
 
