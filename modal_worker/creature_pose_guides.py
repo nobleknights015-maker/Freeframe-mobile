@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from PIL import Image, ImageDraw
 
-POSE_GUIDE_VERSION = "creature-pose-guide-v3-exterior-silhouette"
+POSE_GUIDE_VERSION = "creature-pose-guide-v4-enemy-quadruped"
 
 
 def _canvas(size: int) -> tuple[Image.Image, ImageDraw.ImageDraw]:
@@ -26,7 +26,7 @@ def _box(size: int, values: tuple[int, int, int, int]) -> tuple[int, int, int, i
     return tuple(int(v * s) for v in values)
 
 
-def _quadruped(size: int, *, low: bool = False, long_body: bool = False) -> Image.Image:
+def _quadruped(size: int, *, low: bool = False, long_body: bool = False, wedge_head: bool = False) -> Image.Image:
     image, draw = _canvas(size)
     s = size / 512.0
     if long_body:
@@ -39,10 +39,35 @@ def _quadruped(size: int, *, low: bool = False, long_body: bool = False) -> Imag
         body = (120, 205, 345, 320); head = (330, 185, 435, 290); leg_top = 280; feet_y = 405
         leg_xs = (150, 210, 305, 355); leg_w = 30
     draw.ellipse(_box(size, body), fill="black")
-    draw.ellipse(_box(size, head), fill="black")
+    if wedge_head:
+        draw.polygon([
+            _scaled(size, (330, 210)), _scaled(size, (410, 190)), _scaled(size, (455, 235)),
+            _scaled(size, (430, 275)), _scaled(size, (345, 285)),
+        ], fill="black")
+    else:
+        draw.ellipse(_box(size, head), fill="black")
     for x in leg_xs:
         draw.rounded_rectangle(_box(size, (x, leg_top, x + leg_w, feet_y)), radius=max(2, int(12*s)), fill="black")
+        draw.ellipse(_box(size, (x-4, feet_y-6, x+leg_w+8, feet_y+12)), fill="black")
     draw.polygon([_scaled(size, (105 if not long_body else 70, 245)), _scaled(size, (45, 205)), _scaled(size, (80, 285))], fill="black")
+    return image
+
+
+def _enemy_quadruped(size: int) -> Image.Image:
+    """Long-low four-legged exterior shape with a deliberately non-feline wedge head."""
+    image, draw = _canvas(size)
+    s = size / 512.0
+    draw.ellipse(_box(size, (65, 220, 360, 320)), fill="black")
+    draw.polygon([
+        _scaled(size, (345, 220)), _scaled(size, (410, 200)), _scaled(size, (465, 235)),
+        _scaled(size, (435, 280)), _scaled(size, (350, 290)),
+    ], fill="black")
+    legs = ((105, 280), (165, 290), (300, 290), (350, 275))
+    for x, top in legs:
+        draw.rounded_rectangle(_box(size, (x, top, x + 28, 410)), radius=max(2, int(10*s)), fill="black")
+        draw.ellipse(_box(size, (x-5, 400, x+38, 425)), fill="black")
+    draw.polygon([_scaled(size,(75,250)),_scaled(size,(25,230)),_scaled(size,(60,285))],fill="black")
+    draw.polygon([_scaled(size,(70,260)),_scaled(size,(18,285)),_scaled(size,(70,295))],fill="black")
     return image
 
 
@@ -72,8 +97,6 @@ def _small_biped(size: int) -> Image.Image:
 
 
 def _leg_polygon(size: int, hip: tuple[int,int], knee: tuple[int,int], foot: tuple[int,int], width: int) -> list[tuple[int,int]]:
-    # Thick bent exterior limb silhouette. The small fixed offsets keep all six legs
-    # visually separate without implying internal bones or anatomical diagrams.
     hx,hy=hip; kx,ky=knee; fx,fy=foot
     half=max(5,width//2)
     return [_scaled(size,(hx-half,hy)),_scaled(size,(hx+half,hy)),_scaled(size,(kx+half,ky)),_scaled(size,(fx+half,fy)),_scaled(size,(fx-half,fy)),_scaled(size,(kx-half,ky))]
@@ -128,7 +151,8 @@ def build_pose_guide(family: str, size: int = 512, *, variant: str | None = None
             raise ValueError(f"unsupported boss Guardian pose variant: {variant}")
         return _hexapod(size, boss=True)
     if family == "enemy_creature":
-        if variant not in (None, "hexapod"):
-            raise ValueError(f"unsupported enemy creature pose variant: {variant}")
-        return _hexapod(size, boss=False)
+        selected = variant or "quadruped"
+        if selected == "quadruped": return _enemy_quadruped(size)
+        if selected == "hexapod": return _hexapod(size, boss=False)
+        raise ValueError(f"unsupported enemy creature pose variant: {selected}")
     raise ValueError(f"unsupported creature pose-guide family: {family}")
