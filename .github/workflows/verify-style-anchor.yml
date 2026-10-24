@@ -21,24 +21,31 @@ jobs:
         with:
           python-version: '3.11'
       - run: python -m pip install --disable-pip-version-check 'pillow>=10.4,<12'
-      - name: Verify repository anchor bytes
+      - name: Verify all repository reference images
         shell: bash
         run: |
           set -euo pipefail
-          p='modal_worker/project_references/elyndor_noncreature_style_anchor.jpg'
-          wc -c "$p"
-          sha256sum "$p"
-          file "$p"
-          xxd -l 32 "$p"
-          tail -c 32 "$p" | xxd
           python - <<'PY'
           from pathlib import Path
           from PIL import Image
-          p=Path('modal_worker/project_references/elyndor_noncreature_style_anchor.jpg')
-          b=p.read_bytes()
-          print('bytes',len(b),'soi',b[:2].hex(),'eoi',b[-2:].hex())
-          with Image.open(p) as im:
-              print('format',im.format,'size',im.size,'mode',im.mode)
-              im.verify()
-          print('PIL_VERIFY_OK')
+          root=Path('modal_worker/project_references')
+          rows=[]
+          bad=[]
+          for p in sorted(root.glob('*.jpg')):
+              b=p.read_bytes()
+              try:
+                  with Image.open(p) as im:
+                      info=(im.format, im.size, im.mode)
+                      im.verify()
+                  ok=True; err=''
+              except Exception as exc:
+                  ok=False; info=None; err=f'{type(exc).__name__}: {exc}'
+                  bad.append(p.name)
+              rows.append({'name':p.name,'bytes':len(b),'soi':b[:2].hex(),'eoi':b[-2:].hex(),'ok':ok,'info':info,'error':err})
+          for row in rows:
+              print(row)
+          print('BAD_REFERENCES',bad)
+          if bad:
+              raise SystemExit(1)
+          print('ALL_PROJECT_REFERENCES_PIL_VERIFY_OK')
           PY
