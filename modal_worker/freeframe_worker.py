@@ -144,7 +144,7 @@ def get_plushbound_brain()->dict:
 @app.function(image=image, timeout=30)
 @modal.fastapi_endpoint(method="POST", requires_proxy_auth=True)
 def plan_asset_job(request:dict)->dict:
-    from modal_worker.mini_jarvis_controller import plan_asset
+    from modal_worker.atlas_controller import plan_asset
     return plan_asset(request)
 
 @app.function(image=image, timeout=30)
