@@ -12,7 +12,7 @@ try:
 except ImportError:
     from model_catalog import apply_model_defaults, get_production_renderer
 
-PRODUCTION_MODEL_POLICY_VERSION = "production-model-policy-v3-klein-clean-hems"
+PRODUCTION_MODEL_POLICY_VERSION = "production-model-policy-v4-klein-creature-anatomy"
 PRODUCTION_RENDERER_ROUTE = "flux2_klein"
 SUPPORTED_PRESETS = frozenset({
     "plushbound_character",
@@ -30,12 +30,20 @@ _KLEIN_COMPLIANCE = {
         "glyph-like shapes, name tapes, badges, insignia, symbols, logos, numbers or writing. Leave the lower tunic hem visually blank."
     ),
     "plushbound_guardian": (
-        "Klein production constraint: render one living Guardian only in its natural habitat. Surface variation is organic woven "
-        "texture and simple non-symbolic color variation only; do not form letter-like, rune-like, logo-like or printed markings."
+        "Klein production constraint: render one living Guardian only, behaving as a real fantasy species in its natural habitat. "
+        "Its complete exterior is hairless and pile-free: matte woven canvas-like biological skin with visibly interlaced warp-and-weft fibers "
+        "following the body form, never a coat of fur, fuzz, velvet, fleece or plush pile. Use proportionate small-to-medium natural creature eyes "
+        "set into the skull, not oversized glossy mascot eyes. The face must read as living animal anatomy rather than a toy: no button nose, doll face, "
+        "stitched smile or merchandise proportions. Surface variation is simple organic color blocking and sparse anatomy-following seam structure only, "
+        "with no letter-like, rune-like, logo-like or printed markings."
     ),
     "plushbound_enemy": (
-        "Klein production constraint: render one hostile living-textile creature only in its natural habitat. Surface variation is "
-        "organic woven texture and simple non-symbolic color variation only; do not form letter-like, rune-like, logo-like or printed markings."
+        "Klein production constraint: render one hostile living-textile creature only, grounded in its natural habitat with believable predatory weight. "
+        "The full exterior is hairless and pile-free matte woven textile hide with clearly visible warp-and-weft structure and quilted anatomical planes, "
+        "never ordinary fur, fuzz, fleece or a realistic mammal coat. Use an original non-feline, non-canine head silhouette with no cat ears, dog ears, whiskers, "
+        "feline muzzle or ordinary wolf/fox/cat facial anatomy. Keep the torso long and low with a clearly horizontal spine, four separated weight-bearing legs, "
+        "distinct shoulder and hip structure and four visible ground-contact feet. Eyes are proportionate natural predator eyes, not mascot eyes. Surface variation is "
+        "non-symbolic biological textile structure only, with no letter-like, rune-like, logo-like or printed markings."
     ),
     "plushbound_environment": (
         "Klein production constraint: render one continuous traversable landscape without a foreground hero. Any architecture, banners "
@@ -65,7 +73,7 @@ def apply_production_model_policy(preset_name: str, request: dict) -> dict:
     result["renderer_route"] = PRODUCTION_RENDERER_ROUTE
     result["renderer_class"] = "FreeFrameProductionGenerator"
     result["production_model_policy_version"] = PRODUCTION_MODEL_POLICY_VERSION
-    result["renderer_compliance_profile"] = f"{preset_name}-klein-v3"
+    result["renderer_compliance_profile"] = f"{preset_name}-klein-v4"
     result["bounded_production_authorized"] = True
     result["automatic_full_production_authorized"] = False
     result["catalog_wide_launch_authorized"] = False
