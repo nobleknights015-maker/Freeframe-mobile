@@ -22,6 +22,11 @@ class AtlasControllerTests(unittest.TestCase):
         self.assertIn("functional paws feet wings or other locomotor anatomy", request["prompt"])
         self.assertIn("retail plush toy", request["negative_prompt"])
         self.assertIn("random patches", request["negative_prompt"])
+        self.assertEqual(len(plan["atlas_job_id"]), 24)
+        self.assertEqual(len(plan["plan_digest"]), 64)
+        self.assertEqual(plan["ledger_record"]["atlas_job_id"], plan["atlas_job_id"])
+        self.assertEqual(plan["ledger_record"]["plan_digest"], plan["plan_digest"])
+        self.assertEqual(plan["ledger_record"]["state"], "planned")
         self.assertFalse(plan["automatic_full_production_authorized"])
         self.assertFalse(plan["chat_model_attached"])
 
@@ -97,13 +102,20 @@ class AtlasControllerTests(unittest.TestCase):
         self.assertIsNone(plan["generation_request"])
         self.assertEqual(plan["production_state"], "planned")
 
-    def test_seed_is_deterministic(self):
+    def test_plan_identity_is_deterministic_and_changes_with_seed(self):
         intent = {
             "family": "guardian_boss",
             "description": "ancient woodland warden",
             "context": {"region": "Elyndor"},
         }
-        self.assertEqual(plan_asset(intent)["seed"], plan_asset(intent)["seed"])
+        first = plan_asset(intent)
+        second = plan_asset(intent)
+        self.assertEqual(first["seed"], second["seed"])
+        self.assertEqual(first["atlas_job_id"], second["atlas_job_id"])
+        self.assertEqual(first["plan_digest"], second["plan_digest"])
+        altered = plan_asset({**intent, "seed": first["seed"] + 1})
+        self.assertNotEqual(first["atlas_job_id"], altered["atlas_job_id"])
+        self.assertNotEqual(first["plan_digest"], altered["plan_digest"])
 
 
 if __name__ == "__main__":
