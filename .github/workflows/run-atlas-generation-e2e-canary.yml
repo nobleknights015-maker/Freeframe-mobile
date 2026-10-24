@@ -6,6 +6,15 @@ on:
     branches:
       - freeframe-modal-worker
     paths:
+      - 'modal_worker/freeframe_worker.py'
+      - 'modal_worker/atlas_controller.py'
+      - 'modal_worker/model_catalog.py'
+      - 'modal_worker/production_model_policy.py'
+      - 'modal_worker/production_request_builder.py'
+      - 'modal_worker/production_presets.py'
+      - 'modal_worker/production_style_policy.py'
+      - 'modal_worker/style_profiles.py'
+      - 'modal_worker/atlas_generation_e2e_canary.py'
       - '.github/workflows/run-atlas-generation-e2e-canary.yml'
 
 permissions:
