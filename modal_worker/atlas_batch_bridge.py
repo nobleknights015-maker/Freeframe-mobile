@@ -10,7 +10,7 @@ except ImportError:
     from atlas_production_ledger import AssetProductionRecord, transition
     from batch_state import BatchState, stable_asset_id
 
-BRIDGE_VERSION = "atlas-batch-bridge-v1"
+BRIDGE_VERSION = "atlas-batch-bridge-v2"
 
 
 def build_batch_item(plan: dict[str, Any], *, path: str, profile: str) -> dict[str, Any]:
@@ -67,10 +67,12 @@ def reconcile_batch_item(item: dict[str, Any], state: BatchState) -> AssetProduc
     if failure:
         attempts = max(1, int(failure.get("attempts", 1)))
         for attempt in range(attempts):
-            if record.state == "ready" or record.state == "retry_queued":
-                transition(record, "generation_succeeded", {"asset_id": asset_id, "attempt": attempt + 1, "result": "failed_or_rejected"})
-            if record.state == "generated":
-                transition(record, "qa_failed", {"error": str(failure.get("error", "batch failure"))})
+            if record.state in {"ready", "retry_queued"}:
+                transition(record, "generation_failed", {
+                    "asset_id": asset_id,
+                    "attempt": attempt + 1,
+                    "error": str(failure.get("error", "batch failure")),
+                })
             if attempt < attempts - 1:
                 transition(record, "queue_retry", {"source": "batch_checkpoint"})
         return record
@@ -90,6 +92,7 @@ def batch_progress(items: list[dict[str, Any]], state: BatchState) -> dict[str, 
         "states": counts,
         "accepted": counts.get("accepted", 0),
         "qa_failed": counts.get("qa_failed", 0),
+        "generation_failed": counts.get("generation_failed", 0),
         "ready_or_pending": counts.get("ready", 0) + counts.get("planned", 0) + counts.get("retry_queued", 0),
         "automatic_full_production_authorized": False,
     }
