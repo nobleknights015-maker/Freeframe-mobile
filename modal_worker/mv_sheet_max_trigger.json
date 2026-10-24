@@ -1,33 +1,31 @@
 {
   "schema": "plushbound.specialized_npc_mv_max_trigger.v1",
   "enabled": true,
-  "round": 2,
+  "round": 3,
   "phase": "npc_mv_single_character_sheets",
-  "mode": "SPECIALIZED_MAX_SINGLE_APP_12_LANE",
-  "source_run_id": 40104944672,
+  "mode": "SPECIALIZED_MAX_SINGLE_APP_PARTIAL_6_LANE",
+  "source_run_id": 40108121286,
   "source_artifacts": [
-    "plushbound-max-round-17-shard-0-sublane-0-40104944672",
-    "plushbound-max-round-17-shard-0-sublane-1-40104944672",
-    "plushbound-max-round-17-shard-0-sublane-2-40104944672",
-    "plushbound-max-round-17-shard-0-sublane-3-40104944672"
+    "plushbound-max-round-18-shard-0-sublane-0-40108121286",
+    "plushbound-max-round-18-shard-0-sublane-1-40108121286"
   ],
   "sublanes_per_artifact": 3,
-  "parallel_streams": 12,
-  "expected_unique_masters": 128,
+  "parallel_streams": 6,
+  "expected_unique_masters": 64,
   "authorized_by_user": true,
   "full_catalog_completion_authorized_by_user": true,
   "identity_source": "accepted_master_png_reference",
-  "launch_nonce": 5,
+  "launch_nonce": 6,
   "canary_gate": {
     "workflow_run_id": 40135050321,
     "conclusion": "success",
     "geometry": "144x192_rgba_3x4",
     "engine_validation": true
   },
-  "resume_reason": "Specialized NPC MV Round 1 is fully banked and reconciled: 128/128 unique source masters produced validated 144x192 RGBA 3x4 sheets, 0 duplicate master filenames, 0 quarantined outputs, actual visual samples passed identity/anatomy/silhouette/directional/alpha QA, and measured raw specialized generation spend was approximately $0.684. Advance exactly one specialized round to Round 2 using the next untouched verified Round 17 NPC master production run 40104944672 across its four source artifacts. Use the single-app unified dispatcher with the default 12 non-overlapping internal lanes, preserve strict source-master reference identity and stable seeds, and do not reuse any Round 1 source master filenames.",
+  "resume_reason": "Specialized NPC MV Rounds 1 and 2 are fully banked at 128/128 each. Advance exactly one specialized round to Round 3 using only the two non-empty verified Round 18 NPC master artifacts from production run 40108121286. Round 18 sublanes 2 and 3 are completion-only artifacts with no NPC PNGs and are intentionally excluded. Process the final 64 untouched NPC masters through six non-overlapping logical lanes, with the workflow physical concurrency capped at 10 GPUs. Preserve strict source-master identity, stable seeds, 144x192 RGBA 3x4 geometry, engine validation, and do not reuse any source master filenames from Rounds 1-2. This is the final NPC master block; after successful validation retire NPC MV generation and transition to the next specialized family.",
   "stop_conditions": [
     "technical_quarantine_requires_targeted_repair",
     "visual_qa_rejects_scaled_contract",
-    "modal_allowance_exhausted_or_next_launch_would_exceed_it"
+    "actual_billed_charges_would_exceed_10_usd"
   ]
 }
