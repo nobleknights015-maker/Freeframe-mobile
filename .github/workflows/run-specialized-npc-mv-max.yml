@@ -21,7 +21,8 @@ jobs:
     outputs:
       round_number: ${{ steps.trigger.outputs.round_number }}
       source_run_id: ${{ steps.trigger.outputs.source_run_id }}
-      jobs: ${{ steps.trigger.outputs.jobs }}
+      source_artifacts: ${{ steps.trigger.outputs.source_artifacts }}
+      lane_specs: ${{ steps.trigger.outputs.lane_specs }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -47,39 +48,65 @@ jobs:
               raise SystemExit('exactly four unique source artifacts are required for this max contract')
           if sublanes != 3:
               raise SystemExit('validated specialized max contract requires three sublanes per artifact')
-          jobs=[]
-          for artifact in artifacts:
-              for sublane in range(sublanes):
-                  jobs.append({'artifact': artifact, 'sublane': sublane, 'sublanes': sublanes})
+          lanes=data.get('lane_specs')
+          if lanes is None:
+              lanes=[{'artifact': a, 'sublane': s, 'sublanes': sublanes} for a in artifacts for s in range(sublanes)]
+          if not isinstance(lanes,list) or not lanes or len(lanes)>12:
+              raise SystemExit('lane_specs must contain 1..12 lanes')
+          seen=set()
+          normalized=[]
+          for raw in lanes:
+              artifact=str(raw['artifact'])
+              lane=int(raw['sublane'])
+              lane_count=int(raw.get('sublanes',sublanes))
+              key=(artifact,lane,lane_count)
+              if artifact not in artifacts:
+                  raise SystemExit(f'lane artifact is outside source_artifacts: {artifact}')
+              if lane_count != sublanes or lane < 0 or lane >= sublanes:
+                  raise SystemExit(f'invalid lane spec: {key}')
+              if key in seen:
+                  raise SystemExit(f'duplicate lane spec: {key}')
+              seen.add(key)
+              normalized.append({'artifact':artifact,'sublane':lane,'sublanes':lane_count})
           print(f'round_number={round_number}')
           print(f'source_run_id={source_run_id}')
-          print('jobs='+json.dumps(jobs,separators=(',',':')))
+          print('source_artifacts='+json.dumps(artifacts,separators=(',',':')))
+          print('lane_specs='+json.dumps(normalized,separators=(',',':')))
           PY
 
   produce:
     needs: prepare
-    strategy:
-      fail-fast: false
-      max-parallel: 12
-      matrix:
-        include: ${{ fromJSON(needs.prepare.outputs.jobs) }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 120
     env:
       MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
       MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       ROUND_NUMBER: ${{ needs.prepare.outputs.round_number }}
+      SOURCE_RUN_ID: ${{ needs.prepare.outputs.source_run_id }}
+      SOURCE_ARTIFACTS_JSON: ${{ needs.prepare.outputs.source_artifacts }}
+      LANE_SPECS_JSON: ${{ needs.prepare.outputs.lane_specs }}
     steps:
       - uses: actions/checkout@v4
         with:
           ref: freeframe-modal-worker
-      - name: Download accepted master artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ matrix.artifact }}
-          path: master-input
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ needs.prepare.outputs.source_run_id }}
+      - name: Download accepted master artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, pathlib, subprocess
+          root=pathlib.Path('master-input')
+          root.mkdir(parents=True, exist_ok=True)
+          for artifact in json.loads(os.environ['SOURCE_ARTIFACTS_JSON']):
+              dest=root/artifact
+              dest.mkdir(parents=True, exist_ok=True)
+              subprocess.run([
+                  'gh','run','download',os.environ['SOURCE_RUN_ID'],
+                  '--repo','nobleknights015-maker/Freeframe-mobile',
+                  '-n',artifact,'-D',str(dest)
+              ],check=True)
+          PY
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -92,30 +119,27 @@ jobs:
         run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12' 'numpy>=1.26,<2'
       - name: Compile specialized production surface
         run: python -m compileall -q modal_worker
-      - name: Run identity-preserving NPC MV max stream
+      - name: Run unified identity-preserving NPC MV Max dispatch
         shell: bash
         run: |
           set -euo pipefail
-          SAFE_ARTIFACT="$(printf '%s' '${{ matrix.artifact }}' | tr -cs 'A-Za-z0-9._-' '_')"
-          LOG="specialized-npc-mv-${SAFE_ARTIFACT}-sublane-${{ matrix.sublane }}.log"
           PYTHONPATH=modal_worker modal run modal_worker/mv_sheet_max_production.py \
-            --master-dir master-input \
+            --master-root master-input \
+            --lane-specs-json "$LANE_SPECS_JSON" \
             --round-number "$ROUND_NUMBER" \
-            --source-artifact '${{ matrix.artifact }}' \
-            --sublane '${{ matrix.sublane }}' \
-            --sublanes '${{ matrix.sublanes }}' | tee "$LOG"
-      - name: Require specialized report and PNG output
+            --max-parallel 12 | tee specialized-npc-mv-unified.log
+      - name: Require specialized batch report and PNG output
         shell: bash
         run: |
-          test -n "$(find specialized-output -name report.json -type f -print -quit)" || { echo 'missing specialized report' >&2; exit 1; }
+          test -n "$(find specialized-output -name batch-report.json -type f -print -quit)" || { echo 'missing specialized batch report' >&2; exit 1; }
           test -n "$(find specialized-output -name '*.png' -type f -print -quit)" || { echo 'missing specialized PNG output' >&2; exit 1; }
-      - name: Upload specialized stream
+      - name: Upload specialized batch
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: specialized-npc-mv-round-${{ env.ROUND_NUMBER }}-${{ strategy.job-index }}-${{ github.run_id }}
+          name: specialized-npc-mv-round-${{ env.ROUND_NUMBER }}-unified-${{ github.run_id }}
           path: |
-            specialized-npc-mv-*.log
+            specialized-npc-mv-unified.log
             specialized-output/
           if-no-files-found: warn
           retention-days: 30
