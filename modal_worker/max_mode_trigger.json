@@ -1,16 +1,16 @@
 {
   "schema": "plushbound.max_mode_trigger.v1",
   "enabled": true,
-  "round": 13,
+  "round": 14,
   "mode": "MAX_MODE_12_STREAM_4X",
   "jobs_per_shard": 128,
   "jobs_per_sublane": 32,
   "sublanes_per_shard": 4,
-  "parallel_streams": 12,
-  "shards": [0, 2, 3],
+  "parallel_streams": 4,
+  "shards": [0],
   "authorized_by_user": true,
   "full_catalog_completion_authorized_by_user": true,
-  "resume_reason": "turbo round 12 artifact reports verified: 12/12 streams present, 384/384 accepted, 0 quarantined, 384 unique intended asset IDs, measured raw generation spend $0.328700; effective legacy rounds 15-18 banked with no overlap; advance exactly one turbo round to 13 on shards 0/2/3 without rerunning accepted IDs; enemy and environment families have only legacy ranges 19-20 remaining and later sublanes should report lane_complete with no generation",
+  "resume_reason": "turbo round 13 artifact reports verified: NPC sublanes 0-3 accepted 128/128; enemy sublanes 0-1 accepted 64/64 and sublanes 2-3 reported lane_complete with zero remaining IDs; environment sublanes 0-1 accepted 64/64 and sublanes 2-3 reported lane_complete with zero remaining IDs; total 256/256 generated outputs accepted, 0 quarantined, measured raw generation spend $0.217724. Enemy and environment master families are globally complete through legacy round 20 and are retired. Advance exactly one turbo round to 14 using only NPC shard 0 across four non-overlapping 32-item sublanes mapping legacy rounds 23-26, without rerunning accepted IDs.",
   "stop_conditions": [
     "planned_visual_production_complete",
     "modal_allowance_exhausted_or_next_launch_would_exceed_it"
