@@ -1,4 +1,5 @@
 {
   "schema": "plushbound.style_anchor_verify.v1",
-  "purpose": "distinguish repository corruption from Modal packaging corruption"
+  "run": 2,
+  "purpose": "verify every project reference and identify a valid creature-conditioning source"
 }
