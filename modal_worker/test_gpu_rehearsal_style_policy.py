@@ -8,7 +8,9 @@ class GPURehearsalStylePolicyTests(unittest.TestCase):
         self.assertEqual(GPU_REHEARSAL_VERSION, "plushbound-gpu-rehearsal-v4")
         self.assertEqual(len(plan), 32)
         self.assertEqual(len({item["asset_id"] for item in plan}), 32)
-        self.assertTrue(all(item["request"]["production_request_builder_version"] == "production-request-v4-family-aware" for item in plan))
+        self.assertTrue(all(item["request"]["production_request_builder_version"] == "production-request-v5-klein-routed" for item in plan))
+        self.assertTrue(all(item["request"]["renderer_route"] == "flux2_klein" for item in plan))
+        self.assertTrue(all(item["request"]["catalog_wide_launch_authorized"] is False for item in plan))
 
     def test_all_categories_use_validated_category_profiles(self):
         plan = rehearsal_requests()
@@ -44,6 +46,8 @@ class GPURehearsalStylePolicyTests(unittest.TestCase):
         for item in rehearsal_requests():
             if item["preset"] == "plushbound_character":
                 self.assertIn("single candid full-length scene", item["request"]["prompt"])
+                self.assertIn("no character-sheet layout", item["request"]["prompt"])
+                self.assertIn("no typography", item["request"]["prompt"])
 
 
 if __name__ == "__main__": unittest.main()
