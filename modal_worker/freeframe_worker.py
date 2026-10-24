@@ -270,8 +270,8 @@ def store_reference_internal(request:dict)->dict:
 def store_reference(request:dict)->dict: return store_reference_internal.remote(request)
 
 @app.function(image=image, timeout=1230)
-@modal.fastapi_endpoint(method="POST", requires_proxy_auth=True)
-def generate_image(request:dict)->dict:
+def generate_image_internal(request:dict)->dict:
+    """Internal callable generation gateway shared by tests and the web endpoint."""
     spec=GenerationSpec.from_request(request); spec.validate()
     route=str(request.get("renderer_route","")).strip()
     if route == PRODUCTION_RENDERER_ROUTE:
@@ -279,6 +279,11 @@ def generate_image(request:dict)->dict:
     if route in ("", "legacy_sdxl"):
         return FreeFrameGenerator().generate.remote(request)
     raise ValueError(f"unknown FreeFrame renderer_route: {route}")
+
+@app.function(image=image, timeout=1230)
+@modal.fastapi_endpoint(method="POST", requires_proxy_auth=True)
+def generate_image(request:dict)->dict:
+    return generate_image_internal.remote(request)
 
 @app.function(image=image, timeout=930)
 @modal.fastapi_endpoint(method="POST", requires_proxy_auth=True)
