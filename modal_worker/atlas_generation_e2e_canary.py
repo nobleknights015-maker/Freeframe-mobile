@@ -16,7 +16,7 @@ import modal
 from modal_worker.atlas_controller import plan_asset
 from modal_worker.atlas_production_ledger import AssetProductionRecord, transition, verify_history
 
-CANARY_VERSION = "atlas-generation-e2e-v2-klein-gateway"
+CANARY_VERSION = "atlas-generation-e2e-v3-klein-internal-gateway"
 OUTPUT_PNG = Path("atlas-e2e-character.png")
 REPORT_JSON = Path("atlas-e2e-report.json")
 EXPECTED_MODEL = "black-forest-labs/FLUX.2-klein-4B"
@@ -70,7 +70,7 @@ def main() -> None:
         "expected_route": EXPECTED_ROUTE,
     })
 
-    gateway = modal.Function.from_name("freeframe-worker", "generate_image")
+    gateway = modal.Function.from_name("freeframe-worker", "generate_image_internal")
     result = gateway.remote(plan["generation_request"])
     encoded = result.get("image_base64")
     if not encoded:
