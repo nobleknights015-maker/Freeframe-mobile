@@ -1,7 +1,7 @@
 {
   "schema": "plushbound.max_mode_trigger.v1",
   "enabled": true,
-  "round": 12,
+  "round": 13,
   "mode": "MAX_MODE_12_STREAM_4X",
   "jobs_per_shard": 128,
   "jobs_per_sublane": 32,
@@ -10,7 +10,7 @@
   "shards": [0, 2, 3],
   "authorized_by_user": true,
   "full_catalog_completion_authorized_by_user": true,
-  "resume_reason": "turbo round 11 artifact reports verified: 12/12 streams present, 384/384 accepted, 0 quarantined, measured raw generation spend $0.328213; effective legacy rounds 11-14 banked with no overlap; advance exactly one turbo round to 12 on shards 0/2/3 without rerunning accepted IDs",
+  "resume_reason": "turbo round 12 artifact reports verified: 12/12 streams present, 384/384 accepted, 0 quarantined, 384 unique intended asset IDs, measured raw generation spend $0.328700; effective legacy rounds 15-18 banked with no overlap; advance exactly one turbo round to 13 on shards 0/2/3 without rerunning accepted IDs; enemy and environment families have only legacy ranges 19-20 remaining and later sublanes should report lane_complete with no generation",
   "stop_conditions": [
     "planned_visual_production_complete",
     "modal_allowance_exhausted_or_next_launch_would_exceed_it"
