@@ -12,14 +12,16 @@ import json
 
 try:
     from .atlas_production_ledger import LEDGER_VERSION, new_record
+    from .creature_conditioning_policy import CONDITIONING_POLICY_VERSION, get_conditioning_contract
     from .plushbound_brain import ASSISTANT_NAME, BRAIN_VERSION, WORLD_NAME, get_family_contract, missing_context
     from .production_request_builder import build_production_request
 except ImportError:
     from atlas_production_ledger import LEDGER_VERSION, new_record
+    from creature_conditioning_policy import CONDITIONING_POLICY_VERSION, get_conditioning_contract
     from plushbound_brain import ASSISTANT_NAME, BRAIN_VERSION, WORLD_NAME, get_family_contract, missing_context
     from production_request_builder import build_production_request
 
-ATLAS_VERSION = "atlas-controller-v2"
+ATLAS_VERSION = "atlas-controller-v3-conditioning-aware"
 MAX_SEED = 2**63 - 1
 
 
@@ -51,15 +53,17 @@ def _build_prompt(description: str, family_rules: tuple[str, ...], context: dict
     return ". ".join(parts)
 
 
-def _identity(family: str, description: str, context: dict[str, str], seed: int, request: dict | None) -> tuple[str, str]:
+def _identity(family: str, description: str, context: dict[str, str], seed: int, request: dict | None, conditioning: dict | None) -> tuple[str, str]:
     material = {
         "atlas_version": ATLAS_VERSION,
         "brain_version": BRAIN_VERSION,
+        "conditioning_policy_version": CONDITIONING_POLICY_VERSION,
         "family": family,
         "description": description,
         "context": context,
         "seed": seed,
         "generation_request": request,
+        "conditioning": conditioning,
     }
     plan_digest = hashlib.sha256(_canonical(material)).hexdigest()
     atlas_job_id = hashlib.sha256(f"{family}\0{plan_digest}".encode("utf-8")).hexdigest()[:24]
@@ -92,6 +96,10 @@ def plan_asset(intent: dict) -> dict:
             raise ValueError("seed must be between 0 and 2^63-1")
         seed_source = "provided"
 
+    conditioning = None
+    if contract.creature_family is not None:
+        conditioning = get_conditioning_contract(contract.creature_family).metadata()
+
     request = None
     if contract.production_preset is not None:
         prompt = _build_prompt(description, contract.rules, context)
@@ -104,14 +112,16 @@ def plan_asset(intent: dict) -> dict:
             creature_family=contract.creature_family,
         )
 
-    atlas_job_id, plan_digest = _identity(family, description, context, seed, request)
+    atlas_job_id, plan_digest = _identity(family, description, context, seed, request, conditioning)
     ledger_record = new_record(atlas_job_id, family, plan_digest).to_dict()
+    visual_gate_blocked = bool(conditioning and conditioning["production_state"] == "visual_gate_blocked")
 
     return {
         "assistant_name": ASSISTANT_NAME,
         "controller_version": ATLAS_VERSION,
         "brain_version": BRAIN_VERSION,
         "ledger_version": LEDGER_VERSION,
+        "conditioning_policy_version": CONDITIONING_POLICY_VERSION,
         "world": WORLD_NAME,
         "atlas_job_id": atlas_job_id,
         "plan_digest": plan_digest,
@@ -123,6 +133,8 @@ def plan_asset(intent: dict) -> dict:
         "seed_source": seed_source,
         "generation_request": request,
         "generation_supported": request is not None,
+        "conditioning": conditioning,
+        "visual_gate_blocked": visual_gate_blocked,
         "ledger_record": ledger_record,
         "chat_model_attached": False,
         "automatic_full_production_authorized": False,
