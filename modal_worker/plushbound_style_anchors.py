@@ -5,8 +5,9 @@ import hashlib
 from dataclasses import dataclass
 from pathlib import Path
 
-STYLE_ANCHOR_LIBRARY_VERSION = "plushbound-style-anchor-v3-family-routed"
+STYLE_ANCHOR_LIBRARY_VERSION = "plushbound-style-anchor-v4-family-routed-normalized"
 BASE_DIR = Path(__file__).with_name("project_references")
+MIN_RENDER_REFERENCE_DIMENSION = 128
 
 
 @dataclass(frozen=True)
@@ -35,7 +36,14 @@ class StyleAnchor:
         raw = self.load_bytes()
         with Image.open(io.BytesIO(raw)) as image:
             image.verify()
-        return Image.open(io.BytesIO(raw)).convert("RGB")
+        image = Image.open(io.BytesIO(raw)).convert("RGB")
+        width, height = image.size
+        short_edge = min(width, height)
+        if short_edge < MIN_RENDER_REFERENCE_DIMENSION:
+            scale = MIN_RENDER_REFERENCE_DIMENSION / float(short_edge)
+            target = (max(MIN_RENDER_REFERENCE_DIMENSION, round(width * scale)), max(MIN_RENDER_REFERENCE_DIMENSION, round(height * scale)))
+            image = image.resize(target, Image.Resampling.LANCZOS)
+        return image
 
     def metadata(self) -> dict:
         return {
@@ -47,6 +55,7 @@ class StyleAnchor:
             "ownership": self.ownership,
             "role": self.role,
             "source_description": self.source_description,
+            "render_reference_min_dimension": MIN_RENDER_REFERENCE_DIMENSION,
         }
 
 
