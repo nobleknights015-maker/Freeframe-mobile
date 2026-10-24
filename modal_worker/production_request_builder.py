@@ -4,15 +4,17 @@ import re
 try:
     from .creature_world_policy import apply_creature_world_policy, resolve_creature_family
     from .guardian_composition_policy import apply_guardian_composition
+    from .production_model_policy import apply_production_model_policy
     from .production_presets import get_preset
     from .production_style_policy import apply_production_style
 except ImportError:
     from creature_world_policy import apply_creature_world_policy, resolve_creature_family
     from guardian_composition_policy import apply_guardian_composition
+    from production_model_policy import apply_production_model_policy
     from production_presets import get_preset
     from production_style_policy import apply_production_style
 
-PRODUCTION_REQUEST_BUILDER_VERSION = "production-request-v4-family-aware"
+PRODUCTION_REQUEST_BUILDER_VERSION = "production-request-v5-klein-routed"
 _REFERENCE_ID_RE = re.compile(r"^[0-9a-f]{64}$")
 
 def build_production_request(preset_name: str,prompt: str,*,seed: int,reference_id: str|None=None,reference_scale: float=0.35,creature_family: str|None=None)->dict:
@@ -27,7 +29,12 @@ def build_production_request(preset_name: str,prompt: str,*,seed: int,reference_
         if not _REFERENCE_ID_RE.fullmatch(reference_id): raise ValueError("reference_id must be a lowercase SHA-256 hex digest")
         reference_scale=float(reference_scale)
         if not 0.0 <= reference_scale <= 1.0: raise ValueError("reference_scale must be between 0 and 1")
-        request["reference_id"]=reference_id; request["reference_scale"]=reference_scale; request["reference_mode"]="style"; request["production_reference_validated_mode"]="style"
-    else: request["production_reference_validated_mode"]=None
+        request["reference_id"]=reference_id
+        request["reference_scale"]=reference_scale
+        request["reference_mode"]="style"
+        request["production_reference_validated_mode"]="style"
+    else:
+        request["production_reference_validated_mode"]=None
+    request = apply_production_model_policy(preset_name, request)
     request["production_request_builder_version"]=PRODUCTION_REQUEST_BUILDER_VERSION
     return request
