@@ -7,6 +7,7 @@ through the real production factory, and requires an exact 144x192 RGBA PNG
 (48x48 cells) that passes the editor profile.
 
 This is a capability canary, not authorization for the 22k production run.
+Specialized finishing phase canary: master-generation lanes are retired.
 """
 from __future__ import annotations
 
