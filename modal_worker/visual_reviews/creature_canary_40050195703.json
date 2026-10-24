@@ -1,0 +1,59 @@
+{
+  "visual_gate_version": "atlas-visual-gate-v1",
+  "workflow_run_id": 40050195703,
+  "head_sha": "af7ab048ccacd9ec15ed731a084f777e311a06de",
+  "artifact_digest": "sha256:f8d63786c2666c1ba7f97e1b756c6665d32e723d8386594051e938d51e1f9934",
+  "canary_version": "project-reference-pose-canary-v3-enclosed-body",
+  "required_cases": [
+    "guardian_friendly_quadruped",
+    "guardian_friendly_winged",
+    "guardian_friendly_biped",
+    "guardian_friendly_long_low",
+    "guardian_corrupt_low",
+    "guardian_boss_hexapod",
+    "enemy_creature_hexapod"
+  ],
+  "judgments": {
+    "guardian_friendly_quadruped": {
+      "passed": false,
+      "reasons": ["fully enclosed body fixed the skeleton regression, but fuzzy plush-pile surface and oversized glossy eye still read too close to a manufactured plush mascot"]
+    },
+    "guardian_friendly_winged": {
+      "passed": false,
+      "reasons": ["reads as a fuzzy cat/bat mascot with oversized glossy eyes rather than an original living-textile species"]
+    },
+    "guardian_friendly_biped": {
+      "passed": false,
+      "reasons": ["reads as an ordinary furry mammal/rodent with textile-like surface rather than Plushtopia textile biology"]
+    },
+    "guardian_friendly_long_low": {
+      "passed": false,
+      "reasons": ["does not obey the requested long-low body plan and reads as a normal deer/goat-like animal; pom-pom tail and fuzzy coat reinforce toy/ordinary-animal drift"]
+    },
+    "guardian_corrupt_low": {
+      "passed": true,
+      "reasons": ["closed living-textile body is preserved; corruption is localized to surface tears and overgrowth without exposed skeleton"]
+    },
+    "guardian_boss_hexapod": {
+      "passed": false,
+      "reasons": ["closed textile body succeeds, but the supposed hexapod has only four visible weight-bearing legs"]
+    },
+    "enemy_creature_hexapod": {
+      "passed": false,
+      "reasons": ["reads as a manufactured patched cat/lizard creature with collar-like accessory; six weight-bearing feet are not clearly obeyed and healthy monster remains too toy-like"]
+    }
+  },
+  "passed_cases": ["guardian_corrupt_low"],
+  "failed_cases": [
+    "guardian_friendly_quadruped",
+    "guardian_friendly_winged",
+    "guardian_friendly_biped",
+    "guardian_friendly_long_low",
+    "guardian_boss_hexapod",
+    "enemy_creature_hexapod"
+  ],
+  "bounded_gate_passed": false,
+  "scope": "creature-master visual canary only",
+  "automatic_full_production_authorized": false,
+  "review_digest": "a895314ceac100e92c423934f1c961c671bcdeeead5809c474ef28a63ecd0146"
+}
