@@ -1,14 +1,14 @@
-"""Procedural project-owned anatomy guides for bounded creature generation tests.
+"""Procedural project-owned exterior silhouette guides for bounded creature tests.
 
 The guides contain no third-party art and no rendering style. They communicate body
-orientation, limb count and broad creature proportions separately from the
-Plushbound visual reference.
+orientation, externally visible limb count and broad proportions only. They never
+represent bones, skeletons, anatomy cutaways or internal structures.
 """
 from __future__ import annotations
 
 from PIL import Image, ImageDraw
 
-POSE_GUIDE_VERSION = "creature-pose-guide-v2-diverse-anatomy"
+POSE_GUIDE_VERSION = "creature-pose-guide-v3-exterior-silhouette"
 
 
 def _canvas(size: int) -> tuple[Image.Image, ImageDraw.ImageDraw]:
@@ -71,25 +71,41 @@ def _small_biped(size: int) -> Image.Image:
     return image
 
 
+def _leg_polygon(size: int, hip: tuple[int,int], knee: tuple[int,int], foot: tuple[int,int], width: int) -> list[tuple[int,int]]:
+    # Thick bent exterior limb silhouette. The small fixed offsets keep all six legs
+    # visually separate without implying internal bones or anatomical diagrams.
+    hx,hy=hip; kx,ky=knee; fx,fy=foot
+    half=max(5,width//2)
+    return [_scaled(size,(hx-half,hy)),_scaled(size,(hx+half,hy)),_scaled(size,(kx+half,ky)),_scaled(size,(fx+half,fy)),_scaled(size,(fx-half,fy)),_scaled(size,(kx-half,ky))]
+
+
 def _hexapod(size: int, *, boss: bool) -> Image.Image:
     image, draw = _canvas(size)
-    s = size / 512.0
     if boss:
-        body=(55,190,360,325); head=(340,175,465,285); xs=(85,135,200,250,315,365); leg_w=30; feet_y=425
+        body=(70,185,365,320); head=(350,170,470,285); width=28
+        legs=(
+            ((105,270),(70,335),(55,420)), ((145,285),(125,350),(120,435)),
+            ((215,290),(210,355),(215,445)), ((260,290),(275,355),(285,440)),
+            ((320,275),(350,335),(365,420)), ((355,260),(405,320),(430,400)),
+        )
     else:
-        body=(75,220,360,320); head=(345,205,445,290); xs=(95,145,210,260,325,375); leg_w=24; feet_y=395
+        body=(80,215,355,320); head=(345,200,445,290); width=23
+        legs=(
+            ((105,275),(75,325),(60,395)), ((145,290),(125,340),(120,410)),
+            ((210,292),(205,345),(210,420)), ((255,292),(270,345),(280,415)),
+            ((315,280),(345,330),(360,400)), ((350,265),(395,315),(420,385)),
+        )
     draw.ellipse(_box(size,body),fill="black")
     draw.ellipse(_box(size,head),fill="black")
-    # Three visibly separated leg pairs. Offset the middle pair so six feet remain readable.
-    for i,x in enumerate(xs):
-        y0 = 268 + (i % 2) * 12 if boss else 275 + (i % 2) * 10
-        draw.rounded_rectangle(_box(size,(x,y0,x+leg_w,feet_y)),radius=max(2,int(10*s)),fill="black")
-        draw.ellipse(_box(size,(x-4,feet_y-8,x+leg_w+6,feet_y+10)),fill="black")
+    for hip,knee,foot in legs:
+        draw.polygon(_leg_polygon(size,hip,knee,foot,width),fill="black")
+        fx,fy=foot
+        draw.ellipse(_box(size,(fx-width//2-5,fy-7,fx+width//2+7,fy+10)),fill="black")
     if boss:
-        draw.line([_scaled(size,(385,195)),_scaled(size,(405,105)),_scaled(size,(365,60))],fill="black",width=max(3,int(12*s)))
-        draw.line([_scaled(size,(420,200)),_scaled(size,(452,115)),_scaled(size,(490,80))],fill="black",width=max(3,int(12*s)))
+        draw.line([_scaled(size,(385,195)),_scaled(size,(405,105)),_scaled(size,(365,60))],fill="black",width=max(3,int(12*size/512)))
+        draw.line([_scaled(size,(420,200)),_scaled(size,(452,115)),_scaled(size,(490,80))],fill="black",width=max(3,int(12*size/512)))
     else:
-        draw.polygon([_scaled(size,(80,250)),_scaled(size,(35,220)),_scaled(size,(68,280))],fill="black")
+        draw.polygon([_scaled(size,(85,250)),_scaled(size,(35,220)),_scaled(size,(70,280))],fill="black")
     return image
 
 
