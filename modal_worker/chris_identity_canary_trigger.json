@@ -1,0 +1,10 @@
+{
+  "enabled": true,
+  "canary": "chris-canonical-identity-v1",
+  "reference": "modal_worker/project_references/chris_proven_reference.jpg",
+  "reference_mode": "identity",
+  "reference_scale": 0.72,
+  "seed": 2183301,
+  "launch_nonce": 1,
+  "automatic_full_production_authorized": false
+}
