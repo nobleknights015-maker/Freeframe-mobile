@@ -37,7 +37,7 @@ jobs:
       - name: Compile Atlas canary surface
         run: python -m compileall -q modal_worker
       - name: Run Atlas end-to-end canary
-        run: python modal_worker/atlas_generation_e2e_canary.py
+        run: python -m modal_worker.atlas_generation_e2e_canary
       - name: Upload Atlas canary evidence
         if: always()
         uses: actions/upload-artifact@v4
