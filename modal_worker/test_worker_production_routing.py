@@ -19,6 +19,20 @@ class WorkerProductionRoutingTests(unittest.TestCase):
         self.assertIn('raise ValueError("production request model_id does not match deployed production renderer")', source)
         self.assertIn('raise ValueError(f"unknown FreeFrame renderer_route: {route}")', source)
 
+    def test_creature_jobs_use_generator_owned_structural_conditioning(self):
+        source = Path(__file__).with_name("freeframe_worker.py").read_text(encoding="utf-8")
+        self.assertIn('add_local_dir("modal_worker/project_references"', source)
+        self.assertIn("from modal_worker.creature_structure_conditioning import build_conditioning", source)
+        self.assertIn("style_image, pose_image, control_prompt, conditioning = build_conditioning", source)
+        self.assertIn("images.extend([style_image, pose_image])", source)
+        self.assertIn('"structural_conditioning":structural_conditioning', source)
+        self.assertNotIn("atlas_visual_conditioning", source)
+
+    def test_master_visual_review_endpoint_is_exposed(self):
+        source = Path(__file__).with_name("freeframe_worker.py").read_text(encoding="utf-8")
+        self.assertIn("def record_atlas_master_visual_review(request:dict)", source)
+        self.assertIn("from modal_worker.atlas_visual_gate import record_master_visual_review", source)
+
     def test_full_catalog_launch_stays_locked(self):
         source = Path(__file__).with_name("freeframe_worker.py").read_text(encoding="utf-8")
         self.assertIn('"automatic_full_production_authorized":False', source)
