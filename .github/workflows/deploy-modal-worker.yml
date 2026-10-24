@@ -12,6 +12,7 @@ on:
       - 'modal_worker/reference_store.py'
       - 'modal_worker/plushbound_brain.py'
       - 'modal_worker/atlas_controller.py'
+      - 'modal_worker/atlas_personality.py'
       - 'modal_worker/atlas_production_ledger.py'
       - 'modal_worker/atlas_visual_gate.py'
       - 'modal_worker/production_request_builder.py'
