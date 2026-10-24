@@ -18,7 +18,7 @@ from modal_worker.atlas_controller import plan_asset
 from modal_worker.atlas_production_ledger import AssetProductionRecord, transition, verify_history
 from modal_worker.production_inspector import inspect_generation
 
-CANARY_VERSION = "atlas-generation-matrix-v2-clean-character"
+CANARY_VERSION = "atlas-generation-matrix-v3-creature-anatomy"
 EXPECTED_MODEL = "black-forest-labs/FLUX.2-klein-4B"
 EXPECTED_ROUTE = "flux2_klein"
 REPORT_JSON = Path("atlas-generation-matrix-report.json")
@@ -30,8 +30,9 @@ CASES = (
             "family": "character_master",
             "description": (
                 "original adult Elyndor civilian pathfinder and message-runner wearing handcrafted fantasy travel attire: "
-                "layered linen tunic, short asymmetrical woven mantle, leather shoulder satchel, simple belt pouches, cloth wrist wraps, "
-                "soft travel trousers and weathered leather boots, warm plains palette, approachable and capable, full body"
+                "layered plain linen tunic with a smooth blank lower hem, short asymmetrical woven mantle, leather shoulder satchel, "
+                "simple belt pouches, cloth wrist wraps, soft travel trousers and weathered leather boots, warm plains palette, "
+                "approachable and capable, full body"
             ),
             "seed": 826104,
         },
@@ -43,8 +44,9 @@ CASES = (
         "intent": {
             "family": "guardian_friendly",
             "description": (
-                "one original small meadow Guardian species with leaf-shaped ears, compact quadruped anatomy, "
-                "warm amber thread markings, alert natural creature expression, full creature visible"
+                "one original small Elyndor meadow Guardian, compact four-legged fantasy grazer with a broad low body, "
+                "leaf-shaped lateral ear fins, rounded wedge snout, proportionate small natural eyes, hairless matte woven textile hide "
+                "with visible interlaced fibers and simple warm amber color patches, alert living-creature posture, full creature visible"
             ),
             "context": {"region": "Elyndor"},
             "seed": 826105,
@@ -57,8 +59,9 @@ CASES = (
         "intent": {
             "family": "enemy_creature",
             "description": (
-                "one original Elyndor woodland prowler, low four-legged hostile living-textile creature, "
-                "long horizontal torso, four clearly separated weight-bearing legs and paws, full creature visible"
+                "one original Elyndor woodland stalker, low four-legged hostile living-textile species with a wedge-shaped non-mammalian head, "
+                "no external ears or whiskers, broad forequarters, long horizontal torso, tapering tail, hairless quilted woven hide with visible "
+                "fiber structure, four clearly separated weight-bearing legs and four ground-contact feet, full creature visible"
             ),
             "context": {"region": "Elyndor"},
             "seed": 826106,
@@ -134,10 +137,7 @@ def main() -> None:
             transition(record, "generation_failed", {"case_id": case_id, "structural_checks": checks})
             raise RuntimeError(f"{case_id}: structural checks failed: {checks}")
 
-        inspection_item = {
-            "preset": case["preset"],
-            "asset_class": case["asset_class"],
-        }
+        inspection_item = {"preset": case["preset"], "asset_class": case["asset_class"]}
         inspection = inspect_generation(inspection_item, result)
         if not inspection["accepted"]:
             transition(record, "generation_succeeded", {
