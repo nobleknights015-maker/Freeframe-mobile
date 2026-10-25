@@ -1,6 +1,6 @@
 {
   "schema": "plushbound.guardian_variant_trigger.v1",
-  "enabled": true,
+  "enabled": false,
   "guardian_id": "guardian-001",
   "source_artifact_id": 12550259269,
   "variants": ["battle-action", "battle-hurt", "bond-expression", "field-interaction", "resting-pose"],
