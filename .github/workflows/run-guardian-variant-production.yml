@@ -33,7 +33,7 @@ jobs:
         run: |
           test -n "$MODAL_TOKEN_ID" || { echo 'MODAL_TOKEN_ID missing' >&2; exit 1; }
           test -n "$MODAL_TOKEN_SECRET" || { echo 'MODAL_TOKEN_SECRET missing' >&2; exit 1; }
-      - run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
+      - run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12' 'numpy>=1.26,<3'
       - name: Recover 96 accepted Guardian masters
         run: |
           set -euo pipefail
