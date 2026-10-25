@@ -1,0 +1,16 @@
+{
+  "schema": "plushbound.guardian_runtime_production_trigger.v1",
+  "enabled": true,
+  "guardian_ids": "001-096",
+  "source_artifacts": [12550259269, 12550867405, 12552966466],
+  "canary_run_id": 40147791033,
+  "canary_artifact_id": 12581024408,
+  "canary_visual_gate": "pass",
+  "mode": "SEMANTIC_EXTRACTION_PLUS_DETERMINISTIC_DERIVATION",
+  "max_parallel_extractors": 6,
+  "diffusion_generation_authorized": false,
+  "expected_guardians": 96,
+  "expected_derived_per_guardian": 5,
+  "expected_derived_total": 480,
+  "launch_nonce": 1
+}
