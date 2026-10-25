@@ -1,0 +1,31 @@
+{
+  "schema": "plushbound.enemy-master-runtime-spec",
+  "version": 1,
+  "source_archive_set": "plushbound_enemy_masters_v1_640",
+  "source_master_geometry": [1024, 768],
+  "expected_master_count": 640,
+  "regions": 10,
+  "masters_per_region": 64,
+  "extraction": {
+    "provider": "birefnet",
+    "model": "ZhengPeng7/BiRefNet",
+    "preserve_source_canvas": true
+  },
+  "output": {
+    "geometry": [288, 288],
+    "mode": "RGBA",
+    "layout": "single",
+    "assets_per_master": 1,
+    "margin_fraction": 0.055,
+    "horizontal_alignment": "center",
+    "vertical_alignment": "bottom-with-margin"
+  },
+  "rules": {
+    "diffusion_generation_count": 0,
+    "placeholder_substitution": false,
+    "replay_fixture_substitution": false,
+    "source_sha256_required": true,
+    "fail_closed": true,
+    "quarantine_on_derivation_failure": true
+  }
+}
