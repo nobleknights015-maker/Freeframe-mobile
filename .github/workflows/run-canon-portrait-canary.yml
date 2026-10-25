@@ -1,0 +1,81 @@
+name: Plushbound Canon Portrait Canary
+
+on:
+  push:
+    branches: [freeframe-modal-worker]
+    paths:
+      - 'modal_worker/canon_portrait_trigger.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plushbound-canon-portrait-canary
+  cancel-in-progress: false
+
+jobs:
+  chris-portrait-canary:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Require Modal credentials
+        shell: bash
+        run: |
+          test -n "$MODAL_TOKEN_ID" || { echo 'MODAL_TOKEN_ID secret is not configured.' >&2; exit 1; }
+          test -n "$MODAL_TOKEN_SECRET" || { echo 'MODAL_TOKEN_SECRET secret is not configured.' >&2; exit 1; }
+      - name: Install bounded canary dependencies
+        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
+      - name: Compile canary
+        run: python -m compileall -q modal_worker/canon_portrait_canary.py
+      - name: Preflight proven Chris raster before Modal
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          p = Path('modal_worker/canon_refs/chris_proven_reference.jpg')
+          assert p.is_file() and p.stat().st_size > 0, p
+          with Image.open(p) as im:
+              im.verify()
+          with Image.open(p) as im:
+              assert im.width >= 64 and im.height >= 64, im.size
+              print('reference_ok', im.size, im.mode, p.stat().st_size)
+          PY
+      - name: Run one bounded Chris portrait identity canary
+        run: python -m modal_worker.canon_portrait_canary
+      - name: Require portrait evidence
+        shell: bash
+        run: |
+          test -s canon-portrait-canary/chris_bourn_portrait_raw.png
+          test -s canon-portrait-canary/chris_bourn_portrait.png
+          test -s canon-portrait-canary/report.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from PIL import Image
+          report = json.loads(Path('canon-portrait-canary/report.json').read_text())
+          assert report['status'] == 'generated_pending_visual_review'
+          assert report['catalog_wide_launch_authorized'] is False
+          assert report['quality_gate']['geometry_pass'] is True
+          assert report['quality_gate']['rgba_pass'] is True
+          assert report['quality_gate']['alpha_present'] is True
+          with Image.open('canon-portrait-canary/chris_bourn_portrait.png') as im:
+              assert im.size == (288, 384)
+              assert im.mode == 'RGBA'
+          PY
+      - name: Upload portrait canary evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: canon-portrait-canary-${{ github.run_id }}
+          path: canon-portrait-canary/
+          if-no-files-found: warn
+          retention-days: 14
