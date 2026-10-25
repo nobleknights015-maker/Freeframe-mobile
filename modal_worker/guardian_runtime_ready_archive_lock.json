@@ -1,0 +1,45 @@
+{
+  "schema": "plushbound.guardian_runtime_ready_archive_lock.v1",
+  "status": "VERIFIED_AND_LOCKED",
+  "verified_date": "2026-10-25",
+  "ready_to_use_library_path": "/Plushbound/ReadyToUse/Guardian_Runtime",
+  "archive": {
+    "name": "plushbound_guardian_runtime_ready_v1_960.zip",
+    "asset_count": 960,
+    "guardian_count": 96,
+    "sha256": "b0ff09b895c068aaa5b7ef8ead08592fa3f7f8bc13edd4da1df9f3ceb391f49e"
+  },
+  "index": {
+    "name": "guardian_ready_index.json",
+    "sha256": "c73411af16229d4062052816cca7ae9e3ce147620760dc387bbe6e095e35f371"
+  },
+  "manifest": {
+    "name": "guardian_ready_archive_manifest.json",
+    "sha256": "f843358dbdc5ed545571f05bf66127f525afc37709f82daef90c2046af47d041"
+  },
+  "source_production": {
+    "deterministic_run_id": 40147897248,
+    "deterministic_artifact_id": 12581099711,
+    "deterministic_artifact_sha256": "ca3b500637d0d75ee47df6cb11277e063ee653cbd7a2a8d2753a130dbb033663",
+    "variant_run_id": 40148361660,
+    "variant_artifact_id": 12581806541,
+    "variant_artifact_sha256": "69a959e37d6d4aa98bcbafe93dfcf740f9274f5ff4e706dceee1d3b3d353dfa1",
+    "diffusion_generation_count_for_deterministic_conversion": 0
+  },
+  "validation": {
+    "unique_logical_ids": 960,
+    "unique_sha256": 960,
+    "quarantined": 0,
+    "crc_errors": 0,
+    "decode_errors": 0,
+    "dimension_or_layout_errors": 0,
+    "library_rehash_verified": true
+  },
+  "policy": {
+    "fail_closed": true,
+    "regeneration_for_recovery_forbidden": true,
+    "placeholder_substitution_forbidden": true,
+    "production_triggers_retired": true,
+    "canonical_source": "ChatGPT Library ready-to-use vault"
+  }
+}
