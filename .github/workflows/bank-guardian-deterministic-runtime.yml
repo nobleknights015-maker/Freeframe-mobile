@@ -1,0 +1,105 @@
+name: Bank Guardian Deterministic Runtime
+
+on:
+  push:
+    branches: [freeframe-modal-worker]
+    paths:
+      - modal_worker/guardian_deterministic_bank_trigger.json
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  bank:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SOURCE_ARTIFACT_ID: '12581099711'
+      SOURCE_RUN_ID: '40147897248'
+      SOURCE_DIGEST: 'sha256:ca3b500637d0d75ee47df6cb11277e063ee653cbd7a2a8d2753a130dbb033663'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: freeframe-modal-worker
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Download accepted deterministic Guardian artifact
+        run: |
+          set -euo pipefail
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/${SOURCE_ARTIFACT_ID}/zip > /tmp/guardian-runtime.zip
+          rm -rf /tmp/guardian-runtime && mkdir -p /tmp/guardian-runtime
+          unzip -q /tmp/guardian-runtime.zip -d /tmp/guardian-runtime
+      - name: Validate and stage 480 accepted runtime assets
+        run: |
+          python - <<'PY'
+          import hashlib, json, os, shutil
+          from pathlib import Path
+          from PIL import Image
+
+          search=Path('/tmp/guardian-runtime')
+          reports=list(search.rglob('batch-report.json'))
+          if len(reports)!=1: raise SystemExit(f'expected one batch-report.json, got {len(reports)}')
+          report=json.loads(reports[0].read_text())
+          assert report['completed_guardians']==96, report['completed_guardians']
+          assert report['derived_total']==480, report['derived_total']
+          assert report['failures']==[], report['failures']
+          source_root=reports[0].parent
+
+          target=Path('modal_worker/guardian_banked/deterministic')
+          if target.exists(): shutil.rmtree(target)
+          target.mkdir(parents=True)
+          expected={'overworld':(144,192),'portrait':(288,288),'silhouette':(192,192),'battle-idle':(192,192),'icon':(96,96)}
+          assets=[]
+          for gid in range(1,97):
+              src_dir=source_root/f'guardian-{gid:03d}'
+              dst_dir=target/f'guardian-{gid:03d}'
+              dst_dir.mkdir(parents=True)
+              for name,size in expected.items():
+                  src=src_dir/f'{name}.png'
+                  if not src.exists(): raise SystemExit(f'missing {src}')
+                  with Image.open(src) as im:
+                      im.load()
+                      if im.size!=size or 'A' not in im.getbands():
+                          raise SystemExit(f'invalid geometry/alpha {src}: {im.size} {im.getbands()}')
+                  dst=dst_dir/src.name; shutil.copy2(src,dst)
+                  raw=dst.read_bytes()
+                  assets.append({
+                      'logical_id':f'guardian/guardian-{gid:03d}/{name}',
+                      'path':str(dst),
+                      'width':size[0], 'height':size[1], 'mode':'RGBA',
+                      'sha256':hashlib.sha256(raw).hexdigest(), 'bytes':len(raw),
+                      'derivation':'accepted_guardian_master_plus_birefnet_plus_deterministic_packaging'
+                  })
+          if len(assets)!=480: raise SystemExit(len(assets))
+          ledger={
+              'schema':'plushbound.guardian_runtime_ledger.v1',
+              'status':'accepted_banked_partial_family',
+              'guardian_count':96,
+              'banked_variants':['overworld','portrait','silhouette','battle-idle','icon'],
+              'deferred_variants':['battle-action','battle-hurt','bond-expression','field-interaction','resting-pose'],
+              'banked_asset_count':480,
+              'family_target_asset_count':960,
+              'source_run_id':int(os.environ['SOURCE_RUN_ID']),
+              'source_artifact_id':int(os.environ['SOURCE_ARTIFACT_ID']),
+              'source_artifact_digest':os.environ['SOURCE_DIGEST'],
+              'visual_qa':'pass_cross_species_sample_001_002_016_032_033_048_064_065_080_096',
+              'diffusion_generation_count':0,
+              'assets':assets,
+          }
+          Path('modal_worker/guardian_banked/guardian_runtime_ledger_v1.json').write_text(json.dumps(ledger,indent=2,sort_keys=True)+'\n')
+          print('validated and staged',len(assets),'Guardian runtime assets')
+          PY
+      - name: Commit durable Guardian bank
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add modal_worker/guardian_banked
+          test "$(find modal_worker/guardian_banked/deterministic -type f -name '*.png' | wc -l)" -eq 480
+          git diff --cached --quiet && { echo 'No Guardian bank changes.'; exit 0; }
+          git commit -m 'Bank 480 deterministic Guardian runtime assets'
+          git pull --rebase origin freeframe-modal-worker
+          git push origin HEAD:freeframe-modal-worker
