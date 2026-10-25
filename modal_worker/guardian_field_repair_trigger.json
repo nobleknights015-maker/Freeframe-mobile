@@ -1,0 +1,9 @@
+{
+  "schema": "plushbound.guardian_field_repair_trigger.v1",
+  "enabled": true,
+  "source_variant_canary_run_id": 40147952320,
+  "source_artifact_id": 12580454526,
+  "paid_rerender_required": false,
+  "repair": "white_to_alpha_preserve_interaction_prop",
+  "launch_nonce": 1
+}
