@@ -1,6 +1,6 @@
 {
   "schema": "plushbound.guardian_deterministic_bank_trigger.v1",
-  "enabled": true,
+  "enabled": false,
   "source_run_id": 40147897248,
   "source_artifact_id": 12581099711,
   "source_artifact_digest": "sha256:ca3b500637d0d75ee47df6cb11277e063ee653cbd7a2a8d2753a130dbb033663",
