@@ -1,0 +1,10 @@
+{
+  "schema": "plushbound.enemy_master_runtime_canary_trigger.v1",
+  "run": 1,
+  "source_artifact_id": 12563310718,
+  "asset_ids": [
+    "reg/cinderreach/enemy-battle/001",
+    "reg/cinderreach/enemy-battle/002"
+  ],
+  "purpose": "Validate canonical recovered enemy masters through deployed BiRefNet extraction and deterministic 288x288 battler packaging before scaling."
+}
