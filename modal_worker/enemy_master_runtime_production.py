@@ -65,6 +65,22 @@ def expected_asset_ids() -> tuple[str, ...]:
 
 def load_recovery_index(path: Path) -> dict[str, MasterRecord]:
     payload = json.loads(path.read_text(encoding="utf-8"))
+    if isinstance(payload, dict):
+        header_expectations = {
+            "expected_master_count": EXPECTED_TOTAL,
+            "accepted_master_count": EXPECTED_TOTAL,
+            "quarantined_master_count": 0,
+            "unique_asset_ids": EXPECTED_TOTAL,
+            "unique_png_sha256": EXPECTED_TOTAL,
+            "required_model": REQUIRED_MODEL,
+            "required_preset": REQUIRED_PRESET,
+            "required_renderer_route": REQUIRED_RENDERER,
+        }
+        for key, expected in header_expectations.items():
+            if key in payload and payload.get(key) != expected:
+                raise RuntimeError(
+                    f"recovery index header mismatch: {key}={payload.get(key)!r} expected={expected!r}"
+                )
     rows = payload.get("masters", payload.get("assets", payload if isinstance(payload, list) else None))
     if not isinstance(rows, list):
         raise RuntimeError("recovery index does not contain a master list")
@@ -166,6 +182,13 @@ def encode_png(image: Image.Image) -> bytes:
     return buf.getvalue()
 
 
+def ledger_target_path(asset_id: str) -> str:
+    parts = asset_id.split("/")
+    if len(parts) != 4 or parts[0] != "reg" or parts[2] != "enemy-battle":
+        raise RuntimeError(f"invalid enemy asset_id for ledger target: {asset_id}")
+    return f"game/assets/placeholders/regions/{parts[1]}/enemy-battle/{parts[3]}.png"
+
+
 def derive_one(record: MasterRecord, source_png: bytes, extractor: Callable[[bytes], tuple[bytes, str, str]]) -> tuple[bytes, dict]:
     validate_master_bytes(record, source_png)
     extracted_png, provider, model = extractor(source_png)
@@ -186,6 +209,7 @@ def derive_one(record: MasterRecord, source_png: bytes, extractor: Callable[[byt
         "source_archive_path": record.archive_path,
         "source_sha256": record.sha256,
         "path": logical_path,
+        "ledger_target_path": ledger_target_path(record.asset_id),
         "width": TARGET_SIZE[0], "height": TARGET_SIZE[1], "mode": "RGBA",
         "sha256": sha256_bytes(raw),
         "extractor_provider": provider, "extractor_model": model,
