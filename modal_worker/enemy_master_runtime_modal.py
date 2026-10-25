@@ -21,6 +21,7 @@ from enemy_master_runtime_production import (
     expected_asset_ids,
     load_recovery_index,
 )
+from verify_enemy_master_archive import verify as verify_master_archive
 
 APP_NAME = "freeframe-enemy-master-runtime-production"
 EXTRACTOR_APP = "freeframe-worker"
@@ -72,12 +73,28 @@ def _parse_canary(raw: str) -> list[str]:
 def main(
     master_root: str,
     recovery_index: str,
+    archive_manifest: str,
+    archive_part1: str,
+    archive_part2: str,
+    archive_lock: str = "enemy_master_archive_lock.json",
     max_parallel: int = 6,
     canary_assets: str = "",
 ):
     if not 1 <= max_parallel <= 10:
         raise ValueError("max_parallel must be 1..10")
     root = Path(master_root)
+    lock_path = Path(archive_lock)
+    if not lock_path.is_file():
+        candidate = Path(__file__).resolve().parent / archive_lock
+        lock_path = candidate if candidate.is_file() else lock_path
+    archive_check = verify_master_archive(
+        lock_path,
+        Path(archive_manifest),
+        Path(recovery_index),
+        [Path(archive_part1), Path(archive_part2)],
+    )
+    if not archive_check.get("ok"):
+        raise RuntimeError(f"canonical enemy archive verification failed: {archive_check.get('errors', [])}")
     records = load_recovery_index(Path(recovery_index))
     canary = _parse_canary(canary_assets)
     selected = canary if canary else list(expected_asset_ids())
@@ -106,6 +123,7 @@ def main(
         "schema": "plushbound.enemy_master_runtime_production.v1",
         "mode": mode,
         "source_archive_set": "plushbound_enemy_masters_v1_640",
+        "archive_verification": archive_check,
         "expected_source_masters": EXPECTED_TOTAL,
         "requested_assets": len(selected),
         "completed_assets": len(results),
