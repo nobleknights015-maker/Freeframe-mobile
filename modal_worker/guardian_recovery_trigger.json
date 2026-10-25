@@ -4,5 +4,5 @@
   "purpose": "recover accepted Guardian master artifact provenance for rounds 1-3",
   "guardian_ids": "001-096",
   "gpu_required": false,
-  "launch_nonce": 1
+  "launch_nonce": 2
 }
