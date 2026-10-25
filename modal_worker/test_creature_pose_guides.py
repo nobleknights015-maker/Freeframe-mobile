@@ -8,7 +8,7 @@ class CreaturePoseGuideTests(unittest.TestCase):
             image=build_pose_guide(family)
             self.assertEqual(image.size,(512,512))
             self.assertEqual(image.mode,"RGB")
-            self.assertEqual(POSE_GUIDE_VERSION,"creature-pose-guide-v3-exterior-silhouette")
+            self.assertEqual(POSE_GUIDE_VERSION,"creature-pose-guide-v4-enemy-quadruped")
             self.assertIn((0,0,0),set(image.getdata()))
             self.assertIn((255,255,255),set(image.getdata()))
 
@@ -33,7 +33,7 @@ class CreaturePoseGuideTests(unittest.TestCase):
         with self.assertRaises(ValueError): build_pose_guide("missing")
         with self.assertRaises(ValueError): build_pose_guide("guardian_friendly",64)
         with self.assertRaises(ValueError): build_pose_guide("guardian_friendly",variant="missing")
-        with self.assertRaises(ValueError): build_pose_guide("enemy_creature",variant="quadruped")
+        with self.assertRaises(ValueError): build_pose_guide("enemy_creature",variant="winged")
 
 
 if __name__=="__main__": unittest.main()
