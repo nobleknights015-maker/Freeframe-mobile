@@ -1,0 +1,91 @@
+name: Plushbound Canon Portrait Batch
+
+on:
+  push:
+    branches: [freeframe-modal-worker]
+    paths:
+      - 'modal_worker/canon_portrait_batch_trigger.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plushbound-canon-portrait-batch
+  cancel-in-progress: false
+
+jobs:
+  canon-portrait-batch:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Require Modal credentials
+        shell: bash
+        run: |
+          test -n "$MODAL_TOKEN_ID" || { echo 'MODAL_TOKEN_ID secret is not configured.' >&2; exit 1; }
+          test -n "$MODAL_TOKEN_SECRET" || { echo 'MODAL_TOKEN_SECRET secret is not configured.' >&2; exit 1; }
+      - name: Install bounded batch dependencies
+        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
+      - name: Compile batch
+        run: python -m compileall -q modal_worker/canon_portrait_canary.py modal_worker/canon_portrait_batch.py
+      - name: Preflight all three proven references before Modal
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          paths = [
+              Path('modal_worker/canon_refs/penney-nguyen_proven.png'),
+              Path('modal_worker/canon_refs/lily_proven.png'),
+              Path('modal_worker/canon_refs/ethan_proven.png'),
+          ]
+          for p in paths:
+              assert p.is_file() and p.stat().st_size > 0, p
+              with Image.open(p) as im:
+                  im.verify()
+              with Image.open(p) as im:
+                  assert im.width >= 48 and im.height >= 48, (p, im.size)
+                  print('reference_ok', p, im.size, im.mode, p.stat().st_size)
+          PY
+      - name: Run one-app three-character bounded portrait batch
+        run: python -m modal_worker.canon_portrait_batch
+      - name: Require batch evidence
+        shell: bash
+        run: |
+          for id in penney_nguyen lily ethan; do
+            test -s "canon-portrait-batch/${id}_portrait_raw.png"
+            test -s "canon-portrait-batch/${id}_portrait.png"
+          done
+          test -s canon-portrait-batch/report.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from PIL import Image
+          report = json.loads(Path('canon-portrait-batch/report.json').read_text())
+          assert report['status'] == 'generated_pending_visual_review'
+          assert report['catalog_wide_launch_authorized'] is False
+          assert report['requested'] == report['completed'] == 3
+          assert len(report['entries']) == 3
+          for entry in report['entries']:
+              q = entry['quality_gate']
+              assert q['geometry_pass'] and q['rgba_pass'] and q['alpha_present']
+              p = Path('canon-portrait-batch') / f"{entry['character_id']}_portrait.png"
+              with Image.open(p) as im:
+                  assert im.size == (288, 384)
+                  assert im.mode == 'RGBA'
+          PY
+      - name: Upload portrait batch evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: canon-portrait-batch-${{ github.run_id }}
+          path: canon-portrait-batch/
+          if-no-files-found: warn
+          retention-days: 14
