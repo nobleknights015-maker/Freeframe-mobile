@@ -1,0 +1,11 @@
+{
+  "schema": "plushbound.guardian_variant_trigger.v1",
+  "enabled": true,
+  "guardian_id": "guardian-001",
+  "source_artifact_id": 12550259269,
+  "variants": ["battle-action", "battle-hurt", "bond-expression", "field-interaction", "resting-pose"],
+  "identity_conditioned": true,
+  "max_physical_gpu_concurrency": 2,
+  "production_authorized": false,
+  "launch_nonce": 1
+}
