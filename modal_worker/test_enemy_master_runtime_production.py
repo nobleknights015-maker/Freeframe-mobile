@@ -1,6 +1,5 @@
 import hashlib
 import io
-from pathlib import Path
 
 import pytest
 from PIL import Image, ImageDraw
@@ -13,6 +12,7 @@ from enemy_master_runtime_production import (
     expected_asset_ids,
     fit_static_battler,
     inspect_alpha,
+    ledger_target_path,
     sha256_bytes,
 )
 
@@ -86,3 +86,9 @@ def test_wrong_extractor_provenance_fails_closed():
 
     with pytest.raises(RuntimeError, match="wrong extractor provenance"):
         derive_one(rec, raw, wrong)
+
+
+def test_ledger_target_mapping_is_exact():
+    assert ledger_target_path("reg/elyndor/enemy-battle/001") == (
+        "game/assets/placeholders/regions/elyndor/enemy-battle/001.png"
+    )
