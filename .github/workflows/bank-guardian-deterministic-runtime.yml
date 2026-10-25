@@ -27,6 +27,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Install bank validator dependency
+        run: python -m pip install --disable-pip-version-check 'pillow>=10.4,<12'
       - name: Download accepted deterministic Guardian artifact
         run: |
           set -euo pipefail
