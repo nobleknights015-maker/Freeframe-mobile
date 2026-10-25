@@ -1,0 +1,57 @@
+{
+  "schema": "plushbound.enemy-master-archive-lock",
+  "version": 1,
+  "canonical_archive_set": "plushbound_enemy_masters_v1_640",
+  "library_path": "/Plushbound/Recovery/EnemyMasters",
+  "fail_closed": true,
+  "expected_master_count": 640,
+  "expected_unique_asset_ids": 640,
+  "expected_unique_png_sha256": 640,
+  "masters_per_region": 64,
+  "regions": [
+    "elyndor",
+    "crownweave",
+    "silkspire",
+    "gloamfen",
+    "verdancia",
+    "tideglass-coast",
+    "moonpatch-steppe",
+    "sunspool-desert",
+    "cinderreach",
+    "frostlace"
+  ],
+  "production_shard": 2,
+  "required_model": "black-forest-labs/FLUX.2-klein-4B",
+  "required_preset": "plushbound_enemy",
+  "required_renderer_route": "flux2_klein",
+  "parts": [
+    {
+      "filename": "plushbound_enemy_masters_v1_640_part1.zip",
+      "sha256": "45d9efd03553c2d574d7e1f23ed6935de0fb5cf65cc25b15cd60c6e451e43e89",
+      "master_count": 320,
+      "legacy_rounds": [1, 10]
+    },
+    {
+      "filename": "plushbound_enemy_masters_v1_640_part2.zip",
+      "sha256": "c2a61d2c31eb09c094832f4730013f52674b69a78da971887d564136ec1a0f82",
+      "master_count": 320,
+      "legacy_rounds": [11, 20]
+    }
+  ],
+  "recovery_index": {
+    "filename": "enemy_recovery_index.json",
+    "sha256": "16316ac8a955b7fa2a4e22f62dc9c9862573ee88803c1b6c068f8037b18d4607"
+  },
+  "archive_set_manifest": {
+    "filename": "enemy_archive_set_manifest.json",
+    "sha256": "e5931147d4606fec7384642153909d6338043219367d44b52a6f0ba7d86ddb8f"
+  },
+  "end_of_lane_proof_rounds": [21, 22],
+  "forbidden_recovery_sources": [
+    "deterministic placeholder imagery",
+    "runtime replay fixtures",
+    "synthetic replacements",
+    "older non-runtime recovery/reference pack"
+  ],
+  "guardian_policy": "Guardian assets and Guardian banking/recovery paths are unrelated and must remain read-only and untouched during enemy recovery."
+}
