@@ -1,0 +1,9 @@
+{
+  "source_run_id": 40148361660,
+  "source_artifact_id": 12581806541,
+  "source_artifact_digest": "sha256:69a959e37d6d4aa98bcbafe93dfcf740f9274f5ff4e706dceee1d3b3d353dfa1",
+  "accepted_asset_count": 480,
+  "completed_guardians": 96,
+  "visual_qa": "pass_broad_cross_species_all_variant_contact_sheets",
+  "field_interaction_extraction": "near_white_alpha_preserve_interaction_prop"
+}
