@@ -1,0 +1,11 @@
+{
+  "schema": "plushbound.guardian_runtime_trigger.v1",
+  "enabled": true,
+  "guardian_id": "guardian-001",
+  "source_artifact_id": 12550259269,
+  "mode": "SEMANTIC_EXTRACTION_PLUS_DETERMINISTIC_DERIVATION",
+  "diffusion_generation_authorized": false,
+  "expected_derived": ["overworld", "portrait", "silhouette", "battle-idle", "icon"],
+  "deferred_visual_variants": ["battle-action", "battle-hurt", "bond-expression", "field-interaction", "resting-pose"],
+  "launch_nonce": 1
+}
