@@ -1,0 +1,12 @@
+{
+  "version": "plushbound-canon-portrait-batch-trigger-v1",
+  "round": 1,
+  "character_ids": ["penney_nguyen", "lily", "ethan"],
+  "asset_role": "portrait",
+  "dimensions": "288x384",
+  "reference_mode": "identity",
+  "reference_scale": 0.72,
+  "max_paid_renders": 3,
+  "catalog_wide_launch_authorized": false,
+  "launch_nonce": 1
+}
