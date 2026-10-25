@@ -1,0 +1,90 @@
+name: Recover Guardian Master Provenance
+
+on:
+  push:
+    branches: [freeframe-modal-worker]
+    paths:
+      - modal_worker/guardian_recovery_trigger.json
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: freeframe-modal-worker
+          fetch-depth: 0
+      - name: Resolve accepted Guardian master runs and artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          python - <<'PY'
+          import json, os, subprocess, urllib.parse
+          from pathlib import Path
+
+          repo = os.environ['REPO']
+          target_commits = {
+              'round1': '3064ff1b04c69042d8797c9c9504eaeace6232f6',
+              'round2': '180a62299d0235bf0f23a8b973836491e3a0a4ac',
+              'round3': '931b35611b71144eef9e361878934a69d69c0648',
+          }
+
+          def gh(path):
+              raw = subprocess.check_output(['gh', 'api', path], text=True)
+              return json.loads(raw)
+
+          result = {
+              'schema': 'plushbound.guardian_master_recovery.v1',
+              'source_workflow': 'run-max-production-round.yml',
+              'guardian_shard': 1,
+              'items_per_round': 32,
+              'expected_guardians': 96,
+              'rounds': {},
+          }
+          for label, sha in target_commits.items():
+              q = urllib.parse.urlencode({'head_sha': sha, 'per_page': 100})
+              runs = gh(f'repos/{repo}/actions/runs?{q}').get('workflow_runs', [])
+              candidates = [r for r in runs if r.get('name') == 'Plushbound Max Production Round' and r.get('conclusion') == 'success']
+              if not candidates:
+                  candidates = [r for r in runs if r.get('conclusion') == 'success']
+              if not candidates:
+                  raise SystemExit(f'No successful Actions run found for {label} {sha}')
+              run = sorted(candidates, key=lambda r: r.get('run_attempt', 1), reverse=True)[0]
+              arts = gh(f"repos/{repo}/actions/runs/{run['id']}/artifacts?per_page=100").get('artifacts', [])
+              guardian = [a for a in arts if ('shard-1' in a.get('name','').lower() or 'shard1' in a.get('name','').lower()) and not a.get('expired')]
+              # Record all live artifacts as well, because early naming varied across production revisions.
+              result['rounds'][label] = {
+                  'head_sha': sha,
+                  'run_id': run['id'],
+                  'run_number': run.get('run_number'),
+                  'run_attempt': run.get('run_attempt'),
+                  'conclusion': run.get('conclusion'),
+                  'created_at': run.get('created_at'),
+                  'artifacts': [
+                      {'id': a['id'], 'name': a['name'], 'size_in_bytes': a.get('size_in_bytes'), 'expired': a.get('expired', False)}
+                      for a in arts
+                  ],
+                  'guardian_artifacts': [
+                      {'id': a['id'], 'name': a['name'], 'size_in_bytes': a.get('size_in_bytes')}
+                      for a in guardian
+                  ],
+              }
+          Path('modal_worker/guardian_recovery_index.json').write_text(json.dumps(result, indent=2, sort_keys=True) + '\n')
+          PY
+      - name: Commit provenance index
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add modal_worker/guardian_recovery_index.json
+          if git diff --cached --quiet; then
+            echo 'No provenance change.'
+            exit 0
+          fi
+          git commit -m 'Recover Guardian master artifact provenance'
+          git pull --rebase origin freeframe-modal-worker
+          git push origin HEAD:freeframe-modal-worker
