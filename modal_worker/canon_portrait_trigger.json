@@ -1,0 +1,12 @@
+{
+  "version": "plushbound-canon-portrait-trigger-v1",
+  "round": 1,
+  "character_id": "chris_bourn",
+  "asset_role": "portrait",
+  "dimensions": "288x384",
+  "reference_mode": "identity",
+  "reference_scale": 0.72,
+  "max_paid_renders": 1,
+  "catalog_wide_launch_authorized": false,
+  "launch_nonce": 1
+}
