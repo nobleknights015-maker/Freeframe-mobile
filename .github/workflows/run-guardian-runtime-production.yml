@@ -1,0 +1,88 @@
+name: Plushbound Guardian Runtime Production
+
+on:
+  push:
+    branches: [freeframe-modal-worker]
+    paths:
+      - modal_worker/guardian_runtime_production_trigger.json
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: plushbound-guardian-runtime-production
+  cancel-in-progress: false
+
+jobs:
+  produce:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: freeframe-modal-worker
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Require Modal credentials
+        run: |
+          test -n "$MODAL_TOKEN_ID" || { echo 'MODAL_TOKEN_ID secret is not configured.' >&2; exit 1; }
+          test -n "$MODAL_TOKEN_SECRET" || { echo 'MODAL_TOKEN_SECRET secret is not configured.' >&2; exit 1; }
+      - name: Install production dependencies
+        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
+      - name: Recover 96 accepted Guardian masters
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p guardian-masters/r1 guardian-masters/r2 guardian-masters/r3
+          for spec in '12550259269:r1' '12550867405:r2' '12552966466:r3'; do
+            id=${spec%%:*}; rd=${spec##*:}
+            gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/${id}/zip > ${rd}.zip
+            unzip -q ${rd}.zip -d guardian-masters/${rd}
+          done
+          count=$(find guardian-masters -type f -name 'guardian-master__guardian-*.png' | wc -l)
+          test "$count" -eq 96 || { echo "Expected 96 Guardian masters, got $count" >&2; exit 1; }
+          echo "Recovered 96 accepted Guardian masters."
+      - name: Run bounded semantic extraction and deterministic packaging
+        shell: bash
+        run: |
+          set -o pipefail
+          PYTHONPATH=. modal run modal_worker/guardian_runtime_production.py --master-root 'guardian-masters/r1:guardian-masters/r2:guardian-masters/r3' --max-parallel 6 | tee guardian-runtime-production.log
+      - name: Verify batch contract
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from PIL import Image
+          root=Path('guardian-runtime-production')
+          report=json.loads((root/'batch-report.json').read_text())
+          assert report['completed_guardians']==96, report['completed_guardians']
+          assert report['derived_total']==480, report['derived_total']
+          assert report['deferred_total']==480, report['deferred_total']
+          assert report['failures']==[], report['failures']
+          expected={'overworld':(144,192),'portrait':(288,288),'silhouette':(192,192),'battle-idle':(192,192),'icon':(96,96)}
+          pngs=list(root.glob('guardian-*/*.png'))
+          assert len(pngs)==480, len(pngs)
+          for gid in range(1,97):
+              d=root/f'guardian-{gid:03d}'
+              for name,size in expected.items():
+                  with Image.open(d/f'{name}.png') as im:
+                      im.load(); assert im.size==size,(gid,name,im.size); assert 'A' in im.getbands(),(gid,name,im.getbands())
+          print('Guardian deterministic production verified: 96 guardians / 480 PNGs')
+          PY
+      - name: Upload Guardian deterministic production
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: guardian-runtime-production-${{ github.run_id }}
+          path: |
+            guardian-runtime-production.log
+            guardian-runtime-production/
+          if-no-files-found: warn
+          retention-days: 14
