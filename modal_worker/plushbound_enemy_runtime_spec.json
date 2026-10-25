@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "family": "enemy_runtime",
+  "renderer": "cpu_pil_deterministic_v1",
+  "canvas": {"width": 96, "height": 96, "mode": "RGBA"},
+  "crop": {"box": [16, 8, 80, 88], "output_size": [64, 80]},
+  "naming": {"pattern": "enemy_{enemy_id:04d}_{frame:02d}.png", "first_enemy_id": 1},
+  "frames": ["idle_a", "idle_b", "move_a", "move_b"],
+  "manifest": {
+    "schema_version": 1,
+    "required_fields": ["asset_id", "enemy_id", "frame", "path", "width", "height", "mode", "sha256"]
+  },
+  "validation": {
+    "require_alpha": true,
+    "require_nonempty_alpha_bbox": true,
+    "require_exact_dimensions": true,
+    "require_unique_paths": true,
+    "require_sha256": true,
+    "quarantine_on_failure": true
+  },
+  "canary": {"enemy_ids": [1, 2], "expected_asset_count": 8}
+}
