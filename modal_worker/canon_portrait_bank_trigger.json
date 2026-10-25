@@ -1,0 +1,11 @@
+{
+  "version": "plushbound-canon-portrait-bank-trigger-v1",
+  "round": 1,
+  "approved_character_ids": ["chris_bourn", "penney_nguyen", "lily", "ethan"],
+  "bank_portraits": true,
+  "derive_faces": true,
+  "paid_face_generation_authorized": false,
+  "expected_new_runtime_assets": 8,
+  "expected_proven_canon_runtime_assets_total": 12,
+  "launch_nonce": 1
+}
