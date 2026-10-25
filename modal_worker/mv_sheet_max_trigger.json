@@ -1,31 +1,67 @@
 {
   "schema": "plushbound.specialized_npc_mv_max_trigger.v1",
-  "enabled": true,
+  "enabled": false,
   "round": 3,
   "phase": "npc_mv_single_character_sheets",
-  "mode": "SPECIALIZED_MAX_SINGLE_APP_PARTIAL_6_LANE",
-  "source_run_id": 40108121286,
-  "source_artifacts": [
-    "plushbound-max-round-18-shard-0-sublane-0-40108121286",
-    "plushbound-max-round-18-shard-0-sublane-1-40108121286"
-  ],
-  "sublanes_per_artifact": 3,
-  "parallel_streams": 6,
-  "expected_unique_masters": 64,
+  "mode": "RETIRED_VERIFIED_COMPLETE",
   "authorized_by_user": true,
   "full_catalog_completion_authorized_by_user": true,
   "identity_source": "accepted_master_png_reference",
-  "launch_nonce": 6,
+  "completed": true,
+  "completion": {
+    "verified_date": "2026-10-25",
+    "expected_assets": 320,
+    "accepted_assets": 320,
+    "quarantined_assets": 0,
+    "unique_output_filenames": 320,
+    "unique_png_sha256": 320,
+    "rounds": {
+      "1": 128,
+      "2": 128,
+      "3": 64
+    },
+    "canonical_library_path": "/Plushbound/ReadyToUse/NPC_MV_Sheets",
+    "archive_filename": "plushbound_npc_mv_ready_v1_320.zip",
+    "archive_sha256": "33e1e0bb955d9722ba6e6c446be4e720480a54e24b43049cb02b753be145447a",
+    "index_sha256": "a70ce018993de254db39ace7e8d5f14ae9722d09f99466c0810d599d49382c07",
+    "manifest_sha256": "83a577f9b8e2b1433c14a92a742aac747a90bed9d5e1637a0b65c56595dd9402",
+    "recovered_original_outputs": true,
+    "regeneration_used": false
+  },
+  "verified_production_sources": [
+    {
+      "round": 1,
+      "run_id": 40137414322,
+      "artifact_ids": [12578012348, 12577962264, 12577877178, 12577952159],
+      "accepted": 42,
+      "role": "legacy_completed_lanes"
+    },
+    {
+      "round": 1,
+      "run_id": 40137988658,
+      "artifact_ids": [12578127990],
+      "accepted": 86,
+      "role": "unified_repair_lanes"
+    },
+    {
+      "round": 2,
+      "run_id": 40139154213,
+      "artifact_ids": [12577234178],
+      "accepted": 128
+    },
+    {
+      "round": 3,
+      "run_id": 40140211970,
+      "artifact_ids": [12579400306],
+      "accepted": 64
+    }
+  ],
   "canary_gate": {
     "workflow_run_id": 40135050321,
     "conclusion": "success",
     "geometry": "144x192_rgba_3x4",
     "engine_validation": true
   },
-  "resume_reason": "Specialized NPC MV Rounds 1 and 2 are fully banked at 128/128 each. Advance exactly one specialized round to Round 3 using only the two non-empty verified Round 18 NPC master artifacts from production run 40108121286. Round 18 sublanes 2 and 3 are completion-only artifacts with no NPC PNGs and are intentionally excluded. Process the final 64 untouched NPC masters through six non-overlapping logical lanes, with the workflow physical concurrency capped at 10 GPUs. Preserve strict source-master identity, stable seeds, 144x192 RGBA 3x4 geometry, engine validation, and do not reuse any source master filenames from Rounds 1-2. This is the final NPC master block; after successful validation retire NPC MV generation and transition to the next specialized family.",
-  "stop_conditions": [
-    "technical_quarantine_requires_targeted_repair",
-    "visual_qa_rejects_scaled_contract",
-    "actual_billed_charges_would_exceed_10_usd"
-  ]
+  "retirement_reason": "All 320 specialized NPC MV sheets are recovered from original accepted production outputs, independently validated, visually reviewed at overview scale, and durably vaulted. Redundant regeneration is prohibited for this completed version.",
+  "reactivation_policy": "Do not re-enable this trigger for v1 recovery or duplicate generation. A future deliberately versioned production contract must use a new authorization and must not overwrite the canonical v1 vault."
 }
