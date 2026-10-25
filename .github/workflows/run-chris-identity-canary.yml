@@ -1,4 +1,4 @@
-name: Chris Canonical Identity Canary
+name: Chris Canonical Portrait Identity Canary
 
 on:
   workflow_dispatch:
@@ -6,16 +6,16 @@ on:
     branches:
       - freeframe-modal-worker
     paths:
-      - 'modal_worker/chris_identity_canary.py'
+      - 'modal_worker/chris_portrait_canary.py'
       - 'modal_worker/chris_identity_canary_trigger.json'
-      - 'modal_worker/project_references/chris_proven_reference.jpg'
+      - 'modal_worker/canon_refs/chris_identity_compact.b64'
       - '.github/workflows/run-chris-identity-canary.yml'
 
 permissions:
   contents: read
 
 concurrency:
-  group: chris-canonical-identity-canary
+  group: chris-canonical-portrait-identity-canary
   cancel-in-progress: false
 
 jobs:
@@ -35,19 +35,39 @@ jobs:
         run: |
           test -n "$MODAL_TOKEN_ID" || { echo 'MODAL_TOKEN_ID secret is not configured.' >&2; exit 1; }
           test -n "$MODAL_TOKEN_SECRET" || { echo 'MODAL_TOKEN_SECRET secret is not configured.' >&2; exit 1; }
-      - name: Install Modal CLI
-        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2'
+      - name: Install bounded canary dependencies
+        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
       - name: Compile identity canary surface
         run: python -m compileall -q modal_worker
-      - name: Verify canonical reference exists
-        run: test -s modal_worker/project_references/chris_proven_reference.jpg
-      - name: Run Chris canonical identity canary
-        run: python -m modal_worker.chris_identity_canary
-      - name: Upload Chris identity evidence
+      - name: Preflight canonical reference before Modal
+        shell: bash
+        run: |
+          PYTHONPATH=. python - <<'PY'
+          import base64, io
+          from pathlib import Path
+          from PIL import Image
+          p = Path('modal_worker/canon_refs/chris_identity_compact.b64')
+          assert p.is_file() and p.stat().st_size > 1024
+          raw = base64.b64decode(p.read_text(encoding='ascii').strip(), validate=True)
+          with Image.open(io.BytesIO(raw)) as im:
+              im.verify()
+          with Image.open(io.BytesIO(raw)) as im:
+              assert im.width >= 96 and im.height >= 160
+              print(im.format, im.size, im.mode)
+          PY
+      - name: Run one bounded Chris 288x384 portrait canary
+        run: python -m modal_worker.chris_portrait_canary
+      - name: Require portrait evidence
+        shell: bash
+        run: |
+          test -s chris-portrait-canary/chris-bourn-portrait.png
+          test -s chris-portrait-canary/chris-proven-reference.jpg
+          test -s chris-portrait-canary/report.json
+      - name: Upload Chris portrait identity evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: chris-identity-canary-${{ github.run_id }}
-          path: chris-identity-canary/
+          name: chris-portrait-canary-${{ github.run_id }}
+          path: chris-portrait-canary/
           if-no-files-found: warn
           retention-days: 14
