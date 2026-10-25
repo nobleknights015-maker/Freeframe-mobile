@@ -1,0 +1,66 @@
+name: Plushbound Guardian Variant Canary
+
+on:
+  push:
+    branches: [freeframe-modal-worker]
+    paths:
+      - modal_worker/guardian_variant_trigger.json
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: plushbound-guardian-variant-canary
+  cancel-in-progress: false
+
+jobs:
+  canary:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: freeframe-modal-worker
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
+      - name: Recover Guardian-001 master
+        run: |
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/12550259269/zip > r1.zip
+          mkdir src && unzip -q r1.zip -d src
+          p=$(find src -type f -name 'guardian-master__guardian-001.png' -print -quit)
+          test -n "$p" && cp "$p" guardian-master__guardian-001.png
+      - name: Run five identity-conditioned variants
+        shell: bash
+        run: |
+          set -o pipefail
+          PYTHONPATH=. modal run modal_worker/guardian_variant_canary.py --master-path guardian-master__guardian-001.png --guardian-id 1 | tee guardian-variant-canary.log
+      - name: Verify five runtime variants
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from PIL import Image
+          root=Path('guardian-variant-canary/guardian-001')
+          exp={'battle-action':(192,192),'battle-hurt':(192,192),'bond-expression':(144,144),'field-interaction':(192,192),'resting-pose':(192,192)}
+          r=json.loads((root/'report.json').read_text()); assert len(r['assets'])==5
+          for n,s in exp.items():
+            with Image.open(root/f'{n}.png') as im: im.load(); assert im.size==s; assert 'A' in im.getbands()
+          print('five Guardian variant geometries OK')
+          PY
+      - name: Upload canary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: guardian-variant-canary-${{ github.run_id }}
+          path: |
+            guardian-variant-canary.log
+            guardian-master__guardian-001.png
+            guardian-variant-canary/guardian-001/
+          retention-days: 14
