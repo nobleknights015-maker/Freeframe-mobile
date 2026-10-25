@@ -1,0 +1,193 @@
+{
+  "expected_guardians": 96,
+  "guardian_shard": 1,
+  "items_per_round": 32,
+  "rounds": {
+    "round1": {
+      "candidate_runs": [
+        {
+          "artifacts": [
+            {
+              "expired": false,
+              "id": 12550690052,
+              "name": "plushbound-max-round-shard-1-40068201201",
+              "size_in_bytes": 2254
+            },
+            {
+              "expired": false,
+              "id": 12550097643,
+              "name": "plushbound-max-round-shard-3-40068201201",
+              "size_in_bytes": 168
+            },
+            {
+              "expired": false,
+              "id": 12549948518,
+              "name": "plushbound-max-round-shard-0-40068201201",
+              "size_in_bytes": 35475049
+            },
+            {
+              "expired": false,
+              "id": 12549912269,
+              "name": "plushbound-max-round-shard-2-40068201201",
+              "size_in_bytes": 2255
+            }
+          ],
+          "conclusion": "failure",
+          "created_at": "2026-10-24T05:56:13Z",
+          "display_title": "Initiate Plushbound max-mode production round 1",
+          "head_sha": "3064ff1b04c69042d8797c9c9504eaeace6232f6",
+          "run_id": 40068201201,
+          "run_number": 1,
+          "status": "completed"
+        },
+        {
+          "artifacts": [
+            {
+              "expired": false,
+              "id": 12550746920,
+              "name": "plushbound-max-round-1-shard-2-40069221582",
+              "size_in_bytes": 40979897
+            },
+            {
+              "expired": false,
+              "id": 12550334033,
+              "name": "plushbound-max-round-1-shard-3-40069221582",
+              "size_in_bytes": 36762140
+            },
+            {
+              "expired": false,
+              "id": 12550259269,
+              "name": "plushbound-max-round-1-shard-1-40069221582",
+              "size_in_bytes": 31037665
+            }
+          ],
+          "conclusion": "success",
+          "created_at": "2026-10-24T06:11:37Z",
+          "display_title": "Resume max-mode round 1 unfinished shards",
+          "head_sha": "2fefdd254cbb01e88341fc1c00183cdb4fb49da8",
+          "run_id": 40069221582,
+          "run_number": 2,
+          "status": "completed"
+        }
+      ],
+      "guardian_artifacts": [
+        {
+          "id": 12550690052,
+          "name": "plushbound-max-round-shard-1-40068201201",
+          "run_id": 40068201201,
+          "run_number": 1,
+          "size_in_bytes": 2254
+        },
+        {
+          "id": 12550259269,
+          "name": "plushbound-max-round-1-shard-1-40069221582",
+          "run_id": 40069221582,
+          "run_number": 2,
+          "size_in_bytes": 31037665
+        }
+      ],
+      "guardian_ids": "001-032"
+    },
+    "round2": {
+      "candidate_runs": [
+        {
+          "artifacts": [
+            {
+              "expired": false,
+              "id": 12551038133,
+              "name": "plushbound-max-round-2-shard-0-40070844792",
+              "size_in_bytes": 35327904
+            },
+            {
+              "expired": false,
+              "id": 12550867405,
+              "name": "plushbound-max-round-2-shard-1-40070844792",
+              "size_in_bytes": 31116122
+            },
+            {
+              "expired": false,
+              "id": 12550754922,
+              "name": "plushbound-max-round-2-shard-2-40070844792",
+              "size_in_bytes": 40784056
+            },
+            {
+              "expired": false,
+              "id": 12550653637,
+              "name": "plushbound-max-round-2-shard-3-40070844792",
+              "size_in_bytes": 36731631
+            }
+          ],
+          "conclusion": "success",
+          "created_at": "2026-10-24T06:36:05Z",
+          "display_title": "Advance max-mode production to round 2",
+          "head_sha": "180a62299d0235bf0f23a8b973836491e3a0a4ac",
+          "run_id": 40070844792,
+          "run_number": 3,
+          "status": "completed"
+        }
+      ],
+      "guardian_artifacts": [
+        {
+          "id": 12550867405,
+          "name": "plushbound-max-round-2-shard-1-40070844792",
+          "run_id": 40070844792,
+          "run_number": 3,
+          "size_in_bytes": 31116122
+        }
+      ],
+      "guardian_ids": "033-064"
+    },
+    "round3": {
+      "candidate_runs": [
+        {
+          "artifacts": [
+            {
+              "expired": false,
+              "id": 12552996188,
+              "name": "plushbound-max-round-3-shard-0-40074827978",
+              "size_in_bytes": 35672136
+            },
+            {
+              "expired": false,
+              "id": 12552981423,
+              "name": "plushbound-max-round-3-shard-2-40074827978",
+              "size_in_bytes": 42135464
+            },
+            {
+              "expired": false,
+              "id": 12552966466,
+              "name": "plushbound-max-round-3-shard-1-40074827978",
+              "size_in_bytes": 30934278
+            },
+            {
+              "expired": false,
+              "id": 12552657031,
+              "name": "plushbound-max-round-3-shard-3-40074827978",
+              "size_in_bytes": 43326820
+            }
+          ],
+          "conclusion": "success",
+          "created_at": "2026-10-24T07:36:47Z",
+          "display_title": "Advance max-mode production to round 3",
+          "head_sha": "931b35611b71144eef9e361878934a69d69c0648",
+          "run_id": 40074827978,
+          "run_number": 4,
+          "status": "completed"
+        }
+      ],
+      "guardian_artifacts": [
+        {
+          "id": 12552966466,
+          "name": "plushbound-max-round-3-shard-1-40074827978",
+          "run_id": 40074827978,
+          "run_number": 4,
+          "size_in_bytes": 30934278
+        }
+      ],
+      "guardian_ids": "065-096"
+    }
+  },
+  "schema": "plushbound.guardian_master_recovery.v2",
+  "source_workflow": "run-max-production-round.yml",
+  "source_workflow_id": 394862409
+}
