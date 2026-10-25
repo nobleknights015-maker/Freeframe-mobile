@@ -1,6 +1,6 @@
 {
   "schema": "plushbound.guardian_variant_production_trigger.v1",
-  "enabled": true,
+  "enabled": false,
   "guardian_ids": "001-096",
   "source_artifacts": [12550259269, 12550867405, 12552966466],
   "identity_canary_run_id": 40147952320,
