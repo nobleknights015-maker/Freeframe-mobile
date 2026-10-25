@@ -1,0 +1,61 @@
+name: Repair Guardian Field Interaction Canary
+
+on:
+  push:
+    branches: [freeframe-modal-worker]
+    paths:
+      - modal_worker/guardian_field_repair_trigger.json
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  repair:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SOURCE_ARTIFACT_ID: '12580454526'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: freeframe-modal-worker
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --disable-pip-version-check 'pillow>=10.4,<12' 'numpy>=1.26,<3'
+      - name: Recover already-rendered field interaction source
+        run: |
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/${SOURCE_ARTIFACT_ID}/zip > /tmp/canary.zip
+          mkdir /tmp/canary && unzip -q /tmp/canary.zip -d /tmp/canary
+          p=$(find /tmp/canary -type f -name 'field-interaction-raw.png' -print -quit)
+          test -n "$p" && cp "$p" field-interaction-raw.png
+      - name: Preserve interaction prop while removing white background
+        run: |
+          python - <<'PY'
+          import numpy as np
+          from PIL import Image
+          im=Image.open('field-interaction-raw.png').convert('RGBA')
+          arr=np.array(im).astype(np.int32)
+          minimum=arr[:,:,:3].min(axis=2)
+          alpha=np.clip((245-minimum)*255/20,0,255).astype(np.uint8)
+          out=arr.astype(np.uint8); out[:,:,3]=alpha
+          subject=Image.fromarray(out,'RGBA')
+          bbox=subject.getchannel('A').getbbox()
+          if bbox is None: raise SystemExit('no foreground after white-to-alpha')
+          crop=subject.crop(bbox); crop.thumbnail((170,170),Image.Resampling.LANCZOS)
+          canvas=Image.new('RGBA',(192,192),(0,0,0,0))
+          canvas.alpha_composite(crop,((192-crop.width)//2,(192-crop.height)//2))
+          a=canvas.getchannel('A'); b=a.getbbox()
+          assert b is not None and b[0]>0 and b[1]>0 and b[2]<192 and b[3]<192, b
+          canvas.save('field-interaction-repaired.png')
+          print('field interaction packaging repair OK:',b)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: guardian-field-interaction-repair-${{ github.run_id }}
+          path: |
+            field-interaction-raw.png
+            field-interaction-repaired.png
+          retention-days: 14
