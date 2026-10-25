@@ -1,0 +1,80 @@
+name: Plushbound Guardian Variant Production
+
+on:
+  push:
+    branches: [freeframe-modal-worker]
+    paths:
+      - modal_worker/guardian_variant_production_trigger.json
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: plushbound-guardian-variant-production
+  cancel-in-progress: false
+
+jobs:
+  produce:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: freeframe-modal-worker
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Require Modal credentials
+        run: |
+          test -n "$MODAL_TOKEN_ID" || { echo 'MODAL_TOKEN_ID missing' >&2; exit 1; }
+          test -n "$MODAL_TOKEN_SECRET" || { echo 'MODAL_TOKEN_SECRET missing' >&2; exit 1; }
+      - run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
+      - name: Recover 96 accepted Guardian masters
+        run: |
+          set -euo pipefail
+          mkdir -p guardian-masters/r1 guardian-masters/r2 guardian-masters/r3
+          for spec in '12550259269:r1' '12550867405:r2' '12552966466:r3'; do
+            id=${spec%%:*}; rd=${spec##*:}
+            gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/${id}/zip > ${rd}.zip
+            unzip -q ${rd}.zip -d guardian-masters/${rd}
+          done
+          test "$(find guardian-masters -type f -name 'guardian-master__guardian-*.png' | wc -l)" -eq 96
+      - name: Run bounded four-lane Guardian variant production
+        shell: bash
+        run: |
+          set -o pipefail
+          PYTHONPATH=. modal run modal_worker/guardian_variant_production.py --master-root 'guardian-masters/r1:guardian-masters/r2:guardian-masters/r3' --max-parallel 4 | tee guardian-variant-production.log
+      - name: Verify exact family contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from PIL import Image
+          root=Path('guardian-variant-production'); report=json.loads((root/'batch-report.json').read_text())
+          assert report['completed_guardians']==96, report['completed_guardians']
+          assert report['accepted_asset_count']==480, report['accepted_asset_count']
+          assert report['failures']==[], report['failures']
+          assert report['max_physical_gpu_concurrency_contract']<=10
+          expected={'battle-action':(192,192),'battle-hurt':(192,192),'bond-expression':(144,144),'field-interaction':(192,192),'resting-pose':(192,192)}
+          pngs=list(root.glob('guardian-*/*.png')); assert len(pngs)==480,len(pngs)
+          for gid in range(1,97):
+            for name,size in expected.items():
+              with Image.open(root/f'guardian-{gid:03d}'/f'{name}.png') as im:
+                im.load(); assert im.size==size,(gid,name,im.size); assert 'A' in im.getbands()
+          print('Guardian variant production verified: 96 guardians / 480 PNGs')
+          PY
+      - name: Upload Guardian variant production
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: guardian-variant-production-${{ github.run_id }}
+          path: |
+            guardian-variant-production.log
+            guardian-variant-production/
+          if-no-files-found: warn
+          retention-days: 14
