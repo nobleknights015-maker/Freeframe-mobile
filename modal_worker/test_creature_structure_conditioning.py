@@ -38,7 +38,7 @@ class CreatureStructureConditioningTests(unittest.TestCase):
         self.assertEqual(metadata.style_anchor_ownership, "project_owned")
         self.assertEqual(metadata.pose_variant, "quadruped")
         self.assertEqual(len(metadata.style_anchor_sha256), 64)
-        self.assertIn("Reference image 1 is environment-only Elyndor art", control)
+        self.assertIn("Reference image 1 is a validated Plushbound creature-family reference", control)
         self.assertIn("Reference image 2 is a plain black exterior silhouette", control)
         self.assertEqual(control, CONTROL_PROMPT)
 
