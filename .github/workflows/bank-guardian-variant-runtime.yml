@@ -1,0 +1,109 @@
+name: Bank Guardian Variant Runtime
+
+on:
+  push:
+    branches: [freeframe-modal-worker]
+    paths:
+      - modal_worker/guardian_variant_bank_trigger.json
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  bank:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: freeframe-modal-worker
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --disable-pip-version-check 'pillow>=10.4,<12'
+      - name: Read accepted production provenance
+        id: provenance
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          t=json.load(open('modal_worker/guardian_variant_bank_trigger.json'))
+          print(f"artifact_id={int(t['source_artifact_id'])}")
+          print(f"run_id={int(t['source_run_id'])}")
+          print(f"digest={t['source_artifact_digest']}")
+          PY
+      - name: Download accepted Guardian variant artifact
+        env:
+          ARTIFACT_ID: ${{ steps.provenance.outputs.artifact_id }}
+        run: |
+          set -euo pipefail
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/${ARTIFACT_ID}/zip > /tmp/guardian-variants.zip
+          rm -rf /tmp/guardian-variants && mkdir -p /tmp/guardian-variants
+          unzip -q /tmp/guardian-variants.zip -d /tmp/guardian-variants
+      - name: Validate, stage and merge full 960-asset Guardian ledger
+        env:
+          SOURCE_RUN_ID: ${{ steps.provenance.outputs.run_id }}
+          SOURCE_ARTIFACT_ID: ${{ steps.provenance.outputs.artifact_id }}
+          SOURCE_DIGEST: ${{ steps.provenance.outputs.digest }}
+        run: |
+          python - <<'PY'
+          import hashlib, json, os, shutil
+          from pathlib import Path
+          from PIL import Image
+          search=Path('/tmp/guardian-variants'); reports=list(search.rglob('batch-report.json'))
+          if len(reports)!=1: raise SystemExit(f'expected one batch report, got {len(reports)}')
+          report=json.loads(reports[0].read_text()); source=reports[0].parent
+          assert report['completed_guardians']==96,report['completed_guardians']
+          assert report['accepted_asset_count']==480,report['accepted_asset_count']
+          assert report['failures']==[],report['failures']
+          deterministic=Path('modal_worker/guardian_banked/deterministic')
+          if len(list(deterministic.glob('guardian-*/*.png')))!=480: raise SystemExit('deterministic Guardian bank is not 480/480')
+          target=Path('modal_worker/guardian_banked/variants')
+          if target.exists(): shutil.rmtree(target)
+          target.mkdir(parents=True)
+          expected={'battle-action':(192,192),'battle-hurt':(192,192),'bond-expression':(144,144),'field-interaction':(192,192),'resting-pose':(192,192)}
+          new_assets=[]
+          for gid in range(1,97):
+            sd=source/f'guardian-{gid:03d}'; dd=target/f'guardian-{gid:03d}'; dd.mkdir(parents=True)
+            for name,size in expected.items():
+              src=sd/f'{name}.png'
+              if not src.exists(): raise SystemExit(f'missing {src}')
+              with Image.open(src) as im:
+                im.load()
+                if im.size!=size or 'A' not in im.getbands():raise SystemExit(f'invalid {src}: {im.size} {im.getbands()}')
+              dst=dd/src.name; shutil.copy2(src,dst); raw=dst.read_bytes()
+              new_assets.append({'logical_id':f'guardian/guardian-{gid:03d}/{name}','path':str(dst),'width':size[0],'height':size[1],'mode':'RGBA','sha256':hashlib.sha256(raw).hexdigest(),'bytes':len(raw),'derivation':'accepted_guardian_master_identity_conditioned_variant_generation'})
+          if len(new_assets)!=480:raise SystemExit(len(new_assets))
+          ledger_path=Path('modal_worker/guardian_banked/guardian_runtime_ledger_v1.json'); ledger=json.loads(ledger_path.read_text())
+          old_assets=ledger['assets']; assert len(old_assets)==480,len(old_assets)
+          ids=[x['logical_id'] for x in old_assets+new_assets]
+          if len(ids)!=960 or len(set(ids))!=960:raise SystemExit('Guardian ledger overlap/missing IDs')
+          ledger.update({
+            'status':'accepted_banked_full_family',
+            'banked_variants':['overworld','portrait','silhouette','battle-idle','battle-action','battle-hurt','bond-expression','icon','field-interaction','resting-pose'],
+            'deferred_variants':[],
+            'banked_asset_count':960,
+            'family_target_asset_count':960,
+            'variant_source_run_id':int(os.environ['SOURCE_RUN_ID']),
+            'variant_source_artifact_id':int(os.environ['SOURCE_ARTIFACT_ID']),
+            'variant_source_artifact_digest':os.environ['SOURCE_DIGEST'],
+            'variant_visual_qa':'pass_broad_cross_species_sample',
+            'variant_estimated_generation_cost_usd':report.get('estimated_generation_cost_usd'),
+            'assets':old_assets+new_assets,
+          })
+          ledger_path.write_text(json.dumps(ledger,indent=2,sort_keys=True)+'\n')
+          print('staged full Guardian bank:',len(ledger['assets']))
+          PY
+      - name: Commit complete Guardian family bank
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add modal_worker/guardian_banked
+          test "$(find modal_worker/guardian_banked/variants -type f -name '*.png' | wc -l)" -eq 480
+          git diff --cached --quiet && { echo 'No Guardian variant bank changes.'; exit 0; }
+          git commit -m 'Bank complete 960-asset Guardian runtime family'
+          git pull --rebase origin freeframe-modal-worker
+          git push origin HEAD:freeframe-modal-worker
