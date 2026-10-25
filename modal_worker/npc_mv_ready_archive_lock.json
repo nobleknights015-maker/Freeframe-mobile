@@ -1,0 +1,40 @@
+{
+  "schema": "plushbound.npc_mv_ready_archive_lock.v1",
+  "asset_family": "npc_mv_single_character_sheets",
+  "status": "VERIFIED_READY_TO_USE_LOCKED",
+  "verified_date": "2026-10-25",
+  "canonical_library_path": "/Plushbound/ReadyToUse/NPC_MV_Sheets",
+  "expected_asset_count": 320,
+  "accepted_asset_count": 320,
+  "quarantined_asset_count": 0,
+  "unique_output_filenames": 320,
+  "unique_png_sha256": 320,
+  "geometry": {
+    "width": 144,
+    "height": 192,
+    "cell_width": 48,
+    "cell_height": 48,
+    "columns": 3,
+    "rows": 4,
+    "cell_count": 12,
+    "mode": "RGBA"
+  },
+  "archive": {
+    "filename": "plushbound_npc_mv_ready_v1_320.zip",
+    "sha256": "33e1e0bb955d9722ba6e6c446be4e720480a54e24b43049cb02b753be145447a"
+  },
+  "index": {
+    "filename": "npc_mv_ready_index.json",
+    "sha256": "a70ce018993de254db39ace7e8d5f14ae9722d09f99466c0810d599d49382c07"
+  },
+  "manifest": {
+    "filename": "npc_mv_archive_manifest.json",
+    "sha256": "83a577f9b8e2b1433c14a92a742aac747a90bed9d5e1637a0b65c56595dd9402"
+  },
+  "recovered_original_outputs": true,
+  "regeneration_used": false,
+  "fail_closed": true,
+  "production_trigger_retired": true,
+  "redundant_regeneration_prohibited": true,
+  "overwrite_canonical_v1_prohibited": true
+}
