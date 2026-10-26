@@ -1,0 +1,36 @@
+{
+  "schema": "plushbound.canon_identity_reference.v2",
+  "character_id": "chris_bourn",
+  "status": "CANONICAL_CONDITIONING_REFERENCE",
+  "catalog_wide_launch_authorized": false,
+  "source": {
+    "library_name": "Chris_Bourn_Plushbound_Canonical_Reference.png",
+    "sha256": "34a886f42a476d09649c6584731d043cd658d18395692090109ece0f3bd09104",
+    "width": 768,
+    "height": 535,
+    "mode": "RGBA",
+    "format": "PNG"
+  },
+  "derivation": {
+    "operation": "crop_then_rgb_jpeg",
+    "crop_box": [156, 80, 356, 520],
+    "resize": false,
+    "output_width": 200,
+    "output_height": 440,
+    "jpeg_quality": 98,
+    "jpeg_subsampling": 0,
+    "jpeg_optimize": true,
+    "ai_edit": false,
+    "retouch": false
+  },
+  "reference_payload": {
+    "path": "modal_worker/canon_refs/chris_identity_hifi_q98.b64",
+    "encoding": "base64",
+    "decoded_bytes": 88241,
+    "sha256": "b13e309de44ab0e6c3d56f31cecb461b2a5dc3a0246516f196d6e3075007a269",
+    "width": 200,
+    "height": 440,
+    "mode": "RGB",
+    "format": "JPEG"
+  }
+}
