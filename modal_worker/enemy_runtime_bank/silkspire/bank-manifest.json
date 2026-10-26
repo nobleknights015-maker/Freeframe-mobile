@@ -1,0 +1,519 @@
+{
+  "approved_count": 63,
+  "assets": [
+    {
+      "asset_id": "reg/silkspire/enemy-battle/001",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/001.png",
+      "sha256": "04f91efd5adf3a8bee206f33394a1ad1912ba86aeb6f19942c82886ed20f9573",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/002",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/002.png",
+      "sha256": "3353387da55b3affa40b9f3199c24316e47a34705e8322371e10bab63c2023ab",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/003",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/003.png",
+      "sha256": "5dead061fad262b544e635832f8aeb5212ebea1ff672638ede3f1290cab7baea",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/004",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/004.png",
+      "sha256": "2d247054d12ce35e7101487726f477f66ed8837acd355e00a2af6e8c0345133a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/005",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/005.png",
+      "sha256": "5345abfb3f7f206b5d81aa5dae3ba5500700240dbc491c56591a33b3a9376872",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/006",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/006.png",
+      "sha256": "6afc5db1f33f2681e412d92ceb6ced40f56fa7cf86f830d37ddb7652d853ba98",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/007",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/007.png",
+      "sha256": "3fedaa74e4a43994f442956208d4c7b31adbd698b33e06ae45196fc61eb64f87",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/008",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/008.png",
+      "sha256": "fac075ae42323e8bc66cab0ef67d57998ceb68332ac45ef65a0fdf00a058cc55",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/009",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/009.png",
+      "sha256": "fe8c89f15e9be64390f558307d592393b994940dfbb5087f5d3cd6ebafc7024d",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/010",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/010.png",
+      "sha256": "ff6293588aa8eb534d9e9886f8ce5131c331af4981e3247d5b9f2d4cb53e5d8b",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/011",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/011.png",
+      "sha256": "7663e60b9d3e52c62b058d2f87ab8c32e5a0dc1401cbadedfe0e109ee1bc2597",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/012",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/012.png",
+      "sha256": "214a2cd40762f0288741676d3fa85f076b72d369fe680c9a8f3b914ee9d4d46c",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/013",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/013.png",
+      "sha256": "684b261f3b588c87636533da8529eb31ee0cda535aae6ec091d833ee0ec7f1b2",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/014",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/014.png",
+      "sha256": "2f97ef757cab1cf24755fde4fd9c5586ba22bc187f95838e79106256faa04f45",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/015",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/015.png",
+      "sha256": "d2323d8db4daa908e1e9b58e08a17acb2409cd7b98987ab003ce71f50114dceb",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/016",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/016.png",
+      "sha256": "2e4a1bc681b32a4122159f7c3301c589e7e96b8cd5253be4c924d408aa8ee4f6",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/017",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/017.png",
+      "sha256": "c573f187e3e865ab79e13ab86a211def8b7e87e1706d792595ee06dc526b134f",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/018",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/018.png",
+      "sha256": "8445912d59dd773d00055f33913e299360418814b374f3ca095591ba80a5953c",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/019",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/019.png",
+      "sha256": "91b220184405b0a619c57c7931c6eaed95fd1c7a767160df496267c96497f668",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/020",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/020.png",
+      "sha256": "8a57ae5a7d3d7f348220a4dffaa86813efc83af66b71ce864098cd82f12eeba1",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/021",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/021.png",
+      "sha256": "30dabfc526c949e13a345367219213d948e84fb11e4c1b1244fc41a92407cbb5",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/022",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/022.png",
+      "sha256": "bf09ed666f96d93b65f19181a4df6ed116bca6b4d70d178f5d2fb9faf13874e3",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/023",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/023.png",
+      "sha256": "5f3f674095c04f2561bfee9e2b41bdd6cfa49c6911f422f688b96eea230424f8",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/024",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/024.png",
+      "sha256": "94b21f3c267d965116dd593ba683bf1815d1a426c206319f7281d56d597bad05",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/025",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/025.png",
+      "sha256": "be33aa9c8585bf99800fa70a4dbf85495fc1dd3ba5898f26facc440db0f5bce2",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/026",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/026.png",
+      "sha256": "c119f1128c00e51cd46b868a38baacd2cc8e8e2bcd24d35c3e8d78db01c34746",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/027",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/027.png",
+      "sha256": "5070cbdf9bbad0152b7c82c9c1196e2171604c7ed15022aec983ab6778e29426",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/029",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/029.png",
+      "sha256": "8764bf099c01a92bfb9c8ca2211a95f216ddb8bac7f02b3b16851ad05b8abff5",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/030",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/030.png",
+      "sha256": "3116417e3547a99ca7f6deac4b50900646726ccd1b3636e1daa356e2ac385267",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/031",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/031.png",
+      "sha256": "23a46ba796113792c9d98db489bea483b74cee717d15b8149e105dbf45b88f81",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/032",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/032.png",
+      "sha256": "ecb5544d6d1159037d0f72e17bacf28273b9116a92e9db11caa50474dd635b34",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/033",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/033.png",
+      "sha256": "cd545e56e5bae03f828d0fd7714ff603edaf6a76e0d5f300bf654562c14dd9b2",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/034",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/034.png",
+      "sha256": "e1692093fadd286d3e891f3e2f44ba42d64537db1cce7eb3bea0bc9e3b27348b",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/035",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/035.png",
+      "sha256": "3ef08b291e6a4c0bdd4a19143a9ab3345fd8eead3988b355e00f3e343035e3c4",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/036",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/036.png",
+      "sha256": "8d89e83fa78dd4b7efa8cb90d8c83b199295dcf989a37b3a2217c8c811d815a5",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/037",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/037.png",
+      "sha256": "7d146f60f4cfafac12a0830725e155ee479a88ce07b494a6b9b096f21e16ce5e",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/038",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/038.png",
+      "sha256": "ae34cdc87fd528d9a35ad113c3ce49abee1d4108125df259c6718212ad01f74f",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/039",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/039.png",
+      "sha256": "51f47c436f3ec00233931c14af5bbc4c0d48c54fe9c3128ccaf6be654f8f157e",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/040",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/040.png",
+      "sha256": "f1c7ca2e34f0140e72d93642bb555a61f869cf9129875a444cc0f42c3d63459a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/041",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/041.png",
+      "sha256": "923d3c5e4215bdb61b5d165266c64e4b7ce1886cf3906257ab08927e109ce943",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/042",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/042.png",
+      "sha256": "51f7143eec7c62d891e330d58a4983ad62154d2c7eeb675905b8212558aa6611",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/043",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/043.png",
+      "sha256": "def9057168e228b9752bc5ae0e52de7049f8a762e7ffd4a67fe1826838298d8f",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/044",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/044.png",
+      "sha256": "31cf02d7e49fa0abacf8be7468534b56c04b1869c208b18f8197228dcee25d3c",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/045",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/045.png",
+      "sha256": "7ed687591fe0f67582ce8b072adb7e0e5a43d02bcb854c6dd97bad9a6d2aba95",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/046",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/046.png",
+      "sha256": "be4ab1de8ca2f4c10ea0599f19ef3d32b0cc93ad731ff598d528f403a3b93e61",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/047",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/047.png",
+      "sha256": "b2c1ad8e7ab9713b916ceb82e4a1390b6da15bfb87e7bacd026b9a6e8a232276",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/048",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/048.png",
+      "sha256": "ad8b14b8252f65423e1e91fa2e39c5a44e236ff3d8e98a0aa7ecf431719c9d38",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/049",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/049.png",
+      "sha256": "f470d40939a19945da910cc77b6d2cd2f40daf6d1b7cf5678a721b6c2ef3103d",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/050",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/050.png",
+      "sha256": "75f30b422ba99ab7e0d95734314929a156bcb064b6614d1be8fbd193b6a3469a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/051",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/051.png",
+      "sha256": "b4301da0669ea7bc3e59c6e7160890921121f73feba9cc9b95b1097afd53369e",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/052",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/052.png",
+      "sha256": "003278e56136f5f7bd56884c62fc116c78b6faaa1e0f5f48d2517bf8c5ff0bcf",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/053",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/053.png",
+      "sha256": "64f492606e771bea7dac00609b15811c47c88eb0394b75c959a07312696bcf4f",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/054",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/054.png",
+      "sha256": "3ef88d9bb2e2f6d5c186240062dcb30e7b01eca8d0278d736d3b963af49da8f2",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/055",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/055.png",
+      "sha256": "07f5f868725f40548d717f09ea29d001d2b7b05ee164fa5f3ad25d7a3a173a84",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/056",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/056.png",
+      "sha256": "79da7a08e1949c4fa8118f0502e1ac396c66cfc70ca5b487a2b0152d4dadd0de",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/057",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/057.png",
+      "sha256": "5d49f1bba77c7f5d5b4ffb9bc00351e2c30443dbbe84977b0b88732cb76cd335",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/058",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/058.png",
+      "sha256": "5c1eb3883fd5d84740c2530bfb0aaa1e480ee6a62af6be7d46fbca7475ed595d",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/059",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/059.png",
+      "sha256": "e010bfd5692a45a3c3dfa2f3d877e402068baa725822758077b660c831376842",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/060",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/060.png",
+      "sha256": "571a784751f9972f87ef0756d600a0fe777536c2a7f22c12149a171d42b56bd8",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/061",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/061.png",
+      "sha256": "723b56cbed25e219b2051c4004f7d3f9705c4aa814416de2c866f255b7fbe78e",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/062",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/062.png",
+      "sha256": "ce1bb4b74bbd18077cdd5cd5ff8f3f731146ce49d3ee4304ee340be52c96bb4f",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/063",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/063.png",
+      "sha256": "c6bf37b45069eac0908af830ae447c47cd0aa57cc093bf891079812998243b0d",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/064",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/silkspire/064.png",
+      "sha256": "28b9b935e0ea3f89dbed489d8c5d5c69761465d1c1986ef82ae8205dc9293d9e",
+      "width": 288
+    }
+  ],
+  "quarantined_asset_numbers": [
+    28
+  ],
+  "quarantined_count": 1,
+  "region": "silkspire",
+  "schema": "plushbound.enemy_runtime_bank.v1",
+  "source_artifact_id": 12619529219,
+  "source_artifact_sha256": "c337c0e5137ac1a9b8dec4de2bff677d2eaf424d4fb2137835d0ede837ca6ee1",
+  "source_workflow_run_id": 40249142392,
+  "status": "BANKED_WITH_QUARANTINE"
+}
