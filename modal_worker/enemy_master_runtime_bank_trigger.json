@@ -1,8 +1,8 @@
 {
   "schema": "plushbound.enemy_master_runtime_bank_trigger.v1",
-  "run": 9,
-  "region": "moonpatch-steppe",
-  "artifact_id": 12620536002,
-  "artifact_sha256": "1b0f39edb6ee0cc4cf5d7d129c9e194915416edd5eaa8750927b55e0d117df73",
-  "purpose": "Bank only the 63 Moonpatch Steppe enemy runtime assets approved by the full-region visual gate; preserve one source-anomaly quarantine without substitution."
+  "run": 10,
+  "region": "sunspool-desert",
+  "artifact_id": 12620316857,
+  "artifact_sha256": "8408b9dbdaad67c2aaf9040052cae14dd6dd53d0d2cec20650db56270120b0c5",
+  "purpose": "Bank only the 62 Sunspool Desert enemy runtime assets approved by the full-region visual gate; preserve two source-anomaly quarantines without substitution."
 }
