@@ -48,11 +48,11 @@ jobs:
     if: needs.preflight.outputs.enabled == 'true'
     strategy:
       fail-fast: false
-      max-parallel: 12
+      max-parallel: 3
       matrix:
         lane: [0,1,2,3,4,5,6,7,8,9,10,11]
     runs-on: ubuntu-24.04
-    timeout-minutes: 90
+    timeout-minutes: 120
     env:
       MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
       MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
@@ -74,8 +74,36 @@ jobs:
       - name: Produce two exact creator body sheets
         shell: bash
         run: |
-          set -o pipefail
-          PYTHONPATH=. modal run modal_worker/creator_body_batch.py --lane ${{ matrix.lane }} | tee creator-body-batch-lane-${{ matrix.lane }}.log
+          set -euo pipefail
+          LANE='${{ matrix.lane }}'
+          LOG="creator-body-batch-lane-${LANE}.log"
+          : > "$LOG"
+          # Stagger app creation inside each 3-lane wave to stay below Modal's AppCreate throttle.
+          sleep $(( (LANE % 3) * 10 ))
+          for attempt in 1 2 3 4; do
+            TMP="creator-body-batch-lane-${LANE}-attempt-${attempt}.log"
+            set +e
+            PYTHONPATH=. modal run modal_worker/creator_body_batch.py --lane "$LANE" 2>&1 | tee "$TMP"
+            RC=${PIPESTATUS[0]}
+            set -e
+            cat "$TMP" >> "$LOG"
+            if [ "$RC" -eq 0 ]; then
+              rm -f "$TMP"
+              exit 0
+            fi
+            if ! grep -Eq 'App create rate limit exceeded|Status\.RESOURCE_EXHAUSTED' "$TMP"; then
+              echo "Non-throttle failure; refusing automatic paid retry." | tee -a "$LOG"
+              exit "$RC"
+            fi
+            rm -f "$TMP"
+            if [ "$attempt" -eq 4 ]; then
+              echo "Modal AppCreate throttle persisted after 4 attempts." | tee -a "$LOG"
+              exit "$RC"
+            fi
+            BACKOFF=$(( attempt * 20 ))
+            echo "Modal AppCreate throttled; retrying after ${BACKOFF}s without changing production inputs." | tee -a "$LOG"
+            sleep "$BACKOFF"
+          done
       - name: Verify exact lane contract
         run: |
           LANE='${{ matrix.lane }}' python - <<'PY'
