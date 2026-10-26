@@ -1,8 +1,8 @@
 {
   "schema": "plushbound.enemy_master_runtime_bank_trigger.v1",
-  "run": 6,
-  "region": "gloamfen",
-  "artifact_id": 12619328570,
-  "artifact_sha256": "63378fcd1ae7022a66dd24048591b3a5fc443b66caaf03128c67384a693480df",
-  "purpose": "Bank only the 63 Gloamfen enemy runtime assets approved by the full-region visual gate; preserve one source-anomaly quarantine without substitution."
+  "run": 7,
+  "region": "verdancia",
+  "artifact_id": 12620063833,
+  "artifact_sha256": "2d979bd5e69398f9ad6df9c3bafadc2c9fd21a533dbd9bcea2108792c0b37d30",
+  "purpose": "Bank only the 62 Verdancia enemy runtime assets approved by the full-region visual gate; preserve two source-anomaly quarantines without substitution."
 }
