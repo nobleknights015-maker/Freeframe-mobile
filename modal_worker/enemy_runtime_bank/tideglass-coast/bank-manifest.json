@@ -1,0 +1,519 @@
+{
+  "approved_count": 63,
+  "assets": [
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/001",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/001.png",
+      "sha256": "ecf601e3fec89334c435d864b85606492273c1fbebd2f851cadb7f64f3c9b7e6",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/002",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/002.png",
+      "sha256": "20f8f4263cea3e6b542e6161a5fae1bd00e4bf7d230a4abd5bc133e10086fb56",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/003",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/003.png",
+      "sha256": "1d5dfeb46711f53b02815de89713884d26532d1d8908531a2ec42aa450cfbf52",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/004",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/004.png",
+      "sha256": "a91624f1c8a361a04f2f771ce4669274ea4e840f611d09d09ab8184425355f00",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/005",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/005.png",
+      "sha256": "4f9a39d983afb4b3c5351ba8ab4dbc199e3bc85a849cbb1d6d5aed3a9f287abc",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/006",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/006.png",
+      "sha256": "c28a9ef9fdebdc80cf4816fd02e632a05d6131a904f055e608dfba76cd01e953",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/007",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/007.png",
+      "sha256": "565523380cbe9c8b8072e1d2bc5fc69f7c2a8bd2afac09d4311ab79cb7772aaf",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/008",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/008.png",
+      "sha256": "e5a2e3d3826e7bb32a3dbe471f4832a13ab9bd77e75881a7cdefbeb8ef813065",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/009",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/009.png",
+      "sha256": "f4baa8113bdfe1f30c597b15fe0bd59be2e41904d31e5b92adb8b3b508a01c57",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/010",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/010.png",
+      "sha256": "f51c3ad860e38440e073a9f10b90ceb2a5b2f2876f0b313a259b36a08e4b86c4",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/011",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/011.png",
+      "sha256": "b8633db1d6b9d464482b42f604876d75b623e7a664fe4756479bd6d1c1c7b9f0",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/012",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/012.png",
+      "sha256": "9f7a0d2278c5d47866f180c12d7d5eff6ceecc30e6fd584ffaa30b561493e3a0",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/013",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/013.png",
+      "sha256": "a70b68f79d1b526a76d89a9f3b92765da3d34dbe2c64f13fba3345c0e56758fd",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/014",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/014.png",
+      "sha256": "f3592f01e2142b29e852ab3dd26a3fe3fda844fcf5bc9d16e3ceaab8806344ca",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/015",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/015.png",
+      "sha256": "b648cf1f05b160b464e0aa9e4da5b4c8c59b84bc99533840edb070403546bb95",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/016",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/016.png",
+      "sha256": "cd2f6e4f39e0084ea255836cbe1d6960e3f09efa43fa36df84365a1cdf505796",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/017",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/017.png",
+      "sha256": "c03317a1c440010fdf0cc0977d7fbd78afce0ef7eeb63db2b67469cfc36ecb80",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/018",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/018.png",
+      "sha256": "cdc24268bde7fbf198a50a2d8a74ead189263df8c5bedaca0508a5c00807b5c7",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/019",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/019.png",
+      "sha256": "ac10e01527d41dc37bf896ce661ff2c40f132b4ca4172d25dc2ff8265e37d1bc",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/020",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/020.png",
+      "sha256": "dc54fd5cc9e25057eb0e54e104bf7ed6135cb2977976e3a2811175230c15a8e7",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/021",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/021.png",
+      "sha256": "b7dd86db26ad38c105880257570fd22b96dee43c413098268918930b7bdc15fa",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/022",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/022.png",
+      "sha256": "d410a843dc464d67b909109f3176c750c3b80a0efeacee6fbdfaf9f13d615f3f",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/023",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/023.png",
+      "sha256": "3d3bd18ba1c26626cb37ff9cc0bb2c1d768ed8e8e6302deae5856399becf78e0",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/024",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/024.png",
+      "sha256": "cc2bbf50e367b51be469ef821066bbd84af8861dd52c40d5cd1dca41960be541",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/025",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/025.png",
+      "sha256": "a9d01faca0f7685be701f79e41efc0c6d0bf1332cb979dc15c82052c2ae28a69",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/026",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/026.png",
+      "sha256": "f38eda2d1757de8f2c9c00005193a54461309c33a4d9a6c156855b416eb49183",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/027",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/027.png",
+      "sha256": "b9921c53ff499b7f357f9a54b50b908068cd2051b8a02b72552f4aa3f3fdeca7",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/028",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/028.png",
+      "sha256": "e3b4909225d0dcd870f66692f0bd06d79f59771671757e89f9040044d078d72f",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/029",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/029.png",
+      "sha256": "27f4984f6546253bc6e23febe64c38374d42e63a210d85f727f229e4e2f207ca",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/031",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/031.png",
+      "sha256": "7470301473bcbf13a5e21b2f6dc4f72f8ca643fc21a192490acc93490f6190b0",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/032",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/032.png",
+      "sha256": "9c414d9a20558c75964cf23ae61cf2b519507f76e2d0c6f63c364b31e8607131",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/033",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/033.png",
+      "sha256": "26b6f96da2134ebe8d0c122365d39c36454f43943d7187dccbf5e606789ffb96",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/034",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/034.png",
+      "sha256": "091abe1bd7d462fbfe2f5fb095a4fa449e28b96cf4f87e78ae9ee104842cb26d",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/035",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/035.png",
+      "sha256": "c14c766e3c839964ac5c4ccb44d6bb3eecbbd429ff455cf1613d5e86ab332aa6",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/036",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/036.png",
+      "sha256": "49434fa6715521335ed64913c7a25db8624d62c61d3e04a1e01177462e8adb3a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/037",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/037.png",
+      "sha256": "6d3c73138b0fc02168917fd69bd20e2b89c25ef4b1b1f087568ef8365e5c6386",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/038",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/038.png",
+      "sha256": "b97e4a76698f42ac3ba7a31e873652de85b65e2cb9720a3cc502d2ae3c477561",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/039",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/039.png",
+      "sha256": "db78c657545d5b9afad486dc556c4027b36ab4342b97ad035fdec98dd7e990aa",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/040",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/040.png",
+      "sha256": "a86bee86f349f2d702ce408331115289f5f4a81bba1962751779d8a94e223a17",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/041",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/041.png",
+      "sha256": "2b9b060661e029454745ad1d08d8dc3567087a3bae3edb452f703b8a7d9bdc9a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/042",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/042.png",
+      "sha256": "4f5cb1426787236baab5c91bc3534f3e968ab2ff2327cfe299bf76ce982b21fe",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/043",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/043.png",
+      "sha256": "bced2778770240edc2aa8d2e52cb1a0a1cc16675d5ccce8aa15db1515062496c",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/044",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/044.png",
+      "sha256": "f8670e0421a090010118ee0e94e887306ee5822ee495c86f5df4699088c21335",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/045",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/045.png",
+      "sha256": "fd3fae3b7eaf04354888b26078a1358aef0357c57a4cdd33111a54005f47c7f7",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/046",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/046.png",
+      "sha256": "9097e3890ad490b334230747cfcbc03d8e21bc40e7e82c7f0eaaf7aa1b03797b",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/047",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/047.png",
+      "sha256": "312fe545ae07553a8d9a3e3fb2f47a2d26c4177213b9515bbf3e1a3a8a051d09",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/048",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/048.png",
+      "sha256": "321d04ba5984c98ee83e38227a60a606b73eae2a9985295f5ea2c3657841aeff",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/049",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/049.png",
+      "sha256": "5bc30a0111835a91d35b946f789ca9685d1dc4e2edb41bd22fea2159655325ce",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/050",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/050.png",
+      "sha256": "9e151ff7da3c5eefa5c21d440f1ae4cc3f0fa35dae61df2f9a5ade5e730ea5cd",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/051",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/051.png",
+      "sha256": "7c8e013428dabfbf610e62877183f9a9ac99cbf9d1d6f182e03fc27bf2712bc0",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/052",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/052.png",
+      "sha256": "fa0354fb2dbf2bc61b0b4c0860e34cb0c5162c25f772387a7730cdd37eb46b2c",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/053",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/053.png",
+      "sha256": "1e8c0c927f94c64d29c4268ec515164b51a08cdb5d6de11ae016b3f17d2d8436",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/054",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/054.png",
+      "sha256": "5835a16bbf9d714313de8f68759dc897c7d713c4ae85825137ef18b6154ecb0a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/055",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/055.png",
+      "sha256": "8c835ac7e7cce2dc1b020dd99555e562cae30287bbbc46b6ee3e371c0cc1d796",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/056",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/056.png",
+      "sha256": "e9f40acfb5d146d1f3e0a785769865f45e9df7a8f8ca76cb3ec8d8482fc1fa2f",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/057",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/057.png",
+      "sha256": "b1ffac7c45973cadacae58069fda474767c6cfd7980da4562a33453ea861bdcb",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/058",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/058.png",
+      "sha256": "e794c495e5a95ad6b322e9e8b222261bee2ac1ab8193830857e8b9addcf6935f",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/059",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/059.png",
+      "sha256": "ea26ac329a066a3f3768c28fa18227dae67cd6aceb6313b6786f0e61b1ad7dc3",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/060",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/060.png",
+      "sha256": "f736332f3a45b872f90ed30ff89e5f93282ca5e28b65df72c3a6609ffb43e673",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/061",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/061.png",
+      "sha256": "cccda3752cfecc89c8184f3cf60b1e7a03c78784251dce2b51ec0df10607ec98",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/062",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/062.png",
+      "sha256": "43faa34501552dae837ce02a7786bb7156999e949221a257dcedaf0c3af86700",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/063",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/063.png",
+      "sha256": "f30c55095870aa4adc0cde4146ce212990f8eec554799a496315678435176576",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/tideglass-coast/enemy-battle/064",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/tideglass-coast/064.png",
+      "sha256": "8164b047172fa935a6adad46f8f37f5b07d6676964102c3a1f7df4ce28b42e4a",
+      "width": 288
+    }
+  ],
+  "quarantined_asset_numbers": [
+    30
+  ],
+  "quarantined_count": 1,
+  "region": "tideglass-coast",
+  "schema": "plushbound.enemy_runtime_bank.v1",
+  "source_artifact_id": 12620307377,
+  "source_artifact_sha256": "74a9e4b2d0fb59aea9fe48a6addfa8254c270062dd5b8ae5ab4065bd456b5d74",
+  "source_workflow_run_id": 40250267247,
+  "status": "BANKED_WITH_QUARANTINE"
+}
