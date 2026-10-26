@@ -1,0 +1,44 @@
+{
+  "schema": "plushbound.creator_skin_contract_blocker.v1",
+  "family": "creator/skin",
+  "status": "BLOCKED_PENDING_COMPOSITING_CONTRACT",
+  "generation_authorized": false,
+  "catalog_wide_launch_authorized": false,
+  "ledger": {
+    "logical_range": ["creator/skin/001", "creator/skin/018"],
+    "count": 18,
+    "dimensions": "144x192",
+    "layout": "3x4-48px"
+  },
+  "body_dependency": {
+    "logical_range": ["creator/body/001", "creator/body/024"],
+    "count": 24,
+    "body_contract_explicitly_excludes_skin_color": true
+  },
+  "creator_layer_contract": {
+    "requires_slot": true,
+    "requires_body_type": true,
+    "requires_deterministic_alignment": true,
+    "requires_transparent_background": true,
+    "requires_layer_safe_edges": true
+  },
+  "known_product_behavior": {
+    "build_and_skin_are_independent_creator_choices": true
+  },
+  "unresolved": [
+    "18 skin assets do not have an explicit mapping to 24 body types",
+    "compositing mode is not specified: tint mask, palette map, transparent overlay, or per-body derivation",
+    "no authoritative rule currently defines how one skin choice aligns across multiple body silhouettes"
+  ],
+  "required_before_canary": [
+    "authoritative skin-to-body mapping or body-independent compositing rule",
+    "explicit blend/compositing mode",
+    "deterministic validation rule proving alignment across at least petite, balanced, and broad body silhouettes"
+  ],
+  "safety": {
+    "paid_renders_allowed": 0,
+    "paid_extractions_allowed": 0,
+    "fail_closed": true,
+    "reason": "Do not invent skin-layer semantics or spend generation budget until the creator-layer mapping is explicit."
+  }
+}
