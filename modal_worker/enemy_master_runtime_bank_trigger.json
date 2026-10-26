@@ -1,8 +1,8 @@
 {
   "schema": "plushbound.enemy_master_runtime_bank_trigger.v1",
-  "run": 2,
-  "region": "elyndor",
-  "artifact_id": 12619009492,
-  "artifact_sha256": "4c2fa14d9f0fd92a1351c15064a90374ab9f491b4745e0f5403f790942b11bd4",
-  "purpose": "Bank only the 59 Elyndor enemy runtime assets approved by the full-region visual gate; preserve five source-anomaly quarantines without substitution."
+  "run": 3,
+  "region": "crownweave",
+  "artifact_id": 12619657737,
+  "artifact_sha256": "a59e27fa636cc50415a9f3439f8b2de58c9eb8a7337dbfc4f214eeea80ac3e33",
+  "purpose": "Bank only the 60 Crownweave enemy runtime assets approved by the full-region visual gate; preserve four source-anomaly quarantines without substitution."
 }
