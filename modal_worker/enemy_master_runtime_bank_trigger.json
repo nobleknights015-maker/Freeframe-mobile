@@ -1,8 +1,8 @@
 {
   "schema": "plushbound.enemy_master_runtime_bank_trigger.v1",
-  "run": 5,
-  "region": "silkspire",
-  "artifact_id": 12619529219,
-  "artifact_sha256": "c337c0e5137ac1a9b8dec4de2bff677d2eaf424d4fb2137835d0ede837ca6ee1",
-  "purpose": "Retry banking only the 63 Silkspire enemy runtime assets approved by the full-region visual gate after making the banker rebase-safe; preserve one source-anomaly quarantine without substitution."
+  "run": 6,
+  "region": "gloamfen",
+  "artifact_id": 12619328570,
+  "artifact_sha256": "63378fcd1ae7022a66dd24048591b3a5fc443b66caaf03128c67384a693480df",
+  "purpose": "Bank only the 63 Gloamfen enemy runtime assets approved by the full-region visual gate; preserve one source-anomaly quarantine without substitution."
 }
