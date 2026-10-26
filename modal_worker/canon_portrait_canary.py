@@ -18,10 +18,8 @@ from PIL import Image
 APP_NAME = "freeframe-worker"
 PRODUCTION_MODEL = "black-forest-labs/FLUX.2-klein-4B"
 RENDERER_ROUTE = "flux2_klein"
-REFERENCE_IMAGE = Path("modal_worker/project_references/chris_proven_reference.jpg")
-REFERENCE_MARKER = Path("modal_worker/project_references/chris_reference_marker.txt")
-REFERENCE_SOURCE_SHA256 = "0ca2198835f1377c2916a076bca2db004f52b0e9fffeea49baa7b370d7ebe550"
-REFERENCE_GIT_BLOB = "c69443a17a8120be31685e1820c2271450065493"
+REFERENCE_IMAGE = Path("modal_worker/canon_refs/chris_identity_hifi_q92.jpg")
+REFERENCE_PROVENANCE = Path("modal_worker/canon_refs/chris_identity_hifi_q92_provenance.json")
 OUTPUT_DIR = Path("canon-portrait-canary")
 RAW_OUTPUT = OUTPUT_DIR / "chris_bourn_portrait_raw.png"
 RUNTIME_OUTPUT = OUTPUT_DIR / "chris_bourn_portrait.png"
@@ -31,7 +29,7 @@ HEIGHT = 384
 REFERENCE_SCALE = 0.72
 STEPS = 8
 GUIDANCE_SCALE = 1.0
-SEED = int.from_bytes(hashlib.sha256(b"plushbound:canon:chris_bourn:portrait:v4").digest()[:8], "big") & ((1 << 63) - 1)
+SEED = int.from_bytes(hashlib.sha256(b"plushbound:canon:chris_bourn:portrait:v5").digest()[:8], "big") & ((1 << 63) - 1)
 PROMPT = (
     "CANONICAL IDENTITY-PRESERVATION REDRAW. Create one 2D anime/JRPG portrait of Chris Bourn for Plushbound Legends. "
     "The supplied reference is the canonical model reference, not loose inspiration. Redraw the same person; do not redesign, beautify, "
@@ -48,69 +46,81 @@ PROMPT = (
 
 
 def _preflight_reference() -> tuple[bytes, dict]:
-    """Verify the proven atlas reference, then losslessly normalize transport to PNG."""
     if not REFERENCE_IMAGE.is_file() or REFERENCE_IMAGE.stat().st_size <= 0:
-        raise FileNotFoundError(f"missing proven Chris reference: {REFERENCE_IMAGE}")
-    if not REFERENCE_MARKER.is_file():
-        raise FileNotFoundError(f"missing Chris reference marker: {REFERENCE_MARKER}")
+        raise FileNotFoundError(f"missing high-fidelity Chris reference: {REFERENCE_IMAGE}")
+    if not REFERENCE_PROVENANCE.is_file():
+        raise FileNotFoundError(f"missing high-fidelity Chris provenance: {REFERENCE_PROVENANCE}")
 
-    marker = REFERENCE_MARKER.read_text(encoding="utf-8")
-    if "established Plushbound Character Atlas reference" not in marker or "Do not substitute" not in marker:
-        raise ValueError("Chris reference marker does not preserve the canonical-reference contract")
+    provenance = json.loads(REFERENCE_PROVENANCE.read_text(encoding="utf-8"))
+    if provenance.get("schema") != "plushbound.canon_identity_reference.v3":
+        raise ValueError("unexpected Chris reference provenance schema")
+    if provenance.get("character_id") != "chris_bourn":
+        raise ValueError("Chris reference provenance character mismatch")
+    if provenance.get("status") != "CANONICAL_CONDITIONING_REFERENCE":
+        raise ValueError("Chris reference is not marked canonical conditioning reference")
+    if provenance.get("catalog_wide_launch_authorized") is not False:
+        raise ValueError("reference provenance must keep catalog-wide launch disabled")
 
-    source_raw = REFERENCE_IMAGE.read_bytes()
-    source_sha = hashlib.sha256(source_raw).hexdigest()
-    git_blob = hashlib.sha1(f"blob {len(source_raw)}\0".encode("ascii") + source_raw).hexdigest()
-    if source_sha != REFERENCE_SOURCE_SHA256:
-        raise ValueError(f"proven Chris reference SHA mismatch: {source_sha}")
-    if git_blob != REFERENCE_GIT_BLOB:
-        raise ValueError(f"proven Chris reference Git blob mismatch: {git_blob}")
+    source = provenance["source"]
+    if source.get("sha256") != "34a886f42a476d09649c6584731d043cd658d18395692090109ece0f3bd09104":
+        raise ValueError("canonical source SHA mismatch in provenance")
+    if [source.get("width"), source.get("height")] != [768, 535] or source.get("format") != "PNG":
+        raise ValueError("canonical source geometry/format mismatch in provenance")
+
+    derivation = provenance["derivation"]
+    expected_derivation = {
+        "crop_box_xyxy": [156, 80, 356, 520],
+        "resize": False,
+        "output_width": 200,
+        "output_height": 440,
+        "jpeg_quality": 92,
+        "jpeg_subsampling": 0,
+        "jpeg_optimize": True,
+        "ai_edit": False,
+        "retouch": False,
+    }
+    for key, value in expected_derivation.items():
+        if derivation.get(key) != value:
+            raise ValueError(f"Chris reference derivation mismatch for {key}: {derivation.get(key)!r}")
+
+    expected = provenance["reference_payload"]
+    if expected.get("path") != str(REFERENCE_IMAGE) or expected.get("encoding") != "binary":
+        raise ValueError("reference payload path/encoding mismatch")
+    raw = REFERENCE_IMAGE.read_bytes()
+    actual_sha = hashlib.sha256(raw).hexdigest()
+    git_blob = hashlib.sha1(f"blob {len(raw)}\0".encode("ascii") + raw).hexdigest()
+    if len(raw) != int(expected["bytes"]):
+        raise ValueError(f"high-fidelity reference byte count mismatch: {len(raw)}")
+    if actual_sha != expected["sha256"]:
+        raise ValueError(f"high-fidelity reference SHA mismatch: {actual_sha}")
+    if git_blob != expected["git_blob_sha"]:
+        raise ValueError(f"high-fidelity reference Git blob mismatch: {git_blob}")
 
     try:
-        with Image.open(io.BytesIO(source_raw)) as source:
-            source.load()
-            source_width, source_height = source.size
-            source_mode = source.mode
-            source_format = source.format
-            normalized = source.convert("RGB")
+        with Image.open(io.BytesIO(raw)) as image:
+            image.load()
+            width, height = image.size
+            mode = image.mode
+            fmt = image.format
     except Exception as exc:
-        raise ValueError("proven Chris reference is not a readable raster image") from exc
+        raise ValueError("high-fidelity Chris conditioning reference is not fully decodable") from exc
+    if [width, height] != [200, 440] or mode != "RGB" or fmt != "JPEG":
+        raise ValueError(f"high-fidelity reference format mismatch: {width}x{height} {mode} {fmt}")
 
-    if [source_width, source_height] != [192, 329] or source_mode != "RGB" or source_format != "JPEG":
-        raise ValueError(
-            f"proven Chris reference format mismatch: {source_width}x{source_height} {source_mode} {source_format}"
-        )
-
-    transport = io.BytesIO()
-    normalized.save(transport, format="PNG", optimize=True)
-    conditioning_raw = transport.getvalue()
-    conditioning_sha = hashlib.sha256(conditioning_raw).hexdigest()
-
-    try:
-        with Image.open(io.BytesIO(conditioning_raw)) as check:
-            check.load()
-            if check.size != (192, 329) or check.mode != "RGB" or check.format != "PNG":
-                raise ValueError(f"conditioning PNG mismatch: {check.size} {check.mode} {check.format}")
-    except Exception as exc:
-        raise ValueError("normalized Chris conditioning PNG is not fully decodable") from exc
-
-    return conditioning_raw, {
+    return raw, {
         "path": str(REFERENCE_IMAGE),
-        "marker_path": str(REFERENCE_MARKER),
-        "source_bytes": len(source_raw),
-        "source_sha256": source_sha,
-        "source_git_blob": git_blob,
-        "source_width": source_width,
-        "source_height": source_height,
-        "source_mode": source_mode,
-        "source_format": source_format,
-        "transport_operation": "lossless_rgb_png_reencode_no_ai_edit_no_resize",
-        "bytes": len(conditioning_raw),
-        "sha256": conditioning_sha,
-        "width": source_width,
-        "height": source_height,
-        "mode": "RGB",
-        "format": "PNG",
+        "provenance_path": str(REFERENCE_PROVENANCE),
+        "provenance_sha256": hashlib.sha256(REFERENCE_PROVENANCE.read_bytes()).hexdigest(),
+        "source_sha256": source["sha256"],
+        "source_geometry": [source["width"], source["height"]],
+        "derivation": derivation,
+        "bytes": len(raw),
+        "sha256": actual_sha,
+        "git_blob_sha": git_blob,
+        "width": width,
+        "height": height,
+        "mode": mode,
+        "format": fmt,
     }
 
 
@@ -187,7 +197,7 @@ def main() -> None:
     if not reference_id:
         raise RuntimeError(f"reference store did not return an id: {stored}")
     if reference_id != reference_meta["sha256"]:
-        raise RuntimeError("reference store id does not match verified conditioning PNG SHA-256")
+        raise RuntimeError("reference store id does not match verified high-fidelity reference SHA-256")
 
     Generator = modal.Cls.from_name(APP_NAME, "FreeFrameProductionGenerator")
     generator = Generator()
@@ -220,13 +230,13 @@ def main() -> None:
     RUNTIME_OUTPUT.write_bytes(runtime_png)
 
     report = {
-        "version": "plushbound-canon-portrait-canary-v4",
+        "version": "plushbound-canon-portrait-canary-v5",
         "status": "generated_pending_visual_review",
         "character_id": "chris_bourn",
         "display_name": "Chris Bourn",
         "asset_role": "portrait",
         "catalog_wide_launch_authorized": False,
-        "retry_reason": "use_verified_atlas_reference_with_lossless_png_transport_after_jpeg_and_base64_ingestion_failures",
+        "retry_reason": "replace_corrupt_reference_transports_with_verified_binary_high_fidelity_derivative",
         "reference": reference_meta,
         "reference_store": {"reference_id": reference_id, "requested_scale": REFERENCE_SCALE, "mode": "identity"},
         "request": {k: v for k, v in request.items() if k != "prompt"},
