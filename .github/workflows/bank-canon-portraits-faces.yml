@@ -30,34 +30,104 @@ jobs:
           python-version: '3.11'
       - name: Install deterministic banking dependencies
         run: python -m pip install --disable-pip-version-check 'pillow>=10.4,<12' 'numpy>=1.26,<2'
-      - name: Resolve latest successful portrait evidence runs
+      - name: Resolve exact reviewed evidence from trigger and visual gate
         shell: bash
         run: |
           set -euo pipefail
-          CHRIS_RUN_ID="$(gh run list --workflow run-canon-portrait-canary.yml --branch freeframe-modal-worker --status success --limit 1 --json databaseId --jq '.[0].databaseId')"
-          BATCH_RUN_ID="$(gh run list --workflow run-canon-portrait-batch.yml --branch freeframe-modal-worker --status success --limit 1 --json databaseId --jq '.[0].databaseId')"
-          test -n "$CHRIS_RUN_ID"
-          test -n "$BATCH_RUN_ID"
-          echo "CHRIS_RUN_ID=$CHRIS_RUN_ID" >> "$GITHUB_ENV"
-          echo "BATCH_RUN_ID=$BATCH_RUN_ID" >> "$GITHUB_ENV"
-          echo "chris=$CHRIS_RUN_ID batch=$BATCH_RUN_ID"
-      - name: Download exact successful portrait artifacts
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+
+          trigger_path = Path('modal_worker/canon_portrait_bank_trigger.json')
+          trigger = json.loads(trigger_path.read_text())
+          assert trigger['version'] == 'plushbound-canon-portrait-bank-trigger-v2'
+          assert trigger['bank_authorized'] is True
+          assert trigger['bank_portraits'] is True
+          assert trigger['derive_faces'] is True
+          assert trigger['paid_face_generation_authorized'] is False
+          approved = ['chris_bourn', 'penney_nguyen', 'lily', 'ethan']
+          assert trigger['approved_character_ids'] == approved
+
+          gate_path = Path(trigger['visual_gate_path'])
+          gate = json.loads(gate_path.read_text())
+          assert gate['schema'] == 'plushbound.canon_portrait_visual_gate.v1'
+          assert gate['status'] == 'PASS'
+          assert gate['approved_character_ids'] == approved
+          assert gate.get('quarantined_character_ids', []) == []
+
+          env = {}
+          for lane, prefix in [('chris', 'CHRIS'), ('batch', 'BATCH')]:
+              t = trigger[lane]
+              g = gate['evidence'][lane]
+              for key in ('run_id', 'artifact_id', 'artifact_name', 'artifact_digest'):
+                  assert t[key] == g[key], f'{lane} {key} does not match visual gate'
+              assert isinstance(t['run_id'], int) and t['run_id'] > 0
+              assert isinstance(t['artifact_id'], int) and t['artifact_id'] > 0
+              assert t['artifact_digest'].startswith('sha256:') and len(t['artifact_digest']) == 71
+              env[f'{prefix}_RUN_ID'] = str(t['run_id'])
+              env[f'{prefix}_ARTIFACT_ID'] = str(t['artifact_id'])
+              env[f'{prefix}_ARTIFACT_NAME'] = t['artifact_name']
+              env[f'{prefix}_ARTIFACT_DIGEST'] = t['artifact_digest']
+
+          portrait_hashes = gate['portrait_sha256']
+          assert set(portrait_hashes) == set(approved)
+          for cid, digest in portrait_hashes.items():
+              assert len(digest) == 64 and all(c in '0123456789abcdef' for c in digest)
+          env['PORTRAIT_VISUAL_GATE_PATH'] = str(gate_path)
+          env['PORTRAIT_VISUAL_GATE_SHA256'] = __import__('hashlib').sha256(gate_path.read_bytes()).hexdigest()
+
+          github_env = Path(os.environ['GITHUB_ENV'])
+          with github_env.open('a', encoding='utf-8') as f:
+              for key, value in env.items():
+                  f.write(f'{key}={value}\n')
+          PY
+      - name: Verify exact GitHub artifact metadata and download by artifact ID
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p canon-bank-input/chris canon-bank-input/batch
-          gh run download "$CHRIS_RUN_ID" --name "canon-portrait-canary-$CHRIS_RUN_ID" --dir canon-bank-input/chris
-          gh run download "$BATCH_RUN_ID" --name "canon-portrait-batch-$BATCH_RUN_ID" --dir canon-bank-input/batch
+          mkdir -p canon-bank-input/chris canon-bank-input/batch artifact-zips
+          verify_and_download() {
+            local prefix="$1" outdir="$2"
+            local artifact_id_var="${prefix}_ARTIFACT_ID"
+            local run_id_var="${prefix}_RUN_ID"
+            local name_var="${prefix}_ARTIFACT_NAME"
+            local digest_var="${prefix}_ARTIFACT_DIGEST"
+            local artifact_id="${!artifact_id_var}"
+            local run_id="${!run_id_var}"
+            local expected_name="${!name_var}"
+            local expected_digest="${!digest_var}"
+            local metadata="artifact-zips/${prefix,,}-metadata.json"
+            local archive="artifact-zips/${prefix,,}.zip"
+            gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}" > "$metadata"
+            python - "$metadata" "$artifact_id" "$run_id" "$expected_name" "$expected_digest" <<'PY'
+          import json, sys
+          p, artifact_id, run_id, expected_name, expected_digest = sys.argv[1:]
+          m = json.load(open(p, encoding='utf-8'))
+          assert int(m['id']) == int(artifact_id)
+          assert int(m['workflow_run']['id']) == int(run_id)
+          assert m['name'] == expected_name
+          assert m['expired'] is False
+          assert m.get('digest') == expected_digest, f"artifact digest mismatch: {m.get('digest')} != {expected_digest}"
+          PY
+            gh api -H 'Accept: application/vnd.github+json' "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > "$archive"
+            unzip -q "$archive" -d "$outdir"
+          }
+          verify_and_download CHRIS canon-bank-input/chris
+          verify_and_download BATCH canon-bank-input/batch
           test -s canon-bank-input/chris/chris_bourn_portrait.png
           for id in penney_nguyen lily ethan; do
             test -s "canon-bank-input/batch/${id}_portrait.png"
           done
-      - name: Verify evidence reports remain pending-bank canary outputs
+      - name: Verify generated reports and exact visually-approved portrait hashes
         shell: bash
         run: |
+          set -euo pipefail
           python - <<'PY'
-          import json
+          import hashlib, json, os
           from pathlib import Path
+
+          gate = json.loads(Path(os.environ['PORTRAIT_VISUAL_GATE_PATH']).read_text())
+          expected_hashes = gate['portrait_sha256']
           c = json.loads(Path('canon-bank-input/chris/report.json').read_text())
           b = json.loads(Path('canon-bank-input/batch/report.json').read_text())
           assert c['character_id'] == 'chris_bourn'
@@ -67,8 +137,18 @@ jobs:
           assert b['requested'] == b['completed'] == 3
           assert {e['character_id'] for e in b['entries']} == {'penney_nguyen','lily','ethan'}
           for e in b['entries']:
-              q=e['quality_gate']
+              q = e['quality_gate']
               assert q['geometry_pass'] and q['rgba_pass'] and q['alpha_present']
+
+          files = {
+              'chris_bourn': Path('canon-bank-input/chris/chris_bourn_portrait.png'),
+              'penney_nguyen': Path('canon-bank-input/batch/penney_nguyen_portrait.png'),
+              'lily': Path('canon-bank-input/batch/lily_portrait.png'),
+              'ethan': Path('canon-bank-input/batch/ethan_portrait.png'),
+          }
+          for cid, path in files.items():
+              actual = hashlib.sha256(path.read_bytes()).hexdigest()
+              assert actual == expected_hashes[cid], f'{cid} portrait hash differs from reviewed visual gate'
           PY
       - name: Bank approved portraits and derive faces
         run: python -m modal_worker.bank_canon_portraits_faces
@@ -88,6 +168,7 @@ jobs:
           assert ledger['new_runtime_assets_banked']==8
           assert ledger['proven_canon_runtime_assets_total']==12
           assert set(ledger['characters'])==set(ids)
+          assert ledger['visual_gate']['status'] == 'PASS'
           for cid in ids:
               with Image.open(f'modal_worker/canon_banked/portraits/{cid}.png') as im:
                   assert im.size==(288,384) and im.mode=='RGBA'
@@ -105,7 +186,8 @@ jobs:
             echo 'No banking changes to commit.'
             exit 0
           fi
-          git commit -m 'Bank proven canon portraits and deterministic faces'
+          git commit -m 'Bank reviewed canon portraits and deterministic faces'
+          git pull --rebase origin freeframe-modal-worker
           git push origin HEAD:freeframe-modal-worker
       - name: Upload bank ledger evidence
         if: always()
