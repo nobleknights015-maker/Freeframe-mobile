@@ -23,31 +23,36 @@ DIRECTIONS = ("down", "left", "right", "up")
 
 # 24 base hairstyles, each with four fringe variants. Values are the maximum
 # normalized source envelope per style class inside one 48x48 cell.
+#
+# These envelopes intentionally preserve visible torso/leg readability. Earlier
+# long-style values around 38-42px tall were machine-valid but visually behaved
+# like floor-length curtains at game scale. The current table is bounded to the
+# compact silhouettes proven by the 021/057/065 archetype composite review.
 _BASE_ENVELOPES = (
     (30, 18),  # short_swept_crop
     (28, 17),  # textured_pixie
     (32, 21),  # ear_length_bob
     (34, 23),  # chin_length_bob
-    (38, 30),  # shoulder_straight
-    (40, 42),  # long_straight
+    (36, 27),  # shoulder_straight
+    (34, 30),  # long_straight
     (34, 22),  # soft_wave_bob
-    (40, 31),  # shoulder_waves
-    (42, 42),  # long_waves
+    (38, 28),  # shoulder_waves
+    (38, 32),  # long_waves
     (34, 22),  # short_curls
-    (40, 31),  # shoulder_curls
-    (42, 42),  # long_curls
+    (38, 28),  # shoulder_curls
+    (38, 32),  # long_curls
     (34, 22),  # short_coils
-    (40, 30),  # medium_coils
-    (42, 41),  # long_coils
-    (42, 37),  # low_ponytail
-    (44, 38),  # high_ponytail
-    (44, 37),  # twin_low_tails
-    (40, 42),  # single_braid
-    (44, 42),  # twin_braids
-    (44, 40),  # rope_twists
-    (44, 40),  # locs_medium
-    (38, 26),  # low_bun
-    (40, 30),  # layered_shag
+    (38, 28),  # medium_coils
+    (36, 32),  # long_coils
+    (38, 30),  # low_ponytail
+    (36, 29),  # high_ponytail
+    (40, 30),  # twin_low_tails
+    (36, 32),  # single_braid
+    (40, 32),  # twin_braids
+    (40, 31),  # rope_twists
+    (40, 31),  # locs_medium
+    (36, 24),  # low_bun
+    (38, 27),  # layered_shag
 )
 
 
