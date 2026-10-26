@@ -95,6 +95,14 @@
       "reason_code": "visual_black_head_anomaly",
       "reason": "Canonical source contains an unrendered solid-black head region with only the eye retained. Extraction reproduced the source faithfully.",
       "disposition": "quarantine_without_substitution"
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/007",
+      "source_sha256": "dd8773cfb2c2679dee141379d8c8c193ede4ef5fcb0d7c4064b758ece46b51e8",
+      "source_artifact_id": 12558753021,
+      "reason_code": "visual_extra_subject_anomaly",
+      "reason": "Canonical source contains a large solid-black phantom body attached behind the intended subject. Extraction reproduced the source faithfully and did not introduce the anomaly.",
+      "disposition": "quarantine_without_substitution"
     }
   ]
 }
