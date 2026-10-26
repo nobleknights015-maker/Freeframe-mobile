@@ -62,18 +62,19 @@ def _preflight_reference() -> tuple[bytes, dict]:
     if "Do not substitute" not in marker:
         raise ValueError("Chris reference marker does not preserve the no-substitution lock")
 
-    raw = REFERENCE_IMAGE.read_bytes()
-    git_blob = _git_blob_sha1(raw)
+    source_raw = REFERENCE_IMAGE.read_bytes()
+    git_blob = _git_blob_sha1(source_raw)
     if git_blob != EXPECTED_REFERENCE_GIT_BLOB:
         raise ValueError(f"proven Chris reference Git blob changed: {git_blob}")
 
     try:
-        with Image.open(io.BytesIO(raw)) as verify_image:
+        with Image.open(io.BytesIO(source_raw)) as verify_image:
             verify_image.verify()
-        with Image.open(io.BytesIO(raw)) as image:
-            width, height = image.size
+        with Image.open(io.BytesIO(source_raw)) as image:
             source_format = image.format
             source_mode = image.mode
+            width, height = image.size
+            conditioning_image = image.convert("RGB")
     except Exception as exc:
         raise ValueError("proven Chris reference is not a readable raster image") from exc
 
@@ -82,18 +83,38 @@ def _preflight_reference() -> tuple[bytes, dict]:
     if source_format != "JPEG":
         raise ValueError(f"unexpected proven Chris reference format: {source_format}")
 
-    return raw, {
-        "path": str(REFERENCE_IMAGE),
-        "marker_path": str(REFERENCE_MARKER),
-        "marker_sha256": hashlib.sha256(REFERENCE_MARKER.read_bytes()).hexdigest(),
-        "git_blob_sha1": git_blob,
-        "bytes": len(raw),
-        "sha256": hashlib.sha256(raw).hexdigest(),
-        "width": width,
-        "height": height,
-        "source_format": source_format,
-        "source_mode": source_mode,
-        "role": "established_plushbound_character_atlas_identity_reference",
+    # Modal's deployed reference store rejected the source JPEG even though the
+    # Actions runner decoded it successfully. Re-encode the exact decoded pixels
+    # as a conservative RGB PNG. This is deterministic format normalization only:
+    # no resizing, retouching, generation, interpolation, or identity edits.
+    conditioning_buffer = io.BytesIO()
+    conditioning_image.save(conditioning_buffer, format="PNG", optimize=False, compress_level=6)
+    conditioning_raw = conditioning_buffer.getvalue()
+
+    conditioning_sha = hashlib.sha256(conditioning_raw).hexdigest()
+    return conditioning_raw, {
+        "source": {
+            "path": str(REFERENCE_IMAGE),
+            "marker_path": str(REFERENCE_MARKER),
+            "marker_sha256": hashlib.sha256(REFERENCE_MARKER.read_bytes()).hexdigest(),
+            "git_blob_sha1": git_blob,
+            "bytes": len(source_raw),
+            "sha256": hashlib.sha256(source_raw).hexdigest(),
+            "width": width,
+            "height": height,
+            "format": source_format,
+            "mode": source_mode,
+            "role": "established_plushbound_character_atlas_identity_reference",
+        },
+        "conditioning": {
+            "derivation": "decode_source_then_lossless_rgb_png_no_resize_no_ai_edit",
+            "bytes": len(conditioning_raw),
+            "sha256": conditioning_sha,
+            "width": width,
+            "height": height,
+            "format": "PNG",
+            "mode": "RGB",
+        },
     }
 
 
@@ -169,8 +190,8 @@ def main() -> None:
     reference_id = str(stored.get("reference_id") or stored.get("sha256") or stored.get("id") or "").strip()
     if not reference_id:
         raise RuntimeError(f"reference store did not return an id: {stored}")
-    if reference_id != reference_meta["sha256"]:
-        raise RuntimeError("reference store id does not match proven reference SHA-256")
+    if reference_id != reference_meta["conditioning"]["sha256"]:
+        raise RuntimeError("reference store id does not match normalized conditioning reference SHA-256")
 
     Generator = modal.Cls.from_name(APP_NAME, "FreeFrameProductionGenerator")
     generator = Generator()
