@@ -1,8 +1,8 @@
 {
   "schema": "plushbound.enemy_master_runtime_bank_trigger.v1",
-  "run": 10,
-  "region": "sunspool-desert",
-  "artifact_id": 12620316857,
-  "artifact_sha256": "8408b9dbdaad67c2aaf9040052cae14dd6dd53d0d2cec20650db56270120b0c5",
-  "purpose": "Bank only the 62 Sunspool Desert enemy runtime assets approved by the full-region visual gate; preserve two source-anomaly quarantines without substitution."
+  "run": 11,
+  "region": "cinderreach",
+  "artifact_id": 12620856716,
+  "artifact_sha256": "f1b41f91b72c61f7be6efd4c53d50a4829f5c8483457bcbe7d7444f1cd52dba1",
+  "purpose": "Bank only the 62 Cinderreach enemy runtime assets approved by the full-region visual gate; preserve two source-anomaly quarantines without substitution."
 }
