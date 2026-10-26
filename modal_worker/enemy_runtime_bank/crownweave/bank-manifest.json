@@ -1,0 +1,498 @@
+{
+  "approved_count": 60,
+  "assets": [
+    {
+      "asset_id": "reg/crownweave/enemy-battle/001",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/001.png",
+      "sha256": "cfd9e7a40e6bceb838f5078b5be8ad807a2b8b30d50e35c6e337b100ac24c5a1",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/002",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/002.png",
+      "sha256": "247d7460188e677f23fa533b4ac8a6bc3e99e798b010fd504bc19a3437c0a5c2",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/003",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/003.png",
+      "sha256": "2f7ccd7a161398b99986ce4161992649fecef332eb2f821d70753970256e13d5",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/004",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/004.png",
+      "sha256": "d1e59f9e0d0ca1e424b87c082a163e34200a76910578b3cec1a078c73185bb41",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/005",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/005.png",
+      "sha256": "3689a7d83c5bf4d9481bc1fd38ee45a6cd725837d89f7dbf62f70861f7aa4e2f",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/006",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/006.png",
+      "sha256": "1ea042df9d9b3cc0e1fe736b26a96a4e58c0ff10683e90897c963c2a3385a10a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/007",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/007.png",
+      "sha256": "72398aa9bd31e0e44b996912e270c65c2d52148abdfa534a02a6d11de59a81b5",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/008",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/008.png",
+      "sha256": "2996005484e571cc849f72b09eb2f81abe7eeb3728a455befb01be8366a7190f",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/009",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/009.png",
+      "sha256": "0600ccb250a593eefb981ea31e86eaf0cdf1aeb782bf5a166ad64309d7bcbe0d",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/010",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/010.png",
+      "sha256": "e0030e408427b31eb3d9951d5a9c672be2b0b7cf23d7248b9365e33c17eeb04e",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/011",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/011.png",
+      "sha256": "4e14ad0c06437b3e73814123edfe1f0f630b7a70d546e931ee1c760a3357ea0a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/012",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/012.png",
+      "sha256": "37ee30c5ec5f0304748ab685b9c3b9293a45dce1033fe867b8dedb9bdaf597d0",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/013",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/013.png",
+      "sha256": "06183be7f0174e086fa3c93a7b0772b41ea133504484d7232c9e7f7a47f53098",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/014",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/014.png",
+      "sha256": "e002f5605d94cdbb678016e76cc94077266821f13a4e85f9ce92e9528a6aeff0",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/015",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/015.png",
+      "sha256": "4aa1d0b5cc4c9a8dcc49f3c72f1e03b94e756bd688ab3d3980d7eead5170fe84",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/016",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/016.png",
+      "sha256": "952aee3364d0a1a35b811b0bee274d186a6162606624c7f4a2b919bc922e76c6",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/017",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/017.png",
+      "sha256": "1b7a32f4d75b4bb0425d004698311f2d88169c4581ebcd58bfae35c657380501",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/018",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/018.png",
+      "sha256": "ffa9aa4aa8e7dcaa4d13101824c613080fea791125605f034af527b3668383ba",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/019",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/019.png",
+      "sha256": "d80b0af27d3d4687bfb6bf9d9f27f2defbe78cbb125c8af96ab2f5b9139ded2a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/020",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/020.png",
+      "sha256": "f250b435d0a1a9a72ca7ec18d1cc5bd14b7ed5f8e7d773d12cd4dcd1c2c24273",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/022",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/022.png",
+      "sha256": "d506c2c23f62dfce63ce54941ea5ad9305db34be75925b4448558e78bfd5480c",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/023",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/023.png",
+      "sha256": "3c1c42f9b1dad5a2541f4a3624442608b70fdad692d669e574e1850417fd666a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/024",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/024.png",
+      "sha256": "fd6d2c73f76a20d1198121b20ab80720a5267ff0840b9cf31c4d62bdd055c2e4",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/025",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/025.png",
+      "sha256": "577665af2dcb2b210ba1b6e6fa5e4a6507f624d075e8e24b334d5e1e0985b128",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/026",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/026.png",
+      "sha256": "f063c1e839efd89d83617a4683a5542b186a04a82b664862bf9163bcfab1b807",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/027",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/027.png",
+      "sha256": "86887a64f0872b32fa5a1d73c2442678c1e695663c46b94df2d33969c2754ddd",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/028",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/028.png",
+      "sha256": "847e9d24d8a8a4e8a274b10ea6b14735873cd8a9afc8a7e305311b03034568d0",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/029",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/029.png",
+      "sha256": "68364383ef2704e8150009f488c9c02ae3bbafc3f346c7a1780903bbea19adb9",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/030",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/030.png",
+      "sha256": "e54724750cd7b8e68e5779731abc2fc91f876b1d3fd7d56de427cc6c32a64736",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/031",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/031.png",
+      "sha256": "0e3d135ffd1cd083499fc3682d7f0f24336072a9f7cc256bffbdc822c143f05b",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/032",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/032.png",
+      "sha256": "fc15c2c901d8cf048a9191b0488cd10d029d3d45cae09eff4bb0af066cedc1b3",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/033",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/033.png",
+      "sha256": "ba4a0045bb9a31aae6931cd4e0a84b35712c8e4b355e8da7c67e5679fb3a2e00",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/034",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/034.png",
+      "sha256": "2f0c92e871c73dc099c39659987fc5ea8115398acbcc35a4f6c1ef479df22ed6",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/035",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/035.png",
+      "sha256": "993b2420c353760425fa966bf355bd92748aeb16600a1c24257e3771dc4d4ea8",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/036",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/036.png",
+      "sha256": "740d8194bc7812c5a1611d2c19a30a9e38e08ed1ecd6dd55acca66a7996eba1e",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/037",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/037.png",
+      "sha256": "ccc785628252dcea628059da5d383855da92a1404b66331bb1a4cfad1a9f53da",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/038",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/038.png",
+      "sha256": "41f4204d10e3b6f8fa5d479218bdd06ba4d5daf1fe1126cb291884b8e369af2d",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/039",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/039.png",
+      "sha256": "04458c8281133f330bb5dcca5f5bf3c6ac6ab0ec5e117cb05f298a237702ba6f",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/040",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/040.png",
+      "sha256": "1d942461e836afe11beb0d4a375695e41e6d048b2297d43500bafbc0ae8da0dc",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/041",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/041.png",
+      "sha256": "908dc9f89558d048ab22f0ec3ccee136a33b69eead06f9aeaa054090b08927bd",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/042",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/042.png",
+      "sha256": "cf651c2632822ceef7dee5aa6e83c1bf6302953b43e3021966cffd415bfaec88",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/043",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/043.png",
+      "sha256": "259bd50a170d0115fb67ceea8b51fa66053ac41056d0bf9c557a17e2522d6e68",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/044",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/044.png",
+      "sha256": "fd2b08277de403b66e2ee80609e5292ae60d4758c86be46badf3594ba1b341fc",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/045",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/045.png",
+      "sha256": "f2df63e23a6f2dee02cae99f9f324d7ca13d632d857b3d36b30dec4a72a68f04",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/046",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/046.png",
+      "sha256": "89ac33ccf63a3579c97cfcb1018a11cbf8c59512fa6b41ca44197c0fe25b3216",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/047",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/047.png",
+      "sha256": "410f0a1c906da1449a0100e5ac04ae0fd1fee4e5a0e9f294a25e31934c085ce0",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/048",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/048.png",
+      "sha256": "09e8e8525f5801ed5e855774234a2121882033b6f807eb805bc75a7451525bea",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/049",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/049.png",
+      "sha256": "a290023a4ab9e7a175c499c167313fa31cf4c35813101d56a8c19bb7bd8e8def",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/050",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/050.png",
+      "sha256": "e50e5e4af49dadddb3c8407bf85e673cc8d147be8a6290d73fe46cb5fd6a7046",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/051",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/051.png",
+      "sha256": "2ec7277621783f7854d7e873c8eaa9059aa92dc3666c039b129c5eac89fc4079",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/052",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/052.png",
+      "sha256": "7cc78aaceeb7fed23ea8f1a27c5fbc98fd970582f454a2dbfeeedbf1e1a16b9f",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/053",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/053.png",
+      "sha256": "ba2e6350c56ffbec048e3059bae36eccbd53ba36a64db5dde7996618d12de284",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/054",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/054.png",
+      "sha256": "648ec46d2a9656d9c05b5686e004bc61f5303d9107e8246f1f5650c6180dc12d",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/055",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/055.png",
+      "sha256": "53783f5972bdd6771644df71e40c2af4ee12de9d21daf6f4a03ce5d4bb7f3c4f",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/056",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/056.png",
+      "sha256": "fa3cb334c6d9a412e4225c379d9339b6abbbeeeaa8bacdbc16674380acfb7478",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/057",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/057.png",
+      "sha256": "bea11a21ca521a0db295a4ff8c93c3981f1b4735bc782f75d24ea9a7390b7b1a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/058",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/058.png",
+      "sha256": "6f97ba6e8cb4af1d1379828d55a00c6e10fc201e6afbd474ff933e30bef73c0f",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/059",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/059.png",
+      "sha256": "4cfedf6129433b61084982516668e22eb8ecfde555cce32e149f35ba36af01c3",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/061",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/061.png",
+      "sha256": "5bc97787aab04f2e0aed06c181a31568b030261d37d3e5d1968b3dbe31187b5a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/063",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/crownweave/063.png",
+      "sha256": "df2eabe55d374ccaa754988294dbeac0bbd1b8811e1b6d8f71a0b7dc76736e65",
+      "width": 288
+    }
+  ],
+  "quarantined_asset_numbers": [
+    21,
+    60,
+    62,
+    64
+  ],
+  "quarantined_count": 4,
+  "region": "crownweave",
+  "schema": "plushbound.enemy_runtime_bank.v1",
+  "source_artifact_id": 12619657737,
+  "source_artifact_sha256": "a59e27fa636cc50415a9f3439f8b2de58c9eb8a7337dbfc4f214eeea80ac3e33",
+  "source_workflow_run_id": 40248353238,
+  "status": "BANKED_WITH_QUARANTINE"
+}
