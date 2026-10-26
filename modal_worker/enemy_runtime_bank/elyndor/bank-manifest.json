@@ -1,0 +1,491 @@
+{
+  "approved_count": 59,
+  "assets": [
+    {
+      "asset_id": "reg/elyndor/enemy-battle/001",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/001.png",
+      "sha256": "e237736bf4503ad2c0c23753895b2e5603dc0c81fbdfde025a122a73c7c05a34",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/002",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/002.png",
+      "sha256": "e402fd17f9d7e8e15549a1a56bed3b1d99187b67ab0c1c818c5e64b771334aa2",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/003",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/003.png",
+      "sha256": "41ea44827c244af9db249317c6144e6961a5e6ac5df5fdc2c6355fc62da11385",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/004",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/004.png",
+      "sha256": "33e72114e44e4235b023f26e78edb3736c41e66be22d5b3f8e2804118c75fc3a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/005",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/005.png",
+      "sha256": "712e5a40053a40c72447fb8bcdb6657a7d0fde7e28d4ec8ea4c13f91a84dbd08",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/006",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/006.png",
+      "sha256": "3c4839cd95007fddf5f3e6abfe8836c1d305f070ba4cb06758a8ec81f44d83c3",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/007",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/007.png",
+      "sha256": "104fb2583a577bdb5433ee178ec4b7bb76810bbf7515addea97250b3f8f11a43",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/008",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/008.png",
+      "sha256": "8f3ced02daa62cb6792ba64bd5578770770723167515685bb06c26ec1faf8271",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/009",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/009.png",
+      "sha256": "5be4308a64c771959007d88750814b164575f62f0efe736bb5200d398d228d4e",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/011",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/011.png",
+      "sha256": "9541d2b9dfd1a0926f8cd39efd7faf00bc6753ff789c23f9d89df87d0505e6ec",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/012",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/012.png",
+      "sha256": "854bdfff719f8920f9c584c245294e01a98458dac39b52b40a735195433354ac",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/013",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/013.png",
+      "sha256": "80f4eccf95b42778768a06b8ba2dff1df10f0026f814eebe1ef7d748b9cd30bd",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/014",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/014.png",
+      "sha256": "8b6d2d87ee611cbc24e9eee10861f7b9789f4c39020f2d1aacacd37cff46744d",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/016",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/016.png",
+      "sha256": "f983e3eb2a82b8fc921cef4b2ae0ced5129769b556dac3be011d537d125b32f4",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/017",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/017.png",
+      "sha256": "aca6653c42f69bd1a2535a8290de380219a8a909edfac73c2d8e2e87066719ca",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/018",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/018.png",
+      "sha256": "0f7901754b481c1ab5b0a83c1f8c7afe8ce446658b9213a62d77cf7dc91e1413",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/019",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/019.png",
+      "sha256": "0366549cd0372821e2f8ece1b75a7339399b782604b9ec050ee8550242ef60e5",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/020",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/020.png",
+      "sha256": "fb0b808d56456b03c99aa70819d4284ea29d6b9ccdc201c60d47a76d1acfbb25",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/021",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/021.png",
+      "sha256": "201748944674acf903ab2b447893421471679d852a124b995ee2900d3e2dff04",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/022",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/022.png",
+      "sha256": "198eceb1c95c485bd5f67e31e5ca1844970caa1075bd188e3fdeed701684c003",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/023",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/023.png",
+      "sha256": "8795ebf5f71989bef833dba9e8ebb595594802117fa404cef85436b2d99c5f3b",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/024",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/024.png",
+      "sha256": "0cb5f3daddea403c7c7022f5095b3b299cdfb2153f21961eb0ed2061b621af0c",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/025",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/025.png",
+      "sha256": "b8cd9d606fef7852cc7eb7e519e30265049bb54795750eaf51636ccdafc9da48",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/026",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/026.png",
+      "sha256": "07ba50fa0018060e52cd1ba9efbbe81027d46adf273ebf42fd94843c19c82492",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/027",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/027.png",
+      "sha256": "22a4617ddad6430e460c616b5ff37004773ea9f43c764dfbee1ab3b13808294d",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/028",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/028.png",
+      "sha256": "8100ba3fe8b7657fa8d944e2e7b5e06e0cc5ff7e078a9cf9686d4f0c335d3c71",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/029",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/029.png",
+      "sha256": "82a0f538b38dcbb8eda36453faf9032eb5a97ea3166ca9a57369aae97bc13554",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/030",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/030.png",
+      "sha256": "eb3a931eeae4afd1b3d09dd229a681f93e7124ae36299019812cf6658d10574a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/031",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/031.png",
+      "sha256": "072cbb79289a72b803021a48d777789e5b13654844be8565f32b3e524bdcd218",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/032",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/032.png",
+      "sha256": "9c0048ff2702a1237809ce09830e52800d8dc6aafc370be8335c996d6e22e60f",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/033",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/033.png",
+      "sha256": "b55db82d3a8928d3dacd67db6702cee2c8dc6e2146efd525b2428d3a39d8e0fa",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/034",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/034.png",
+      "sha256": "8887ebebaf80d16d755d76df8260777e39dd38fbaa9a870122640edfdf63f72e",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/035",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/035.png",
+      "sha256": "ac03a9051990d5840a2e35f2be5c88b0ed4bda494c1924e83a4219a4dee96261",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/036",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/036.png",
+      "sha256": "810309ac62767f3860ef8276d6fd0de4270e62d04c67b5448704d08cec78bcd8",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/037",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/037.png",
+      "sha256": "46157634a34e8f229b811cc8e4a6196f07c89281c7d9c19f5001a46943ef244b",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/038",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/038.png",
+      "sha256": "d290289555a8b0288b8c9cdcd77c37a794399ab44e93e5eb63620021f4b0e159",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/039",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/039.png",
+      "sha256": "1b60fd93944a8ab9e202acefa72e60f74c8b3c31dd4747dfcb99765c80e85c0e",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/041",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/041.png",
+      "sha256": "b47392ad5fd70c7dacae79b9f4e95fbf35618a61a9eca2de7c1158781a557faf",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/042",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/042.png",
+      "sha256": "3fde289eb7d2fd7ae944eea16cfee404f13a94f2debf7bf56eecc5c692dbb05b",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/043",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/043.png",
+      "sha256": "9fc8422369cc78e902109d714fec08390583fb00d7284f1b3e97c10b1b2de6c7",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/044",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/044.png",
+      "sha256": "42d3485d43340eaa6345935ec53f4f6325d707f94d525b7be5fce0cba2e54d38",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/045",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/045.png",
+      "sha256": "dff2c0e184c3610cee523775c994e8eb574233aef1394ff6094c7ff3d405309a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/047",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/047.png",
+      "sha256": "4435f348674044a49a1fd93c4681aa0194565483c62ffda15eaee4fd6daa7b88",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/048",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/048.png",
+      "sha256": "d749d93dfe85a5570341a38c8070472f7409578c22d1f40457d7cbfa00220e26",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/049",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/049.png",
+      "sha256": "61994699bb1f8b55584f36ceedc68be725d866c9517213bbc2877a0e50581cd9",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/050",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/050.png",
+      "sha256": "af5b9c774c5ec29f1d43e2012f1b635ef88190d267b98d74a896768685390a97",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/051",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/051.png",
+      "sha256": "6b5538fc9c473c33b66b094879bbf7c1e641a928e7d08299fdf98f195a68eb07",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/052",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/052.png",
+      "sha256": "949ce063407af526d6453f2ffa59453574890bf71f5a3a18042606aa37aff40a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/053",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/053.png",
+      "sha256": "fd5b21e57a891488e4b80379c6315ffc8c69c318525ae916c985df284d5400c6",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/054",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/054.png",
+      "sha256": "ca86b9fb69e6defcf6a2d40aed6a4840b71de782dc7d37cd0dc16c86ccaf16f9",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/055",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/055.png",
+      "sha256": "644a6e47c92a0950d392fe48a4a6d872fcb5b8642c0da5b8ca89259b66e88831",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/056",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/056.png",
+      "sha256": "ab68521e9f1030a52d270fdfd5783d4ceb6baa4e4db6c5c0bb45b5424261f3c3",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/057",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/057.png",
+      "sha256": "9ed8e695c29c8221ded944c73228dd2788f1bc16b100ac80e25884cd4068c5f2",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/058",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/058.png",
+      "sha256": "fafb8d392569743ba1bacd764671e3396e68d5cc612e6fbc7e0343db266d96a9",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/059",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/059.png",
+      "sha256": "bf6850893ef5ced68643a81f6450e23b59fd100d2c6978b2fd01698596756c2c",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/060",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/060.png",
+      "sha256": "a4175793fca36b044466fb1aaf9c4d29a4f229c9fe3822b4abc05a5cae73038c",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/061",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/061.png",
+      "sha256": "b23741b1816ee0c57595b03ce1d2c8230725c376beddbf717a549c5941757ea6",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/063",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/063.png",
+      "sha256": "9f642408ce531233a818055983077b635bde8ac27be03116c299ff2a33e1c94a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/064",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/elyndor/064.png",
+      "sha256": "bd30f936875c43a1ebc38eb209f20e42d808170d98fcdcfe8ede1e21f0dba5da",
+      "width": 288
+    }
+  ],
+  "quarantined_asset_numbers": [
+    10,
+    15,
+    40,
+    46,
+    62
+  ],
+  "quarantined_count": 5,
+  "region": "elyndor",
+  "schema": "plushbound.enemy_runtime_bank.v1",
+  "source_artifact_id": 12619009492,
+  "source_artifact_sha256": "4c2fa14d9f0fd92a1351c15064a90374ab9f491b4745e0f5403f790942b11bd4",
+  "source_workflow_run_id": 40247730376,
+  "status": "BANKED_WITH_QUARANTINE"
+}
