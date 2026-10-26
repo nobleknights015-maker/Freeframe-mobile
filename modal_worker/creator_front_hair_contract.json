@@ -1,0 +1,45 @@
+{
+  "schema": "plushbound.creator_front_hair_contract.v1",
+  "family": "creator/front-hair",
+  "status": "CANARY_RUNNING_BULK_LOCKED",
+  "logical_range": ["creator/front-hair/001", "creator/front-hair/096"],
+  "count": 96,
+  "dimensions": "144x192",
+  "layout": "3x4-48px",
+  "asset_role": "transparent_recolorable_front_hair_overlay",
+  "paired_family": "creator/back-hair",
+  "hair_color_asset_family_present_in_ledger": false,
+  "canary": {
+    "logical_id": "creator/front-hair/001",
+    "run_id": 40409393417,
+    "workflow": ".github/workflows/run-creator-front-hair-canary.yml",
+    "max_paid_renders": 5,
+    "max_paid_extractions": 4,
+    "bulk_authorized": false
+  },
+  "shared_body_anchor": {
+    "locked_body_count_measured": 24,
+    "cell_size": 48,
+    "subject_top_y_min": 1,
+    "subject_top_y_max": 1,
+    "head_center_mean_x": 23.6528,
+    "head_center_stddev_x": 0.6841,
+    "conclusion": "shared overlay anchor is viable across locked body builds"
+  },
+  "required_canary_gates": [
+    "exact 144x192 RGBA machine contract",
+    "four directional hair-only sources",
+    "no skin, face, body, mannequin, or clothing contamination",
+    "transparent layer-safe edges",
+    "compact cell fit with no clipping",
+    "composite QC over creator/body/002 petite representative",
+    "composite QC over creator/body/008 balanced representative",
+    "composite QC over creator/body/011 broad representative",
+    "visual approval before any bulk front-hair launch"
+  ],
+  "safety": {
+    "catalog_wide_launch_authorized": false,
+    "bulk_paid_generation_authorized": false,
+    "fail_closed": true
+  }
+}
