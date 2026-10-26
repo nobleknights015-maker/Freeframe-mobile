@@ -1,0 +1,36 @@
+{
+  "schema": "plushbound.canon_portrait_character_visual_gate.v1",
+  "character_id": "chris_bourn",
+  "status": "FAIL_RETRY_REQUIRED",
+  "technical_gate": "PASS",
+  "visual_gate": "FAIL",
+  "bank_authorized": false,
+  "batch_launch_authorized": false,
+  "evidence": {
+    "run_id": 40263123572,
+    "artifact_id": 12624753712,
+    "artifact_name": "canon-portrait-canary-40263123572",
+    "artifact_digest": "sha256:e1177f5780818d547b17302be681ae9e30ea6a431bd5bff94c5afc7e2434606c",
+    "raw_portrait_sha256": "caafc83feef120d220ec4c40dac9be827c2179a386d7c7498499fedb64acde90",
+    "runtime_portrait_sha256": "0d2c34d20d82fc606785072efbd2f75272e30601192fe03c7d83ec649904805e"
+  },
+  "reference": {
+    "source_library_file_id": "file_000000003568820db0f9d36021458019",
+    "source_library_sha256": "34a886f42a476d09649c6584731d043cd658d18395692090109ece0f3bd09104",
+    "conditioning_sha256": "362e5050b74f07094f36d27825cdae9dd19b3c18768ff20fd7097e3bd616b165"
+  },
+  "review": {
+    "anatomy": "PASS",
+    "geometry": "PASS",
+    "alpha_extraction": "PASS",
+    "identity_preservation": "FAIL",
+    "style_match": "FAIL",
+    "outfit_detail_preservation": "FAIL",
+    "reasons": [
+      "render drifted toward glossy 3D/doll presentation instead of established 2D anime JRPG illustration",
+      "facial structure and hair silhouette were simplified enough to weaken canonical Chris identity",
+      "outfit construction and detail were simplified relative to the canonical reference"
+    ]
+  },
+  "next_action": "RETRY_CHRIS_ONLY_WITH_HIGHER_FIDELITY_CONDITIONING_AND_STRONGER_2D_STYLE_CONSTRAINTS"
+}
