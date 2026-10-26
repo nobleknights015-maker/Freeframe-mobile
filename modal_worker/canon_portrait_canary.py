@@ -18,7 +18,7 @@ from PIL import Image
 APP_NAME = "freeframe-worker"
 PRODUCTION_MODEL = "black-forest-labs/FLUX.2-klein-4B"
 RENDERER_ROUTE = "flux2_klein"
-REFERENCE_B64 = Path("modal_worker/canon_refs/chris_identity_compact.b64")
+REFERENCE_IMAGE = Path("modal_worker/canon_refs/chris_identity_compact.jpg")
 REFERENCE_PROVENANCE = Path("modal_worker/canon_refs/chris_identity_provenance.json")
 OUTPUT_DIR = Path("canon-portrait-canary")
 RAW_OUTPUT = OUTPUT_DIR / "chris_bourn_portrait_raw.png"
@@ -39,8 +39,8 @@ PROMPT = (
 
 
 def _preflight_reference() -> tuple[bytes, dict]:
-    if not REFERENCE_B64.is_file() or REFERENCE_B64.stat().st_size <= 0:
-        raise FileNotFoundError(f"missing canonical reference payload: {REFERENCE_B64}")
+    if not REFERENCE_IMAGE.is_file() or REFERENCE_IMAGE.stat().st_size <= 0:
+        raise FileNotFoundError(f"missing canonical reference image: {REFERENCE_IMAGE}")
     if not REFERENCE_PROVENANCE.is_file():
         raise FileNotFoundError(f"missing canonical reference provenance: {REFERENCE_PROVENANCE}")
 
@@ -54,48 +54,43 @@ def _preflight_reference() -> tuple[bytes, dict]:
     if provenance.get("catalog_wide_launch_authorized") is not False:
         raise ValueError("reference provenance must keep catalog-wide launch disabled")
 
-    encoded = "".join(REFERENCE_B64.read_text(encoding="ascii").split())
-    expected = provenance["encoded_payload"]
-    if len(encoded) != int(expected["base64_characters"]):
-        raise ValueError(f"canonical reference base64 length mismatch: {len(encoded)}")
-    try:
-        raw = base64.b64decode(encoded, validate=True)
-    except Exception as exc:
-        raise ValueError("canonical Chris reference payload is not valid base64") from exc
+    expected = provenance["reference_payload"]
+    if expected.get("path") != str(REFERENCE_IMAGE) or expected.get("encoding") != "binary":
+        raise ValueError("reference provenance path/encoding mismatch")
 
+    raw = REFERENCE_IMAGE.read_bytes()
     actual_sha = hashlib.sha256(raw).hexdigest()
-    if len(raw) != int(expected["decoded_bytes"]):
-        raise ValueError(f"canonical reference decoded byte count mismatch: {len(raw)}")
-    if actual_sha != expected["decoded_sha256"]:
+    if len(raw) != int(expected["bytes"]):
+        raise ValueError(f"canonical reference byte count mismatch: {len(raw)}")
+    if actual_sha != expected["sha256"]:
         raise ValueError(f"canonical reference SHA-256 mismatch: {actual_sha}")
 
     try:
         with Image.open(io.BytesIO(raw)) as verify_image:
             verify_image.verify()
         with Image.open(io.BytesIO(raw)) as image:
-            rgb = image.convert("RGB")
-            width, height = rgb.size
+            width, height = image.size
             source_format = image.format
     except Exception as exc:
-        raise ValueError("canonical Chris reference payload is not a readable raster image") from exc
+        raise ValueError("canonical Chris reference is not a readable raster image") from exc
 
-    if [width, height] != [int(expected["decoded_width"]), int(expected["decoded_height"])]:
+    if [width, height] != [int(expected["width"]), int(expected["height"])]:
         raise ValueError(f"canonical reference geometry mismatch: {width}x{height}")
-    if source_format != expected["decoded_format"]:
+    if source_format != expected["format"]:
         raise ValueError(f"canonical reference format mismatch: {source_format}")
     if width < 64 or height < 64:
         raise ValueError(f"canonical reference is too small: {width}x{height}")
 
     provenance_sha = hashlib.sha256(REFERENCE_PROVENANCE.read_bytes()).hexdigest()
     return raw, {
-        "path": str(REFERENCE_B64),
+        "path": str(REFERENCE_IMAGE),
         "provenance_path": str(REFERENCE_PROVENANCE),
         "provenance_sha256": provenance_sha,
         "source_library_file_id": provenance["source"]["file_id"],
         "source_library_sha256": provenance["source"]["sha256"],
         "derivation": provenance["derivation"],
-        "encoding": "base64",
-        "decoded_bytes": len(raw),
+        "encoding": "binary",
+        "bytes": len(raw),
         "sha256": actual_sha,
         "width": width,
         "height": height,
