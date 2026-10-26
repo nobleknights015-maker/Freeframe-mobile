@@ -1,0 +1,519 @@
+{
+  "approved_count": 63,
+  "assets": [
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/001",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/001.png",
+      "sha256": "75841ac2be26982a130be5d995e2ec65d41b6177b4fda553e97c2b378cd2d436",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/002",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/002.png",
+      "sha256": "1d6e9b5c45eff9a7c3a1d91625315e5a36bdf76e0a869e258ecb02c950f407bf",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/003",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/003.png",
+      "sha256": "8ef1ca4eec526d3a296df5c7484b161211472f820179bced2a32fd72ef7736e8",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/004",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/004.png",
+      "sha256": "176fd46994477e9b9f5c684bb02c9a7532800161e3e8ec3a11805b365ab615df",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/005",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/005.png",
+      "sha256": "da0fd2b318d8c9608096c8d2adf03ed2e58ada63f65e0dfb28a5a707496a8d3c",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/006",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/006.png",
+      "sha256": "9e804f43228f6a232c08cfe0c8fe62973589f26f7704ff190862984d54c3bbb8",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/008",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/008.png",
+      "sha256": "f6f10a74e0ea53ee053ed9a1ad04f4aab606b5d09d5fffa4dee93aba25fcb58e",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/009",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/009.png",
+      "sha256": "3c59622f83db408bf34c50a3eea617f6e37b2a941973bce51479024740015df4",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/010",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/010.png",
+      "sha256": "8e9cc62b426262f34ebf5ab9f2c1ab517a7ed2e318f94681f2f318217fa3a932",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/011",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/011.png",
+      "sha256": "fea361942ad9e471c371d2857564e3ab7b7f13a537993f0ce80d546b2ef95f50",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/012",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/012.png",
+      "sha256": "213875ac5aaf10223a0d06a6c95dabf19e871940995ebb806f4dcd88dbeff3b1",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/013",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/013.png",
+      "sha256": "0647749970273c5c7c0ba56b139b15a6ba07a2909c919d50c5169207ed673626",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/014",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/014.png",
+      "sha256": "a0586258faa8d2addf52cbc7a7fd1f7928e11eb90f90f7d44840435656bc0320",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/015",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/015.png",
+      "sha256": "9228ea67655b182612dacf9e9208e9c63f566b218e2f38649efcb3fd53e3a28f",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/016",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/016.png",
+      "sha256": "e2ab78817572643c1e653abcff67aea97b60e74ef7319aeb82e63974cae4ffa5",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/017",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/017.png",
+      "sha256": "3453472b5476e25e353863aa760b1df13ce92e0a65e784f90861870a11da63ca",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/018",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/018.png",
+      "sha256": "65950780ea9baeeac64252b884ddf0a07293e521eef89e153a981843ed530eb3",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/019",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/019.png",
+      "sha256": "9f543dda4b11bef6e1d77ed48880d36ab41b09a069e57b2f6f1c8e20b36975ab",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/020",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/020.png",
+      "sha256": "d2a65bb952478df488ae5252fcd14d7bdb29312aba765f1427ed706e223100b0",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/021",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/021.png",
+      "sha256": "511fd2889243e421a6c151d85f2ce022b85166416881fa7b0257293825d6b949",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/022",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/022.png",
+      "sha256": "490c5e2e27590ef434baf33cef9183fc991e3daf658c67145e8eab21fd8101ca",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/023",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/023.png",
+      "sha256": "d315a8bf2f06041a9a59ecf3a31adaf47c3ec5beef2cb6c9d553e76c526edd73",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/024",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/024.png",
+      "sha256": "cd56be0fb74d86d251ac9a2873fb3ab4f6e18c44bd69db31e4c57eb81eba21b5",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/025",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/025.png",
+      "sha256": "c1656b83ad1534999289cc1c279e833fdedc26a2156eb1dced1bf3937afafdc6",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/026",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/026.png",
+      "sha256": "58896769672344c16d03e3a5ebfbf4dd7bff140ec8f96562bab756c8a2762b01",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/027",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/027.png",
+      "sha256": "677459a01e754cc9822083772c813d43d0c767b7a637755fa98008b5e8d28388",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/028",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/028.png",
+      "sha256": "e176ee13bf39d16811960f34dd68fbcee9e59f47541c2e78f5569647df166a20",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/029",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/029.png",
+      "sha256": "6b9503086a38614a78adc7f37723aa1ea0184cdac2a2e2ee33d8d1038634d57e",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/030",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/030.png",
+      "sha256": "ac6e693083af525c7bbbd9d9be75119a78985d3472aeeacfe56b31aeb1807388",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/031",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/031.png",
+      "sha256": "295ea039e703666734c62706fdc34f45076c578131c42092e7641206c3b935ae",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/032",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/032.png",
+      "sha256": "a0e8fabaccced5aa775cea0b94e75954e95c8c3708043722a6a60910ebf0761b",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/033",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/033.png",
+      "sha256": "d4e32b0e800fbe18887edc726264af5e0813fb0389f795dc1cafc0d0356ef8bb",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/034",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/034.png",
+      "sha256": "6280663316867ff8975a33c887233b0095cf9ad753f0a6b59ab2dcd9544fcb45",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/035",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/035.png",
+      "sha256": "251c226638789026683756bfb8d85ddd3fdecbe1d7defba1c9fde70bc7d6b8f1",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/036",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/036.png",
+      "sha256": "93ec2cfe7f871e5da59b3e1a8f1a7cf27f11ec4929c9c3125ca83e8ed4529cea",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/037",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/037.png",
+      "sha256": "d73ab2042e9ffd76951a79f302f14dadcdfbf74a1b6439f28556bdce92a3b565",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/038",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/038.png",
+      "sha256": "b59d1b22b77f8cdd9776f600d9b878d6ea08a3bf8203f85c1a253569a42cc1b7",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/039",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/039.png",
+      "sha256": "380bc395003fd8349dbcf666a42e36e25a3d9b95aba08fe80f8f494996316d1d",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/040",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/040.png",
+      "sha256": "18bf6f7f69b22c6edf93070e8e3c530c441b0ed2270d372187f835b829cff9bc",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/041",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/041.png",
+      "sha256": "b9adc87ff235e099c6825216e46e24195e506d61d7915d11c787403d97566eeb",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/042",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/042.png",
+      "sha256": "70c475b5f290aacdb7a62c1f780ca3ea7acaea040abb5b3f6df255e8d4e75f50",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/043",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/043.png",
+      "sha256": "ab7e0238ba0df0c1bdec0dc254df4f86650f97a7a3243e7655b376512f75bdf0",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/044",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/044.png",
+      "sha256": "cb50708284eeced5653b357ff2bc66bd009668e5eacbc6e4774e48e30fb7f5fb",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/045",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/045.png",
+      "sha256": "9841975625ceb55f6701a185475cf461daf2e493cde96d306e17a2ae5d0dbc7c",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/046",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/046.png",
+      "sha256": "fbf102e2e4ce59b7ea715f034a169bae19df529c1438303f92a71073175674b3",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/047",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/047.png",
+      "sha256": "7658d18776f320114a887095e020c1ee97c07d96e3c2909ebf9018b349d86c29",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/048",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/048.png",
+      "sha256": "86cba184ecb333615139d7190ef1a12bcc1adb42416151e91443ad315c1bbf96",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/049",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/049.png",
+      "sha256": "c8d5435397c9e6a98125cc4097da58ade265a35d537c3a0bf1b14599e7c5737c",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/050",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/050.png",
+      "sha256": "fa61d86339fccb3871bab4251ccbd2f89c418566a46f39478a407729effafd9a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/051",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/051.png",
+      "sha256": "bdb2246197a55cde65369fca3b1f4f049c4d687bc2893d0c5e3b9461a62b6961",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/052",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/052.png",
+      "sha256": "7e21b79be3c9299d965d7f2c45379b76cfed1c0fcb6869977690456694ed04db",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/053",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/053.png",
+      "sha256": "d99d95149ed982cec3eee1a42fe075825aab2e9e2efa8baaed28c2390d869594",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/054",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/054.png",
+      "sha256": "a6532d95857610b538dba2be6966d0b8818b05f8573bba4cf84ec0dc8634a8fd",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/055",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/055.png",
+      "sha256": "f752913a7c6a6f1d712aa417dbf34acfc77018597d4c94a05b7f675d5bb11a71",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/056",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/056.png",
+      "sha256": "c66545cd41e8a0880b1006a62603d1679f0fe06405850179f0dc08a22dd1e846",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/057",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/057.png",
+      "sha256": "cb6aa696c0b50396e4dd42b8eeb53029f0a1535b7180e2231f6306201b897679",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/058",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/058.png",
+      "sha256": "20d39050d7da06257e57a8b797426c1dbe8cbbbc709c0f1f730feda01291b457",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/059",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/059.png",
+      "sha256": "6187fdf5c5370f3064beeae5ae54e7d980b1ebf13fe32eb4bc36f8cf1ec49ace",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/060",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/060.png",
+      "sha256": "b974a68a260d10b171ce720fc1f29b0d1614ea0ccee6e5c6ca0bbf482678a458",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/061",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/061.png",
+      "sha256": "4c363a96b3af9363d13d915e23c6a525d7da6576a3de65e1c0149205cb448f57",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/062",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/062.png",
+      "sha256": "79e50d821d1000765922c39e1b4733bf736f80be589d1bdaf787a884de1d9acb",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/063",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/063.png",
+      "sha256": "cf3a2e169ffa1a8468e737465c70015945c66a46943225fcc75cc6e83d0847c2",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/gloamfen/enemy-battle/064",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/gloamfen/064.png",
+      "sha256": "fb51a52da7e1ed47175db47ad66b10a1a2560c60672899bc9ed46bfac96da0c0",
+      "width": 288
+    }
+  ],
+  "quarantined_asset_numbers": [
+    7
+  ],
+  "quarantined_count": 1,
+  "region": "gloamfen",
+  "schema": "plushbound.enemy_runtime_bank.v1",
+  "source_artifact_id": 12619328570,
+  "source_artifact_sha256": "63378fcd1ae7022a66dd24048591b3a5fc443b66caaf03128c67384a693480df",
+  "source_workflow_run_id": 40249590163,
+  "status": "BANKED_WITH_QUARANTINE"
+}
