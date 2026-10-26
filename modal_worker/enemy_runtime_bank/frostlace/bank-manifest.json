@@ -1,0 +1,498 @@
+{
+  "approved_count": 60,
+  "assets": [
+    {
+      "asset_id": "reg/frostlace/enemy-battle/001",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/001.png",
+      "sha256": "5cb17927a0459017824694ff973c2ea21eaf4e5e111a96a322c610da5a6b100f",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/002",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/002.png",
+      "sha256": "f6b0f68d7ac40726ed9843dfe2ce069278c50e1c73f21c7a95e87ed113c63589",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/003",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/003.png",
+      "sha256": "45d7264469b8fd726eb9e773440c5ee0fc4204f4c62cd8db492d6b7f088541eb",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/004",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/004.png",
+      "sha256": "5f3d5619a6a1f5914160fd6760e8e9b33f6a0ec3039edd0054f8697793e69b8e",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/005",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/005.png",
+      "sha256": "719bc25b9f364ce96a6685cba3c24816af1059ebfbbb95d9c39656235bf62fa9",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/006",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/006.png",
+      "sha256": "443c6cd1b3cccb99f3fb78661921e84915fab0da666f3c0a355a8fe46275d677",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/007",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/007.png",
+      "sha256": "be8a21b6256f378b8b80c46c9e9d3ab872a6176122bf81cd1692bad7625fe97d",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/008",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/008.png",
+      "sha256": "f9d9b5fde9fee3b77e22ebffd375e1c66a061b242278ab1a4482d695ee1a43dd",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/009",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/009.png",
+      "sha256": "fdd9872e1a91db6035ab11883109755fb1edfe4a6d3e9f5d89518af0ef862217",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/010",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/010.png",
+      "sha256": "2c648b6a9cd74a796a39151a2d0368f0d0cf862a9df0408be38f44bcb1153abb",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/011",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/011.png",
+      "sha256": "45bddb0af39c7f2125653267c3feb6a3d855fee08b052f64d0921a5afff16d3d",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/012",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/012.png",
+      "sha256": "4cfeb3da703ff8c70f0594bb959e1dbce4224d4ad8f32226c7ebb2a072534891",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/013",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/013.png",
+      "sha256": "1c78f19b144408062aa11c13490e9ac12e1d3efe3ae52a6099ff5d8d65fa6645",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/014",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/014.png",
+      "sha256": "5ec92a2faad821dc6a84a87a60bfc9644faff73479f3b27f42d0c06dea37d513",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/015",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/015.png",
+      "sha256": "282a3b853a674290ad5d80af74df936464de723f2c63adafb2f43963a2597b58",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/016",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/016.png",
+      "sha256": "c3ef6e57ba07d46a68e12d903d93764030dc1ff8974a9fd494a99cedcdb2fadf",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/017",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/017.png",
+      "sha256": "9a8acf78b38f2180e30312f3a0c158d40bbd9dbed97f51d84715d578002a9501",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/018",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/018.png",
+      "sha256": "ab3f866cd791372c7ab8831e9676d169b1d8a4a92f2560f3dad20d9607e51c05",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/019",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/019.png",
+      "sha256": "b9b5036264ef061c4a0906abf6d8a0d55509b480f27b41e9f742a7382e527ac3",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/020",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/020.png",
+      "sha256": "91a5338395fb2feb10c05a101c63bcd8b44ddf804819f2b97e84fd85c81bd85d",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/021",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/021.png",
+      "sha256": "6581f700502ed215369689aff0446fb371cd650ea1ed3ff6f6e3bbc712db1a4e",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/022",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/022.png",
+      "sha256": "9e5180e38bf923eb0262d368249a8383909b3f2b549e1c59e33ba8ed59e80a23",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/023",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/023.png",
+      "sha256": "7c0587893ba03b76cd3b5df01edc0df81d9451b0fb37bfd2565f9418d3c1d215",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/024",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/024.png",
+      "sha256": "d2f52276196448c9fd47246dd1c21dc561c160439d9a6b819e31eb604730ca92",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/025",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/025.png",
+      "sha256": "725dd92c339da8a3593d690cbf9be59bc60f2ecf9f19aafcc14b5497f0a19d4d",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/026",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/026.png",
+      "sha256": "88b9c012aa92184dcd350979663aa71c637eff668aac416ca1d30b24ac3b186f",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/028",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/028.png",
+      "sha256": "289e843022870bd100df9a34a0ca88c3f737a438c6cc23fba894af9ff62f86c9",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/029",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/029.png",
+      "sha256": "54a46fcec97171413fb06c9bfbb0cf4824a19110579501031e14f2b3aa946f07",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/030",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/030.png",
+      "sha256": "856044afc144ec2c871069391d806a699e6f92200be0b5f2fb55433155086622",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/031",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/031.png",
+      "sha256": "9f56e8b8693873d79d2e682421d0e145fbbe9ced344d01ccb5cdadf0f410ca9b",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/032",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/032.png",
+      "sha256": "237dac89620c5dde9f8a171cec1f92ede9bf2289e8efcf02038b16d8076d3a5e",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/033",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/033.png",
+      "sha256": "47704527fa1178988bb5429f79a15df786f2909737afcae53e13f7e9773f3b07",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/034",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/034.png",
+      "sha256": "2c605cb6f939708bb4cd5f249f5c9831bd75e45a2c56c5f60aeeb98d82887917",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/036",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/036.png",
+      "sha256": "a09aaa179d3f6fd0811c28766a9bb327ee3ef0b410a9988bf97ab53b5224faa0",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/037",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/037.png",
+      "sha256": "63e9488b777805ffbae95c7243b6c9662b9c837277676f7deacc0dd83d873bbe",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/038",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/038.png",
+      "sha256": "72c80f1d1785b03607fa7017fe3d4d306c18e3f85bf691760069cd8bb53bb799",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/039",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/039.png",
+      "sha256": "d4a16e1cd1cc1845eef1810e9cf326b0d2805c09b3adb26e59c94acd5ef91320",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/040",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/040.png",
+      "sha256": "b3403e2247a6615931a69cc96b72bd43145e6cfe56c8cd842df742f9c9427d51",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/041",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/041.png",
+      "sha256": "138d711ec368dd5714183d3c800c4981204455e1b8ae90f91f1fe7745f2f6a93",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/043",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/043.png",
+      "sha256": "7e1f7f4607aad179856a078cd8b53f2b3ed2e6627dd9536a924b9314cc18b80a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/044",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/044.png",
+      "sha256": "ead98a866f5a76f2c3718215e60d65ece9a2ecfebab29f7a25375584f02d6ba0",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/045",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/045.png",
+      "sha256": "29b289e56aff084a0c7ddb8a5041f8d842fc26a5c7016b948957c5183e0a6fe3",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/046",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/046.png",
+      "sha256": "91999b60a5eac67b322b74f4de66d4725d02a61fa5bdf3f28950c07c9414aacc",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/047",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/047.png",
+      "sha256": "a63ef7662525f7d025bdee0d098bf85ad6f2560151be189b7850616c36af3152",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/048",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/048.png",
+      "sha256": "9efa54b9bcc1fb9f4f9ba1056540d935299176f034db86755b7ceb6ebfbbf3a8",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/049",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/049.png",
+      "sha256": "b5ed0375ea1b7a87546a8ceb763f4947167f898fdbe028ea8d51c467143f5e76",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/050",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/050.png",
+      "sha256": "dbc221e6377b049660c259d909e4a7b2a978514934b4429184358a48a905576f",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/052",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/052.png",
+      "sha256": "6bf877c7fb92297fa28a319883dc7f9ea98116e7ead8a4f9b809d581ca051550",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/053",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/053.png",
+      "sha256": "81d2b0421fab29cdf41ce055fe4246e1261195364bd4d440adb5e0c81e5f2515",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/054",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/054.png",
+      "sha256": "7acd50b75102113f81ae7258cd3da7a68c959161af4e3ac58f0787a45d6bed52",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/055",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/055.png",
+      "sha256": "48d95146dcd80d96130c3b19f61c200e6854e319ebe990d528df3e4bec5b043d",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/056",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/056.png",
+      "sha256": "615c07ff39120d3784dba4f249ed044894f6c2f49b496dd2092fff1778784605",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/057",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/057.png",
+      "sha256": "99b36a051801186496a81f6ed352abf54d916ab6bc0b8252cfc4a2d741ae27ba",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/058",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/058.png",
+      "sha256": "61d426e33de80a61b9d9dd36bb6d763013c72b24ee7205bd28d17efed31ee707",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/059",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/059.png",
+      "sha256": "7f82201f1e611103727112cc150e962fb33ad1a5f4659e4c969c960c00b66715",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/060",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/060.png",
+      "sha256": "09c012e9b941867d372ea21dd3fbcf9de5341f87e8d420e3cb463b8e0a378690",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/061",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/061.png",
+      "sha256": "588aa53f97cc9244713b679115890c5eb0a1adc8770f89c8282b5a739c9614c2",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/062",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/062.png",
+      "sha256": "2fdfd0d2a6b0aee8c53a4d4c3d44b31e50fbadec8f37f5a1bfc40c929f2d04ee",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/063",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/063.png",
+      "sha256": "a0f57fc0adea744df5bfeda607c86157b060fa5af1e782d68cd913d2ffbbae88",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/frostlace/enemy-battle/064",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/frostlace/064.png",
+      "sha256": "382151ef72213303682952104cff8ad3b941953138e5d489a901ba76d0c37da5",
+      "width": 288
+    }
+  ],
+  "quarantined_asset_numbers": [
+    27,
+    35,
+    42,
+    51
+  ],
+  "quarantined_count": 4,
+  "region": "frostlace",
+  "schema": "plushbound.enemy_runtime_bank.v1",
+  "source_artifact_id": 12622483709,
+  "source_artifact_sha256": "7cab7061c29e9f9a04339e0a8a4e1e3fe876a9986db66ee209b525f7a1cea839",
+  "source_workflow_run_id": 40257308120,
+  "status": "BANKED_WITH_QUARANTINE"
+}
