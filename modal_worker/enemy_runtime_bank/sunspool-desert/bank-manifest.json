@@ -1,0 +1,512 @@
+{
+  "approved_count": 62,
+  "assets": [
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/001",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/001.png",
+      "sha256": "535f4c1bf4bcdef176ec4f3143a091e8cdd0ef541cd6428fe4d21a717716a170",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/002",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/002.png",
+      "sha256": "3bf17e493286c607603718a5f0839a9014d96d1c508de21f40aad6d5b1ab6a41",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/003",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/003.png",
+      "sha256": "7c9eadade4b1b431403a70c03fc9fd75a56e8e02b149ecd3fdc1ca93cf50a229",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/004",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/004.png",
+      "sha256": "25081e1d274f98f4cf76d754812eba5a2997a00f622ff6e1529c623090ca73a7",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/005",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/005.png",
+      "sha256": "3cb2154d18bf7f4dba0702717c284d382febaf620873603bd670bbcf441ad730",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/006",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/006.png",
+      "sha256": "3f29f3299a70c292455fffad2b9bfa5c9e90a82ecccb9ac862ffd0b4ee45fb5a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/007",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/007.png",
+      "sha256": "8e5a91ea639897dd931d0f9e030e6c7ae028a90457aafb02327bee3c5466d356",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/009",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/009.png",
+      "sha256": "e0290dde8cd859ea4f00c392421b472fc305b6a3a4a74a2f89cdd9432e3de77f",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/010",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/010.png",
+      "sha256": "aee69d9c35aa6ae1c83fe62476ed95b207e8081638a2eb2dea3b489af4d46c73",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/011",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/011.png",
+      "sha256": "45367687d07d617af8c271c449153d8b69f201874978e95dcc9e842d24488457",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/012",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/012.png",
+      "sha256": "8d4d3889870391bb6e5505199321905fbe14bfbb3ec47138894d163d7d881ff6",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/013",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/013.png",
+      "sha256": "fa541752dd24c384a1bae97e246a1b18b7968994c8fdf1fb44019aa09173a7b4",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/014",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/014.png",
+      "sha256": "3d64c8dcedc2ee9d73e1a20772047a83a1076e3b11859a64b1197415a1b99840",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/015",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/015.png",
+      "sha256": "c78579d62c3cb00db3c783b575188d79afa57a97bed7f8a4f99bebfb34aa17a9",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/016",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/016.png",
+      "sha256": "83e82328166d978bb3d0863038e4f5707efb930301e3d5dcbd9f39e1bf0303d0",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/017",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/017.png",
+      "sha256": "db0a0f966bee61f9f622f7dc57b981aa71c7e655eb37f1ff7c9d7a21aca0a554",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/018",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/018.png",
+      "sha256": "fd4bd4d254e3e9d2f1afb9e48fb4e62b7d3edbe0b349626d07370a24b24d409e",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/019",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/019.png",
+      "sha256": "fa0d42d12e39538543648b977a4a8c03fdbf3642bd5e73501f51cef27e9ca7a1",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/020",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/020.png",
+      "sha256": "5ab25ee094cad44a6e040d017fcde9faa279b4f3b43ebcf794ad787a8b82f927",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/021",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/021.png",
+      "sha256": "7ed99dd820752809ed7778bb1f0cd8f3f1b1641e636a0598cea8505bad1409e8",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/022",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/022.png",
+      "sha256": "b1ae9579bc73564ce3592281a849999f80aed3183f3f617b60db428e99ed0d4c",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/023",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/023.png",
+      "sha256": "71a5e91f0df3e9931ebbffa3987378b46b53fd4f73f9b13b444520ae934a9c92",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/024",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/024.png",
+      "sha256": "539af7904d1fdf0eb12fb9e608fee17dd7e1e99eb433b70d40724a2f524a8a9a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/025",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/025.png",
+      "sha256": "c1f04b5ad6f9f8de422b88421c793393b088e93e59f4230a85a85ccd561c3737",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/026",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/026.png",
+      "sha256": "382a5553e03013a6595de9a7b6111e16fb0ea2b69f42507bb724ac5170ca9aee",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/027",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/027.png",
+      "sha256": "c661cbf2d02aedc6f4b99478e43af660392adde815ee501d1123657ac85cd967",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/028",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/028.png",
+      "sha256": "7b586bd42d533918c104beb71e91d1dd107ab32b8cc205f7471a6b2ac8eacb5c",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/030",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/030.png",
+      "sha256": "ab89fab031247f6e466ed110f41e6f7b91c09814afa2cef77a1683c0bb5ec0f4",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/031",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/031.png",
+      "sha256": "93dd8bfbce010c2565bb450dba0abf03a4117ec0fc88c2e751ef02368308f565",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/032",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/032.png",
+      "sha256": "56ccd5715fa36b74c2b41a89eece08e73a9db17e6ed895e72efc3344b4c96e87",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/033",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/033.png",
+      "sha256": "bda0ccb3871c93beee16c93a0f19ec070717f1de5c8a17a08b0c6f7f11b0656a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/034",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/034.png",
+      "sha256": "5baf89fb9fcb5c3c8568e5f973f2305937b99d5ad1cde81dfa35a0af4061a5af",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/035",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/035.png",
+      "sha256": "13c0a24c824b6ec80bc1e4efb4b42225090bbf93b27cfb0d322f166723d8126d",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/036",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/036.png",
+      "sha256": "daf0a710c5ab04fbf75c7c527a78c7493020ad54d6c19f28d3599e0a7ba38d9a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/037",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/037.png",
+      "sha256": "89e7995794b3258c30510ee3dfeb78312767bb4075b9e0203c5d08f695cdbad8",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/038",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/038.png",
+      "sha256": "678d40a8f20631f2c9e4443c541d604cb6af9f61cb8b6b87efc3e81110a76419",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/039",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/039.png",
+      "sha256": "2543f98a7b68be68f25d22ba7e7bd285c2bcd0a33def84d676b7664d69a6e8f0",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/040",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/040.png",
+      "sha256": "2d4eb8945d70707fe1e38c9fa53c3cd83c631e451c6a50a26112a1479814ece0",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/041",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/041.png",
+      "sha256": "21c94b0e881a1e966945bbaa939eb21c5657ae748f5434e87c9f311eded48808",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/042",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/042.png",
+      "sha256": "cc0f79dc50bb2b971339f8566775f5fee042f8b9e0179fcb7dc5a130f86788fc",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/043",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/043.png",
+      "sha256": "20d56dc620884b67f0b8ab3e6baf820e108332a5977c44058267cbaca7e0c0c0",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/044",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/044.png",
+      "sha256": "d4d427ef100ed8008fae0c209a7dabb90ed016a96fceff6b8b353b795d2eb37c",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/045",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/045.png",
+      "sha256": "4c40e9ee19fae74bcecafd0e260fbfe1dbc36f84acc4a283718baf629b9ae9e7",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/046",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/046.png",
+      "sha256": "c0a9d4be9fc071337be7abadf9c8c61136c3988a1f6ea86abdf28733282e07c1",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/047",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/047.png",
+      "sha256": "9126c79e98399ea7efb0b6c950f20f15efb7c7394a2a232858f5bbedfdc73ca0",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/048",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/048.png",
+      "sha256": "e930dbdddae811f192decd734efe2924bf27b48f9b194c31d7ba387f8966509d",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/049",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/049.png",
+      "sha256": "f2223b99c543f3925b9dfb28c5f3c2ff434b8c207b13ef7b7cc77e3366785016",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/050",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/050.png",
+      "sha256": "42e1127a2282f2503e6c32caa8a790581c29ed05aab449bb1a12922eb6df2911",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/051",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/051.png",
+      "sha256": "291d00710b0c6144f1ec825b4f0a09e85e03bee092d5f637c28770acf36c3948",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/052",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/052.png",
+      "sha256": "08d1544a856cc68656a4762ecd2b6b8c47a6777200c1b0bef37220cfb6d2772f",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/053",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/053.png",
+      "sha256": "bcdbc7563ff202f146857268955336daad4d78ba23e28ed0a25c2ce7c6cf62a0",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/054",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/054.png",
+      "sha256": "fa75d11f6703c075c839562dc48801cc0a4196f1bc3503baec8206ebbdd764d9",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/055",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/055.png",
+      "sha256": "af0ed6558aff39bd708ae50727824aa0de13ef048742cf134e9482a0588324ce",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/056",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/056.png",
+      "sha256": "4ecb98874b1695f5fb1b4bbe75d25e741f83cf062c734108cb283c35d98e3db3",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/057",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/057.png",
+      "sha256": "e463f1cdd72080971316a72ba5f5549a24033b438a396988b263d32c865ddcab",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/058",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/058.png",
+      "sha256": "aa7dc75a8ee22e4d6fcbee9dad6e88c0c0ca76312d35c3bd5bf81a4f33c6f506",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/059",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/059.png",
+      "sha256": "8ed80c1ca9d8c6406b6d4fef8f1cf667d61cb0f6a5458de13f074e98ca00dffb",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/060",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/060.png",
+      "sha256": "a8d79583e4a066c89c094b0f9dfbf5a81124ca53083daafcd49375d3cacd8fd6",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/061",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/061.png",
+      "sha256": "1d1d3d68ddca529bac45c2074c2ed86397e34c94f4ce6dc2ea1f47a587e9582e",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/062",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/062.png",
+      "sha256": "48d2ddedd78c1632192328f5e807d1d8531e5206fe4fffc078ec149b6fe62779",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/063",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/063.png",
+      "sha256": "2ef6c32162fe680bf02f6993177fe478acc55c9a5234a72ffa0e3a45d90098e6",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/sunspool-desert/enemy-battle/064",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/sunspool-desert/064.png",
+      "sha256": "308147f98accf5535da52d5d345c5e19a3b2f92a0d32068b157a8c7753e09aa7",
+      "width": 288
+    }
+  ],
+  "quarantined_asset_numbers": [
+    8,
+    29
+  ],
+  "quarantined_count": 2,
+  "region": "sunspool-desert",
+  "schema": "plushbound.enemy_runtime_bank.v1",
+  "source_artifact_id": 12620316857,
+  "source_artifact_sha256": "8408b9dbdaad67c2aaf9040052cae14dd6dd53d0d2cec20650db56270120b0c5",
+  "source_workflow_run_id": 40250983728,
+  "status": "BANKED_WITH_QUARANTINE"
+}
