@@ -1,7 +1,7 @@
 {
   "schema": "plushbound.enemy_master_runtime_region_trigger.v1",
-  "run": 9,
-  "region": "cinderreach",
+  "run": 10,
+  "region": "frostlace",
   "max_parallel": 4,
-  "purpose": "Produce the complete Cinderreach enemy runtime region from verified canonical GitHub artifacts for full-region visual review before banking."
+  "purpose": "Produce the complete Frostlace enemy runtime region from verified canonical GitHub artifacts for full-region visual review before banking."
 }
