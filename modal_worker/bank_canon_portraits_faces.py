@@ -1,8 +1,8 @@
 """Bank visually-approved canon portraits and deterministic face crops.
 
-No generation occurs here. This module only validates approved workflow artifacts,
-copies 288x384 RGBA portraits, derives 144x144 face assets deterministically, and
-writes an auditable ledger alongside the previously banked sprite ledger.
+No generation occurs here. This module only validates exact reviewed workflow
+artifacts, copies 288x384 RGBA portraits, derives 144x144 face assets
+deterministically, and writes an auditable ledger alongside the banked sprite ledger.
 """
 from __future__ import annotations
 
@@ -40,6 +40,13 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def require_env(name: str) -> str:
+    value = os.environ.get(name, "").strip()
+    if not value:
+        raise RuntimeError(f"required reviewed-evidence environment variable is missing: {name}")
+    return value
+
+
 def validate_portrait(path: Path) -> dict:
     if not path.is_file() or path.stat().st_size <= 0:
         raise FileNotFoundError(path)
@@ -74,7 +81,6 @@ def derive_face(portrait: Path, destination: Path) -> dict:
     if len(xs) == 0 or len(ys) == 0:
         raise ValueError(f"portrait has no opaque subject: {portrait}")
     left, top, right, bottom = int(xs.min()), int(ys.min()), int(xs.max() + 1), int(ys.max() + 1)
-    foreground_width = right - left
     foreground_height = bottom - top
 
     # Locked deterministic v1 crop: upper subject, head-and-shoulders centered on
@@ -111,12 +117,39 @@ def derive_face(portrait: Path, destination: Path) -> dict:
 def main() -> None:
     if not SPRITE_LEDGER.is_file():
         raise FileNotFoundError(f"existing banked sprite ledger is required: {SPRITE_LEDGER}")
+
+    gate_path = Path(require_env("PORTRAIT_VISUAL_GATE_PATH"))
+    gate_sha = require_env("PORTRAIT_VISUAL_GATE_SHA256")
+    if not gate_path.is_file() or sha256(gate_path) != gate_sha:
+        raise RuntimeError("visual gate file is missing or changed after workflow verification")
+    visual_gate = json.loads(gate_path.read_text(encoding="utf-8"))
+    if visual_gate.get("status") != "PASS":
+        raise RuntimeError("portrait visual gate is not PASS")
+
+    source_artifacts = {
+        "chris": {
+            "run_id": int(require_env("CHRIS_RUN_ID")),
+            "artifact_id": int(require_env("CHRIS_ARTIFACT_ID")),
+            "artifact_name": require_env("CHRIS_ARTIFACT_NAME"),
+            "artifact_digest": require_env("CHRIS_ARTIFACT_DIGEST"),
+        },
+        "batch": {
+            "run_id": int(require_env("BATCH_RUN_ID")),
+            "artifact_id": int(require_env("BATCH_ARTIFACT_ID")),
+            "artifact_name": require_env("BATCH_ARTIFACT_NAME"),
+            "artifact_digest": require_env("BATCH_ARTIFACT_DIGEST"),
+        },
+    }
+
     PORTRAIT_DIR.mkdir(parents=True, exist_ok=True)
     FACE_DIR.mkdir(parents=True, exist_ok=True)
 
     characters = {}
     for character_id, source in SOURCES.items():
         source_validation = validate_portrait(source)
+        expected_hash = visual_gate["portrait_sha256"][character_id]
+        if source_validation["sha256"] != expected_hash:
+            raise ValueError(f"portrait differs from exact visually-reviewed hash: {character_id}")
         portrait_destination = PORTRAIT_DIR / f"{character_id}.png"
         shutil.copyfile(source, portrait_destination)
         copied_validation = validate_portrait(portrait_destination)
@@ -130,12 +163,12 @@ def main() -> None:
             "portrait": {
                 "path": str(portrait_destination),
                 "validation": copied_validation,
-                "visual_review": "passed_before_bank_trigger",
+                "visual_review": "passed_exact_hash_gate_before_bank",
             },
             "face": {
                 "path": str(face_destination),
                 "validation": face_validation,
-                "visual_review": "passed_before_bank_trigger",
+                "visual_review": "derived_from_visually_approved_portrait",
             },
         }
 
@@ -143,9 +176,12 @@ def main() -> None:
         "version": "plushbound-canon-portrait-face-ledger-v1",
         "status": "banked",
         "sprite_ledger": str(SPRITE_LEDGER),
-        "source_workflow_runs": {
-            "chris_portrait_canary": os.environ.get("CHRIS_RUN_ID", ""),
-            "remaining_portrait_batch": os.environ.get("BATCH_RUN_ID", ""),
+        "source_artifacts": source_artifacts,
+        "visual_gate": {
+            "path": str(gate_path),
+            "sha256": gate_sha,
+            "schema": visual_gate.get("schema"),
+            "status": visual_gate.get("status"),
         },
         "character_count": len(characters),
         "portrait_count": len(characters),
