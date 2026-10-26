@@ -1,0 +1,86 @@
+name: Bank Enemy Master Runtime Region
+
+on:
+  push:
+    branches: [freeframe-modal-worker]
+    paths:
+      - 'modal_worker/enemy_master_runtime_bank_trigger.json'
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: bank-enemy-master-runtime-region
+  cancel-in-progress: false
+
+jobs:
+  bank:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: freeframe-modal-worker
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Download, verify, and bank approved region assets
+        run: |
+          python - <<'PY'
+          import hashlib, json, os, shutil, subprocess, zipfile
+          from pathlib import Path
+          from PIL import Image
+
+          trigger=json.loads(Path('modal_worker/enemy_master_runtime_bank_trigger.json').read_text())
+          region=trigger['region']; artifact_id=int(trigger['artifact_id']); expected_digest=trigger['artifact_sha256']
+          gate_path=Path(f'modal_worker/enemy_master_runtime_{region}_visual_gate.json')
+          gate=json.loads(gate_path.read_text())
+          if gate['status']!='PASS_WITH_SOURCE_QUARANTINE' or gate['artifact_id']!=artifact_id or gate['artifact_sha256']!=expected_digest:
+              raise SystemExit('visual gate does not bind requested artifact')
+          approved=[int(x) for x in gate['approved_asset_numbers']]
+          quarantined=[int(x) for x in gate['quarantined_asset_numbers']]
+          if set(approved)&set(quarantined) or set(approved)|set(quarantined)!=set(range(1,65)):
+              raise SystemExit('visual gate does not partition all 64 assets')
+
+          zip_path=Path('/tmp/region.zip')
+          with zip_path.open('wb') as fh:
+              subprocess.run(['gh','api',f'repos/{os.environ["GITHUB_REPOSITORY"]}/actions/artifacts/{artifact_id}/zip'],stdout=fh,check=True)
+          digest=hashlib.sha256(zip_path.read_bytes()).hexdigest()
+          if digest!=expected_digest: raise SystemExit(f'artifact digest mismatch: {digest}')
+          src=Path('/tmp/region'); src.mkdir()
+          with zipfile.ZipFile(zip_path) as zf: zf.extractall(src)
+          source_dir=src/region
+          bank=Path('modal_worker/enemy_runtime_bank')/region
+          if bank.exists(): shutil.rmtree(bank)
+          bank.mkdir(parents=True)
+          assets=[]
+          for n in approved:
+              source=source_dir/f'{n:03d}.png'
+              if not source.is_file(): raise SystemExit(f'missing approved runtime {source}')
+              raw=source.read_bytes()
+              with Image.open(source) as im:
+                  im.load()
+                  if im.size!=(288,288) or im.mode!='RGBA': raise SystemExit(f'invalid bank asset {n:03d}')
+              target=bank/source.name; target.write_bytes(raw)
+              assets.append({'asset_id':f'reg/{region}/enemy-battle/{n:03d}','path':str(target),'sha256':hashlib.sha256(raw).hexdigest(),'width':288,'height':288,'mode':'RGBA'})
+          if len(assets)!=len(approved): raise SystemExit('bank count mismatch')
+          manifest={'schema':'plushbound.enemy_runtime_bank.v1','region':region,'source_workflow_run_id':gate['workflow_run_id'],'source_artifact_id':artifact_id,'source_artifact_sha256':digest,'approved_count':len(assets),'quarantined_count':len(quarantined),'quarantined_asset_numbers':quarantined,'assets':assets,'status':'BANKED_WITH_QUARANTINE'}
+          (bank/'bank-manifest.json').write_text(json.dumps(manifest,indent=2,sort_keys=True)+'\n')
+          print(json.dumps({'region':region,'banked':len(assets),'quarantined':len(quarantined),'status':manifest['status']},sort_keys=True))
+          PY
+      - name: Commit banked region
+        run: |
+          set -euo pipefail
+          git config user.name 'plushbound-night-shift'
+          git config user.email 'actions@users.noreply.github.com'
+          git add modal_worker/enemy_runtime_bank/elyndor
+          if git diff --cached --quiet; then
+            echo 'No banking changes.'
+          else
+            git commit -m 'Bank reviewed Elyndor enemy runtime assets'
+            git push origin HEAD:freeframe-modal-worker
+          fi
