@@ -34,6 +34,29 @@ jobs:
           test -n "$MODAL_TOKEN_ID" || { echo 'MODAL_TOKEN_ID missing' >&2; exit 1; }
           test -n "$MODAL_TOKEN_SECRET" || { echo 'MODAL_TOKEN_SECRET missing' >&2; exit 1; }
       - run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12' 'numpy>=1.26,<3'
+      - name: Read bounded production trigger
+        shell: bash
+        run: |
+          python - <<'PY' >> "$GITHUB_ENV"
+          import json
+          from pathlib import Path
+          data=json.loads(Path('modal_worker/guardian_variant_production_trigger.json').read_text())
+          assert data['schema']=='plushbound.guardian_variant_production_trigger.v1'
+          assert data.get('enabled') is True, 'Guardian variant production trigger is disabled'
+          assert data.get('guardian_ids')=='001-096'
+          allowed=['battle-action','battle-hurt','bond-expression','field-interaction','resting-pose']
+          variants=data.get('variants') or []
+          assert variants and len(variants)==len(set(variants)), variants
+          assert all(v in allowed for v in variants), variants
+          expected=96*len(variants)
+          assert int(data.get('expected_asset_count',-1))==expected, (data.get('expected_asset_count'),expected)
+          assert expected<=384, f'wave exceeds 384-asset safety cap: {expected}'
+          print('GUARDIAN_VARIANTS='+','.join(variants))
+          print('EXPECTED_ASSET_COUNT='+str(expected))
+          print('EXPECTED_VARIANT_COUNT='+str(len(variants)))
+          PY
+      - name: Compile bounded producer
+        run: python -m compileall -q modal_worker/guardian_variant_production.py
       - name: Recover 96 accepted Guardian masters
         run: |
           set -euo pipefail
@@ -48,25 +71,34 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          PYTHONPATH=. modal run modal_worker/guardian_variant_production.py --master-root 'guardian-masters/r1:guardian-masters/r2:guardian-masters/r3' --max-parallel 4 | tee guardian-variant-production.log
-      - name: Verify exact family contract
+          PYTHONPATH=. modal run modal_worker/guardian_variant_production.py \
+            --master-root 'guardian-masters/r1:guardian-masters/r2:guardian-masters/r3' \
+            --max-parallel 4 \
+            --variants "$GUARDIAN_VARIANTS" | tee guardian-variant-production.log
+      - name: Verify exact bounded family contract
         run: |
           python - <<'PY'
-          import json
+          import json, os
           from pathlib import Path
           from PIL import Image
-          root=Path('guardian-variant-production'); report=json.loads((root/'batch-report.json').read_text())
+          root=Path('guardian-variant-production')
+          report=json.loads((root/'batch-report.json').read_text())
+          variants=os.environ['GUARDIAN_VARIANTS'].split(',')
+          expected_count=int(os.environ['EXPECTED_ASSET_COUNT'])
+          assert report['schema']=='plushbound.guardian_variant_production.v2', report['schema']
           assert report['completed_guardians']==96, report['completed_guardians']
-          assert report['accepted_asset_count']==480, report['accepted_asset_count']
+          assert report['variant_names']==variants, (report['variant_names'],variants)
+          assert report['variants_per_guardian']==len(variants)
+          assert report['accepted_asset_count']==expected_count, report['accepted_asset_count']
           assert report['failures']==[], report['failures']
           assert report['max_physical_gpu_concurrency_contract']<=10
-          expected={'battle-action':(192,192),'battle-hurt':(192,192),'bond-expression':(144,144),'field-interaction':(192,192),'resting-pose':(192,192)}
-          pngs=list(root.glob('guardian-*/*.png')); assert len(pngs)==480,len(pngs)
+          sizes={'battle-action':(192,192),'battle-hurt':(192,192),'bond-expression':(144,144),'field-interaction':(192,192),'resting-pose':(192,192)}
+          pngs=list(root.glob('guardian-*/*.png')); assert len(pngs)==expected_count,len(pngs)
           for gid in range(1,97):
-            for name,size in expected.items():
+            for name in variants:
               with Image.open(root/f'guardian-{gid:03d}'/f'{name}.png') as im:
-                im.load(); assert im.size==size,(gid,name,im.size); assert 'A' in im.getbands()
-          print('Guardian variant production verified: 96 guardians / 480 PNGs')
+                im.load(); assert im.size==sizes[name],(gid,name,im.size); assert 'A' in im.getbands()
+          print(f'Guardian variant production verified: 96 guardians / {expected_count} PNGs / {len(variants)} roles')
           PY
       - name: Upload Guardian variant production
         if: always()
