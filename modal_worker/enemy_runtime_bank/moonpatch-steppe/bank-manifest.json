@@ -1,0 +1,519 @@
+{
+  "approved_count": 63,
+  "assets": [
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/001",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/001.png",
+      "sha256": "dc8babe3f62e23572a2a01d3bbe928663f254252817dc9bfc5fde07de7ac2a5e",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/002",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/002.png",
+      "sha256": "cc401e5bf352da6e06a922791863456700c50d4765632cabfe380d00d6b33ff6",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/003",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/003.png",
+      "sha256": "4108f04adb027f52c9e362c234883ed92b6e4374ee99879367c9b2fbfd76ee2f",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/004",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/004.png",
+      "sha256": "cd2d59959d0567c282ba5843a41b0ef540e5547797e8dc6fafaf8007fcc5bce0",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/005",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/005.png",
+      "sha256": "6ca40f370b0295d8b30d38f5b2452f9b22ab78f486f30e3396dc32873545a04a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/006",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/006.png",
+      "sha256": "d8fd044b53ee81dba9504ad46f5c4668412594c85755635605e182e31b6874ea",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/007",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/007.png",
+      "sha256": "bdbebcea5046034bcc56e126faa46e5dcbd48fe188332a3c6e7af58c92eba1c5",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/008",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/008.png",
+      "sha256": "1921b4ee363af9a6ea0fe7a5cd0754df5e134e60be47675dccb2d4d5f74cbd5a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/009",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/009.png",
+      "sha256": "a7c0c2d09c3f03816fe6e211e77c2dbe6538ada852ffb921d36483e8e1c56478",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/010",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/010.png",
+      "sha256": "be76f7c5445f0bb9c012a3c7011ca76d1405c6653457425bfda4857933d5fa35",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/011",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/011.png",
+      "sha256": "d3757cd8a6d3b35f06e3df11f2b97a09423931b988dee3cca84aaa236b04ba62",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/012",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/012.png",
+      "sha256": "485693e015e8dddbef970d1d73eb9320e77e44341d9d73bf4e1c5ac767114aa9",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/013",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/013.png",
+      "sha256": "4f57df8ff9c66707ca362ecb6f81f129a30222f08fb5236f80182c2e127ecfcf",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/014",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/014.png",
+      "sha256": "042bda8a50a3f2bd07b2c655d26bb97685a9e021844abbd531b113c04b3d3805",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/015",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/015.png",
+      "sha256": "1d929d9365c66d7308e9f026884d68735f25ec49ca0ef744d2898ac2b4e7086c",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/016",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/016.png",
+      "sha256": "b0d6131cc32c522249bd2bb37821049dd0688063db1c0be47d3b2ef381cd894e",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/017",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/017.png",
+      "sha256": "72c5a685591574d1dd656aec631d4750fbeb1da8662f9e227eb779abe31a1ab2",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/018",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/018.png",
+      "sha256": "44ccd74136424393263dd93e843330d48a2f2b3c7c82bbe6d0ba4fd3ef0e5733",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/019",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/019.png",
+      "sha256": "96ccd63dea60d1a9c18f7c5756a62ce3dcdebb824a016b53beeab060edc4266b",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/020",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/020.png",
+      "sha256": "cfe015285edb68ac29e950477276506e61cb13fb01ee94159a2d9d4cff9b2e19",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/021",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/021.png",
+      "sha256": "c40f2dc9b86c72a5444b6d10317cc7ea55d3cc8ac3ca000bc09f02ca642f4975",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/022",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/022.png",
+      "sha256": "c9055c72afedb5707df4c7332c25270bafd2355941542c7bc09cb0fa0baa832d",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/023",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/023.png",
+      "sha256": "54e9a4a9f0931fc4f2191357de786bbc9a02be3d9fb914794acae747db63d7db",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/024",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/024.png",
+      "sha256": "d02c1dfb1f0b25fdf431cfc108fb178fee9155fedb8b458c37693a73ff745a32",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/025",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/025.png",
+      "sha256": "f3339c501bda942174a29e0fc165cceae3b1f84c16d85370684883408b630dd8",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/026",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/026.png",
+      "sha256": "ab1488d1853d60059561a1a4744d63a977b77d0011494df2518d59d61b4d7714",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/027",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/027.png",
+      "sha256": "dfe29bce39a2eb498ea3131978ecb294e88546f66a531a332edf651ef5d12b1f",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/028",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/028.png",
+      "sha256": "f94aaa467fbc5a9b61455e330d52e0f96b5e61d9692ab864ee4fe6598fa27dce",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/029",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/029.png",
+      "sha256": "e2b2d4d06f670bb078c31c480402b7ef18a5484b6c7ae4641255741d7cbc90ed",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/030",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/030.png",
+      "sha256": "956e0b2b5a1b76f18bd5728019ed4c8e4de8037e321e4d2905e07d150290aace",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/031",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/031.png",
+      "sha256": "19d04c4a41a92f3d7b4f26a0fc614569185f2cc086501c7d72ad72360ac2d050",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/032",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/032.png",
+      "sha256": "5fbef9f4ea9ea94f7feeaaf76519311cebc6b4a97475bf0762293146a26bd710",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/033",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/033.png",
+      "sha256": "22264161a951c6f52c9e996f6b9f8a32f4445774c732d81bd84d800f9baebac1",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/034",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/034.png",
+      "sha256": "f8eea1b35b1f8b37b9dbe7d85acbfc7dcdddae387e56bab09400e6ba672d8de4",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/035",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/035.png",
+      "sha256": "42fbc99b9f4f52225a7c320269bfd377108232bf1796de88add160e8fcd665fd",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/036",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/036.png",
+      "sha256": "5b1b31a4715461fa291fa285331ce029723dd5f78a84e4cd1f8853be7fc3fff8",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/037",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/037.png",
+      "sha256": "c0a71cfb377c75926503ad0617f030823385ed21dd1f58fb54a976881e6f356d",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/038",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/038.png",
+      "sha256": "11043a912faee36cede0c1d15a19ba191a2b717f0ca140753ea6cf6709c54850",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/039",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/039.png",
+      "sha256": "c0acff52e7fbe3217b88bd67062fcef9b63cd76a731ae600208fa5b5e80cee08",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/040",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/040.png",
+      "sha256": "4039795eaa97c2bb8df942f7723a24f81bd8b0fa3fe47679861ae2446ae92edf",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/041",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/041.png",
+      "sha256": "c8dac897674f3613102f779529f8e2b4bc88ee92e791f017f6051dccfbd8acd2",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/042",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/042.png",
+      "sha256": "69023f00724a9ca20e9a3ea2c4ac1193cd69a307e6675d4a228ec54ecd6767bc",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/043",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/043.png",
+      "sha256": "e9dcb5489ee5dd4e0a4fe646491e19767cc0bfdb9700cbddb9014dff74f1e727",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/044",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/044.png",
+      "sha256": "35ec1f00f9c72de79743b4daa62e4e8b1d451cedac6b5e646efae88c12650b0e",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/045",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/045.png",
+      "sha256": "883907200cdce60686c63c9fe76ba0bfd7e193ab4f8b56d6d00b93f2620aa896",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/046",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/046.png",
+      "sha256": "15fb328a12514c0ef8c6cc58c509f022ae2b6d720f213f695da374946f2ad60e",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/047",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/047.png",
+      "sha256": "3b8a89df591cca88a8b74c2d357346adce119c5f7b713c35aa0416dadeb39a48",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/048",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/048.png",
+      "sha256": "56f9cd4c50b4de783af4f80329933868ca5c20fd0982786adf53e1091498488a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/049",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/049.png",
+      "sha256": "07e817fc27706a402651d19ea7e1189067c7811f472347059d14869b66ec6f2d",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/050",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/050.png",
+      "sha256": "c15a20725b6cff37cb2f50275426f8ac26509aeade5f7500d5e71ca05b1f78d9",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/051",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/051.png",
+      "sha256": "348875d19fadd80ad704fea1d9cfbe4522454860ebea84ff752258cdbee14668",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/052",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/052.png",
+      "sha256": "375b33f5e073547f41d5d59daae39684c0bc03bcf078e411240f3fb8dc217583",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/053",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/053.png",
+      "sha256": "8b06ccfa0cae65a11ebb06880e41a9b2bef5a77622664377c01a94a2d0eab11b",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/055",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/055.png",
+      "sha256": "6b4c4c14814c558245c8f356e95696c1413ce9c90ad544b1c2b032a737f0ef94",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/056",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/056.png",
+      "sha256": "f9fb96c2d529f4f4ba2acc440b5540b6ffc296f9527f1fb0212c722783bbd5ae",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/057",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/057.png",
+      "sha256": "5a60b05b2d475ed10efd23a7b2ec37fba495f597ce2b74ea0c854a6f737de3e7",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/058",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/058.png",
+      "sha256": "6fa48d234da9fb7e363ff297db6c4dea42382e28a94c0c77cd0f8485e19c458e",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/059",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/059.png",
+      "sha256": "698c77c8569989caf3f1227df36e52a78a231a1bedefa082b03f590169e1e894",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/060",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/060.png",
+      "sha256": "fb8fbc38691777d40f7c41a209079d3476d89befb451593549c13d85d377f585",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/061",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/061.png",
+      "sha256": "8a45ae4dc7207efcbcb8c1210a53c87f7b25294050a3c272241fd48594c581bc",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/062",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/062.png",
+      "sha256": "bec3c1e25a3001657a407f29ac7ce14c23abc425186f3150068613967fdecf4a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/063",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/063.png",
+      "sha256": "045a9f21f960990555c4d9761f04cc34973f33ce9b1cee56a464020c7dbdacad",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/moonpatch-steppe/enemy-battle/064",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/moonpatch-steppe/064.png",
+      "sha256": "28a6f1ba92767b6ee2c113e8c3f4ada663488a9dfd6281b826a9e1dcf15b89fe",
+      "width": 288
+    }
+  ],
+  "quarantined_asset_numbers": [
+    54
+  ],
+  "quarantined_count": 1,
+  "region": "moonpatch-steppe",
+  "schema": "plushbound.enemy_runtime_bank.v1",
+  "source_artifact_id": 12620536002,
+  "source_artifact_sha256": "1b0f39edb6ee0cc4cf5d7d129c9e194915416edd5eaa8750927b55e0d117df73",
+  "source_workflow_run_id": 40250648479,
+  "status": "BANKED_WITH_QUARANTINE"
+}
