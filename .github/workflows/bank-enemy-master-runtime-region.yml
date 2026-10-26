@@ -41,7 +41,7 @@ jobs:
           region=trigger['region']; artifact_id=int(trigger['artifact_id']); expected_digest=trigger['artifact_sha256']
           gate_path=Path(f'modal_worker/enemy_master_runtime_{region}_visual_gate.json')
           gate=json.loads(gate_path.read_text())
-          if gate['status']!='PASS_WITH_SOURCE_QUARANTINE' or gate['artifact_id']!=artifact_id or gate['artifact_sha256']!=expected_digest:
+          if gate['status'] not in {'PASS','PASS_WITH_SOURCE_QUARANTINE'} or gate['artifact_id']!=artifact_id or gate['artifact_sha256']!=expected_digest:
               raise SystemExit('visual gate does not bind requested artifact')
           approved=[int(x) for x in gate['approved_asset_numbers']]
           quarantined=[int(x) for x in gate['quarantined_asset_numbers']]
@@ -70,7 +70,8 @@ jobs:
               target=bank/source.name; target.write_bytes(raw)
               assets.append({'asset_id':f'reg/{region}/enemy-battle/{n:03d}','path':str(target),'sha256':hashlib.sha256(raw).hexdigest(),'width':288,'height':288,'mode':'RGBA'})
           if len(assets)!=len(approved): raise SystemExit('bank count mismatch')
-          manifest={'schema':'plushbound.enemy_runtime_bank.v1','region':region,'source_workflow_run_id':gate['workflow_run_id'],'source_artifact_id':artifact_id,'source_artifact_sha256':digest,'approved_count':len(assets),'quarantined_count':len(quarantined),'quarantined_asset_numbers':quarantined,'assets':assets,'status':'BANKED_WITH_QUARANTINE'}
+          bank_status='BANKED' if not quarantined else 'BANKED_WITH_QUARANTINE'
+          manifest={'schema':'plushbound.enemy_runtime_bank.v1','region':region,'source_workflow_run_id':gate['workflow_run_id'],'source_artifact_id':artifact_id,'source_artifact_sha256':digest,'approved_count':len(assets),'quarantined_count':len(quarantined),'quarantined_asset_numbers':quarantined,'assets':assets,'status':bank_status}
           (bank/'bank-manifest.json').write_text(json.dumps(manifest,indent=2,sort_keys=True)+'\n')
           print(json.dumps({'region':region,'banked':len(assets),'quarantined':len(quarantined),'status':manifest['status']},sort_keys=True))
           PY
