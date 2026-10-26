@@ -39,15 +39,18 @@ jobs:
         shell: bash
         run: |
           python - <<'PY'
+          import base64, io
           from pathlib import Path
           from PIL import Image
-          p = Path('modal_worker/canon_refs/chris_proven_reference.jpg')
+          p = Path('modal_worker/canon_refs/chris_identity_compact.b64')
           assert p.is_file() and p.stat().st_size > 0, p
-          with Image.open(p) as im:
+          encoded = ''.join(p.read_text(encoding='ascii').split())
+          raw = base64.b64decode(encoded, validate=True)
+          with Image.open(io.BytesIO(raw)) as im:
               im.verify()
-          with Image.open(p) as im:
+          with Image.open(io.BytesIO(raw)) as im:
               assert im.width >= 64 and im.height >= 64, im.size
-              print('reference_ok', im.size, im.mode, p.stat().st_size)
+              print('reference_ok', im.size, im.mode, im.format, len(raw))
           PY
       - name: Run one bounded Chris portrait identity canary
         run: python -m modal_worker.canon_portrait_canary
