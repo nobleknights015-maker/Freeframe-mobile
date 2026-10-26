@@ -18,7 +18,25 @@
     "neutral_base_layer_verified": true,
     "normal_anatomy_verified": true,
     "compact_walk_cycle_verified": true,
-    "distinct_body_builds_verified": true
+    "distinct_body_builds_verified": true,
+    "library_rehash_verified": true
+  },
+  "ready_to_use_vault": {
+    "library_path": "/Plushbound/ReadyToUse/Creator_Body",
+    "archive": {
+      "name": "plushbound_creator_body_ready_v1_24.zip",
+      "asset_count": 24,
+      "sha256": "f16c71130ca756a55032e53cee1a66b3dedbe2110f593a25942c5c4195db4b60"
+    },
+    "index": {
+      "name": "creator_body_ready_index.json",
+      "sha256": "833a8da2688c4be99911b636b2bbce4643cb701e8f680cde1afd8244143a7abd"
+    },
+    "manifest": {
+      "name": "creator_body_ready_archive_manifest.json",
+      "sha256": "71f72661992d17fc1492b1b11077a3b472fb4c8dab743deb8e8f4ecccd740b68"
+    },
+    "canonical_source": "ChatGPT Library ready-to-use vault"
   },
   "canonical_provenance": {
     "creator/body/001": {
