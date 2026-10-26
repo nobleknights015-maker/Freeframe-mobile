@@ -80,7 +80,6 @@ jobs:
           set -euo pipefail
           STYLE='${{ matrix.style_index }}'
           LOG="creator-hair-batch-${STYLE}.log"
-          # Stagger the two active workers to reduce Modal AppCreate collisions.
           sleep $((STYLE % 2 * 10))
           for attempt in 1 2 3 4; do
             set +e
@@ -129,6 +128,6 @@ jobs:
           name: creator-hair-batch-${{ matrix.style_index }}-${{ github.run_id }}
           path: |
             creator-hair-batch-${{ matrix.style_index }}.log
-            creator-hair-batch-output/style-${{ matrix.style_index }}/
+            creator-hair-batch-output/style-*/
           if-no-files-found: error
           retention-days: 14
