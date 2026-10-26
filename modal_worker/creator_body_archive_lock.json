@@ -1,0 +1,74 @@
+{
+  "schema": "plushbound.creator_body_archive_lock.v1",
+  "family": "creator/body",
+  "status": "COMPLETE_LOCKED",
+  "logical_range": ["creator/body/001", "creator/body/024"],
+  "canonical_count": 24,
+  "geometry": {
+    "dimensions": "144x192",
+    "layout": "3x4-48px",
+    "format": "RGBA",
+    "direction_rows": ["down", "left", "right", "up"],
+    "step_phases": ["left", "idle", "right"]
+  },
+  "validation": {
+    "machine_contract_passed": true,
+    "full_family_visual_review_passed": true,
+    "transparent_backgrounds_verified": true,
+    "neutral_base_layer_verified": true,
+    "normal_anatomy_verified": true,
+    "compact_walk_cycle_verified": true,
+    "distinct_body_builds_verified": true
+  },
+  "canonical_provenance": {
+    "creator/body/001": {
+      "source": "accepted_round_2_canary",
+      "run_id": 40396167132,
+      "artifact_id": 12686753650,
+      "artifact_digest": "sha256:08028d5f02956d7fec1733403f3ebbaa8feb616858554d87ce8414b52a54c1c4",
+      "note": "The later bulk duplicate of creator/body/001 is non-canonical and must not overwrite this accepted canary."
+    },
+    "creator/body/002-020": {
+      "source": "bounded_retry_round_2",
+      "run_id": 40400390194,
+      "head_sha": "12cd86a24004fd85b495cb1da61f9a2a093498a4",
+      "lane_artifacts": {
+        "0": {"artifact_id": 12688986854, "digest": "sha256:acffb5913d7b3df07865c62b07e749c0ab8277fd6f6471310b52d942fc0eb9d0", "canonical_ids": ["creator/body/002"]},
+        "1": {"artifact_id": 12689660345, "digest": "sha256:7388da20b07d01f25df00db2735eda094a5d705cbdae15758dbc2d65fc3098a4", "canonical_ids": ["creator/body/003", "creator/body/004"]},
+        "2": {"artifact_id": 12690150391, "digest": "sha256:3a17a05f23f3226f3efa45a7526559aa27e04fe8f68cc7f8563f26fc9b28368f", "canonical_ids": ["creator/body/005", "creator/body/006"]},
+        "3": {"artifact_id": 12689352799, "digest": "sha256:f3142e56751ce5c3ff599f6d6bede9286c899281ac95aaa771f73c2e31049263", "canonical_ids": ["creator/body/007", "creator/body/008"]},
+        "4": {"artifact_id": 12688978029, "digest": "sha256:37a20100ece6607ed1d1e79f83588cf692e18402e539e66e5e1751cdff4f7310", "canonical_ids": ["creator/body/009", "creator/body/010"]},
+        "5": {"artifact_id": 12689317798, "digest": "sha256:ad87f360a70606cc4ad1e00c71eb2684a79354c9a419290d3c72c7810cd2e530", "canonical_ids": ["creator/body/011", "creator/body/012"]},
+        "6": {"artifact_id": 12688598582, "digest": "sha256:cc352a687c7975b4c2e88149ecad9e4ed368183512141ea11190b4005714655a", "canonical_ids": ["creator/body/013", "creator/body/014"]},
+        "7": {"artifact_id": 12690075354, "digest": "sha256:d2a071bba3f0f2f469b2b60b5c217b4dda6d4d8ee889b18b690749b0ad0f6ef4", "canonical_ids": ["creator/body/015", "creator/body/016"]},
+        "8": {"artifact_id": 12689183570, "digest": "sha256:4b2bf0f7d67994437e911e31d1ed23e44be69e3a1c74e41c530a7e9c3babf7d8", "canonical_ids": ["creator/body/017", "creator/body/018"]},
+        "9": {"artifact_id": 12691452032, "digest": "sha256:eb0889d6541108c15c4bb8dbbbdcce6d05521f3ca27c6c43b01b5b48bfd3371a", "canonical_ids": ["creator/body/019", "creator/body/020"]}
+      }
+    },
+    "creator/body/021-022": {
+      "source": "preserved_round_1_lane_10",
+      "run_id": 40398750496,
+      "artifact_id": 12687777629,
+      "artifact_digest": "sha256:b23061d5b47605208e24e41338f45a55d2d8aa3c0d48b26cb777e43de63ddebc"
+    },
+    "creator/body/023-024": {
+      "source": "bounded_retry_round_2_lane_11",
+      "run_id": 40400390194,
+      "artifact_id": 12688304405,
+      "artifact_digest": "sha256:cce23dac9282768065eeb0c453bf4a8c91f0af87c565e2767d68c3532178270c"
+    }
+  },
+  "deduplication": {
+    "creator/body/001_bulk_duplicate": "REJECTED_NON_CANONICAL",
+    "reason": "creator/body/001 was already visually accepted as the balanced-neutral Round 2 canary before bulk production; bulk lane 0 used different variant semantics and may not replace it."
+  },
+  "skin_color": {
+    "encoded_in_body_family": false,
+    "next_family": "creator/skin",
+    "blocker_contract": "modal_worker/creator_skin_contract_blocker.json"
+  },
+  "regeneration": {
+    "authorized": false,
+    "rule": "Do not regenerate or overwrite creator/body/001-024 unless this archive lock is explicitly superseded by an authorized targeted repair."
+  }
+}
