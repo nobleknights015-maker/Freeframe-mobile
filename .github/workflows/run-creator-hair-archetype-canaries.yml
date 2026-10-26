@@ -92,7 +92,7 @@ jobs:
       - name: Verify exact paired evidence
         run: |
           python - <<'PY'
-          import json, os
+          import json
           from pathlib import Path
           from PIL import Image
           style=int('${{ matrix.style_index }}')
@@ -117,6 +117,6 @@ jobs:
           name: creator-hair-archetype-${{ matrix.style_index }}-${{ github.run_id }}
           path: |
             creator-hair-archetype-${{ matrix.style_index }}.log
-            creator-hair-archetype-output/style-${{ matrix.style_index }}/
+            creator-hair-archetype-output/style-*/
           if-no-files-found: error
           retention-days: 14
