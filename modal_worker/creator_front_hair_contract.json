@@ -1,21 +1,40 @@
 {
-  "schema": "plushbound.creator_front_hair_contract.v1",
-  "family": "creator/front-hair",
-  "status": "CANARY_RUNNING_BULK_LOCKED",
-  "logical_range": ["creator/front-hair/001", "creator/front-hair/096"],
-  "count": 96,
+  "schema": "plushbound.creator_front_hair_contract.v2",
+  "families": ["creator/front-hair", "creator/back-hair"],
+  "status": "PAIRED_CANARY_ACCEPTED_ARCHETYPE_WAVE_PENDING",
+  "logical_ranges": {
+    "front": ["creator/front-hair/001", "creator/front-hair/096"],
+    "back": ["creator/back-hair/001", "creator/back-hair/096"]
+  },
+  "count_per_family": 96,
   "dimensions": "144x192",
   "layout": "3x4-48px",
-  "asset_role": "transparent_recolorable_front_hair_overlay",
-  "paired_family": "creator/back-hair",
+  "asset_roles": {
+    "front": "transparent_recolorable_crown_fringe_overlay",
+    "back": "transparent_recolorable_rear_hair_overlay"
+  },
+  "layer_order": ["back_hair", "body", "front_hair"],
   "hair_color_asset_family_present_in_ledger": false,
-  "canary": {
-    "logical_id": "creator/front-hair/001",
-    "run_id": 40409393417,
-    "workflow": ".github/workflows/run-creator-front-hair-canary.yml",
-    "max_paid_renders": 5,
-    "max_paid_extractions": 4,
-    "bulk_authorized": false
+  "paired_canary_001": {
+    "front_logical_id": "creator/front-hair/001",
+    "back_logical_id": "creator/back-hair/001",
+    "style_name": "short_side_swept_fringe",
+    "source_run_id": 40409393417,
+    "source_artifact_id": 12693261096,
+    "source_artifact_digest": "sha256:319d74be714e0fb831d76bc5c8880204f4a38b3afd3296a4c56df5e0e6024048",
+    "splitter": "modal_worker/creator_hair_splitter.py",
+    "splitter_commit": "27b56c678b5a618bdbbb310b6df05df8e5752a22",
+    "ready_to_use_library_path": "/Plushbound/ReadyToUse/Creator_Hair_Canaries/plushbound_creator_hair_pair_canary_001.zip",
+    "visual_qc": {
+      "petite_body_002": true,
+      "balanced_body_008": true,
+      "broad_body_011": true,
+      "front_back_layering": true,
+      "normal_anatomy_preserved": true,
+      "transparent_edges": true
+    },
+    "additional_paid_renders_for_split": 0,
+    "additional_paid_extractions_for_split": 0
   },
   "shared_body_anchor": {
     "locked_body_count_measured": 24,
@@ -26,16 +45,18 @@
     "head_center_stddev_x": 0.6841,
     "conclusion": "shared overlay anchor is viable across locked body builds"
   },
-  "required_canary_gates": [
-    "exact 144x192 RGBA machine contract",
-    "four directional hair-only sources",
-    "no skin, face, body, mannequin, or clothing contamination",
-    "transparent layer-safe edges",
-    "compact cell fit with no clipping",
-    "composite QC over creator/body/002 petite representative",
-    "composite QC over creator/body/008 balanced representative",
-    "composite QC over creator/body/011 broad representative",
-    "visual approval before any bulk front-hair launch"
+  "next_required_archetypes": [
+    {"style_index": 21, "reason": "long straight rear length"},
+    {"style_index": 57, "reason": "long coil volume/texture"},
+    {"style_index": 65, "reason": "high ponytail off-axis silhouette"}
+  ],
+  "required_before_bulk": [
+    "all three archetype canaries machine-pass exact 144x192 RGBA contracts",
+    "paired front/back split reconstructs each hairstyle source without alpha loss",
+    "petite/balanced/broad composite QC passes for each archetype",
+    "no clipping at 48px cell edges",
+    "no face, skin, body, mannequin, or clothing contamination",
+    "visual approval before catalog-wide launch"
   ],
   "safety": {
     "catalog_wide_launch_authorized": false,
