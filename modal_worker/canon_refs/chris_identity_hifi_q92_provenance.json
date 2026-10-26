@@ -1,0 +1,40 @@
+{
+  "schema": "plushbound.canon_identity_reference.v3",
+  "character_id": "chris_bourn",
+  "status": "CANONICAL_CONDITIONING_REFERENCE",
+  "catalog_wide_launch_authorized": false,
+  "source": {
+    "surface": "chatgpt_library",
+    "file_id": "file_000000003568820db0f9d36021458019",
+    "name": "Chris_Bourn_Plushbound_Canonical_Reference.png",
+    "sha256": "34a886f42a476d09649c6584731d043cd658d18395692090109ece0f3bd09104",
+    "width": 768,
+    "height": 535,
+    "mode": "RGBA",
+    "format": "PNG"
+  },
+  "derivation": {
+    "operation": "deterministic_crop_then_rgb_jpeg",
+    "crop_box_xyxy": [156, 80, 356, 520],
+    "resize": false,
+    "output_width": 200,
+    "output_height": 440,
+    "jpeg_quality": 92,
+    "jpeg_subsampling": 0,
+    "jpeg_optimize": true,
+    "ai_edit": false,
+    "retouch": false
+  },
+  "reference_payload": {
+    "path": "modal_worker/canon_refs/chris_identity_hifi_q92.jpg",
+    "encoding": "binary",
+    "format": "JPEG",
+    "width": 200,
+    "height": 440,
+    "mode": "RGB",
+    "bytes": 47676,
+    "sha256": "777c92e336ec8637e8223d492b973dd7d86efb54f4c14bfc81a2407b7894a773",
+    "git_blob_sha": "2ddd6da6445c9fe054a4b1d3d28c34a8f7c85237"
+  },
+  "usage": "identity_conditioning_only_not_runtime_asset"
+}
