@@ -1,0 +1,112 @@
+name: Plushbound Creator Body Batch
+
+on:
+  push:
+    branches: [freeframe-modal-worker]
+    paths:
+      - modal_worker/creator_body_batch_trigger.json
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plushbound-creator-body-batch
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    outputs:
+      enabled: ${{ steps.gate.outputs.enabled }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: freeframe-modal-worker
+      - id: gate
+        name: Validate exact bounded trigger
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          d=json.loads(Path('modal_worker/creator_body_batch_trigger.json').read_text())
+          assert d['schema']=='plushbound.creator_body_batch_trigger.v1'
+          assert d['enabled'] is True
+          assert int(d['body_count'])==24
+          assert int(d['lane_count'])==12
+          assert int(d['bodies_per_lane'])==2
+          assert int(d['max_paid_renders'])==312
+          assert int(d['max_paid_extractions'])==288
+          assert d['logical_range']==['creator/body/001','creator/body/024']
+          assert d['catalog_wide_launch_authorized'] is False
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f: f.write('enabled=true\n')
+          print('creator body batch bounded: 24 sheets / 312 renders / 288 extractions')
+          PY
+
+  produce:
+    needs: preflight
+    if: needs.preflight.outputs.enabled == 'true'
+    strategy:
+      fail-fast: false
+      max-parallel: 12
+      matrix:
+        lane: [0,1,2,3,4,5,6,7,8,9,10,11]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: freeframe-modal-worker
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Require Modal credentials
+        run: |
+          test -n "$MODAL_TOKEN_ID" || { echo 'MODAL_TOKEN_ID missing' >&2; exit 1; }
+          test -n "$MODAL_TOKEN_SECRET" || { echo 'MODAL_TOKEN_SECRET missing' >&2; exit 1; }
+      - name: Install bounded batch dependencies
+        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
+      - name: Compile body batch
+        run: python -m compileall -q modal_worker/creator_body_batch.py modal_worker/production_factory.py modal_worker/asset_packager.py modal_worker/image_normalizer.py modal_worker/mv_compositor.py modal_worker/png_compositor.py
+      - name: Produce two exact creator body sheets
+        shell: bash
+        run: |
+          set -o pipefail
+          PYTHONPATH=. modal run modal_worker/creator_body_batch.py --lane ${{ matrix.lane }} | tee creator-body-batch-lane-${{ matrix.lane }}.log
+      - name: Verify exact lane contract
+        run: |
+          LANE='${{ matrix.lane }}' python - <<'PY'
+          import json, os
+          from pathlib import Path
+          from PIL import Image
+          lane=int(os.environ['LANE'])
+          root=Path('creator-body-batch-output')/f'lane-{lane:02d}'
+          report=json.loads((root/'report.json').read_text())
+          assert report['schema']=='plushbound.creator_body_batch.v1'
+          assert report['lane']==lane
+          assert report['requested']==2 and report['completed']==2
+          assert report['catalog_wide_launch_authorized'] is False
+          expected=[f'creator/body/{lane*2+1:03d}',f'creator/body/{lane*2+2:03d}']
+          assert report['logical_ids']==expected, (report['logical_ids'],expected)
+          for idx in (lane*2+1,lane*2+2):
+              path=root/f'creator-body-{idx:03d}.png'
+              with Image.open(path) as im:
+                  im.load(); assert im.format=='PNG'; assert im.size==(144,192); assert 'A' in im.getbands()
+              result=next(r for r in report['results'] if r['body_index']==idx)
+              assert result['compact_motion_gate']['passed'] is True
+              assert result['sheet']['engine_validation']['valid'] is True
+          print('lane verified:', expected)
+          PY
+      - name: Upload creator body lane evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: creator-body-batch-lane-${{ matrix.lane }}-${{ github.run_id }}
+          path: |
+            creator-body-batch-lane-${{ matrix.lane }}.log
+            creator-body-batch-output/lane-${{ matrix.lane }}/
+          if-no-files-found: error
+          retention-days: 30
