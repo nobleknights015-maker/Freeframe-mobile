@@ -87,6 +87,14 @@
       "reason_code": "visual_multihead_anomaly",
       "reason": "Canonical source contains a fused two-headed/two-neck creature render. Extraction reproduced the source faithfully and did not create the deformation.",
       "disposition": "quarantine_without_substitution"
+    },
+    {
+      "asset_id": "reg/silkspire/enemy-battle/028",
+      "source_sha256": "8f46ca6e3f6b649db3bf4bfcd5e4e16d13a9a3fbddbcb9bd5b3049ae194ee2f2",
+      "source_artifact_id": 12556121668,
+      "reason_code": "visual_black_head_anomaly",
+      "reason": "Canonical source contains an unrendered solid-black head region with only the eye retained. Extraction reproduced the source faithfully.",
+      "disposition": "quarantine_without_substitution"
     }
   ]
 }
