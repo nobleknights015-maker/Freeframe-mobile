@@ -14,22 +14,22 @@
   "derivation": {
     "method": "deterministic_crop_resize_jpeg_no_ai_edit",
     "crop_box_xyxy": [156, 80, 356, 520],
-    "resize_width": 128,
-    "resize_height": 282,
+    "resize_width": 96,
+    "resize_height": 211,
     "resampler": "PIL.Image.Resampling.LANCZOS",
     "jpeg_quality": 80,
     "jpeg_optimize": true,
     "jpeg_progressive": false
   },
-  "encoded_payload": {
-    "path": "modal_worker/canon_refs/chris_identity_compact.b64",
-    "encoding": "base64",
-    "decoded_format": "JPEG",
-    "decoded_width": 128,
-    "decoded_height": 282,
-    "decoded_bytes": 11612,
-    "decoded_sha256": "14a7c520740e739d5d7be24870ae19e64e747a5ea29efa6d9574911d12ace9b2",
-    "base64_characters": 15484
+  "reference_payload": {
+    "path": "modal_worker/canon_refs/chris_identity_compact.jpg",
+    "encoding": "binary",
+    "format": "JPEG",
+    "width": 96,
+    "height": 211,
+    "bytes": 7091,
+    "sha256": "362e5050b74f07094f36d27825cdae9dd19b3c18768ff20fd7097e3bd616b165",
+    "git_blob_sha": "2700e044f35c063cb91d50e830c93bf2fe469f73"
   },
   "usage": "identity_conditioning_only_not_runtime_asset",
   "catalog_wide_launch_authorized": false
