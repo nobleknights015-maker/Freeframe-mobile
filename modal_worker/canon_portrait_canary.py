@@ -18,8 +18,9 @@ from PIL import Image
 APP_NAME = "freeframe-worker"
 PRODUCTION_MODEL = "black-forest-labs/FLUX.2-klein-4B"
 RENDERER_ROUTE = "flux2_klein"
-REFERENCE_IMAGE = Path("modal_worker/canon_refs/chris_identity_compact.jpg")
-REFERENCE_PROVENANCE = Path("modal_worker/canon_refs/chris_identity_provenance.json")
+REFERENCE_IMAGE = Path("modal_worker/project_references/chris_proven_reference.jpg")
+REFERENCE_MARKER = Path("modal_worker/project_references/chris_reference_marker.txt")
+EXPECTED_REFERENCE_GIT_BLOB = "c69443a17a8120be31685e1820c2271450065493"
 OUTPUT_DIR = Path("canon-portrait-canary")
 RAW_OUTPUT = OUTPUT_DIR / "chris_bourn_portrait_raw.png"
 RUNTIME_OUTPUT = OUTPUT_DIR / "chris_bourn_portrait.png"
@@ -27,43 +28,44 @@ REPORT = OUTPUT_DIR / "report.json"
 WIDTH = 288
 HEIGHT = 384
 REFERENCE_SCALE = 0.72
-SEED = int.from_bytes(hashlib.sha256(b"plushbound:canon:chris_bourn:portrait:v1").digest()[:8], "big") & ((1 << 63) - 1)
+STEPS = 8
+GUIDANCE_SCALE = 1.0
+SEED = int.from_bytes(hashlib.sha256(b"plushbound:canon:chris_bourn:portrait:v2").digest()[:8], "big") & ((1 << 63) - 1)
 PROMPT = (
-    "Canonical Plushbound Legends portrait of Chris Bourn, adult male. Preserve the supplied reference identity exactly: "
-    "same brown hair, blue eyes, facial identity, red scarf or hooded-cape accent, dark layered fantasy outfit, established colors, "
-    "and compact heroic proportions. Polished original Plushbound JRPG illustration with RPG Maker MV cover / Trinity-inspired finish, "
-    "waist-up three-quarter portrait, calm determined friendly expression, clean readable silhouette, centered with comfortable headroom. "
-    "Pure near-white seamless background for deterministic extraction. No text, no UI, no border, no logo, no contact sheet, no extra people, "
-    "no duplicate body parts, no malformed anatomy, hands mostly out of frame. This is a single game-ready character portrait source image."
+    "CANONICAL IDENTITY-PRESERVATION REDRAW. Create one 2D anime/JRPG portrait of Chris Bourn for Plushbound Legends. "
+    "The supplied reference is the canonical model reference, not loose inspiration. Redraw the same person; do not redesign, beautify, "
+    "age-shift, chibify, or simplify him. Preserve facial proportions and structure, eye placement and color, nose and mouth placement, jaw and chin, "
+    "hairline, tousled medium-brown hair silhouette and parting, and the overall recognizable face. Preserve the established red scarf/cape accent, "
+    "dark layered black-and-deep-red fantasy travel outfit, visible straps, layered construction, armor/guard shapes, trim, and established color blocking. "
+    "Render as crisp hand-drawn 2D Japanese-anime-style JRPG key art: clean inked linework, controlled cel shading, restrained painterly accents, matte fabric and leather. "
+    "Distinct original Plushbound identity with the polished feel of classic RPG Maker MV/Trinity-era cover illustration, without copying proprietary artwork. "
+    "Absolutely no glossy 3D render, CGI, doll, vinyl figure, toy, plastic skin, photorealism, pseudo-3D modeling, or over-smoothed face. "
+    "Waist-up three-quarter portrait, calm determined friendly expression, clean readable silhouette, centered with comfortable headroom. "
+    "Pure near-white seamless background for deterministic extraction. No text, UI, border, logo, contact sheet, extra people, duplicate body parts, or malformed anatomy; "
+    "hands mostly out of frame. This is a single game-ready canonical character portrait source image."
 )
+
+
+def _git_blob_sha1(raw: bytes) -> str:
+    return hashlib.sha1(f"blob {len(raw)}\0".encode("ascii") + raw).hexdigest()
 
 
 def _preflight_reference() -> tuple[bytes, dict]:
     if not REFERENCE_IMAGE.is_file() or REFERENCE_IMAGE.stat().st_size <= 0:
         raise FileNotFoundError(f"missing canonical reference image: {REFERENCE_IMAGE}")
-    if not REFERENCE_PROVENANCE.is_file():
-        raise FileNotFoundError(f"missing canonical reference provenance: {REFERENCE_PROVENANCE}")
+    if not REFERENCE_MARKER.is_file():
+        raise FileNotFoundError(f"missing canonical reference marker: {REFERENCE_MARKER}")
 
-    provenance = json.loads(REFERENCE_PROVENANCE.read_text(encoding="utf-8"))
-    if provenance.get("schema") != "plushbound.canon_identity_reference.v1":
-        raise ValueError("unexpected Chris reference provenance schema")
-    if provenance.get("character_id") != "chris_bourn":
-        raise ValueError("Chris reference provenance character mismatch")
-    if provenance.get("status") != "CANONICAL_CONDITIONING_REFERENCE":
-        raise ValueError("Chris reference is not marked canonical conditioning reference")
-    if provenance.get("catalog_wide_launch_authorized") is not False:
-        raise ValueError("reference provenance must keep catalog-wide launch disabled")
-
-    expected = provenance["reference_payload"]
-    if expected.get("path") != str(REFERENCE_IMAGE) or expected.get("encoding") != "binary":
-        raise ValueError("reference provenance path/encoding mismatch")
+    marker = REFERENCE_MARKER.read_text(encoding="utf-8")
+    if "established Plushbound Character Atlas reference" not in marker:
+        raise ValueError("Chris reference marker does not identify the established Character Atlas reference")
+    if "Do not substitute" not in marker:
+        raise ValueError("Chris reference marker does not preserve the no-substitution lock")
 
     raw = REFERENCE_IMAGE.read_bytes()
-    actual_sha = hashlib.sha256(raw).hexdigest()
-    if len(raw) != int(expected["bytes"]):
-        raise ValueError(f"canonical reference byte count mismatch: {len(raw)}")
-    if actual_sha != expected["sha256"]:
-        raise ValueError(f"canonical reference SHA-256 mismatch: {actual_sha}")
+    git_blob = _git_blob_sha1(raw)
+    if git_blob != EXPECTED_REFERENCE_GIT_BLOB:
+        raise ValueError(f"proven Chris reference Git blob changed: {git_blob}")
 
     try:
         with Image.open(io.BytesIO(raw)) as verify_image:
@@ -71,30 +73,27 @@ def _preflight_reference() -> tuple[bytes, dict]:
         with Image.open(io.BytesIO(raw)) as image:
             width, height = image.size
             source_format = image.format
+            source_mode = image.mode
     except Exception as exc:
-        raise ValueError("canonical Chris reference is not a readable raster image") from exc
+        raise ValueError("proven Chris reference is not a readable raster image") from exc
 
-    if [width, height] != [int(expected["width"]), int(expected["height"])]:
-        raise ValueError(f"canonical reference geometry mismatch: {width}x{height}")
-    if source_format != expected["format"]:
-        raise ValueError(f"canonical reference format mismatch: {source_format}")
-    if width < 64 or height < 64:
-        raise ValueError(f"canonical reference is too small: {width}x{height}")
+    if width < 128 or height < 256:
+        raise ValueError(f"proven Chris reference is unexpectedly small: {width}x{height}")
+    if source_format != "JPEG":
+        raise ValueError(f"unexpected proven Chris reference format: {source_format}")
 
-    provenance_sha = hashlib.sha256(REFERENCE_PROVENANCE.read_bytes()).hexdigest()
     return raw, {
         "path": str(REFERENCE_IMAGE),
-        "provenance_path": str(REFERENCE_PROVENANCE),
-        "provenance_sha256": provenance_sha,
-        "source_library_file_id": provenance["source"]["file_id"],
-        "source_library_sha256": provenance["source"]["sha256"],
-        "derivation": provenance["derivation"],
-        "encoding": "binary",
+        "marker_path": str(REFERENCE_MARKER),
+        "marker_sha256": hashlib.sha256(REFERENCE_MARKER.read_bytes()).hexdigest(),
+        "git_blob_sha1": git_blob,
         "bytes": len(raw),
-        "sha256": actual_sha,
+        "sha256": hashlib.sha256(raw).hexdigest(),
         "width": width,
         "height": height,
         "source_format": source_format,
+        "source_mode": source_mode,
+        "role": "established_plushbound_character_atlas_identity_reference",
     }
 
 
@@ -170,6 +169,8 @@ def main() -> None:
     reference_id = str(stored.get("reference_id") or stored.get("sha256") or stored.get("id") or "").strip()
     if not reference_id:
         raise RuntimeError(f"reference store did not return an id: {stored}")
+    if reference_id != reference_meta["sha256"]:
+        raise RuntimeError("reference store id does not match proven reference SHA-256")
 
     Generator = modal.Cls.from_name(APP_NAME, "FreeFrameProductionGenerator")
     generator = Generator()
@@ -178,8 +179,8 @@ def main() -> None:
         "negative_prompt": "",
         "width": WIDTH,
         "height": HEIGHT,
-        "steps": 4,
-        "guidance_scale": 0.0,
+        "steps": STEPS,
+        "guidance_scale": GUIDANCE_SCALE,
         "seed": SEED,
         "renderer_route": RENDERER_ROUTE,
         "model_id": PRODUCTION_MODEL,
@@ -202,12 +203,13 @@ def main() -> None:
     RUNTIME_OUTPUT.write_bytes(runtime_png)
 
     report = {
-        "version": "plushbound-canon-portrait-canary-v1",
+        "version": "plushbound-canon-portrait-canary-v2",
         "status": "generated_pending_visual_review",
         "character_id": "chris_bourn",
         "display_name": "Chris Bourn",
         "asset_role": "portrait",
         "catalog_wide_launch_authorized": False,
+        "retry_reason": "attempt_v1_passed_technical_gate_but_failed_identity_style_and_outfit_visual_gate",
         "reference": reference_meta,
         "reference_store": {"reference_id": reference_id, "requested_scale": REFERENCE_SCALE, "mode": "identity"},
         "request": {k: v for k, v in request.items() if k != "prompt"},
