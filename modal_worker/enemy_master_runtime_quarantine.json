@@ -1,0 +1,20 @@
+{
+  "schema": "plushbound.enemy_master_runtime_quarantine.v1",
+  "status": "active",
+  "policy": {
+    "preserve_canonical_master": true,
+    "placeholder_substitution": false,
+    "automatic_crop_repair": false,
+    "promotion_blocked_while_listed": true
+  },
+  "assets": [
+    {
+      "asset_id": "reg/verdancia/enemy-battle/001",
+      "source_sha256": "eb17523a6252276b28665af4ebf1c0845e1cb5777d3857eeb703217d1564509e",
+      "source_artifact_id": 12562356167,
+      "reason_code": "visual_multihead_anomaly",
+      "reason": "Canonical source contains one body with two mismatched heads; this violates the no-mutations/deformations runtime quality bar. BiRefNet reproduced the source faithfully and did not introduce the anomaly.",
+      "disposition": "quarantine_without_substitution"
+    }
+  ]
+}
