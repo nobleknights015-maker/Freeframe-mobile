@@ -1,7 +1,7 @@
 {
   "schema": "plushbound.enemy_master_runtime_region_trigger.v1",
-  "run": 5,
-  "region": "verdancia",
+  "run": 6,
+  "region": "tideglass-coast",
   "max_parallel": 4,
-  "purpose": "Produce the Verdancia enemy runtime region from verified canonical GitHub artifacts, skipping already-quarantined canonical source defects, for full-region visual review before banking."
+  "purpose": "Produce the complete Tideglass Coast enemy runtime region from verified canonical GitHub artifacts for full-region visual review before banking."
 }
