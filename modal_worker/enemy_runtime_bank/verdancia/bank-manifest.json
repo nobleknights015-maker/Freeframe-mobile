@@ -1,0 +1,512 @@
+{
+  "approved_count": 62,
+  "assets": [
+    {
+      "asset_id": "reg/verdancia/enemy-battle/002",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/002.png",
+      "sha256": "94cfbf6eae730e6d1e333033d56d97d3b53be8375756ca1d003bac5d08128a10",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/003",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/003.png",
+      "sha256": "513d2c98801a1c4a193c9a12551336798a806f8a12958a5b30f3d14ad89c84ca",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/004",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/004.png",
+      "sha256": "e36c45faf3bafeb7214b758dc0cd914fe678b04a3df6aa78c4824f043850f1b7",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/005",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/005.png",
+      "sha256": "d06edd03ad66e38da0d60cf0eed9b0fb3f00b34e7fcce529eadda59aa11ded6c",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/006",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/006.png",
+      "sha256": "762b9a96da6f7dadb349f1a0027848fa12c5a8defe142636591df590accbb213",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/007",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/007.png",
+      "sha256": "0792a3b3d88c6c5cb56407829bc5b006fbdad2567f118e58cc6b0e114ed62a67",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/008",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/008.png",
+      "sha256": "29a4175ee4025f28378ec9d03f43ed3e0c6076b8c72ad09beb90cf57aa40c8f4",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/009",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/009.png",
+      "sha256": "bf663ec5772ea17843f68418bd9b410886e9a6d500b325f9bb968096e055bc1f",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/010",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/010.png",
+      "sha256": "16c6a24be4f871a50d799920e1c14a3ff7b0ff1c000a2f765e335ddb9a9482f4",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/011",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/011.png",
+      "sha256": "3497a1c336b4d2adee891fdabae388375806c7ea8d4aefc145d81fb0cb11f456",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/012",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/012.png",
+      "sha256": "a2a8d45b24315a2c6a3e7d36bba11f2433e074e627bd42d8240e97ae317eb3a3",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/013",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/013.png",
+      "sha256": "ea82f9eb54fc20746155fdc78cda31655517547a582db6bc1d707659cea52464",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/014",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/014.png",
+      "sha256": "c3580078a899bb17888c488f636003d837bd785284a16aa64ba9627b4a79134c",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/015",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/015.png",
+      "sha256": "63cb581d027bc88f0da11010693a08762e621a69a61d2e3fdb0f122284ff6b00",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/016",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/016.png",
+      "sha256": "e155670a863c1086a51dedf7fe9d69dc747d5e214b0d2e0717038bf71abb0198",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/017",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/017.png",
+      "sha256": "28c49ac15302e0af1d5d7a43aef9d02b282ccfe6f9ac2749a163f013e13894f6",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/018",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/018.png",
+      "sha256": "59dc069b34664996feb719f82296ce98965dab0248bb02c13af292527c3f3257",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/019",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/019.png",
+      "sha256": "610468c4ab79125dbc1e3483addd52599bb44e89dee2d29da21e23168b288f0c",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/020",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/020.png",
+      "sha256": "0729fe25bf3d691d9d96162b81b0c173756f2ae6a53089cdd7229b2deb1b03f2",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/021",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/021.png",
+      "sha256": "a7d28f7c93b8748ecc3860b6b8173a5c23ec0e921e9a6d2097c56c5c7440e84b",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/022",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/022.png",
+      "sha256": "d3ea88d1dbd04448201ac6eda97994ce3c185f72bd69c60cda436571111f4d8f",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/023",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/023.png",
+      "sha256": "76c7f347c8658269f8991d03bc92ad63ef3cc0fff6e1b65142f581b4d13ceac6",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/024",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/024.png",
+      "sha256": "82376951416184864e25142fc7a4c3c3fea6bf4c1d2180b38dfc2771d1fb7d10",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/025",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/025.png",
+      "sha256": "49493c99de72eb053877b15377b1a9eb0ad68433643685e537177f1031d52a30",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/026",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/026.png",
+      "sha256": "537a0418a5db54813ab48b59eaf5739bf73047a4c816e12e215603760eda4817",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/027",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/027.png",
+      "sha256": "111986acb6e8a52384b37eeb4ac88e27d8a59e2eeb54f710d9700423a88dc376",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/028",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/028.png",
+      "sha256": "17fc717721b8cfff6958d5ee8c6f18d55fd00d91a46a6b96e3948a9b9df44335",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/029",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/029.png",
+      "sha256": "3df39c4dcb855bb70554530494fc66b60dd4d0722fc86488e85f7c46291a7d22",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/030",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/030.png",
+      "sha256": "2b2b26b6230f12385ce43933e7927787c5f6b8b4a9cb7df390a2176f2469d3c6",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/031",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/031.png",
+      "sha256": "cfe6e79dca563e7fa6e10c8b1d60e902ba5930345e50e6c9628a96425d5e1e89",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/032",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/032.png",
+      "sha256": "b72d4c002ef0377e11adc1de97c173b10b40d8e9a7596a740446e02ea443010d",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/034",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/034.png",
+      "sha256": "234aaf70498ea2bb1841b237b612757acef3fcf86be7c19d81d1bbac41ba37a0",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/035",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/035.png",
+      "sha256": "1267c4746e49a832082e8b77d2c2d6769fe23842266d419ecde62b612f8be073",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/036",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/036.png",
+      "sha256": "ab4a172262cfa27c181181269d8963ad5537479203595a68e7baa497354c442f",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/037",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/037.png",
+      "sha256": "b2aa4e724bd929204b2769dcf5e6c105b555dabd5d46ec5af42f3ed359558609",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/038",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/038.png",
+      "sha256": "cf70658984e300859ae7e1711ea800e0e5ad027d0bbf3b79dcc7b58b75ae64b7",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/039",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/039.png",
+      "sha256": "cd68e77f66d8f20b18894d51774cc7c8aa2bf6f3d9b39e6ff7b77d02c3ebe2c8",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/040",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/040.png",
+      "sha256": "f3017c8477f5529cb5db411d6eb8892b28e059f48d46e68061c09313b2142795",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/041",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/041.png",
+      "sha256": "e94f1d9926e6da210d3a32509d8c1723bd60d644980f0983c07383d1ea85d6df",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/042",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/042.png",
+      "sha256": "3c3c6fee6cb9cbd58a28756b70c798182d1c85d8658cc07a314aa4dc20e9801d",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/043",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/043.png",
+      "sha256": "0d30f388648d0e5fcd378c37dcd3e7c9b0a0d677dc7dea3834434fe74dc746ba",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/044",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/044.png",
+      "sha256": "ea60e3d480acefe8ea59923674fb49bf4ce180b59894c9dd6e6780acad88283a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/045",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/045.png",
+      "sha256": "62c8cd4406134d73bb1cc041b9e93edc9587a38d7b1880660dc990ed97b5733e",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/046",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/046.png",
+      "sha256": "4ee29f79b892855b15f137d07e219aef2d52f9c57ed0062138f283ba6e7717f4",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/047",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/047.png",
+      "sha256": "703334935fcfa48f1ccc358c35bb2986134ade64927d7f902e5749a3a96cd176",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/048",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/048.png",
+      "sha256": "cb43e38948c0536bd1770c5e328ebd0a4eeb3a8fdc4ddaf3de87c7b95d69962d",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/049",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/049.png",
+      "sha256": "3d4c3a9adafc0f190fd02eb0450e54729f32952d8eb827d3bd82d79bc01232f6",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/050",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/050.png",
+      "sha256": "04aeabc8bc6c5da348f57cef747e8cb456dd45583c1e9e288abe6a072b0b0b4b",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/051",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/051.png",
+      "sha256": "b4da9c94b72b265b73c2f7721c9c1dd70edc66c1275d7d10dace6b58576f84b6",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/052",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/052.png",
+      "sha256": "eacaa3eb615d274e1316896e8c2a86ed92e23a840a2dc4012dca4c08dffba91b",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/053",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/053.png",
+      "sha256": "9f0a2c68af061f60ce00991051ff959d0847e5d8203fb56c46c7f9e2de15950c",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/054",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/054.png",
+      "sha256": "c67769dfc9eb3295b63291bd807407537070d2f5c4f8ed9f462b585b26d6d3f9",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/055",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/055.png",
+      "sha256": "18bfb00e85343a035829350d51025694e899d9bfa7cd3db18f09c3ff045f3ea0",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/056",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/056.png",
+      "sha256": "a17b24e71ed2309351c4abe488fa9fb5604b501ccd1fc5e9e28edb44d16ad5a1",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/057",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/057.png",
+      "sha256": "667730f04f9ff389ffc29a84ebd2ee628d7acf01b786bb16ce5a3a6239ca40d8",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/058",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/058.png",
+      "sha256": "957409af82787458546a97bd290d2fef1aa8d9a6536fdeea9d89aadd677b2ca7",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/059",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/059.png",
+      "sha256": "b936dc6fbb147dd41b5e12e7f9b5b92c735fec0364cd9572c47ebfa1979fd5ac",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/060",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/060.png",
+      "sha256": "05720c9a2a1d0a53d9ff900f6298d72696939f8a4a74902619a2960c369b3600",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/061",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/061.png",
+      "sha256": "87ea53a8da31f388df6a70098347f449615b57cbe745b8915f27177d74b72f23",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/062",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/062.png",
+      "sha256": "dfab0a1864e12c7ea64052da9654491f3502f797d2f2156fa67f7e90392b0fe3",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/063",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/063.png",
+      "sha256": "8daca392c06cabaa25b7c0c974ffe232f49466110d7386c12450fac785d3d851",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/verdancia/enemy-battle/064",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/verdancia/064.png",
+      "sha256": "8e0f1386a5ebd9e93573ae1e7bccfec9de7c96a0923b4263a0717ea7254cb76d",
+      "width": 288
+    }
+  ],
+  "quarantined_asset_numbers": [
+    1,
+    33
+  ],
+  "quarantined_count": 2,
+  "region": "verdancia",
+  "schema": "plushbound.enemy_runtime_bank.v1",
+  "source_artifact_id": 12620063833,
+  "source_artifact_sha256": "2d979bd5e69398f9ad6df9c3bafadc2c9fd21a533dbd9bcea2108792c0b37d30",
+  "source_workflow_run_id": 40249923290,
+  "status": "BANKED_WITH_QUARANTINE"
+}
