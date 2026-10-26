@@ -1,7 +1,7 @@
 {
   "schema": "plushbound.enemy_master_runtime_region_trigger.v1",
-  "run": 2,
-  "region": "crownweave",
+  "run": 3,
+  "region": "silkspire",
   "max_parallel": 4,
-  "purpose": "Produce the complete 64-asset Crownweave enemy runtime region from verified canonical GitHub artifacts for full-region visual review before banking."
+  "purpose": "Produce the complete 64-asset Silkspire enemy runtime region from verified canonical GitHub artifacts for full-region visual review before banking."
 }
