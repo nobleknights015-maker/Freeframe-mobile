@@ -1,0 +1,198 @@
+name: Run Enemy Master Runtime Region
+
+on:
+  push:
+    branches: [freeframe-modal-worker]
+    paths:
+      - 'modal_worker/enemy_master_runtime_region_trigger.json'
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: enemy-master-runtime-region
+  cancel-in-progress: false
+
+jobs:
+  produce-region:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: modal_worker
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: freeframe-modal-worker
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Require production credentials
+        shell: bash
+        run: |
+          test -n "$MODAL_TOKEN_ID" || { echo 'MODAL_TOKEN_ID secret is not configured.' >&2; exit 1; }
+          test -n "$MODAL_TOKEN_SECRET" || { echo 'MODAL_TOKEN_SECRET secret is not configured.' >&2; exit 1; }
+      - name: Install production dependencies
+        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
+      - name: Verify canonical source artifacts and derive region battlers
+        run: |
+          python - <<'PY'
+          import base64
+          import hashlib
+          import io
+          import json
+          import os
+          import re
+          import subprocess
+          import zipfile
+          from concurrent.futures import ThreadPoolExecutor, as_completed
+          from pathlib import Path
+
+          import modal
+          from PIL import Image
+          from enemy_master_runtime_production import MasterRecord, derive_one, inspect_alpha
+
+          SOURCES = {
+              'elyndor': [(12550746920,'d58908455eb082b677630c38c86925d2705dfc2b6115ce612edd702f4afb4548'),(12550754922,'0acde3794aa70c26c8ffd45d7682b4f0c9bd62da644d69439038b024be5f3bab')],
+              'crownweave': [(12552981423,'083226e314e621e4419a61b3c43b8c832b40eaf6a68a7ac50843c6b30ece12b2'),(12553929119,'581308ef0f8eb6b506d11d457c0875870738c1eb165d472ad7427a78df9926be')],
+              'silkspire': [(12556121668,'d2b0bb2f37493752cac195374bbafa0c0ed0588e0364c18d97b83b702ea526ed'),(12557306678,'b744acb676d52ec674c964551e02c15279bff615323fd0fd11734c89d5e4cb0a')],
+              'gloamfen': [(12558753021,'1f062c02aa389e3d085d925293324b9222c25359c1690657a4ef00123b653f6f'),(12560820820,'06df7154f7eb9820f0f7f1fc39f0f11c19d50ff6d3eeca611d5ad4dc8c80a925')],
+              'verdancia': [(12562336721,'3ee643f6933473c5b6be7ef4961b0f64ea0bd540723b423a496f9d6ac4aa8547'),(12562356167,'b911b559445ce7038ddaf6b07716c4223e65996d540eec0a4a5fcb9ca6eaf11e')],
+              'tideglass-coast': [(12562219390,'5823d85b5a2c746f01ede0fd3e62f6e21fc3468f12445cb1c594865a0351ab45'),(12562552796,'4e89507bf0d1ba1bf17c8c759b3ac8b4182b91e7ae9d745870c95bdd06af0a0c')],
+              'moonpatch-steppe': [(12562249199,'86b71b3063e2dccf33e857a4e58873f643c5280b4b4a53b399bf3b3bf0642113'),(12562337532,'9316de9d74e0a792d13fa9ef10a23b15a84003fa8dd466eee4b28cf68249b026')],
+              'sunspool-desert': [(12562554199,'314e8951f85349110c01d36ba7468a9a8fd7a285081d553f5fdbd2384371a289'),(12562782580,'cd03145d2979d354eb54975a53314fea82c81468ab2befcd0317f0f2f1d18afd')],
+              'cinderreach': [(12562554203,'9c6e8168f231ecad8d32249e77acb03a6659c84135d4b44dd87a4b35740bb6c8'),(12563310718,'509c234c8510d8c6b83da25375affb4483436b8be945a1961f75aabb704d29c7')],
+              'frostlace': [(12563138092,'950108f9c7da06dc0426b1d977d7611b49ab87560960af4593bde9757fbbdd54'),(12563655706,'78dafaf48c2736dde46233650ade8b7bdfdbcff89ab5d805e1425560531fbda2')],
+          }
+
+          trigger = json.loads(Path('modal_worker/enemy_master_runtime_region_trigger.json').read_text())
+          region = str(trigger.get('region','')).strip()
+          if region not in SOURCES:
+              raise SystemExit(f'unsupported region: {region!r}')
+          max_parallel = int(trigger.get('max_parallel',4))
+          if not 1 <= max_parallel <= 6:
+              raise SystemExit('max_parallel must be 1..6')
+
+          quarantine_doc = json.loads(Path('modal_worker/enemy_master_runtime_quarantine.json').read_text())
+          quarantined = {
+              row['asset_id']: row
+              for row in quarantine_doc.get('assets', [])
+              if row.get('asset_id','').startswith(f'reg/{region}/enemy-battle/')
+          }
+
+          source_root = Path('/tmp/enemy-region-source')
+          source_root.mkdir(parents=True, exist_ok=True)
+          source_receipts = []
+          for artifact_id, expected_zip_sha in SOURCES[region]:
+              zip_path = source_root / f'{artifact_id}.zip'
+              with zip_path.open('wb') as fh:
+                  subprocess.run(
+                      ['gh','api',f'repos/{os.environ["GITHUB_REPOSITORY"]}/actions/artifacts/{artifact_id}/zip'],
+                      stdout=fh, check=True,
+                  )
+              actual_zip_sha = hashlib.sha256(zip_path.read_bytes()).hexdigest()
+              if actual_zip_sha != expected_zip_sha:
+                  raise SystemExit(f'artifact ZIP digest mismatch {artifact_id}: {actual_zip_sha}')
+              extract_dir = source_root / str(artifact_id)
+              extract_dir.mkdir()
+              with zipfile.ZipFile(zip_path) as zf:
+                  zf.extractall(extract_dir)
+              source_receipts.append({'artifact_id':artifact_id,'sha256':actual_zip_sha})
+
+          pattern = re.compile(rf'^reg__{re.escape(region)}__enemy-battle__(\d{{3}})\.png$')
+          sources = {}
+          for file in source_root.rglob('*.png'):
+              m = pattern.match(file.name)
+              if not m:
+                  continue
+              number = int(m.group(1))
+              if not 1 <= number <= 64:
+                  raise SystemExit(f'out-of-range source filename: {file}')
+              asset_id = f'reg/{region}/enemy-battle/{number:03d}'
+              if asset_id in sources:
+                  raise SystemExit(f'duplicate source asset: {asset_id}')
+              sources[asset_id] = file
+          expected_ids = {f'reg/{region}/enemy-battle/{i:03d}' for i in range(1,65)}
+          if set(sources) != expected_ids:
+              raise SystemExit(f'source ID set mismatch missing={sorted(expected_ids-set(sources))} extra={sorted(set(sources)-expected_ids)}')
+
+          extractor = modal.Cls.from_name('freeframe-worker','FreeFrameExtractor')()
+          out_root = Path('enemy-master-runtime-region') / region
+          out_root.mkdir(parents=True, exist_ok=True)
+
+          def remote_extract(raw: bytes):
+              response = extractor.extract.remote({'image_base64':base64.b64encode(raw).decode('ascii')})
+              return base64.b64decode(response['image_base64'],validate=True), str(response.get('provider')), str(response.get('model'))
+
+          def process(asset_id):
+              source = sources[asset_id]
+              raw = source.read_bytes()
+              source_sha = hashlib.sha256(raw).hexdigest()
+              with Image.open(io.BytesIO(raw)) as im:
+                  im.load()
+                  if im.format != 'PNG' or im.size != (1024,768):
+                      raise RuntimeError(f'{asset_id}: invalid canonical source PNG {im.format} {im.size}')
+              record = MasterRecord(
+                  asset_id=asset_id,
+                  archive_path='verified-github-artifact:' + str(source),
+                  sha256=source_sha,
+                  width=1024,
+                  height=768,
+                  model='black-forest-labs/FLUX.2-klein-4B',
+                  preset='plushbound_enemy',
+                  renderer_route='flux2_klein',
+              )
+              out_png, manifest = derive_one(record, raw, remote_extract)
+              target = out_root / f'{asset_id.rsplit("/",1)[1]}.png'
+              target.write_bytes(out_png)
+              with Image.open(io.BytesIO(out_png)) as im:
+                  im.load(); alpha=inspect_alpha(im)
+                  if im.size!=(288,288) or im.mode!='RGBA' or not alpha['valid'] or alpha['edge_alpha_fraction']!=0:
+                      raise RuntimeError(f'{asset_id}: packaged output gate failed {im.size} {im.mode} {alpha}')
+              manifest['runtime_path']=str(target)
+              return manifest
+
+          selected = sorted(expected_ids - set(quarantined))
+          assets=[]; failures=[]
+          with ThreadPoolExecutor(max_workers=max_parallel) as pool:
+              futures={pool.submit(process,aid):aid for aid in selected}
+              for future in as_completed(futures):
+                  aid=futures[future]
+                  try: assets.append(future.result())
+                  except Exception as exc: failures.append({'asset_id':aid,'error':str(exc)})
+          assets.sort(key=lambda x:x['asset_id']); failures.sort(key=lambda x:x['asset_id'])
+          expected_completed=64-len(quarantined)
+          report={
+              'schema':'plushbound.enemy_master_runtime_region.v1',
+              'region':region,
+              'source_artifacts':source_receipts,
+              'canonical_source_count':64,
+              'explicit_quarantine_count':len(quarantined),
+              'quarantined_assets':list(quarantined.values()),
+              'requested_assets':len(selected),
+              'completed_assets':len(assets),
+              'failed_assets':len(failures),
+              'diffusion_generation_count':0,
+              'extractor_provider':'birefnet',
+              'extractor_model':'ZhengPeng7/BiRefNet',
+              'output_geometry':[288,288],
+              'output_mode':'RGBA',
+              'assets':assets,
+              'failures':failures,
+              'status':'READY_FOR_VISUAL_REVIEW' if not failures and len(assets)==expected_completed else 'FAILED',
+          }
+          Path('enemy-master-runtime-region/region-report.json').write_text(json.dumps(report,indent=2,sort_keys=True)+'\n')
+          print(json.dumps({k:v for k,v in report.items() if k not in {'assets','failures','quarantined_assets'}},sort_keys=True))
+          if report['status']!='READY_FOR_VISUAL_REVIEW':
+              raise SystemExit(f'region production failed: {failures[:5]}')
+          PY
+      - name: Upload region evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: enemy-master-runtime-region-${{ github.run_id }}
+          path: enemy-master-runtime-region/
+          if-no-files-found: error
+          retention-days: 14
