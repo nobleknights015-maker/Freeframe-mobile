@@ -15,6 +15,46 @@
       "reason_code": "visual_multihead_anomaly",
       "reason": "Canonical source contains one body with two mismatched heads; this violates the no-mutations/deformations runtime quality bar. BiRefNet reproduced the source faithfully and did not introduce the anomaly.",
       "disposition": "quarantine_without_substitution"
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/010",
+      "source_sha256": "83276f648a8ab0d39091e95e454449c0f32fc9af7d42a89d1fa54f2d623cabcb",
+      "source_artifact_id": 12550746920,
+      "reason_code": "visual_black_head_anomaly",
+      "reason": "Canonical source contains an unrendered solid-black head region. Extraction reproduced the source faithfully.",
+      "disposition": "quarantine_without_substitution"
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/015",
+      "source_sha256": "8d146ad102935769e12806e64b86121f96187ca5ceef8fdb5178a5718433999b",
+      "source_artifact_id": 12550746920,
+      "reason_code": "visual_extra_subject_anomaly",
+      "reason": "Canonical source contains an additional solid-black creature attached beside the intended subject. Extraction reproduced the source faithfully.",
+      "disposition": "quarantine_without_substitution"
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/040",
+      "source_sha256": "08846b743c238f0c6d8e47496210b3e6587cbdf8e3fa73537d3bd595e2c8b48c",
+      "source_artifact_id": 12550754922,
+      "reason_code": "visual_black_head_anomaly",
+      "reason": "Canonical source contains an unrendered solid-black head region. Extraction reproduced the source faithfully.",
+      "disposition": "quarantine_without_substitution"
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/046",
+      "source_sha256": "1f2fa95a7eedb8da03015017d6f177a9a398e44800a015f95449d6c85fba9c77",
+      "source_artifact_id": 12550754922,
+      "reason_code": "visual_extra_subject_anomaly",
+      "reason": "Canonical source contains an additional solid-black creature/head immediately behind the intended subject. Extraction reproduced the source faithfully.",
+      "disposition": "quarantine_without_substitution"
+    },
+    {
+      "asset_id": "reg/elyndor/enemy-battle/062",
+      "source_sha256": "92c91d102ce7d3c1c4af0efeba24efb2b620e136c23b47ffad7ad2af11bc6d8f",
+      "source_artifact_id": 12550754922,
+      "reason_code": "visual_black_head_anomaly",
+      "reason": "Canonical source contains an unrendered solid-black head region. Extraction reproduced the source faithfully.",
+      "disposition": "quarantine_without_substitution"
     }
   ]
 }
