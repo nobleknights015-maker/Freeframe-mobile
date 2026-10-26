@@ -46,8 +46,9 @@ jobs:
           assert d['dimensions']=='144x192'
           assert d['layout']=='3x4-48px'
           assert int(d['max_paid_renders'])==13
+          assert int(d['max_paid_extractions'])==12
           assert d['catalog_wide_launch_authorized'] is False
-          print('creator body trigger bounded: 1 logical asset / <=13 renders')
+          print('creator body trigger bounded: 1 logical asset / <=13 renders / <=12 extractions')
           PY
       - name: Compile creator canary
         run: python -m compileall -q modal_worker/creator_body_canary.py modal_worker/production_factory.py modal_worker/asset_packager.py modal_worker/image_normalizer.py modal_worker/mv_compositor.py modal_worker/png_compositor.py
@@ -63,10 +64,13 @@ jobs:
           from pathlib import Path
           from PIL import Image
           report=json.loads(Path('creator-body-001-report.json').read_text())
-          assert report['schema']=='plushbound.creator_body_canary.v1'
+          assert report['schema']=='plushbound.creator_body_canary.v2'
           assert report['logical_id']=='creator/body/001'
           assert report['status']=='generated_pending_visual_review'
           assert report['source_frame_count']==12
+          assert report['extraction_backend']=='deployed_birefnet'
+          assert len(report['extraction'])==12
+          assert report['compact_motion_gate']['passed'] is True
           assert report['catalog_wide_launch_authorized'] is False
           with Image.open('creator-body-001.png') as im:
               im.load()
@@ -77,7 +81,7 @@ jobs:
               for row in range(4):
                   for col in range(3):
                       assert a.crop((col*48,row*48,(col+1)*48,(row+1)*48)).getbbox() is not None, (row,col)
-          print('creator/body/001 evidence verified: exact 144x192 RGBA / 12 occupied cells')
+          print('creator/body/001 evidence verified: BiRefNet + compact motion + exact 144x192 RGBA')
           PY
       - name: Upload creator body canary evidence
         if: always()
