@@ -1,6 +1,7 @@
 {
   "schema": "plushbound.creator_body_batch_trigger.v1",
-  "enabled": true,
+  "enabled": false,
+  "status": "RETIRED_COMPLETE",
   "round": 2,
   "lanes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11],
   "preserved_lanes": [10],
@@ -11,6 +12,8 @@
   "max_paid_renders": 286,
   "max_paid_extractions": 264,
   "catalog_wide_launch_authorized": false,
-  "retry_reason": "Round 1 hit Modal AppCreate rate limits. Lane 10 is durably banked with complete artifact evidence. Lanes 2 and 4 passed generation/validation but their zero-padded output directories were omitted by the old artifact path, so they are included in the retry to restore durable assets/evidence. Remaining failed lanes are retried under max-parallel 3 with staggered throttle-only backoff.",
+  "retry_reason": "Round 1 hit Modal AppCreate rate limits. Lane 10 was durably preserved; Round 2 restored the remaining durable artifacts under max-parallel 3 with staggered throttle-only backoff.",
+  "completion_run_id": 40400390194,
+  "regeneration_authorized": false,
   "launch_nonce": 2
 }
