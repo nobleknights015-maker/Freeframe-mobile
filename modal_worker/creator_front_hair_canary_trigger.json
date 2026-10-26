@@ -1,0 +1,15 @@
+{
+  "schema": "plushbound.creator_front_hair_canary_trigger.v1",
+  "enabled": true,
+  "round": 1,
+  "logical_id": "creator/front-hair/001",
+  "slot": "front-hair",
+  "style_name": "short_side_swept_fringe",
+  "dimensions": "144x192",
+  "layout": "3x4-48px",
+  "body_anchor_contract": "creator/body locked 24-build shared head anchor",
+  "max_paid_renders": 5,
+  "max_paid_extractions": 4,
+  "catalog_wide_launch_authorized": false,
+  "launch_nonce": 1
+}
