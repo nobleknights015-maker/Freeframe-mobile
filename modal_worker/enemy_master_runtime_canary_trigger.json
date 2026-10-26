@@ -1,10 +1,18 @@
 {
   "schema": "plushbound.enemy_master_runtime_canary_trigger.v1",
-  "run": 1,
-  "source_artifact_id": 12563310718,
+  "run": 2,
+  "coverage": "one-canonical-master-per-region",
   "asset_ids": [
+    "reg/elyndor/enemy-battle/001",
+    "reg/crownweave/enemy-battle/001",
+    "reg/silkspire/enemy-battle/001",
+    "reg/gloamfen/enemy-battle/001",
+    "reg/verdancia/enemy-battle/001",
+    "reg/tideglass-coast/enemy-battle/001",
+    "reg/moonpatch-steppe/enemy-battle/001",
+    "reg/sunspool-desert/enemy-battle/001",
     "reg/cinderreach/enemy-battle/001",
-    "reg/cinderreach/enemy-battle/002"
+    "reg/frostlace/enemy-battle/001"
   ],
-  "purpose": "Validate canonical recovered enemy masters through deployed BiRefNet extraction and deterministic 288x288 battler packaging before scaling."
+  "purpose": "Validate one canonical recovered enemy master from every region through deployed BiRefNet extraction and deterministic 288x288 battler packaging before scaling to all 640."
 }
