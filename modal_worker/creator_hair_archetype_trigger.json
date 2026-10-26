@@ -1,7 +1,7 @@
 {
   "schema": "plushbound.creator_hair_archetype_trigger.v1",
   "enabled": true,
-  "round": 1,
+  "round": 2,
   "style_indices": [21, 57, 65],
   "style_count": 3,
   "styles": {
@@ -14,6 +14,6 @@
   "max_paid_extractions": 12,
   "max_parallel": 2,
   "catalog_wide_launch_authorized": false,
-  "reason": "Prove deterministic paired split across long straight, high-volume coil, and off-axis tied silhouettes before authorizing the remaining catalog.",
-  "launch_nonce": 1
+  "reason": "Round 1 generation and machine verification passed for all three styles, but the artifact uploader omitted the zero-padded style directories. Re-run only these three bounded canaries under the corrected wildcard artifact path so durable PNG evidence can be visually QC'd before any bulk launch.",
+  "launch_nonce": 2
 }
