@@ -17,6 +17,14 @@
       "disposition": "quarantine_without_substitution"
     },
     {
+      "asset_id": "reg/verdancia/enemy-battle/033",
+      "source_sha256": "494072e278d698dc4daaa17981238b4c7290843cd2dd531b07e03d05be890392",
+      "source_artifact_id": 12562336721,
+      "reason_code": "visual_multihead_anomaly",
+      "reason": "Canonical source contains two creature heads/bodies fused into one render. Extraction reproduced the source faithfully and did not introduce the anomaly.",
+      "disposition": "quarantine_without_substitution"
+    },
+    {
       "asset_id": "reg/elyndor/enemy-battle/010",
       "source_sha256": "83276f648a8ab0d39091e95e454449c0f32fc9af7d42a89d1fa54f2d623cabcb",
       "source_artifact_id": 12550746920,
