@@ -1,0 +1,512 @@
+{
+  "approved_count": 62,
+  "assets": [
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/001",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/001.png",
+      "sha256": "eae3d4f8a197a1728d7f93681dfa6f63835c8fd00ad4a9e3804c4bef4d5316cb",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/002",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/002.png",
+      "sha256": "fb665afc7c191b058a7e13ead2d62367a6260d855b89cb660ab7dfa6d70bca0b",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/003",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/003.png",
+      "sha256": "f4067a3de1462050e06a141cc64787dcde2dc6bf8e5146f8a3bb50ba9b0f0e65",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/004",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/004.png",
+      "sha256": "62e2e6548b55ec3119df9a1e851a92f2f85bfd1106ce8be00828e6968f07ee16",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/005",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/005.png",
+      "sha256": "14cabf507557c86b89e844b2509c33214c3e40ff12e707601666fbfe318d3108",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/006",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/006.png",
+      "sha256": "517df671aee68a4dc57cb87cbd57b134e5f70b9428cab484d73c08d83af68126",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/008",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/008.png",
+      "sha256": "eb2690d033d6d43e3e48f2085c944722ef82a2e46134763a6dd26431321476bc",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/009",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/009.png",
+      "sha256": "7dfd8b6fd7b907a6c2db92f6344feb26cdccce98bdc07040cb56b0c8d3dbb50a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/010",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/010.png",
+      "sha256": "e71b782329f051877ac12beb8c3323b526f9dcde7ee8d78fccabc44d4d4633d4",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/011",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/011.png",
+      "sha256": "a7a623658b8482c62211b81ae5b1a74b24201aa1a0ce26fd30e7464fb7d0f2a3",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/012",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/012.png",
+      "sha256": "30df3f17db0d6055aabd5a1ad5f25db0465cdaf0ab5617bbda55012f386f60d6",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/013",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/013.png",
+      "sha256": "b6410e5f036d26b51d905364ef52bf0d90a63cf153b330802eb0b61ee8eb1ec4",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/014",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/014.png",
+      "sha256": "14a94f3628310abdb41512e589fbf11501c0bc6cd768d5765cf67ea338a20560",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/015",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/015.png",
+      "sha256": "585c9c9a5fe056421d04c3f373ed26722f36cdf8f02b23b785f805805b552744",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/016",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/016.png",
+      "sha256": "bb0439df32f586a9f935238342140a2c2bc83d17b766d01a73b354be132c8c05",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/017",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/017.png",
+      "sha256": "0444a27a630b3506fd16cbeb440832ac5fae96912f5bd668d1a03bb4c54a2270",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/018",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/018.png",
+      "sha256": "c30e1532d814604ac30c767e8f68ca80646ff9873ba5661470955d0536eec01a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/019",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/019.png",
+      "sha256": "ad32b848636f5e989b8ffac6179dc3857ded314174c325c6e569fc1ff6e627cf",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/020",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/020.png",
+      "sha256": "499b39e6feb0702c82495796ad79bec9eb436924226f5cd6f6cd3cdfc8b951a5",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/021",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/021.png",
+      "sha256": "64feb789ceb725a1ea4ff2abc7784885dc760898ac9fa2f627962f77294cd95a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/022",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/022.png",
+      "sha256": "af0cc6423d6ddc9562e05f4adf517427137419015f61d969b764518d4fc8858d",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/023",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/023.png",
+      "sha256": "fe03c56711729acdcfe02b6eb8ee50b57ea6767010dcacaeabd26ebe844e556d",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/024",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/024.png",
+      "sha256": "58ccc61e6fd9a9f629aac7c5394625f7f1091da0c840486282f86d549f18bcc5",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/025",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/025.png",
+      "sha256": "87444ae907317e4e9da9ca0f73db61709a72c845dfe8411a323c03f0970b569e",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/026",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/026.png",
+      "sha256": "2628a78f484abb2a973703de13e1d1a8dbc85e2f1f7271ca5fcfdb31799fcf18",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/027",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/027.png",
+      "sha256": "f552215c2b3ad9851e21140f65eb56809fe3f0d475e4bcd4817297620bf6f17a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/028",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/028.png",
+      "sha256": "f420b0cecaebe4744086d9f06206b275dd2db7764338308d9bd13d9103abaecb",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/029",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/029.png",
+      "sha256": "6bb7d690a0c179ecdeb1bbe8d33f8645a629cee62c18bf306d0d035533970107",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/030",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/030.png",
+      "sha256": "53d00376d4f8146380982de656b5fc0e63fd91afe4619fb87e411877c23fd682",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/031",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/031.png",
+      "sha256": "12c4213a870d51a259af125aac75a66011b56c8652c4a68e8685848be63ebfa8",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/032",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/032.png",
+      "sha256": "f475d1e92b74e2a89730f4c18627a19430b5fb2c45a4530ad0b7e6f31fdece4e",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/033",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/033.png",
+      "sha256": "e02c3b738ead9a7a3af8943fda4811b92f47ac980a289f7687244103c036b2ec",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/034",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/034.png",
+      "sha256": "30dea7d77cd37d9e5939e82befd62ca0c1febf4600ecfa655b0f97331b944164",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/036",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/036.png",
+      "sha256": "2107a23cb6367857fb4ac5e01cd40f78375e06ee0133052becc694cd57460c33",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/037",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/037.png",
+      "sha256": "0c5ed7c35950efc7b28fda590f87ec6a6b8923d758516b290a5e42f62518a30b",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/038",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/038.png",
+      "sha256": "681b36d1c3b67197f44e0ed8c4feaa9a3dbaf07b69f4ea43279bc92c5eca9a9c",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/039",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/039.png",
+      "sha256": "c306035c810458492a41068278b05cc6ec301032775cbf1744d8f8686c136f85",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/040",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/040.png",
+      "sha256": "84cdb763c3fe9e27b8b77fc57d37cb5976141ddcc21fbbccc439b646388ecdd6",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/041",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/041.png",
+      "sha256": "73e77fd3358c1444a89353e475259e962d527d46418485706037112e895a0e16",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/042",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/042.png",
+      "sha256": "5703715d3d4733bf8a7e5faf83dc7f771cc6c6c663c0a3065cf226debd2c1016",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/043",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/043.png",
+      "sha256": "97325f7f885b072099d74a08f2d4b22c7911f6390669c768dd0e42396af676cf",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/044",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/044.png",
+      "sha256": "59aff1dcd0ab5da346c7e6f5447c9f1456b22117e0c80f9c0aa803fcbc1d81ae",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/045",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/045.png",
+      "sha256": "80cd5902993439e0a59af0e5e35c816534038223fac7afb0f0bd5960bc6f11e1",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/046",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/046.png",
+      "sha256": "a51722f35037332eef52a638f2ff1c3a1f2aed9f18d45c59254f4ad54b8228c4",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/047",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/047.png",
+      "sha256": "5474274152b3e059b7ebad1a51c8a7fb58e6bf5f4b32e00a17c0d1bc6183bac9",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/048",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/048.png",
+      "sha256": "12167fb483f94bdbdab525c8508ebd92450d916ce3806a1c2384873b7be099d0",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/049",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/049.png",
+      "sha256": "7c8c8c5250aea5f363f6a341b5146e8f427cb5ee50b26e377faba726d22f83e0",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/050",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/050.png",
+      "sha256": "81a7b1a4773231fe719979815c3fc83b3756a93d4ca009cde960afa35cbc1af5",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/051",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/051.png",
+      "sha256": "c9a8f7a46a7f7f1abe69264f56ed348d0d89ff7d7755d75481863e8820f6131e",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/052",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/052.png",
+      "sha256": "46561f9b9ef6ad2be2e297c453604bad0af979fa34d87f0b4c1f991e6cead725",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/053",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/053.png",
+      "sha256": "eb13c70433bd0e566d3ec36a10a1afc937e17392b72b8730c151ac331b9bdf63",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/054",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/054.png",
+      "sha256": "0dd491c8722011ffec40f43e39e57aedb846e46a92937e92a35d4e0564b537bb",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/055",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/055.png",
+      "sha256": "314a5aa4bae1cbbe28acfe777eb8c4fbfe5b1a774fe204a99e306fe3797f0a0f",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/056",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/056.png",
+      "sha256": "b175da6b8557fa8449dfcc6c730e778acaa709cf3169503e0bc2f7487d41fda9",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/057",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/057.png",
+      "sha256": "f4c7c93f6922f551d2289e6fe49ac4669d0b24084239142d3c38a9866a013ee1",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/058",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/058.png",
+      "sha256": "311cf5fc769bb250c079b95f53ae7ea6bf69b9d0e5b4134153102d4a3de28613",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/059",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/059.png",
+      "sha256": "aa71725dd2f9b5edfc48ffd1141878292eb21ff3832754dcfce1694f90f53b6a",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/060",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/060.png",
+      "sha256": "1635a427474eeab94244800ae835c7aa39689a1f5f69e52971ad4ab1ce7f45d9",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/061",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/061.png",
+      "sha256": "7d53cc2e5da58601c9059ae47503198d7fefe63d91e9c6490bdcd628c263881f",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/062",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/062.png",
+      "sha256": "773382841a50b40862bee4bf9165f3e40705317c796a1d835ad0756dafd7165d",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/063",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/063.png",
+      "sha256": "087be8c288631c65dd2cf70da70ea03ae7ba3346671033551b48a72ab9859f5f",
+      "width": 288
+    },
+    {
+      "asset_id": "reg/cinderreach/enemy-battle/064",
+      "height": 288,
+      "mode": "RGBA",
+      "path": "modal_worker/enemy_runtime_bank/cinderreach/064.png",
+      "sha256": "621316aa2fb421127704c35bf2cbfef6dd23d29a9d6dd0c615d0e93da9c408ab",
+      "width": 288
+    }
+  ],
+  "quarantined_asset_numbers": [
+    7,
+    35
+  ],
+  "quarantined_count": 2,
+  "region": "cinderreach",
+  "schema": "plushbound.enemy_runtime_bank.v1",
+  "source_artifact_id": 12620856716,
+  "source_artifact_sha256": "f1b41f91b72c61f7be6efd4c53d50a4829f5c8483457bcbe7d7444f1cd52dba1",
+  "source_workflow_run_id": 40251280301,
+  "status": "BANKED_WITH_QUARANTINE"
+}
