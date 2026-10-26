@@ -39,18 +39,23 @@ jobs:
         shell: bash
         run: |
           python - <<'PY'
-          import base64, io
+          import hashlib, json
           from pathlib import Path
           from PIL import Image
-          p = Path('modal_worker/canon_refs/chris_identity_compact.b64')
+          p = Path('modal_worker/canon_refs/chris_identity_compact.jpg')
+          provenance_path = Path('modal_worker/canon_refs/chris_identity_provenance.json')
           assert p.is_file() and p.stat().st_size > 0, p
-          encoded = ''.join(p.read_text(encoding='ascii').split())
-          raw = base64.b64decode(encoded, validate=True)
-          with Image.open(io.BytesIO(raw)) as im:
+          provenance = json.loads(provenance_path.read_text())
+          expected = provenance['reference_payload']
+          raw = p.read_bytes()
+          assert len(raw) == expected['bytes'], (len(raw), expected['bytes'])
+          assert hashlib.sha256(raw).hexdigest() == expected['sha256']
+          with Image.open(p) as im:
               im.verify()
-          with Image.open(io.BytesIO(raw)) as im:
-              assert im.width >= 64 and im.height >= 64, im.size
-              print('reference_ok', im.size, im.mode, im.format, len(raw))
+          with Image.open(p) as im:
+              assert [im.width, im.height] == [expected['width'], expected['height']], im.size
+              assert im.format == expected['format'], im.format
+              print('reference_ok', im.size, im.mode, im.format, len(raw), expected['sha256'])
           PY
       - name: Run one bounded Chris portrait identity canary
         run: python -m modal_worker.canon_portrait_canary
