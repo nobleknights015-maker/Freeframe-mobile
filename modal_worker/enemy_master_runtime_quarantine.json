@@ -55,6 +55,38 @@
       "reason_code": "visual_black_head_anomaly",
       "reason": "Canonical source contains an unrendered solid-black head region. Extraction reproduced the source faithfully.",
       "disposition": "quarantine_without_substitution"
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/021",
+      "source_sha256": "af80fb9efef960e0bef4d0a4aa0bfa13dd071b42d23d516ae2aa1ac81e99633b",
+      "source_artifact_id": 12552981423,
+      "reason_code": "visual_extra_subject_anomaly",
+      "reason": "Canonical source contains an additional solid-black phantom creature attached behind the intended subject. Extraction reproduced the source faithfully.",
+      "disposition": "quarantine_without_substitution"
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/060",
+      "source_sha256": "c2ba8d0bb66c6d9cb335601d67aad908bb4a2d27adf40f6c65caf4ffb02f7602",
+      "source_artifact_id": 12553929119,
+      "reason_code": "visual_extra_subject_anomaly",
+      "reason": "Canonical source contains a large solid-black phantom creature behind the intended subject. Extraction reproduced the source faithfully.",
+      "disposition": "quarantine_without_substitution"
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/062",
+      "source_sha256": "740abf0378b55d136b11446d3f85b1df85d382825cf48a90131bb1ff2ece7ecc",
+      "source_artifact_id": 12553929119,
+      "reason_code": "visual_multihead_anomaly",
+      "reason": "Canonical source contains a fused two-headed creature render. Extraction reproduced the source faithfully and did not create the deformation.",
+      "disposition": "quarantine_without_substitution"
+    },
+    {
+      "asset_id": "reg/crownweave/enemy-battle/064",
+      "source_sha256": "42ef1b73912fc586c3dd0b18fc75de561f43592d894f076ad444d24d12044fb7",
+      "source_artifact_id": 12553929119,
+      "reason_code": "visual_multihead_anomaly",
+      "reason": "Canonical source contains a fused two-headed/two-neck creature render. Extraction reproduced the source faithfully and did not create the deformation.",
+      "disposition": "quarantine_without_substitution"
     }
   ]
 }
