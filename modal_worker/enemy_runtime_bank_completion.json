@@ -1,0 +1,35 @@
+{
+  "schema": "plushbound.enemy_runtime_bank_completion.v1",
+  "source_master_count": 640,
+  "regions": 10,
+  "runtime_geometry": [288, 288],
+  "runtime_mode": "RGBA",
+  "extractor_provider": "birefnet",
+  "extractor_model": "ZhengPeng7/BiRefNet",
+  "diffusion_generation_count": 0,
+  "placeholder_substitution_count": 0,
+  "banked_count": 617,
+  "quarantined_count": 23,
+  "accounted_count": 640,
+  "region_results": {
+    "elyndor": {"banked": 59, "quarantined": 5},
+    "crownweave": {"banked": 60, "quarantined": 4},
+    "silkspire": {"banked": 63, "quarantined": 1},
+    "gloamfen": {"banked": 63, "quarantined": 1},
+    "verdancia": {"banked": 62, "quarantined": 2},
+    "tideglass-coast": {"banked": 63, "quarantined": 1},
+    "moonpatch-steppe": {"banked": 63, "quarantined": 1},
+    "sunspool-desert": {"banked": 62, "quarantined": 2},
+    "cinderreach": {"banked": 62, "quarantined": 2},
+    "frostlace": {"banked": 60, "quarantined": 4}
+  },
+  "quality_policy": {
+    "full_region_visual_review": true,
+    "canonical_source_comparison_for_suspects": true,
+    "preserve_canonical_masters": true,
+    "quarantine_without_substitution": true,
+    "bank_only_visual_approved": true
+  },
+  "status": "COMPLETE_WITH_SOURCE_QUARANTINE",
+  "next_action": "MOVE_TO_NEXT_UNFINISHED_ASSET_LANE"
+}
