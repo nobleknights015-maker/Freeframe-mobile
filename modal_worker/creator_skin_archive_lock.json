@@ -1,0 +1,55 @@
+{
+  "schema": "plushbound.creator_skin_archive_lock.v1",
+  "family": "creator/skin",
+  "status": "VERIFIED_AND_LOCKED",
+  "logical_range": ["creator/skin/001", "creator/skin/018"],
+  "canonical_count": 18,
+  "asset_role": "body_independent_palette_lut",
+  "compositor_mode": "derived_skin_recolor",
+  "body_dependency": {
+    "family": "creator/body",
+    "count": 24,
+    "archive_lock": "modal_worker/creator_body_archive_lock.json"
+  },
+  "ready_to_use_vault": {
+    "library_path": "/Plushbound/ReadyToUse/Creator_Skin",
+    "archive": {
+      "name": "plushbound_creator_skin_palette_v1_18.zip",
+      "asset_count": 18,
+      "sha256": "4d668aec4fbad04a609d4f161cac14116d2c78c692540c03f62bfbff7b293300"
+    },
+    "index": {
+      "name": "creator_skin_ready_index.json",
+      "sha256": "7065b5e58a6d3a7030f06e4f307361c5e99a4b195953dc35d16a0a9dedf33d47"
+    },
+    "manifest": {
+      "name": "creator_skin_palette_manifest.json",
+      "sha256": "edd2070a059becfafc37304cfd9174c1bf4b34b613c560939de961ad2cdf3666"
+    },
+    "library_rehash_verified": true,
+    "canonical_source": "ChatGPT Library ready-to-use vault"
+  },
+  "validation": {
+    "unique_logical_ids": 18,
+    "unique_sha256": 18,
+    "dimensions": "144x192",
+    "layout": "3x4-48px",
+    "petite_balanced_broad_canary_passed": true,
+    "light_medium_rich_tone_canary_passed": true,
+    "gray_base_clothing_preserved": true,
+    "skin_shading_preserved": true,
+    "body_geometry_unchanged": true,
+    "paid_renders": 0,
+    "paid_extractions": 0
+  },
+  "implementation": {
+    "script": "modal_worker/creator_skin_palette.py",
+    "contract_resolution": "modal_worker/creator_skin_contract_blocker.json"
+  },
+  "policy": {
+    "fail_closed": true,
+    "diffusion_regeneration_forbidden": true,
+    "palette_overwrite_forbidden": true,
+    "targeted_repair_requires_explicit_archive_lock_supersession": true
+  }
+}
