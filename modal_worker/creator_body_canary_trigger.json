@@ -1,0 +1,12 @@
+{
+  "version": "plushbound-creator-body-trigger-v1",
+  "enabled": true,
+  "round": 1,
+  "logical_id": "creator/body/001",
+  "body_type": "balanced_neutral_adult_base",
+  "dimensions": "144x192",
+  "layout": "3x4-48px",
+  "max_paid_renders": 13,
+  "catalog_wide_launch_authorized": false,
+  "launch_nonce": 1
+}
