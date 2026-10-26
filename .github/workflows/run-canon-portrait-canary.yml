@@ -35,7 +35,7 @@ jobs:
         run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
       - name: Compile canary
         run: python -m compileall -q modal_worker/canon_portrait_canary.py
-      - name: Preflight verified binary Chris conditioning reference
+      - name: Preflight proven Modal-compatible Chris reference
         shell: bash
         run: |
           python - <<'PY'
@@ -43,30 +43,24 @@ jobs:
           from pathlib import Path
           from PIL import Image
 
-          ref = Path('modal_worker/canon_refs/chris_identity_hifi_q92.jpg')
-          provenance_path = Path('modal_worker/canon_refs/chris_identity_hifi_q92_provenance.json')
+          ref = Path('modal_worker/canon_refs/chris_identity_compact.jpg')
+          provenance_path = Path('modal_worker/canon_refs/chris_identity_provenance.json')
           assert ref.is_file() and ref.stat().st_size > 0, ref
           assert provenance_path.is_file(), provenance_path
           p = json.loads(provenance_path.read_text(encoding='utf-8'))
-          assert p['schema'] == 'plushbound.canon_identity_reference.v3'
+          assert p['schema'] == 'plushbound.canon_identity_reference.v1'
           assert p['character_id'] == 'chris_bourn'
           assert p['status'] == 'CANONICAL_CONDITIONING_REFERENCE'
           assert p['catalog_wide_launch_authorized'] is False
-          assert p['source']['sha256'] == '34a886f42a476d09649c6584731d043cd658d18395692090109ece0f3bd09104'
-          assert p['derivation']['crop_box_xyxy'] == [156, 80, 356, 520]
-          assert p['derivation']['resize'] is False
-          assert p['derivation']['jpeg_quality'] == 92
-          assert p['derivation']['jpeg_subsampling'] == 0
           expected = p['reference_payload']
           raw = ref.read_bytes()
-          assert len(raw) == expected['bytes'] == 47676, (len(raw), expected['bytes'])
-          assert hashlib.sha256(raw).hexdigest() == expected['sha256'] == '777c92e336ec8637e8223d492b973dd7d86efb54f4c14bfc81a2407b7894a773'
+          assert len(raw) == expected['bytes'] == 7091, (len(raw), expected['bytes'])
+          assert hashlib.sha256(raw).hexdigest() == expected['sha256'] == '362e5050b74f07094f36d27825cdae9dd19b3c18768ff20fd7097e3bd616b165'
           git_blob = hashlib.sha1(f'blob {len(raw)}\0'.encode('ascii') + raw).hexdigest()
-          assert git_blob == expected['git_blob_sha'] == '2ddd6da6445c9fe054a4b1d3d28c34a8f7c85237'
+          assert git_blob == expected['git_blob_sha'] == '2700e044f35c063cb91d50e830c93bf2fe469f73'
           with Image.open(io.BytesIO(raw)) as im:
               im.load()
-              assert im.size == (200, 440), im.size
-              assert im.mode == 'RGB', im.mode
+              assert im.size == (96, 211), im.size
               assert im.format == 'JPEG', im.format
           print('reference_ok', len(raw), expected['sha256'], git_blob)
           PY
@@ -83,14 +77,14 @@ jobs:
           from pathlib import Path
           from PIL import Image
           report = json.loads(Path('canon-portrait-canary/report.json').read_text())
-          assert report['version'] == 'plushbound-canon-portrait-canary-v5'
+          assert report['version'] == 'plushbound-canon-portrait-canary-v6'
           assert report['status'] == 'generated_pending_visual_review'
           assert report['catalog_wide_launch_authorized'] is False
           assert report['quality_gate']['geometry_pass'] is True
           assert report['quality_gate']['rgba_pass'] is True
           assert report['quality_gate']['alpha_present'] is True
-          assert report['reference']['sha256'] == '777c92e336ec8637e8223d492b973dd7d86efb54f4c14bfc81a2407b7894a773'
-          assert report['reference']['git_blob_sha'] == '2ddd6da6445c9fe054a4b1d3d28c34a8f7c85237'
+          assert report['reference']['sha256'] == '362e5050b74f07094f36d27825cdae9dd19b3c18768ff20fd7097e3bd616b165'
+          assert report['reference']['git_blob_sha'] == '2700e044f35c063cb91d50e830c93bf2fe469f73'
           assert report['reference_store']['reference_id'] == report['reference']['sha256']
           assert report['request']['steps'] == 8
           assert report['request']['guidance_scale'] == 1.0
