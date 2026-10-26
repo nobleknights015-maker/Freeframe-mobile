@@ -1,8 +1,9 @@
 {
-  "schema": "plushbound.creator_skin_contract_blocker.v1",
+  "schema": "plushbound.creator_skin_contract_resolution.v1",
   "family": "creator/skin",
-  "status": "BLOCKED_PENDING_COMPOSITING_CONTRACT",
-  "generation_authorized": false,
+  "status": "RESOLVED_DETERMINISTIC",
+  "diffusion_generation_authorized": false,
+  "deterministic_derivation_authorized": true,
   "catalog_wide_launch_authorized": false,
   "ledger": {
     "logical_range": ["creator/skin/001", "creator/skin/018"],
@@ -13,32 +14,37 @@
   "body_dependency": {
     "logical_range": ["creator/body/001", "creator/body/024"],
     "count": 24,
+    "archive_lock": "modal_worker/creator_body_archive_lock.json",
     "body_contract_explicitly_excludes_skin_color": true
   },
-  "creator_layer_contract": {
-    "requires_slot": true,
-    "requires_body_type": true,
-    "requires_deterministic_alignment": true,
-    "requires_transparent_background": true,
-    "requires_layer_safe_edges": true
+  "resolved_compositing_contract": {
+    "asset_role": "body_independent_palette_lut",
+    "compositor_mode": "derived_skin_recolor",
+    "direct_overlay": false,
+    "implementation": "modal_worker/creator_skin_palette.py",
+    "rule": "The selected locked body sheet supplies geometry. A deterministic exposed-skin mask is derived from that body, and the selected creator/skin palette recolors only masked pixels while preserving local luminance and alpha."
   },
-  "known_product_behavior": {
-    "build_and_skin_are_independent_creator_choices": true
+  "validation": {
+    "canary_body_types": ["creator/body/001", "creator/body/008", "creator/body/021"],
+    "canary_body_coverage": ["petite", "balanced", "broad"],
+    "canary_skin_ids": ["creator/skin/002", "creator/skin/009", "creator/skin/017"],
+    "visual_canary_passed": true,
+    "gray_base_clothing_preserved": true,
+    "skin_shading_preserved": true,
+    "body_geometry_unchanged": true,
+    "paid_renders_used": 0,
+    "paid_extractions_used": 0
   },
-  "unresolved": [
-    "18 skin assets do not have an explicit mapping to 24 body types",
-    "compositing mode is not specified: tint mask, palette map, transparent overlay, or per-body derivation",
-    "no authoritative rule currently defines how one skin choice aligns across multiple body silhouettes"
-  ],
-  "required_before_canary": [
-    "authoritative skin-to-body mapping or body-independent compositing rule",
-    "explicit blend/compositing mode",
-    "deterministic validation rule proving alignment across at least petite, balanced, and broad body silhouettes"
-  ],
+  "ready_to_use_vault": {
+    "library_path": "/Plushbound/ReadyToUse/Creator_Skin",
+    "archive": "plushbound_creator_skin_palette_v1_18.zip",
+    "archive_sha256": "4d668aec4fbad04a609d4f161cac14116d2c78c692540c03f62bfbff7b293300",
+    "library_rehash_verified": true
+  },
   "safety": {
     "paid_renders_allowed": 0,
     "paid_extractions_allowed": 0,
     "fail_closed": true,
-    "reason": "Do not invent skin-layer semantics or spend generation budget until the creator-layer mapping is explicit."
+    "rule": "Do not replace deterministic skin palettes with diffusion-generated skin sheets."
   }
 }
