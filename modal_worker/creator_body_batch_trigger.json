@@ -1,0 +1,13 @@
+{
+  "schema": "plushbound.creator_body_batch_trigger.v1",
+  "enabled": true,
+  "round": 1,
+  "body_count": 24,
+  "lane_count": 12,
+  "bodies_per_lane": 2,
+  "logical_range": ["creator/body/001", "creator/body/024"],
+  "max_paid_renders": 312,
+  "max_paid_extractions": 288,
+  "catalog_wide_launch_authorized": false,
+  "launch_nonce": 1
+}
