@@ -1,0 +1,20 @@
+{
+  "schema": "plushbound.enemy_master_runtime_region_visual_gate.v1",
+  "region": "sunspool-desert",
+  "workflow_run_id": 40250983728,
+  "artifact_id": 12620316857,
+  "artifact_sha256": "8408b9dbdaad67c2aaf9040052cae14dd6dd53d0d2cec20650db56270120b0c5",
+  "produced_count": 64,
+  "visual_passed_count": 62,
+  "visual_quarantined_count": 2,
+  "approved_asset_numbers": [1,2,3,4,5,6,7,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64],
+  "quarantined_asset_numbers": [8,29],
+  "review": {
+    "full_region_visual_review": true,
+    "canonical_source_comparison_for_quarantined": true,
+    "extraction_caused_quarantines": 0,
+    "canonical_source_caused_quarantines": 2
+  },
+  "status": "PASS_WITH_SOURCE_QUARANTINE",
+  "next_action": "BANK_APPROVED_ONLY"
+}
