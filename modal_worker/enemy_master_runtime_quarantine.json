@@ -1,13 +1,8 @@
 {
-  "schema": "plushbound.enemy_master_runtime_quarantine.v1",
-  "status": "active",
-  "policy": {
-    "preserve_canonical_master": true,
-    "placeholder_substitution": false,
-    "automatic_crop_repair": false,
-    "promotion_blocked_while_listed": true
-  },
-  "assets": [
+  "schema":"plushbound.enemy_master_runtime_quarantine.v1",
+  "status":"active",
+  "policy":{"preserve_canonical_master":true,"placeholder_substitution":false,"automatic_crop_repair":false,"promotion_blocked_while_listed":true},
+  "assets":[
     {"asset_id":"reg/verdancia/enemy-battle/001","source_sha256":"eb17523a6252276b28665af4ebf1c0845e1cb5777d3857eeb703217d1564509e","source_artifact_id":12562356167,"reason_code":"visual_multihead_anomaly","reason":"Canonical source contains one body with two mismatched heads; this violates the no-mutations/deformations runtime quality bar. BiRefNet reproduced the source faithfully and did not introduce the anomaly.","disposition":"quarantine_without_substitution"},
     {"asset_id":"reg/verdancia/enemy-battle/033","source_sha256":"494072e278d698dc4daaa17981238b4c7290843cd2dd531b07e03d05be890392","source_artifact_id":12562336721,"reason_code":"visual_multihead_anomaly","reason":"Canonical source contains two creature heads/bodies fused into one render. Extraction reproduced the source faithfully and did not introduce the anomaly.","disposition":"quarantine_without_substitution"},
     {"asset_id":"reg/elyndor/enemy-battle/010","source_sha256":"83276f648a8ab0d39091e95e454449c0f32fc9af7d42a89d1fa54f2d623cabcb","source_artifact_id":12550746920,"reason_code":"visual_black_head_anomaly","reason":"Canonical source contains an unrendered solid-black head region. Extraction reproduced the source faithfully.","disposition":"quarantine_without_substitution"},
@@ -24,6 +19,8 @@
     {"asset_id":"reg/tideglass-coast/enemy-battle/030","source_sha256":"233e2c60c169f6831f33be6e225f0bb0db7fe728600e7fc8b063bf1d941955ef","source_artifact_id":12562219390,"reason_code":"visual_black_head_anomaly","reason":"Canonical source contains an unrendered solid-black head region with facial details floating over it. Extraction reproduced the source faithfully.","disposition":"quarantine_without_substitution"},
     {"asset_id":"reg/moonpatch-steppe/enemy-battle/054","source_sha256":"f2cac056cce26de868a08032bbd81d850c9561d790c6509b6dbcf2d304c573de","source_artifact_id":12562337532,"reason_code":"visual_multihead_anomaly","reason":"Canonical source contains two fully formed creature heads fused onto one body. Extraction reproduced the source faithfully and did not introduce the deformation.","disposition":"quarantine_without_substitution"},
     {"asset_id":"reg/sunspool-desert/enemy-battle/008","source_sha256":"e6a1ab1bb06d9e4adda49e079141fff726c2672dd5f503e4b4c2537c05ec45d2","source_artifact_id":12562782580,"reason_code":"visual_black_head_anomaly","reason":"Canonical source contains an unrendered solid-black head region with only small facial details retained. Extraction reproduced the source faithfully.","disposition":"quarantine_without_substitution"},
-    {"asset_id":"reg/sunspool-desert/enemy-battle/029","source_sha256":"a3630029b17bb049d05897ada42423e20bdfb656845940ef7fc12411123db940","source_artifact_id":12562782580,"reason_code":"visual_multihead_anomaly","reason":"Canonical source contains two fully formed creature heads and forebodies fused into one render. Extraction reproduced the source faithfully and did not introduce the deformation.","disposition":"quarantine_without_substitution"}
+    {"asset_id":"reg/sunspool-desert/enemy-battle/029","source_sha256":"a3630029b17bb049d05897ada42423e20bdfb656845940ef7fc12411123db940","source_artifact_id":12562782580,"reason_code":"visual_multihead_anomaly","reason":"Canonical source contains two fully formed creature heads and forebodies fused into one render. Extraction reproduced the source faithfully and did not introduce the deformation.","disposition":"quarantine_without_substitution"},
+    {"asset_id":"reg/cinderreach/enemy-battle/007","source_sha256":"44fa60de5da938dbad68751b2e971f5171c2c7d7f314b19ff8782f261b7da7a7","source_artifact_id":12563310718,"reason_code":"visual_black_head_anomaly","reason":"Canonical source contains an unrendered solid-black head region with only the eye retained. Extraction reproduced the source faithfully.","disposition":"quarantine_without_substitution"},
+    {"asset_id":"reg/cinderreach/enemy-battle/035","source_sha256":"d1db3c42bdd4522b1cf805b9517a520d390b9fd083e00fa7b9899024b76aac33","source_artifact_id":12562554203,"reason_code":"visual_black_head_anomaly","reason":"Canonical source contains an unrendered solid-black head region. Extraction reproduced the source faithfully.","disposition":"quarantine_without_substitution"}
   ]
 }
