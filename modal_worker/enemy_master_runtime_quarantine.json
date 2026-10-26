@@ -8,109 +8,19 @@
     "promotion_blocked_while_listed": true
   },
   "assets": [
-    {
-      "asset_id": "reg/verdancia/enemy-battle/001",
-      "source_sha256": "eb17523a6252276b28665af4ebf1c0845e1cb5777d3857eeb703217d1564509e",
-      "source_artifact_id": 12562356167,
-      "reason_code": "visual_multihead_anomaly",
-      "reason": "Canonical source contains one body with two mismatched heads; this violates the no-mutations/deformations runtime quality bar. BiRefNet reproduced the source faithfully and did not introduce the anomaly.",
-      "disposition": "quarantine_without_substitution"
-    },
-    {
-      "asset_id": "reg/verdancia/enemy-battle/033",
-      "source_sha256": "494072e278d698dc4daaa17981238b4c7290843cd2dd531b07e03d05be890392",
-      "source_artifact_id": 12562336721,
-      "reason_code": "visual_multihead_anomaly",
-      "reason": "Canonical source contains two creature heads/bodies fused into one render. Extraction reproduced the source faithfully and did not introduce the anomaly.",
-      "disposition": "quarantine_without_substitution"
-    },
-    {
-      "asset_id": "reg/elyndor/enemy-battle/010",
-      "source_sha256": "83276f648a8ab0d39091e95e454449c0f32fc9af7d42a89d1fa54f2d623cabcb",
-      "source_artifact_id": 12550746920,
-      "reason_code": "visual_black_head_anomaly",
-      "reason": "Canonical source contains an unrendered solid-black head region. Extraction reproduced the source faithfully.",
-      "disposition": "quarantine_without_substitution"
-    },
-    {
-      "asset_id": "reg/elyndor/enemy-battle/015",
-      "source_sha256": "8d146ad102935769e12806e64b86121f96187ca5ceef8fdb5178a5718433999b",
-      "source_artifact_id": 12550746920,
-      "reason_code": "visual_extra_subject_anomaly",
-      "reason": "Canonical source contains an additional solid-black creature attached beside the intended subject. Extraction reproduced the source faithfully.",
-      "disposition": "quarantine_without_substitution"
-    },
-    {
-      "asset_id": "reg/elyndor/enemy-battle/040",
-      "source_sha256": "08846b743c238f0c6d8e47496210b3e6587cbdf8e3fa73537d3bd595e2c8b48c",
-      "source_artifact_id": 12550754922,
-      "reason_code": "visual_black_head_anomaly",
-      "reason": "Canonical source contains an unrendered solid-black head region. Extraction reproduced the source faithfully.",
-      "disposition": "quarantine_without_substitution"
-    },
-    {
-      "asset_id": "reg/elyndor/enemy-battle/046",
-      "source_sha256": "1f2fa95a7eedb8da03015017d6f177a9a398e44800a015f95449d6c85fba9c77",
-      "source_artifact_id": 12550754922,
-      "reason_code": "visual_extra_subject_anomaly",
-      "reason": "Canonical source contains an additional solid-black creature/head immediately behind the intended subject. Extraction reproduced the source faithfully.",
-      "disposition": "quarantine_without_substitution"
-    },
-    {
-      "asset_id": "reg/elyndor/enemy-battle/062",
-      "source_sha256": "92c91d102ce7d3c1c4af0efeba24efb2b620e136c23b47ffad7ad2af11bc6d8f",
-      "source_artifact_id": 12550754922,
-      "reason_code": "visual_black_head_anomaly",
-      "reason": "Canonical source contains an unrendered solid-black head region. Extraction reproduced the source faithfully.",
-      "disposition": "quarantine_without_substitution"
-    },
-    {
-      "asset_id": "reg/crownweave/enemy-battle/021",
-      "source_sha256": "af80fb9efef960e0bef4d0a4aa0bfa13dd071b42d23d516ae2aa1ac81e99633b",
-      "source_artifact_id": 12552981423,
-      "reason_code": "visual_extra_subject_anomaly",
-      "reason": "Canonical source contains an additional solid-black phantom creature attached behind the intended subject. Extraction reproduced the source faithfully.",
-      "disposition": "quarantine_without_substitution"
-    },
-    {
-      "asset_id": "reg/crownweave/enemy-battle/060",
-      "source_sha256": "c2ba8d0bb66c6d9cb335601d67aad908bb4a2d27adf40f6c65caf4ffb02f7602",
-      "source_artifact_id": 12553929119,
-      "reason_code": "visual_extra_subject_anomaly",
-      "reason": "Canonical source contains a large solid-black phantom creature behind the intended subject. Extraction reproduced the source faithfully.",
-      "disposition": "quarantine_without_substitution"
-    },
-    {
-      "asset_id": "reg/crownweave/enemy-battle/062",
-      "source_sha256": "740abf0378b55d136b11446d3f85b1df85d382825cf48a90131bb1ff2ece7ecc",
-      "source_artifact_id": 12553929119,
-      "reason_code": "visual_multihead_anomaly",
-      "reason": "Canonical source contains a fused two-headed creature render. Extraction reproduced the source faithfully and did not create the deformation.",
-      "disposition": "quarantine_without_substitution"
-    },
-    {
-      "asset_id": "reg/crownweave/enemy-battle/064",
-      "source_sha256": "42ef1b73912fc586c3dd0b18fc75de561f43592d894f076ad444d24d12044fb7",
-      "source_artifact_id": 12553929119,
-      "reason_code": "visual_multihead_anomaly",
-      "reason": "Canonical source contains a fused two-headed/two-neck creature render. Extraction reproduced the source faithfully and did not create the deformation.",
-      "disposition": "quarantine_without_substitution"
-    },
-    {
-      "asset_id": "reg/silkspire/enemy-battle/028",
-      "source_sha256": "8f46ca6e3f6b649db3bf4bfcd5e4e16d13a9a3fbddbcb9bd5b3049ae194ee2f2",
-      "source_artifact_id": 12556121668,
-      "reason_code": "visual_black_head_anomaly",
-      "reason": "Canonical source contains an unrendered solid-black head region with only the eye retained. Extraction reproduced the source faithfully.",
-      "disposition": "quarantine_without_substitution"
-    },
-    {
-      "asset_id": "reg/gloamfen/enemy-battle/007",
-      "source_sha256": "dd8773cfb2c2679dee141379d8c8c193ede4ef5fcb0d7c4064b758ece46b51e8",
-      "source_artifact_id": 12558753021,
-      "reason_code": "visual_extra_subject_anomaly",
-      "reason": "Canonical source contains a large solid-black phantom body attached behind the intended subject. Extraction reproduced the source faithfully and did not introduce the anomaly.",
-      "disposition": "quarantine_without_substitution"
-    }
+    {"asset_id":"reg/verdancia/enemy-battle/001","source_sha256":"eb17523a6252276b28665af4ebf1c0845e1cb5777d3857eeb703217d1564509e","source_artifact_id":12562356167,"reason_code":"visual_multihead_anomaly","reason":"Canonical source contains one body with two mismatched heads; this violates the no-mutations/deformations runtime quality bar. BiRefNet reproduced the source faithfully and did not introduce the anomaly.","disposition":"quarantine_without_substitution"},
+    {"asset_id":"reg/verdancia/enemy-battle/033","source_sha256":"494072e278d698dc4daaa17981238b4c7290843cd2dd531b07e03d05be890392","source_artifact_id":12562336721,"reason_code":"visual_multihead_anomaly","reason":"Canonical source contains two creature heads/bodies fused into one render. Extraction reproduced the source faithfully and did not introduce the anomaly.","disposition":"quarantine_without_substitution"},
+    {"asset_id":"reg/elyndor/enemy-battle/010","source_sha256":"83276f648a8ab0d39091e95e454449c0f32fc9af7d42a89d1fa54f2d623cabcb","source_artifact_id":12550746920,"reason_code":"visual_black_head_anomaly","reason":"Canonical source contains an unrendered solid-black head region. Extraction reproduced the source faithfully.","disposition":"quarantine_without_substitution"},
+    {"asset_id":"reg/elyndor/enemy-battle/015","source_sha256":"8d146ad102935769e12806e64b86121f96187ca5ceef8fdb5178a5718433999b","source_artifact_id":12550746920,"reason_code":"visual_extra_subject_anomaly","reason":"Canonical source contains an additional solid-black creature attached beside the intended subject. Extraction reproduced the source faithfully.","disposition":"quarantine_without_substitution"},
+    {"asset_id":"reg/elyndor/enemy-battle/040","source_sha256":"08846b743c238f0c6d8e47496210b3e6587cbdf8e3fa73537d3bd595e2c8b48c","source_artifact_id":12550754922,"reason_code":"visual_black_head_anomaly","reason":"Canonical source contains an unrendered solid-black head region. Extraction reproduced the source faithfully.","disposition":"quarantine_without_substitution"},
+    {"asset_id":"reg/elyndor/enemy-battle/046","source_sha256":"1f2fa95a7eedb8da03015017d6f177a9a398e44800a015f95449d6c85fba9c77","source_artifact_id":12550754922,"reason_code":"visual_extra_subject_anomaly","reason":"Canonical source contains an additional solid-black creature/head immediately behind the intended subject. Extraction reproduced the source faithfully.","disposition":"quarantine_without_substitution"},
+    {"asset_id":"reg/elyndor/enemy-battle/062","source_sha256":"92c91d102ce7d3c1c4af0efeba24efb2b620e136c23b47ffad7ad2af11bc6d8f","source_artifact_id":12550754922,"reason_code":"visual_black_head_anomaly","reason":"Canonical source contains an unrendered solid-black head region. Extraction reproduced the source faithfully.","disposition":"quarantine_without_substitution"},
+    {"asset_id":"reg/crownweave/enemy-battle/021","source_sha256":"af80fb9efef960e0bef4d0a4aa0bfa13dd071b42d23d516ae2aa1ac81e99633b","source_artifact_id":12552981423,"reason_code":"visual_extra_subject_anomaly","reason":"Canonical source contains an additional solid-black phantom creature attached behind the intended subject. Extraction reproduced the source faithfully.","disposition":"quarantine_without_substitution"},
+    {"asset_id":"reg/crownweave/enemy-battle/060","source_sha256":"c2ba8d0bb66c6d9cb335601d67aad908bb4a2d27adf40f6c65caf4ffb02f7602","source_artifact_id":12553929119,"reason_code":"visual_extra_subject_anomaly","reason":"Canonical source contains a large solid-black phantom creature behind the intended subject. Extraction reproduced the source faithfully.","disposition":"quarantine_without_substitution"},
+    {"asset_id":"reg/crownweave/enemy-battle/062","source_sha256":"740abf0378b55d136b11446d3f85b1df85d382825cf48a90131bb1ff2ece7ecc","source_artifact_id":12553929119,"reason_code":"visual_multihead_anomaly","reason":"Canonical source contains a fused two-headed creature render. Extraction reproduced the source faithfully and did not create the deformation.","disposition":"quarantine_without_substitution"},
+    {"asset_id":"reg/crownweave/enemy-battle/064","source_sha256":"42ef1b73912fc586c3dd0b18fc75de561f43592d894f076ad444d24d12044fb7","source_artifact_id":12553929119,"reason_code":"visual_multihead_anomaly","reason":"Canonical source contains a fused two-headed/two-neck creature render. Extraction reproduced the source faithfully and did not create the deformation.","disposition":"quarantine_without_substitution"},
+    {"asset_id":"reg/silkspire/enemy-battle/028","source_sha256":"8f46ca6e3f6b649db3bf4bfcd5e4e16d13a9a3fbddbcb9bd5b3049ae194ee2f2","source_artifact_id":12556121668,"reason_code":"visual_black_head_anomaly","reason":"Canonical source contains an unrendered solid-black head region with only the eye retained. Extraction reproduced the source faithfully.","disposition":"quarantine_without_substitution"},
+    {"asset_id":"reg/gloamfen/enemy-battle/007","source_sha256":"dd8773cfb2c2679dee141379d8c8c193ede4ef5fcb0d7c4064b758ece46b51e8","source_artifact_id":12558753021,"reason_code":"visual_extra_subject_anomaly","reason":"Canonical source contains a large solid-black phantom body attached behind the intended subject. Extraction reproduced the source faithfully and did not introduce the anomaly.","disposition":"quarantine_without_substitution"},
+    {"asset_id":"reg/tideglass-coast/enemy-battle/030","source_sha256":"233e2c60c169f6831f33be6e225f0bb0db7fe728600e7fc8b063bf1d941955ef","source_artifact_id":12562219390,"reason_code":"visual_black_head_anomaly","reason":"Canonical source contains an unrendered solid-black head region with facial details floating over it. Extraction reproduced the source faithfully.","disposition":"quarantine_without_substitution"}
   ]
 }
