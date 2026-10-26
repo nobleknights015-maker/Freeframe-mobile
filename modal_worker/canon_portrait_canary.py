@@ -18,8 +18,8 @@ from PIL import Image
 APP_NAME = "freeframe-worker"
 PRODUCTION_MODEL = "black-forest-labs/FLUX.2-klein-4B"
 RENDERER_ROUTE = "flux2_klein"
-REFERENCE_IMAGE = Path("modal_worker/canon_refs/chris_identity_hifi_q92.jpg")
-REFERENCE_PROVENANCE = Path("modal_worker/canon_refs/chris_identity_hifi_q92_provenance.json")
+REFERENCE_IMAGE = Path("modal_worker/canon_refs/chris_identity_compact.jpg")
+REFERENCE_PROVENANCE = Path("modal_worker/canon_refs/chris_identity_provenance.json")
 OUTPUT_DIR = Path("canon-portrait-canary")
 RAW_OUTPUT = OUTPUT_DIR / "chris_bourn_portrait_raw.png"
 RUNTIME_OUTPUT = OUTPUT_DIR / "chris_bourn_portrait.png"
@@ -29,7 +29,7 @@ HEIGHT = 384
 REFERENCE_SCALE = 0.72
 STEPS = 8
 GUIDANCE_SCALE = 1.0
-SEED = int.from_bytes(hashlib.sha256(b"plushbound:canon:chris_bourn:portrait:v5").digest()[:8], "big") & ((1 << 63) - 1)
+SEED = int.from_bytes(hashlib.sha256(b"plushbound:canon:chris_bourn:portrait:v6").digest()[:8], "big") & ((1 << 63) - 1)
 PROMPT = (
     "CANONICAL IDENTITY-PRESERVATION REDRAW. Create one 2D anime/JRPG portrait of Chris Bourn for Plushbound Legends. "
     "The supplied reference is the canonical model reference, not loose inspiration. Redraw the same person; do not redesign, beautify, "
@@ -47,12 +47,12 @@ PROMPT = (
 
 def _preflight_reference() -> tuple[bytes, dict]:
     if not REFERENCE_IMAGE.is_file() or REFERENCE_IMAGE.stat().st_size <= 0:
-        raise FileNotFoundError(f"missing high-fidelity Chris reference: {REFERENCE_IMAGE}")
+        raise FileNotFoundError(f"missing canonical Chris reference: {REFERENCE_IMAGE}")
     if not REFERENCE_PROVENANCE.is_file():
-        raise FileNotFoundError(f"missing high-fidelity Chris provenance: {REFERENCE_PROVENANCE}")
+        raise FileNotFoundError(f"missing canonical Chris provenance: {REFERENCE_PROVENANCE}")
 
     provenance = json.loads(REFERENCE_PROVENANCE.read_text(encoding="utf-8"))
-    if provenance.get("schema") != "plushbound.canon_identity_reference.v3":
+    if provenance.get("schema") != "plushbound.canon_identity_reference.v1":
         raise ValueError("unexpected Chris reference provenance schema")
     if provenance.get("character_id") != "chris_bourn":
         raise ValueError("Chris reference provenance character mismatch")
@@ -61,28 +61,6 @@ def _preflight_reference() -> tuple[bytes, dict]:
     if provenance.get("catalog_wide_launch_authorized") is not False:
         raise ValueError("reference provenance must keep catalog-wide launch disabled")
 
-    source = provenance["source"]
-    if source.get("sha256") != "34a886f42a476d09649c6584731d043cd658d18395692090109ece0f3bd09104":
-        raise ValueError("canonical source SHA mismatch in provenance")
-    if [source.get("width"), source.get("height")] != [768, 535] or source.get("format") != "PNG":
-        raise ValueError("canonical source geometry/format mismatch in provenance")
-
-    derivation = provenance["derivation"]
-    expected_derivation = {
-        "crop_box_xyxy": [156, 80, 356, 520],
-        "resize": False,
-        "output_width": 200,
-        "output_height": 440,
-        "jpeg_quality": 92,
-        "jpeg_subsampling": 0,
-        "jpeg_optimize": True,
-        "ai_edit": False,
-        "retouch": False,
-    }
-    for key, value in expected_derivation.items():
-        if derivation.get(key) != value:
-            raise ValueError(f"Chris reference derivation mismatch for {key}: {derivation.get(key)!r}")
-
     expected = provenance["reference_payload"]
     if expected.get("path") != str(REFERENCE_IMAGE) or expected.get("encoding") != "binary":
         raise ValueError("reference payload path/encoding mismatch")
@@ -90,11 +68,11 @@ def _preflight_reference() -> tuple[bytes, dict]:
     actual_sha = hashlib.sha256(raw).hexdigest()
     git_blob = hashlib.sha1(f"blob {len(raw)}\0".encode("ascii") + raw).hexdigest()
     if len(raw) != int(expected["bytes"]):
-        raise ValueError(f"high-fidelity reference byte count mismatch: {len(raw)}")
+        raise ValueError(f"canonical reference byte count mismatch: {len(raw)}")
     if actual_sha != expected["sha256"]:
-        raise ValueError(f"high-fidelity reference SHA mismatch: {actual_sha}")
+        raise ValueError(f"canonical reference SHA mismatch: {actual_sha}")
     if git_blob != expected["git_blob_sha"]:
-        raise ValueError(f"high-fidelity reference Git blob mismatch: {git_blob}")
+        raise ValueError(f"canonical reference Git blob mismatch: {git_blob}")
 
     try:
         with Image.open(io.BytesIO(raw)) as image:
@@ -103,17 +81,17 @@ def _preflight_reference() -> tuple[bytes, dict]:
             mode = image.mode
             fmt = image.format
     except Exception as exc:
-        raise ValueError("high-fidelity Chris conditioning reference is not fully decodable") from exc
-    if [width, height] != [200, 440] or mode != "RGB" or fmt != "JPEG":
-        raise ValueError(f"high-fidelity reference format mismatch: {width}x{height} {mode} {fmt}")
+        raise ValueError("canonical Chris conditioning reference is not fully decodable") from exc
+    if [width, height] != [96, 211] or fmt != "JPEG":
+        raise ValueError(f"canonical reference format mismatch: {width}x{height} {mode} {fmt}")
 
     return raw, {
         "path": str(REFERENCE_IMAGE),
         "provenance_path": str(REFERENCE_PROVENANCE),
         "provenance_sha256": hashlib.sha256(REFERENCE_PROVENANCE.read_bytes()).hexdigest(),
-        "source_sha256": source["sha256"],
-        "source_geometry": [source["width"], source["height"]],
-        "derivation": derivation,
+        "source_library_file_id": provenance["source"]["file_id"],
+        "source_library_sha256": provenance["source"]["sha256"],
+        "derivation": provenance["derivation"],
         "bytes": len(raw),
         "sha256": actual_sha,
         "git_blob_sha": git_blob,
@@ -197,7 +175,7 @@ def main() -> None:
     if not reference_id:
         raise RuntimeError(f"reference store did not return an id: {stored}")
     if reference_id != reference_meta["sha256"]:
-        raise RuntimeError("reference store id does not match verified high-fidelity reference SHA-256")
+        raise RuntimeError("reference store id does not match verified canonical reference SHA-256")
 
     Generator = modal.Cls.from_name(APP_NAME, "FreeFrameProductionGenerator")
     generator = Generator()
@@ -230,13 +208,13 @@ def main() -> None:
     RUNTIME_OUTPUT.write_bytes(runtime_png)
 
     report = {
-        "version": "plushbound-canon-portrait-canary-v5",
+        "version": "plushbound-canon-portrait-canary-v6",
         "status": "generated_pending_visual_review",
         "character_id": "chris_bourn",
         "display_name": "Chris Bourn",
         "asset_role": "portrait",
         "catalog_wide_launch_authorized": False,
-        "retry_reason": "replace_corrupt_reference_transports_with_verified_binary_high_fidelity_derivative",
+        "retry_reason": "strict_2d_identity_recipe_on_proven_modal_compatible_canonical_reference",
         "reference": reference_meta,
         "reference_store": {"reference_id": reference_id, "requested_scale": REFERENCE_SCALE, "mode": "identity"},
         "request": {k: v for k, v in request.items() if k != "prompt"},
