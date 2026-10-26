@@ -35,43 +35,40 @@ jobs:
         run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
       - name: Compile canary
         run: python -m compileall -q modal_worker/canon_portrait_canary.py
-      - name: Preflight proven Chris atlas reference and PNG transport
+      - name: Preflight verified binary Chris conditioning reference
         shell: bash
         run: |
           python - <<'PY'
-          import hashlib, io
+          import hashlib, io, json
           from pathlib import Path
           from PIL import Image
 
-          p = Path('modal_worker/project_references/chris_proven_reference.jpg')
-          marker = Path('modal_worker/project_references/chris_reference_marker.txt')
-          expected_sha = '0ca2198835f1377c2916a076bca2db004f52b0e9fffeea49baa7b370d7ebe550'
-          expected_blob = 'c69443a17a8120be31685e1820c2271450065493'
-          assert p.is_file() and p.stat().st_size > 0, p
-          assert marker.is_file(), marker
-          marker_text = marker.read_text(encoding='utf-8')
-          assert 'established Plushbound Character Atlas reference' in marker_text
-          assert 'Do not substitute' in marker_text
-
-          raw = p.read_bytes()
-          assert hashlib.sha256(raw).hexdigest() == expected_sha
+          ref = Path('modal_worker/canon_refs/chris_identity_hifi_q92.jpg')
+          provenance_path = Path('modal_worker/canon_refs/chris_identity_hifi_q92_provenance.json')
+          assert ref.is_file() and ref.stat().st_size > 0, ref
+          assert provenance_path.is_file(), provenance_path
+          p = json.loads(provenance_path.read_text(encoding='utf-8'))
+          assert p['schema'] == 'plushbound.canon_identity_reference.v3'
+          assert p['character_id'] == 'chris_bourn'
+          assert p['status'] == 'CANONICAL_CONDITIONING_REFERENCE'
+          assert p['catalog_wide_launch_authorized'] is False
+          assert p['source']['sha256'] == '34a886f42a476d09649c6584731d043cd658d18395692090109ece0f3bd09104'
+          assert p['derivation']['crop_box_xyxy'] == [156, 80, 356, 520]
+          assert p['derivation']['resize'] is False
+          assert p['derivation']['jpeg_quality'] == 92
+          assert p['derivation']['jpeg_subsampling'] == 0
+          expected = p['reference_payload']
+          raw = ref.read_bytes()
+          assert len(raw) == expected['bytes'] == 47676, (len(raw), expected['bytes'])
+          assert hashlib.sha256(raw).hexdigest() == expected['sha256'] == '777c92e336ec8637e8223d492b973dd7d86efb54f4c14bfc81a2407b7894a773'
           git_blob = hashlib.sha1(f'blob {len(raw)}\0'.encode('ascii') + raw).hexdigest()
-          assert git_blob == expected_blob, (git_blob, expected_blob)
+          assert git_blob == expected['git_blob_sha'] == '2ddd6da6445c9fe054a4b1d3d28c34a8f7c85237'
           with Image.open(io.BytesIO(raw)) as im:
               im.load()
-              assert im.size == (192, 329), im.size
+              assert im.size == (200, 440), im.size
               assert im.mode == 'RGB', im.mode
               assert im.format == 'JPEG', im.format
-              normalized = im.convert('RGB')
-          out = io.BytesIO()
-          normalized.save(out, format='PNG', optimize=True)
-          png = out.getvalue()
-          with Image.open(io.BytesIO(png)) as im:
-              im.load()
-              assert im.size == (192, 329), im.size
-              assert im.mode == 'RGB', im.mode
-              assert im.format == 'PNG', im.format
-          print('reference_ok', len(raw), expected_sha, 'transport_png', len(png), hashlib.sha256(png).hexdigest())
+          print('reference_ok', len(raw), expected['sha256'], git_blob)
           PY
       - name: Run one bounded Chris portrait identity canary
         run: python -m modal_worker.canon_portrait_canary
@@ -86,15 +83,14 @@ jobs:
           from pathlib import Path
           from PIL import Image
           report = json.loads(Path('canon-portrait-canary/report.json').read_text())
-          assert report['version'] == 'plushbound-canon-portrait-canary-v4'
+          assert report['version'] == 'plushbound-canon-portrait-canary-v5'
           assert report['status'] == 'generated_pending_visual_review'
           assert report['catalog_wide_launch_authorized'] is False
           assert report['quality_gate']['geometry_pass'] is True
           assert report['quality_gate']['rgba_pass'] is True
           assert report['quality_gate']['alpha_present'] is True
-          assert report['reference']['source_sha256'] == '0ca2198835f1377c2916a076bca2db004f52b0e9fffeea49baa7b370d7ebe550'
-          assert report['reference']['source_git_blob'] == 'c69443a17a8120be31685e1820c2271450065493'
-          assert report['reference']['format'] == 'PNG'
+          assert report['reference']['sha256'] == '777c92e336ec8637e8223d492b973dd7d86efb54f4c14bfc81a2407b7894a773'
+          assert report['reference']['git_blob_sha'] == '2ddd6da6445c9fe054a4b1d3d28c34a8f7c85237'
           assert report['reference_store']['reference_id'] == report['reference']['sha256']
           assert report['request']['steps'] == 8
           assert report['request']['guidance_scale'] == 1.0
