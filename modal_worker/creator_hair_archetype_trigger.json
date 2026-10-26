@@ -1,0 +1,19 @@
+{
+  "schema": "plushbound.creator_hair_archetype_trigger.v1",
+  "enabled": true,
+  "round": 1,
+  "style_indices": [21, 57, 65],
+  "style_count": 3,
+  "styles": {
+    "21": "long_straight__side_swept_fringe",
+    "57": "long_coils__side_swept_fringe",
+    "65": "high_ponytail__side_swept_fringe"
+  },
+  "paired_output_families": ["creator/front-hair", "creator/back-hair"],
+  "max_paid_renders": 15,
+  "max_paid_extractions": 12,
+  "max_parallel": 2,
+  "catalog_wide_launch_authorized": false,
+  "reason": "Prove deterministic paired split across long straight, high-volume coil, and off-axis tied silhouettes before authorizing the remaining catalog.",
+  "launch_nonce": 1
+}
