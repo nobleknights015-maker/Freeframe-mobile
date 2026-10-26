@@ -17,11 +17,10 @@ concurrency:
 jobs:
   canary:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 45
     env:
       MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
       MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
-      SOURCE_ARTIFACT_ID: '12563310718'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -36,15 +35,29 @@ jobs:
           test -n "$MODAL_TOKEN_SECRET" || { echo 'MODAL_TOKEN_SECRET secret is not configured.' >&2; exit 1; }
       - name: Install canary dependencies
         run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
-      - name: Download original accepted production artifact
+      - name: Download original accepted production artifacts for ten-region canary
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/${SOURCE_ARTIFACT_ID}/zip > /tmp/enemy-source.zip
           rm -rf /tmp/enemy-source && mkdir -p /tmp/enemy-source
-          unzip -q /tmp/enemy-source.zip -d /tmp/enemy-source
-      - name: Verify source bytes and derive two real battlers through deployed BiRefNet
+          for id in \
+            12550746920 \
+            12552981423 \
+            12556121668 \
+            12558753021 \
+            12562356167 \
+            12562219390 \
+            12562249199 \
+            12562782580 \
+            12563310718 \
+            12563655706
+          do
+            mkdir -p "/tmp/enemy-source/${id}"
+            gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${id}/zip" > "/tmp/enemy-${id}.zip"
+            unzip -q "/tmp/enemy-${id}.zip" -d "/tmp/enemy-source/${id}"
+          done
+      - name: Verify source bytes and derive one real battler per region through deployed BiRefNet
         env:
           PYTHONPATH: modal_worker
         run: |
@@ -60,45 +73,48 @@ jobs:
           from PIL import Image
 
           cases = [
-              {
-                  'asset_id': 'reg/cinderreach/enemy-battle/001',
-                  'path': '/tmp/enemy-source/max-production-output/round-0017/shard-2/reg__cinderreach__enemy-battle__001.png',
-                  'sha256': '7fab60037758bfdf6fa591839b094f90057eaec4acc7f5530202ad0942f2ea9a',
-              },
-              {
-                  'asset_id': 'reg/cinderreach/enemy-battle/002',
-                  'path': '/tmp/enemy-source/max-production-output/round-0017/shard-2/reg__cinderreach__enemy-battle__002.png',
-                  'sha256': 'b4a1112920d1cca054973ca6ea966a56cbbc8b7bd3c3075160ab2ec2823e7c6f',
-              },
+              ('reg/elyndor/enemy-battle/001',12550746920,'max-production-output/round-0001/shard-2/reg__elyndor__enemy-battle__001.png','2b56fcfb358aa50a30695dfb877dccdfdf484adf210c0ec40e18b50ed639ebeb'),
+              ('reg/crownweave/enemy-battle/001',12552981423,'max-production-output/round-0003/shard-2/reg__crownweave__enemy-battle__001.png','bef71c3b4feba6ade0864abc2171df40d57f1fd268ceb92fc798f1d0c8403bed'),
+              ('reg/silkspire/enemy-battle/001',12556121668,'max-production-output/round-0005/shard-2/reg__silkspire__enemy-battle__001.png','6f7d9f559933a597ebdcaf30883ff570bb89a80269728e05a1db3d4ebe85480d'),
+              ('reg/gloamfen/enemy-battle/001',12558753021,'max-production-output/round-0007/shard-2/reg__gloamfen__enemy-battle__001.png','1bb7702d5c93a211f542979a48f07eda9b071716ac6488898823af47300717e6'),
+              ('reg/verdancia/enemy-battle/001',12562356167,'max-production-output/round-0009/shard-2/reg__verdancia__enemy-battle__001.png','eb17523a6252276b28665af4ebf1c0845e1cb5777d3857eeb703217d1564509e'),
+              ('reg/tideglass-coast/enemy-battle/001',12562219390,'max-production-output/round-0011/shard-2/reg__tideglass-coast__enemy-battle__001.png','91ab0760c4934f1b1a155ac59df18ce621cf88bd57e92f59c9d082aae1eb378e'),
+              ('reg/moonpatch-steppe/enemy-battle/001',12562249199,'max-production-output/round-0013/shard-2/reg__moonpatch-steppe__enemy-battle__001.png','1a0f6b0aef01c8b077a26783a051d543251076d7c4eb01954cc435481141c415'),
+              ('reg/sunspool-desert/enemy-battle/001',12562782580,'max-production-output/round-0015/shard-2/reg__sunspool-desert__enemy-battle__001.png','4a7d055ebff78fc7374d7aeb7344f082c6871de8a7fa42e9dc7490b1ee969624'),
+              ('reg/cinderreach/enemy-battle/001',12563310718,'max-production-output/round-0017/shard-2/reg__cinderreach__enemy-battle__001.png','7fab60037758bfdf6fa591839b094f90057eaec4acc7f5530202ad0942f2ea9a'),
+              ('reg/frostlace/enemy-battle/001',12563655706,'max-production-output/round-0019/shard-2/reg__frostlace__enemy-battle__001.png','7e11db5f43be3efb7e0a21ca2bfbb531b48ece2a7221cffad870c56b78921225'),
           ]
 
           extractor = modal.Cls.from_name('freeframe-worker', 'FreeFrameExtractor')()
 
           def remote_extract(raw: bytes):
-              response = extractor.extract.remote({
-                  'image_base64': base64.b64encode(raw).decode('ascii')
-              })
-              png = base64.b64decode(response['image_base64'], validate=True)
-              return png, str(response.get('provider')), str(response.get('model'))
+              response = extractor.extract.remote({'image_base64': base64.b64encode(raw).decode('ascii')})
+              return (
+                  base64.b64decode(response['image_base64'], validate=True),
+                  str(response.get('provider')),
+                  str(response.get('model')),
+              )
 
           root = Path('enemy-master-runtime-canary')
           root.mkdir(parents=True, exist_ok=True)
           report = {
-              'schema': 'plushbound.enemy_master_runtime_canary.v1',
-              'source_artifact_id': int('${{ env.SOURCE_ARTIFACT_ID }}'),
+              'schema': 'plushbound.enemy_master_runtime_canary.v2',
+              'coverage': 'one-canonical-master-per-region',
+              'source_artifact_ids': sorted({case[1] for case in cases}),
               'diffusion_generation_count': 0,
               'assets': [],
           }
 
-          for case in cases:
-              raw = Path(case['path']).read_bytes()
-              actual_source_sha = hashlib.sha256(raw).hexdigest()
-              if actual_source_sha != case['sha256']:
-                  raise SystemExit(f"source hash mismatch for {case['asset_id']}: {actual_source_sha}")
+          for asset_id, artifact_id, original_path, expected_sha in cases:
+              source_path = Path('/tmp/enemy-source') / str(artifact_id) / original_path
+              raw = source_path.read_bytes()
+              actual_sha = hashlib.sha256(raw).hexdigest()
+              if actual_sha != expected_sha:
+                  raise SystemExit(f'source hash mismatch for {asset_id}: {actual_sha}')
               record = MasterRecord(
-                  asset_id=case['asset_id'],
-                  archive_path='historical-artifact:' + case['path'],
-                  sha256=case['sha256'],
+                  asset_id=asset_id,
+                  archive_path=f'historical-artifact:{artifact_id}:{original_path}',
+                  sha256=expected_sha,
                   width=1024,
                   height=768,
                   model='black-forest-labs/FLUX.2-klein-4B',
@@ -106,23 +122,27 @@ jobs:
                   renderer_route='flux2_klein',
               )
               out_png, manifest = derive_one(record, raw, remote_extract)
-              out = root / (case['asset_id'].replace('/', '__') + '.png')
+              out = root / (asset_id.replace('/', '__') + '.png')
               out.write_bytes(out_png)
               with Image.open(io.BytesIO(out_png)) as im:
                   im.load()
                   if im.size != (288, 288) or im.mode != 'RGBA':
-                      raise SystemExit(f"invalid output geometry/mode for {case['asset_id']}: {im.size} {im.mode}")
+                      raise SystemExit(f'invalid output geometry/mode for {asset_id}: {im.size} {im.mode}')
                   alpha = inspect_alpha(im)
                   if not alpha['valid'] or alpha['edge_alpha_fraction'] != 0:
-                      raise SystemExit(f"alpha gate failed for {case['asset_id']}: {alpha}")
+                      raise SystemExit(f'alpha gate failed for {asset_id}: {alpha}')
+              manifest['source_artifact_id'] = artifact_id
               manifest['canary_output'] = str(out)
               report['assets'].append(manifest)
 
-          if len(report['assets']) != 2:
-              raise SystemExit('canary did not produce exactly two assets')
+          if len(report['assets']) != 10:
+              raise SystemExit(f"canary did not produce exactly ten assets: {len(report['assets'])}")
+          if len({a['asset_id'].split('/')[1] for a in report['assets']}) != 10:
+              raise SystemExit('ten-region canary coverage is incomplete')
           (root / 'canary-report.json').write_text(json.dumps(report, indent=2, sort_keys=True) + '\n')
           print(json.dumps({
               'completed': len(report['assets']),
+              'region_count': 10,
               'provider': report['assets'][0]['extractor_provider'],
               'model': report['assets'][0]['extractor_model'],
               'output_geometry': [288, 288],
