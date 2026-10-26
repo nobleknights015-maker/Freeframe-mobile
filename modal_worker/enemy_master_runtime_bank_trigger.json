@@ -1,6 +1,6 @@
 {
   "schema": "plushbound.enemy_master_runtime_bank_trigger.v1",
-  "run": 1,
+  "run": 2,
   "region": "elyndor",
   "artifact_id": 12619009492,
   "artifact_sha256": "4c2fa14d9f0fd92a1351c15064a90374ab9f491b4745e0f5403f790942b11bd4",
