@@ -1,7 +1,7 @@
 {
   "schema": "plushbound.enemy_master_runtime_region_trigger.v1",
-  "run": 8,
-  "region": "sunspool-desert",
+  "run": 9,
+  "region": "cinderreach",
   "max_parallel": 4,
-  "purpose": "Produce the complete Sunspool Desert enemy runtime region from verified canonical GitHub artifacts for full-region visual review before banking."
+  "purpose": "Produce the complete Cinderreach enemy runtime region from verified canonical GitHub artifacts for full-region visual review before banking."
 }
