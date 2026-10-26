@@ -1,8 +1,8 @@
 {
   "schema": "plushbound.enemy_master_runtime_bank_trigger.v1",
-  "run": 8,
-  "region": "tideglass-coast",
-  "artifact_id": 12620307377,
-  "artifact_sha256": "74a9e4b2d0fb59aea9fe48a6addfa8254c270062dd5b8ae5ab4065bd456b5d74",
-  "purpose": "Bank only the 63 Tideglass Coast enemy runtime assets approved by the full-region visual gate; preserve one source-anomaly quarantine without substitution."
+  "run": 9,
+  "region": "moonpatch-steppe",
+  "artifact_id": 12620536002,
+  "artifact_sha256": "1b0f39edb6ee0cc4cf5d7d129c9e194915416edd5eaa8750927b55e0d117df73",
+  "purpose": "Bank only the 63 Moonpatch Steppe enemy runtime assets approved by the full-region visual gate; preserve one source-anomaly quarantine without substitution."
 }
