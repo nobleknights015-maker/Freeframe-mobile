@@ -1,0 +1,20 @@
+{
+  "schema": "plushbound.enemy_master_runtime_region_visual_gate.v1",
+  "region": "tideglass-coast",
+  "workflow_run_id": 40250267247,
+  "artifact_id": 12620307377,
+  "artifact_sha256": "74a9e4b2d0fb59aea9fe48a6addfa8254c270062dd5b8ae5ab4065bd456b5d74",
+  "produced_count": 64,
+  "visual_passed_count": 63,
+  "visual_quarantined_count": 1,
+  "approved_asset_numbers": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64],
+  "quarantined_asset_numbers": [30],
+  "review": {
+    "full_region_visual_review": true,
+    "canonical_source_comparison_for_quarantined": true,
+    "extraction_caused_quarantines": 0,
+    "canonical_source_caused_quarantines": 1
+  },
+  "status": "PASS_WITH_SOURCE_QUARANTINE",
+  "next_action": "BANK_APPROVED_ONLY"
+}
