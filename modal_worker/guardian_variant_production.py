@@ -1,10 +1,11 @@
-"""All-96 Guardian production for five runtime variants that require new visual art.
+"""All-96 Guardian production for selectable runtime variants that require new visual art.
 
-One accepted Guardian master is the strict identity reference. Each Guardian gets five
-purpose-specific FLUX.2 Klein renders. Four variants use semantic subject extraction;
-field-interaction uses deterministic near-white alpha removal so its interaction prop is
-preserved. Exact frozen runtime geometry is applied locally. Physical GPU overlap is
-bounded by the caller to <=4 Guardian lanes, keeping generator+extractor overlap <=8.
+One accepted Guardian master is the strict identity reference. A production wave may select
+one or more of the frozen purpose-specific FLUX.2 Klein variant roles. Semantic subject
+extraction is used for normal creature-only roles; field-interaction uses deterministic
+near-white alpha removal so its interaction prop is preserved. Exact frozen runtime geometry
+is applied locally. Physical GPU overlap is bounded by the caller to <=4 Guardian lanes,
+keeping generator+extractor overlap <=8.
 """
 from __future__ import annotations
 
@@ -28,6 +29,7 @@ VARIANTS=(
  ("field-interaction",192,192,"actively investigating a tiny glowing Thread-magic sprout on the ground, curious natural field interaction, both the Guardian and the small sprout clearly visible"),
  ("resting-pose",192,192,"peaceful natural resting or sleeping pose appropriate to its anatomy and species body plan, relaxed content expression, all original body parts coherent"),
 )
+VARIANT_NAMES=tuple(x[0] for x in VARIANTS)
 
 image=(modal.Image.debian_slim(python_version="3.11").pip_install("accelerate","diffusers","pillow>=10.4,<12","safetensors","sentencepiece","torch>=2.6,<3","transformers").add_local_python_source("modal_worker"))
 app=modal.App(APP_NAME); model_cache=modal.Volume.from_name(MODEL_VOLUME,create_if_missing=True)
@@ -40,6 +42,18 @@ def _prompt(pose:str)->str:
  return ("Use the supplied accepted Guardian master as the strict identity reference. Preserve the exact same individual creature: same exterior body plan, exact number and arrangement of legs/wings/tails/ears or other appendages, same face, markings, colors, proportions, silhouette motifs, and living woven textile integument. Ignore the reference background. "
          "This is a living Plushtopia Guardian, not a new species, not a normal animal, and not a retail plush toy. One creature only except for the explicitly requested tiny interaction prop. Clean polished 2D fantasy JRPG game art, simple pure white background, no scenery, no text, no border, no mutation, no extra limbs, no duplicate body parts, no missing required appendages. "+pose)
 
+def _selected_variants(variants_csv:str):
+ names=[x.strip() for x in variants_csv.split(",") if x.strip()] if variants_csv else list(VARIANT_NAMES)
+ if not names:
+  raise ValueError("at least one Guardian variant must be selected")
+ if len(names)!=len(set(names)):
+  raise ValueError(f"duplicate Guardian variants requested: {names}")
+ unknown=[x for x in names if x not in VARIANT_NAMES]
+ if unknown:
+  raise ValueError(f"unknown Guardian variants requested: {unknown}; allowed={VARIANT_NAMES}")
+ wanted=set(names)
+ return tuple(spec for spec in VARIANTS if spec[0] in wanted)
+
 @app.cls(gpu="L4",image=image,volumes={CACHE_DIR:model_cache},scaledown_window=10,timeout=1200)
 class VariantRunner:
  @modal.enter()
@@ -49,11 +63,14 @@ class VariantRunner:
   os.environ.setdefault("HF_HOME",CACHE_DIR); os.environ.setdefault("HF_HUB_CACHE",f"{CACHE_DIR}/hub")
   self.torch=torch; self.pipe=DiffusionPipeline.from_pretrained(MODEL_ID,torch_dtype=torch.bfloat16,cache_dir=CACHE_DIR).to("cuda")
  @modal.method()
- def generate(self, reference_b64:str, gid:int)->dict:
+ def generate(self, reference_b64:str, gid:int, variants_csv:str="")->dict:
   from PIL import Image
   reference=Image.open(io.BytesIO(base64.b64decode(reference_b64))).convert("RGB")
+  selected={x[0] for x in _selected_variants(variants_csv)}
   assets=[]
   for index,(name,w,h,pose) in enumerate(VARIANTS):
+   if name not in selected:
+    continue
    seed=_seed(gid,index); gen=self.torch.Generator(device="cuda").manual_seed(seed); started=time.monotonic()
    rendered=self.pipe(image=[reference],prompt=_prompt(pose),width=512,height=512,guidance_scale=1.0,num_inference_steps=4,generator=gen).images[0]
    out=io.BytesIO(); rendered.save(out,format="PNG"); raw=out.getvalue()
@@ -87,14 +104,14 @@ def _validate(image):
 
 def _gid(path:Path)->int:return int(path.stem.rsplit("-",1)[1])
 
-def _process(master:Path)->dict:
+def _process(master:Path,variants_csv:str)->dict:
  from PIL import Image
  gid=_gid(master); raw_master=master.read_bytes()
  with Image.open(io.BytesIO(raw_master)) as im:
   im.load()
   if im.size!=(768,768):raise RuntimeError(f"guardian-{gid:03d} master geometry {im.size}")
  ref=Image.open(io.BytesIO(raw_master)).convert("RGB"); ref.thumbnail((512,512),Image.Resampling.LANCZOS); refbuf=io.BytesIO(); ref.save(refbuf,format="PNG")
- remote=VariantRunner().generate.remote(base64.b64encode(refbuf.getvalue()).decode("ascii"),gid)
+ remote=VariantRunner().generate.remote(base64.b64encode(refbuf.getvalue()).decode("ascii"),gid,variants_csv)
  extractor=modal.Cls.from_name(EXTRACTOR_APP,EXTRACTOR_CLASS)()
  outdir=OUT_ROOT/f"guardian-{gid:03d}"; outdir.mkdir(parents=True,exist_ok=True); records=[]; gpu_seconds=0.0
  for item in remote["assets"]:
@@ -110,18 +127,21 @@ def _process(master:Path)->dict:
  return {"guardian_id":f"guardian-{gid:03d}","master_filename":master.name,"accepted":True,"gpu_seconds":round(gpu_seconds,3),"estimated_generation_cost_usd":round(gpu_seconds*GPU_SECOND_COST_USD,6),"assets":records}
 
 @app.local_entrypoint()
-def main(master_root:str,max_parallel:int=4):
+def main(master_root:str,max_parallel:int=4,variants:str=""):
  if not 1<=max_parallel<=MAX_PARALLEL_LANES:raise ValueError(f"max_parallel must be 1..{MAX_PARALLEL_LANES}")
+ selected=_selected_variants(variants); selected_names=[x[0] for x in selected]; variants_csv=",".join(selected_names)
  roots=[Path(x) for x in master_root.split(":") if x]; masters=sorted({p.resolve() for r in roots for p in r.rglob("guardian-master__guardian-*.png")},key=_gid); ids=[_gid(p) for p in masters]
  if ids!=list(range(1,97)):raise RuntimeError(f"expected exact Guardian IDs 001..096, count={len(ids)}")
  results=[]; failures=[]
  with ThreadPoolExecutor(max_workers=max_parallel) as pool:
-  futs={pool.submit(_process,p):p for p in masters}
+  futs={pool.submit(_process,p,variants_csv):p for p in masters}
   for fut in as_completed(futs):
    p=futs[fut]
    try:results.append(fut.result())
    except Exception as exc:failures.append({"source":str(p),"error":f"{type(exc).__name__}: {exc}"})
  results.sort(key=lambda x:x["guardian_id"]); gpu=round(sum(x["gpu_seconds"] for x in results),3); cost=round(sum(x["estimated_generation_cost_usd"] for x in results),6)
- report={"schema":"plushbound.guardian_variant_production.v1","expected_guardians":96,"completed_guardians":len(results),"variants_per_guardian":5,"accepted_asset_count":len(results)*5,"max_parallel_lanes":max_parallel,"max_physical_gpu_concurrency_contract":8,"gpu_seconds":gpu,"estimated_generation_cost_usd":cost,"failures":failures,"guardians":results}
+ accepted_assets=sum(len(x["assets"]) for x in results)
+ report={"schema":"plushbound.guardian_variant_production.v2","expected_guardians":96,"completed_guardians":len(results),"variant_names":selected_names,"variants_per_guardian":len(selected_names),"accepted_asset_count":accepted_assets,"max_parallel_lanes":max_parallel,"max_physical_gpu_concurrency_contract":8,"gpu_seconds":gpu,"estimated_generation_cost_usd":cost,"failures":failures,"guardians":results}
  OUT_ROOT.mkdir(parents=True,exist_ok=True); (OUT_ROOT/"batch-report.json").write_text(json.dumps(report,indent=2,sort_keys=True)+"\n"); print(json.dumps({k:v for k,v in report.items() if k!="guardians"},sort_keys=True))
- if failures or len(results)!=96:raise RuntimeError(f"Guardian variant production incomplete: {len(results)}/96 failures={len(failures)}")
+ expected_assets=96*len(selected_names)
+ if failures or len(results)!=96 or accepted_assets!=expected_assets:raise RuntimeError(f"Guardian variant production incomplete: guardians={len(results)}/96 assets={accepted_assets}/{expected_assets} failures={len(failures)}")
