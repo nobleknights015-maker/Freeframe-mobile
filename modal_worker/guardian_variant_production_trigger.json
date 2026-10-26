@@ -1,8 +1,8 @@
 {
   "schema": "plushbound.guardian_variant_production_trigger.v1",
   "enabled": true,
-  "round": 1,
-  "wave": "guardian-variant-384",
+  "round": 2,
+  "wave": "guardian-resting-pose-96",
   "guardian_ids": "001-096",
   "source_artifacts": [12550259269, 12550867405, 12552966466],
   "identity_canary_run_id": 40147952320,
@@ -10,14 +10,14 @@
   "field_repair_run_id": 40148231817,
   "field_repair_artifact_id": 12580474942,
   "visual_gate": "pass_4_original_plus_field_packaging_repair",
-  "variants": ["battle-action", "battle-hurt", "bond-expression", "field-interaction"],
-  "deferred_variants": ["resting-pose"],
+  "variants": ["resting-pose"],
+  "deferred_variants": [],
   "max_parallel_guardian_lanes": 4,
   "max_physical_gpu_concurrency_contract": 8,
   "measured_canary_generation_seconds_per_guardian": 17.802,
-  "projected_generation_cost_usd": 0.3032,
-  "expected_asset_count": 384,
+  "projected_generation_cost_usd": 0.0758,
+  "expected_asset_count": 96,
   "production_authorized": true,
   "authorized_by_user": true,
-  "launch_nonce": 2
+  "launch_nonce": 3
 }
