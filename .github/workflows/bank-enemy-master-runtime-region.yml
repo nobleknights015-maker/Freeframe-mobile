@@ -86,5 +86,9 @@ jobs:
             echo 'No banking changes.'
           else
             git commit -m "Bank reviewed ${REGION} enemy runtime assets"
+            # Region production/banking triggers may advance the branch while this job runs.
+            # Rebase our bank-only commit onto the latest branch head before pushing.
+            git fetch origin freeframe-modal-worker
+            git rebase origin/freeframe-modal-worker
             git push origin HEAD:freeframe-modal-worker
           fi
