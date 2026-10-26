@@ -18,7 +18,7 @@ from PIL import Image
 APP_NAME = "freeframe-worker"
 PRODUCTION_MODEL = "black-forest-labs/FLUX.2-klein-4B"
 RENDERER_ROUTE = "flux2_klein"
-REFERENCE = Path("modal_worker/canon_refs/chris_proven_reference.jpg")
+REFERENCE_B64 = Path("modal_worker/canon_refs/chris_identity_compact.b64")
 OUTPUT_DIR = Path("canon-portrait-canary")
 RAW_OUTPUT = OUTPUT_DIR / "chris_bourn_portrait_raw.png"
 RUNTIME_OUTPUT = OUTPUT_DIR / "chris_bourn_portrait.png"
@@ -38,25 +38,32 @@ PROMPT = (
 
 
 def _preflight_reference() -> tuple[bytes, dict]:
-    if not REFERENCE.is_file() or REFERENCE.stat().st_size <= 0:
-        raise FileNotFoundError(f"missing canonical reference: {REFERENCE}")
-    raw = REFERENCE.read_bytes()
+    if not REFERENCE_B64.is_file() or REFERENCE_B64.stat().st_size <= 0:
+        raise FileNotFoundError(f"missing canonical reference payload: {REFERENCE_B64}")
+    encoded = "".join(REFERENCE_B64.read_text(encoding="ascii").split())
+    try:
+        raw = base64.b64decode(encoded, validate=True)
+    except Exception as exc:
+        raise ValueError("canonical Chris reference payload is not valid base64") from exc
     try:
         with Image.open(io.BytesIO(raw)) as verify_image:
             verify_image.verify()
         with Image.open(io.BytesIO(raw)) as image:
             rgb = image.convert("RGB")
             width, height = rgb.size
+            source_format = image.format
     except Exception as exc:
-        raise ValueError("canonical Chris reference is not a readable raster image") from exc
+        raise ValueError("canonical Chris reference payload is not a readable raster image") from exc
     if width < 64 or height < 64:
         raise ValueError(f"canonical reference is too small: {width}x{height}")
     return raw, {
-        "path": str(REFERENCE),
-        "bytes": len(raw),
+        "path": str(REFERENCE_B64),
+        "encoding": "base64",
+        "decoded_bytes": len(raw),
         "sha256": hashlib.sha256(raw).hexdigest(),
         "width": width,
         "height": height,
+        "source_format": source_format,
     }
 
 
