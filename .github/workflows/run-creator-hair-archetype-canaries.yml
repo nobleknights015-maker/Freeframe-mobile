@@ -1,0 +1,122 @@
+name: Plushbound Creator Hair Archetype Canaries
+
+on:
+  push:
+    branches: [freeframe-modal-worker]
+    paths:
+      - modal_worker/creator_hair_archetype_trigger.json
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plushbound-creator-hair-archetypes
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: freeframe-modal-worker
+      - name: Validate exact bounded trigger
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('modal_worker/creator_hair_archetype_trigger.json').read_text())
+          assert d['schema']=='plushbound.creator_hair_archetype_trigger.v1'
+          assert d['enabled'] is True
+          assert d['style_indices']==[21,57,65]
+          assert int(d['style_count'])==3
+          assert int(d['max_paid_renders'])==15
+          assert int(d['max_paid_extractions'])==12
+          assert d['catalog_wide_launch_authorized'] is False
+          print('creator hair archetype trigger bounded: 3 styles / <=15 renders / <=12 extractions')
+          PY
+
+  produce:
+    needs: preflight
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        style_index: [21, 57, 65]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: freeframe-modal-worker
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Require Modal credentials
+        run: |
+          test -n "$MODAL_TOKEN_ID" || { echo 'MODAL_TOKEN_ID missing' >&2; exit 1; }
+          test -n "$MODAL_TOKEN_SECRET" || { echo 'MODAL_TOKEN_SECRET missing' >&2; exit 1; }
+      - name: Install bounded canary dependencies
+        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'numpy>=2,<3' 'pillow>=10.4,<12'
+      - name: Compile paired hair canary
+        run: python -m compileall -q modal_worker/creator_hair_archetype_canary.py modal_worker/creator_hair_splitter.py modal_worker/creator_hair_style_catalog.py
+      - name: Produce exact paired hair archetype
+        shell: bash
+        run: |
+          set -euo pipefail
+          STYLE='${{ matrix.style_index }}'
+          LOG="creator-hair-archetype-${STYLE}.log"
+          for attempt in 1 2 3 4; do
+            set +e
+            PYTHONPATH=. modal run modal_worker/creator_hair_archetype_canary.py --style-index "$STYLE" >"$LOG.tmp" 2>&1
+            code=$?
+            set -e
+            cat "$LOG.tmp" >> "$LOG"
+            if [ "$code" -eq 0 ]; then
+              rm -f "$LOG.tmp"
+              exit 0
+            fi
+            if ! grep -Eq 'App create rate limit exceeded|Status\.RESOURCE_EXHAUSTED' "$LOG.tmp"; then
+              echo 'Non-throttle failure; refusing automatic paid retry.' | tee -a "$LOG"
+              rm -f "$LOG.tmp"
+              exit "$code"
+            fi
+            rm -f "$LOG.tmp"
+            if [ "$attempt" -lt 4 ]; then sleep $((attempt * 20)); fi
+          done
+          exit 1
+      - name: Verify exact paired evidence
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          from PIL import Image
+          style=int('${{ matrix.style_index }}')
+          root=Path(f'creator-hair-archetype-output/style-{style:03d}')
+          report=json.loads((root/'report.json').read_text())
+          assert report['schema']=='plushbound.creator_hair_archetype_canary.v1'
+          assert report['style_index']==style
+          assert report['paid_render_count']==5
+          assert report['paid_extraction_count']==4
+          assert report['alpha_validation']['disjoint'] is True
+          assert report['alpha_validation']['lossless_union'] is True
+          assert report['catalog_wide_launch_authorized'] is False
+          for name in (f'creator-hair-source-{style:03d}.png', f'creator-front-hair-{style:03d}.png', f'creator-back-hair-{style:03d}.png'):
+            with Image.open(root/name) as im:
+              im.load(); assert im.size==(144,192); assert 'A' in im.getbands()
+          print(f'creator hair style {style:03d} evidence verified')
+          PY
+      - name: Upload paired archetype evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: creator-hair-archetype-${{ matrix.style_index }}-${{ github.run_id }}
+          path: |
+            creator-hair-archetype-${{ matrix.style_index }}.log
+            creator-hair-archetype-output/style-${{ matrix.style_index }}/
+          if-no-files-found: error
+          retention-days: 14
