@@ -1,0 +1,93 @@
+name: Plushbound Creator Body Canary
+
+on:
+  push:
+    branches: [freeframe-modal-worker]
+    paths:
+      - modal_worker/creator_body_canary_trigger.json
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plushbound-creator-body-canary
+  cancel-in-progress: false
+
+jobs:
+  canary:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: freeframe-modal-worker
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Require Modal credentials
+        run: |
+          test -n "$MODAL_TOKEN_ID" || { echo 'MODAL_TOKEN_ID missing' >&2; exit 1; }
+          test -n "$MODAL_TOKEN_SECRET" || { echo 'MODAL_TOKEN_SECRET missing' >&2; exit 1; }
+      - name: Install bounded canary dependencies
+        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
+      - name: Validate creator body trigger
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('modal_worker/creator_body_canary_trigger.json').read_text())
+          assert d['version']=='plushbound-creator-body-trigger-v1'
+          assert d['enabled'] is True
+          assert d['logical_id']=='creator/body/001'
+          assert d['dimensions']=='144x192'
+          assert d['layout']=='3x4-48px'
+          assert int(d['max_paid_renders'])==13
+          assert d['catalog_wide_launch_authorized'] is False
+          print('creator body trigger bounded: 1 logical asset / <=13 renders')
+          PY
+      - name: Compile creator canary
+        run: python -m compileall -q modal_worker/creator_body_canary.py modal_worker/production_factory.py modal_worker/asset_packager.py modal_worker/image_normalizer.py modal_worker/mv_compositor.py modal_worker/png_compositor.py
+      - name: Run one creator body production canary
+        shell: bash
+        run: |
+          set -o pipefail
+          PYTHONPATH=. modal run modal_worker/creator_body_canary.py | tee creator-body-canary.log
+      - name: Require exact creator evidence
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from PIL import Image
+          report=json.loads(Path('creator-body-001-report.json').read_text())
+          assert report['schema']=='plushbound.creator_body_canary.v1'
+          assert report['logical_id']=='creator/body/001'
+          assert report['status']=='generated_pending_visual_review'
+          assert report['source_frame_count']==12
+          assert report['catalog_wide_launch_authorized'] is False
+          with Image.open('creator-body-001.png') as im:
+              im.load()
+              assert im.format=='PNG'
+              assert im.size==(144,192), im.size
+              assert 'A' in im.getbands(), im.getbands()
+              a=im.convert('RGBA').getchannel('A')
+              for row in range(4):
+                  for col in range(3):
+                      assert a.crop((col*48,row*48,(col+1)*48,(row+1)*48)).getbbox() is not None, (row,col)
+          print('creator/body/001 evidence verified: exact 144x192 RGBA / 12 occupied cells')
+          PY
+      - name: Upload creator body canary evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: creator-body-canary-${{ github.run_id }}
+          path: |
+            creator-body-canary.log
+            creator-body-001.png
+            creator-body-001-reference.png
+            creator-body-001-report.json
+          if-no-files-found: error
+          retention-days: 14
