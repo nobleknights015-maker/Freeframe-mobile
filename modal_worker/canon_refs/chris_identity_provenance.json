@@ -1,0 +1,36 @@
+{
+  "schema": "plushbound.canon_identity_reference.v1",
+  "character_id": "chris_bourn",
+  "status": "CANONICAL_CONDITIONING_REFERENCE",
+  "source": {
+    "surface": "chatgpt_library",
+    "file_id": "file_000000003568820db0f9d36021458019",
+    "name": "Chris_Bourn_Plushbound_Canonical_Reference.png",
+    "sha256": "34a886f42a476d09649c6584731d043cd658d18395692090109ece0f3bd09104",
+    "width": 768,
+    "height": 535,
+    "mode": "RGBA"
+  },
+  "derivation": {
+    "method": "deterministic_crop_resize_jpeg_no_ai_edit",
+    "crop_box_xyxy": [156, 80, 356, 520],
+    "resize_width": 128,
+    "resize_height": 282,
+    "resampler": "PIL.Image.Resampling.LANCZOS",
+    "jpeg_quality": 80,
+    "jpeg_optimize": true,
+    "jpeg_progressive": false
+  },
+  "encoded_payload": {
+    "path": "modal_worker/canon_refs/chris_identity_compact.b64",
+    "encoding": "base64",
+    "decoded_format": "JPEG",
+    "decoded_width": 128,
+    "decoded_height": 282,
+    "decoded_bytes": 11612,
+    "decoded_sha256": "14a7c520740e739d5d7be24870ae19e64e747a5ea29efa6d9574911d12ace9b2",
+    "base64_characters": 15484
+  },
+  "usage": "identity_conditioning_only_not_runtime_asset",
+  "catalog_wide_launch_authorized": false
+}
