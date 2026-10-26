@@ -1,7 +1,7 @@
 {
   "schema": "plushbound.enemy_master_runtime_region_trigger.v1",
-  "run": 7,
-  "region": "moonpatch-steppe",
+  "run": 8,
+  "region": "sunspool-desert",
   "max_parallel": 4,
-  "purpose": "Produce the complete Moonpatch Steppe enemy runtime region from verified canonical GitHub artifacts for full-region visual review before banking."
+  "purpose": "Produce the complete Sunspool Desert enemy runtime region from verified canonical GitHub artifacts for full-region visual review before banking."
 }
