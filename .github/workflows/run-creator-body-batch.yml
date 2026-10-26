@@ -19,6 +19,7 @@ jobs:
     runs-on: ubuntu-24.04
     outputs:
       enabled: ${{ steps.gate.outputs.enabled }}
+      lanes: ${{ steps.gate.outputs.lanes }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -32,15 +33,19 @@ jobs:
           d=json.loads(Path('modal_worker/creator_body_batch_trigger.json').read_text())
           assert d['schema']=='plushbound.creator_body_batch_trigger.v1'
           assert d['enabled'] is True
-          assert int(d['body_count'])==24
-          assert int(d['lane_count'])==12
+          lanes=[int(x) for x in d['lanes']]
+          assert lanes and len(lanes)==len(set(lanes))
+          assert all(0 <= x <= 11 for x in lanes)
+          assert int(d['lane_count'])==len(lanes)
           assert int(d['bodies_per_lane'])==2
-          assert int(d['max_paid_renders'])==312
-          assert int(d['max_paid_extractions'])==288
-          assert d['logical_range']==['creator/body/001','creator/body/024']
+          assert int(d['body_count'])==len(lanes)*2
+          assert int(d['max_paid_renders'])==int(d['body_count'])*13
+          assert int(d['max_paid_extractions'])==int(d['body_count'])*12
           assert d['catalog_wide_launch_authorized'] is False
-          with open(os.environ['GITHUB_OUTPUT'],'a') as f: f.write('enabled=true\n')
-          print('creator body batch bounded: 24 sheets / 312 renders / 288 extractions')
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:
+              f.write('enabled=true\n')
+              f.write('lanes='+json.dumps(lanes,separators=(',',':'))+'\n')
+          print('creator body batch bounded:', len(lanes), 'lanes /', d['body_count'], 'sheets')
           PY
 
   produce:
@@ -50,7 +55,7 @@ jobs:
       fail-fast: false
       max-parallel: 3
       matrix:
-        lane: [0,1,2,3,4,5,6,7,8,9,10,11]
+        lane: ${{ fromJSON(needs.preflight.outputs.lanes) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 120
     env:
@@ -78,7 +83,6 @@ jobs:
           LANE='${{ matrix.lane }}'
           LOG="creator-body-batch-lane-${LANE}.log"
           : > "$LOG"
-          # Stagger app creation inside each 3-lane wave to stay below Modal's AppCreate throttle.
           sleep $(( (LANE % 3) * 10 ))
           for attempt in 1 2 3 4; do
             TMP="creator-body-batch-lane-${LANE}-attempt-${attempt}.log"
@@ -135,6 +139,6 @@ jobs:
           name: creator-body-batch-lane-${{ matrix.lane }}-${{ github.run_id }}
           path: |
             creator-body-batch-lane-${{ matrix.lane }}.log
-            creator-body-batch-output/lane-${{ matrix.lane }}/
+            creator-body-batch-output/lane-*/
           if-no-files-found: error
           retention-days: 30
