@@ -1,0 +1,59 @@
+name: Plushbound Creator Full Outfits Canary Completion Audit
+
+on:
+  push:
+    branches: [freeframe-modal-worker]
+    paths:
+      - modal_worker/creator_full_outfits_canary_completion_contract.json
+      - modal_worker/creator_full_outfits_canary_completion_audit.py
+      - modal_worker/creator_full_outfits_exception_*.json
+      - .github/workflows/run-creator-full-outfits-canary-completion-audit.yml
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: plushbound-creator-full-outfits-canary-completion-audit
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile deterministic Full Outfits canary auditor
+        run: python -m py_compile modal_worker/creator_full_outfits_canary_completion_audit.py
+      - name: Audit Full Outfits canary jobs, evidence, artifacts, provenance, and exceptions
+        run: python modal_worker/creator_full_outfits_canary_completion_audit.py
+      - name: Publish concise canary audit summary
+        shell: bash
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          d=json.load(open('creator-full-outfits-canary-completion-audit.json'))
+          print('# Creator Full Outfits canary completion audit')
+          print(f"- Production run: `{d['production_run_id']}`")
+          print(f"- Run status: `{d['run_status']}` / `{d['run_conclusion']}`")
+          print(f"- Contract-ready styles: **{d['ready_style_count']}/{d['expected_style_count']}**")
+          print(f"- Active/queued styles: **{d['active_or_queued_job_count']}**")
+          print(f"- Failed styles: **{d['failed_job_count']}**")
+          print(f"- Unresolved exceptions: **{len(d['unresolved_exceptions'])}**")
+          print(f"- Locked-body visual QC passed: **{d['locked_body_visual_qc_passed']}**")
+          print(f"- Ready for bulk: **{d['ready_for_bulk']}**")
+          PY
+      - name: Upload Full Outfits canary completion audit evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: creator-full-outfits-canary-completion-audit-${{ github.run_id }}
+          path: creator-full-outfits-canary-completion-audit.json
+          if-no-files-found: error
+          retention-days: 14
