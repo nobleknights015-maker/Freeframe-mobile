@@ -86,7 +86,7 @@ jobs:
         name: Validate bounded Creator Full Outfits wave and live Tops handoff
         run: |
           python - <<'PY' >> "$GITHUB_OUTPUT"
-          import json
+          import json, subprocess
           from pathlib import Path
           from modal_worker.creator_full_outfits_style_catalog import snapshot
           from modal_worker.creator_tops_completion_audit import audit as audit_tops
@@ -115,15 +115,21 @@ jobs:
           assert d['deterministic_finalization_required'] is True
           assert d['requires_locked_body_qc'] is True
           assert d['requires_tops_handoff_gate'] is True
+          assert d['requires_one_shot_launch_commit'] is True
           assert d['catalog_wide_launch_authorized'] is False
           assert d['phase'] in ('canary','bulk')
           if d['phase']=='canary': assert styles==[1,49,95]
+          nonce=int(d['launch_nonce']); assert nonce>=1
+          expected_launch_message=f"Launch Creator Full Outfits {d['phase']} nonce {nonce}"
           blocking=[]
           for raw in c.get('unresolved_exception_files',[]):
             p=Path(raw); x=json.loads(p.read_text())
             if x.get('blocks_tops_completion_contract') is True:
               blocking.append(f"{x.get('style_index')}:{p}")
           if d['enabled'] is True:
+            assert d.get('authorized_launch_commit_message')==expected_launch_message, 'refusing Full Outfits spend without exact one-shot launch message authorization'
+            actual_commit_message=subprocess.check_output(['git','log','-1','--pretty=%B'],text=True).strip()
+            assert actual_commit_message==expected_launch_message, 'refusing Full Outfits spend from a later or unrelated push; launch commit message mismatch'
             assert h['tops_bulk_complete'] is True, 'refusing Full Outfits spend before Creator Tops bulk completion'
             assert h['tops_bulk_verified'] is True, 'refusing Full Outfits spend before Creator Tops evidence verification'
             assert h['full_outfits_canary_authorized'] is True, 'refusing Full Outfits spend without explicit canary handoff authorization'
@@ -132,7 +138,8 @@ jobs:
             assert live_tops['ready_for_handoff'] is True, 'refusing Full Outfits spend because live deterministic Tops audit is not ready_for_handoff=true'
             assert int(live_tops['ready_style_count'])==59, 'refusing Full Outfits spend because live Tops audit is not 59/59 ready'
             assert not live_tops['unresolved_exceptions'], 'refusing Full Outfits spend because live Tops audit still has unresolved exceptions'
-          assert int(d['launch_nonce'])>=1
+          else:
+            assert d.get('authorized_launch_commit_message') is None, 'disabled Full Outfits trigger must not retain a launch authorization message'
           print(f"enabled={'true' if d['enabled'] is True else 'false'}")
           print('styles='+json.dumps(styles,separators=(',',':')))
           print('blocking_tops_exceptions='+json.dumps(blocking,separators=(',',':')))
