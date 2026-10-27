@@ -1,0 +1,30 @@
+{
+  "schema": "plushbound.creator_tops_exception.v1",
+  "style_index": 65,
+  "bulk_run_id": 40541409733,
+  "job_id": 122320568792,
+  "status": "quarantined_ambiguous_paid_state",
+  "failure_class": "watchdog_timeout_after_modal_launch",
+  "automatic_retry_allowed": false,
+  "paid_state": "ambiguous",
+  "bulk_trigger_head_sha": "94acd9404788bb2012b18a71efa450c0d35b6167",
+  "job_checkout_sha": "0b886962c37feb71366bed8c78c9c327905e34b0",
+  "checkout_drift_observed": true,
+  "modal_run_url": "https://modal.com/apps/nobleknights015-maker/main/ap-WkEvtiZDQ5G7OwSc1aRpkE",
+  "artifact_id": 12770086764,
+  "artifact_name": "creator-tops-batch-65-40541409733",
+  "artifact_size_bytes": 437,
+  "persisted_sprite_present": false,
+  "evidence_report_present": false,
+  "captured_log_summary": [
+    "Modal app initialized and CreatorTopsBatchRunner function was created.",
+    "creator top 065: starting Vera render batch",
+    "The GitHub watchdog terminated the invocation after 35 minutes with exit code 124.",
+    "The evidence-verification step was skipped.",
+    "Only the captured log was uploaded; no sprite or evidence bundle was persisted.",
+    "The job checked out moving branch commit 0b886962c37feb71366bed8c78c9c327905e34b0 rather than the bulk trigger head SHA because this matrix predates immutable-checkout hardening."
+  ],
+  "required_resolution": "Do not rerun automatically. Resolve only after confirming the remote Modal invocation produced no usable paid output, or by an explicit later decision accepting a replacement render despite possible duplicate spend.",
+  "blocks_tops_completion_contract": true,
+  "notes": "Fail closed. Continue unrelated Tops styles normally. The active bulk matrix predates the immutable-SHA workflow fix, so do not modify Creator Tops runner/catalog code while its queued jobs are still executing."
+}
