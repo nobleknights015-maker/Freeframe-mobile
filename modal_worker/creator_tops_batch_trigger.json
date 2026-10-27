@@ -1,16 +1,16 @@
 {
   "schema": "plushbound.creator_tops_batch_trigger.v1",
   "enabled": true,
-  "phase": "canary",
-  "style_indices": [61],
-  "style_count": 1,
-  "max_paid_renders": 5,
+  "phase": "bulk",
+  "style_indices": [1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,49,51,53,55,57,59,63,65,67,69,71,73,75,77,79,81,83,85,87,89,91,93,95,97,99,101,103,105,107,109,111,113,115,117,119],
+  "style_count": 59,
+  "max_paid_renders": 295,
   "max_paid_extractions": 0,
   "max_parallel": 2,
   "source_art_required": true,
   "deterministic_finalization_required": true,
   "requires_locked_body_qc": true,
   "catalog_wide_launch_authorized": false,
-  "launch_nonce": 6,
-  "notes": "Targeted style 061 retry after fixing the prelaunch duplicate Modal local-entrypoint collision. Prior attempt failed before remote generation, so no paid render was duplicated."
+  "launch_nonce": 7,
+  "notes": "Creator Top 061 canary passed production, exact evidence verification, and artifact upload in run 40540595901. Bulk expansion covers the remaining 59 approved reduced-V1 IDs only; 061 is excluded to prevent duplicate paid work."
 }
