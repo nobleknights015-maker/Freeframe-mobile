@@ -30,7 +30,7 @@ jobs:
       - name: Install no-spend preflight dependencies
         run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
       - name: Compile Full Outfits path without production
-        run: python -m compileall -q modal_worker/creator_full_outfits_batch.py modal_worker/creator_full_outfits_style_catalog.py modal_worker/creator_tops_batch.py modal_worker/creator_bottoms_batch.py
+        run: python -m compileall -q modal_worker/creator_full_outfits_batch.py modal_worker/creator_full_outfits_batch_v2.py modal_worker/creator_full_outfits_style_catalog.py modal_worker/creator_tops_batch.py modal_worker/creator_bottoms_batch.py
       - name: Verify locked outfit geometry without production
         run: |
           python - <<'PY'
@@ -45,6 +45,41 @@ jobs:
               cells.append(a.tobytes())
             assert len(set(cells))>1, 'locked outfit movement phases collapsed'
           print('locked top+bottom outfit mask contract verified')
+          PY
+      - name: Exercise extraction and compiler without production
+        run: |
+          python - <<'PY'
+          import base64, io
+          from PIL import Image, ImageDraw
+          from modal_worker.creator_full_outfits_batch import _border_white_extract, _locked_outfit_mask
+          from modal_worker.creator_full_outfits_batch_v2 import _compile_sheet, _opaque_texture
+          from modal_worker.creator_full_outfits_style_catalog import get_style
+
+          src=Image.new('RGB',(128,160),'white')
+          d=ImageDraw.Draw(src)
+          d.rounded_rectangle((34,18,94,70),radius=8,fill=(76,92,126))
+          d.rectangle((44,82,84,146),fill=(116,76,92))
+          buf=io.BytesIO(); src.save(buf,format='PNG')
+          piece=_border_white_extract(base64.b64encode(buf.getvalue()).decode('ascii'))
+          assert piece.mode=='RGBA' and piece.getchannel('A').getbbox() is not None
+          opaque=_opaque_texture(piece)
+          assert opaque.getchannel('A').getextrema()==(255,255)
+          pieces={name:piece.copy() for name in ('down','left','right','up')}
+          sheet,geometry=_compile_sheet(get_style(1),pieces)
+          assert sheet.size==(144,192) and sheet.mode=='RGBA'
+          assert len(geometry['cells'])==12
+          assert geometry['mask_contract']=='creator_tops_union_creator_bottoms_v1'
+          assert geometry['texture_fill_backend']=='opaque_mean_fabric_v1'
+          assert sheet.getchannel('A').tobytes()==_locked_outfit_mask().tobytes()
+          visible=sheet.convert('RGB')
+          alpha=sheet.getchannel('A')
+          bright=0; total=0
+          for rgb,a in zip(visible.getdata(),alpha.getdata()):
+            if a:
+              total+=1
+              if min(rgb)>=240: bright+=1
+          assert total and bright/total < 0.02, 'white-background texture leaked into locked outfit geometry'
+          print('deterministic extraction + opaque texture fill + locked compiler smoke test verified')
           PY
       - id: plan
         name: Validate bounded Creator Full Outfits wave
@@ -100,7 +135,7 @@ jobs:
       - name: Install bounded production dependencies
         run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
       - name: Compile Creator Full Outfits runner
-        run: python -m compileall -q modal_worker/creator_full_outfits_batch.py modal_worker/creator_full_outfits_style_catalog.py modal_worker/creator_tops_batch.py modal_worker/creator_bottoms_batch.py
+        run: python -m compileall -q modal_worker/creator_full_outfits_batch.py modal_worker/creator_full_outfits_batch_v2.py modal_worker/creator_full_outfits_style_catalog.py modal_worker/creator_tops_batch.py modal_worker/creator_bottoms_batch.py
       - name: Produce one Creator Full Outfit
         shell: bash
         run: |
@@ -110,7 +145,7 @@ jobs:
           sleep $((STYLE % 2 * 10))
           for attempt in 1 2 3 4; do
             set +e
-            timeout --signal=TERM --kill-after=2m 35m env PYTHONPATH=. modal run modal_worker/creator_full_outfits_batch.py --style-index "$STYLE" >"$LOG.tmp" 2>&1
+            timeout --signal=TERM --kill-after=2m 35m env PYTHONPATH=. modal run modal_worker/creator_full_outfits_batch_v2.py --style-index "$STYLE" >"$LOG.tmp" 2>&1
             code=$?
             set -e
             cat "$LOG.tmp" >> "$LOG"
@@ -139,10 +174,14 @@ jobs:
           assert report['style_index']==style and report['logical_id']==f'creator/full-outfits/{style:03d}'
           assert report['paid_render_count']==5 and report['paid_extraction_count']==0
           assert report['extraction_backend']=='deterministic_border_connected_white_v1'
+          assert report['texture_fill_backend']=='opaque_mean_fabric_v1'
           assert report['source_art_persisted_before_extraction'] is True
-          assert report['compiler_owns_final_geometry'] is True and report['generated_alpha_discarded'] is True
+          assert report['generated_alpha_used_for_texture_cleanup_only'] is True
+          assert report['compiler_owns_final_geometry'] is True
+          assert report['generated_alpha_discarded_for_final_geometry'] is True
           assert report['catalog_wide_launch_authorized'] is False
           assert report['geometry']['mask_contract']=='creator_tops_union_creator_bottoms_v1'
+          assert report['geometry']['texture_fill_backend']=='opaque_mean_fabric_v1'
           raw=root/'sources'/'raw'
           assert all((raw/f'{name}.png').exists() for name in ('reference','down','left','right','up'))
           p=root/f'creator-full-outfit-{style:03d}.png'
