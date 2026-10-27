@@ -1,6 +1,6 @@
 {
   "schema": "plushbound.creator_tops_batch_trigger.v1",
-  "enabled": false,
+  "enabled": true,
   "phase": "canary",
   "style_indices": [61],
   "style_count": 1,
@@ -11,6 +11,6 @@
   "deterministic_finalization_required": true,
   "requires_locked_body_qc": true,
   "catalog_wide_launch_authorized": false,
-  "launch_nonce": 4,
-  "notes": "Disabled validation for hardened style 061 retry. Vera renders remain 5; remote BiRefNet extraction removed. Raw paid sources persist before deterministic local white-background extraction."
+  "launch_nonce": 5,
+  "notes": "Hardened style 061 retry. Vera renders 5 source images; all paid sources persist before deterministic local white-background extraction. Remote BiRefNet extraction removed."
 }
