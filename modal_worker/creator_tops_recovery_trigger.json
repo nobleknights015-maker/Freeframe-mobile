@@ -1,15 +1,18 @@
 {
-  "schema": "plushbound.creator_tops_recovery_trigger.v1",
+  "schema": "plushbound.creator_tops_recovery_trigger.v2",
   "enabled": false,
   "style_index": null,
   "max_paid_renders": 5,
   "max_paid_extractions": 0,
   "max_parallel": 1,
   "requires_quarantined_exception": true,
-  "requires_explicit_duplicate_risk_acceptance": true,
+  "authorization_mode": null,
   "duplicate_risk_accepted": false,
+  "remote_no_execution_evidence_file": null,
   "authorized_exception_file": null,
+  "requires_one_shot_launch_commit": true,
+  "authorized_launch_commit_message": null,
   "catalog_wide_launch_authorized": false,
   "launch_nonce": 1,
-  "notes": "Fail-closed single-style recovery path for quarantined Creator Tops only. Never enable automatically. A recovery may run only after an explicit later user decision accepting possible duplicate paid render spend for the named quarantined style. Bulk recovery is forbidden."
+  "notes": "Fail-closed single-style recovery. A style may be recovered either from committed read-only Modal proof that its previous FunctionCall never started, or after explicit duplicate-risk acceptance for an ambiguous/completed prior execution. Every paid recovery requires an exact one-shot commit message for the named style and nonce."
 }
