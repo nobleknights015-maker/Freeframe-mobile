@@ -6,6 +6,8 @@ on:
     paths:
       - modal_worker/creator_full_outfits_batch_trigger.json
       - modal_worker/creator_clothing_handoff.json
+      - modal_worker/creator_tops_completion_contract.json
+      - modal_worker/creator_tops_exception_*.json
       - .github/workflows/run-creator-full-outfits-batch.yml
   workflow_dispatch:
 
@@ -85,10 +87,19 @@ jobs:
           from modal_worker.creator_full_outfits_style_catalog import snapshot
           d=json.loads(Path('modal_worker/creator_full_outfits_batch_trigger.json').read_text())
           h=json.loads(Path('modal_worker/creator_clothing_handoff.json').read_text())
+          c_path=Path(h['tops_completion_contract'])
+          c=json.loads(c_path.read_text())
           cat=snapshot(); allowed=set(int(x) for x in cat['selected_ids']); styles=[int(x) for x in d['style_indices']]
           assert d['schema']=='plushbound.creator_full_outfits_batch_trigger.v1'
           assert h['schema']=='plushbound.creator_clothing_handoff.v1'
-          assert int(h['tops_bulk_run_id'])==40541409733
+          assert c['schema']=='plushbound.creator_tops_completion_contract.v1'
+          assert str(c_path)=='modal_worker/creator_tops_completion_contract.json'
+          assert int(h['tops_bulk_run_id'])==40541409733==int(c['bulk_run_id'])
+          assert int(c['expected_bulk_style_count'])==59
+          assert len(c['expected_bulk_style_indices'])==59 and len(set(c['expected_bulk_style_indices']))==59
+          assert 19 in c['expected_bulk_style_indices'] and 61 not in c['expected_bulk_style_indices']
+          assert c['canary_style_index']==61 and c['canary_already_verified'] is True
+          assert c['require_no_unresolved_exceptions'] is True
           assert h['bottoms_deferred'] is True
           assert styles and len(styles)==len(set(styles)) and set(styles)<=allowed
           assert int(d['style_count'])==len(styles)
@@ -102,13 +113,20 @@ jobs:
           assert d['catalog_wide_launch_authorized'] is False
           assert d['phase'] in ('canary','bulk')
           if d['phase']=='canary': assert styles==[1,49,95]
+          blocking=[]
+          for raw in c.get('unresolved_exception_files',[]):
+            p=Path(raw); x=json.loads(p.read_text())
+            if x.get('blocks_tops_completion_contract') is True:
+              blocking.append(f"{x.get('style_index')}:{p}")
           if d['enabled'] is True:
             assert h['tops_bulk_complete'] is True, 'refusing Full Outfits spend before Creator Tops bulk completion'
             assert h['tops_bulk_verified'] is True, 'refusing Full Outfits spend before Creator Tops evidence verification'
             assert h['full_outfits_canary_authorized'] is True, 'refusing Full Outfits spend without explicit canary handoff authorization'
+            assert not blocking, 'refusing Full Outfits spend with unresolved Creator Tops exceptions: '+','.join(blocking)
           assert int(d['launch_nonce'])>=1
           print(f"enabled={'true' if d['enabled'] is True else 'false'}")
           print('styles='+json.dumps(styles,separators=(',',':')))
+          print('blocking_tops_exceptions='+json.dumps(blocking,separators=(',',':')))
           PY
 
   produce:
