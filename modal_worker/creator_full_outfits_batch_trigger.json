@@ -1,6 +1,6 @@
 {
   "schema": "plushbound.creator_full_outfits_batch_trigger.v1",
-  "enabled": false,
+  "enabled": true,
   "phase": "canary",
   "style_indices": [1, 49, 95],
   "style_count": 3,
@@ -12,8 +12,8 @@
   "requires_locked_body_qc": true,
   "requires_tops_handoff_gate": false,
   "requires_one_shot_launch_commit": true,
-  "authorized_launch_commit_message": null,
+  "authorized_launch_commit_message": "Launch Creator Full Outfits canary nonce 6",
   "catalog_wide_launch_authorized": false,
   "launch_nonce": 6,
-  "notes": "Primary clothing track is Full Outfits. Bounded 001/049/095 canary is staged independently from optional Creator Tops exceptions. Paid production remains fail-closed behind the clothing handoff, exact one-shot launch commit, source persistence, deterministic finalization, locked geometry checks, and the Full Outfits canary completion/QC contract. Bottoms remains deferred optional."
+  "notes": "Primary clothing track is Full Outfits. This exact commit authorizes only the bounded 001/049/095 canary: 15 paid renders total, zero paid extraction, max parallel 2. Optional Creator Tops exceptions do not block this primary track. One-shot commit guard prevents unrelated pushes from relaunching paid work. Bottoms remains deferred optional."
 }
