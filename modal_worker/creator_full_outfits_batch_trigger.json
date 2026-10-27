@@ -5,12 +5,12 @@
   "style_indices": [1, 49, 95],
   "style_count": 3,
   "max_paid_renders": 15,
-  "max_paid_extractions": 12,
+  "max_paid_extractions": 0,
   "max_parallel": 2,
   "source_art_required": true,
   "deterministic_finalization_required": true,
   "requires_locked_body_qc": true,
   "catalog_wide_launch_authorized": false,
-  "launch_nonce": 1,
-  "notes": "Disabled dry preflight only. Do not enable until Tops and Bottoms gates are cleared and the Full Outfits runner has passed compile/QC review."
+  "launch_nonce": 2,
+  "notes": "Primary clothing track pivot: Full Outfits replace broad modular Tops+Bottoms pairing for main Creator wardrobe. Staged disabled canary only until the active Creator Tops bulk run completes and this no-spend compile/locked-geometry preflight is green. Creator Bottoms remains disabled/deferred; do not spend automatically."
 }
