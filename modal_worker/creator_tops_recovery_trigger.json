@@ -1,18 +1,18 @@
 {
   "schema": "plushbound.creator_tops_recovery_trigger.v2",
-  "enabled": false,
-  "style_index": null,
+  "enabled": true,
+  "style_index": 19,
   "max_paid_renders": 5,
   "max_paid_extractions": 0,
   "max_parallel": 1,
   "requires_quarantined_exception": true,
-  "authorization_mode": null,
+  "authorization_mode": "remote_no_execution_proven",
   "duplicate_risk_accepted": false,
-  "remote_no_execution_evidence_file": null,
-  "authorized_exception_file": null,
+  "remote_no_execution_evidence_file": "modal_worker/creator_tops_remote_evidence_019.json",
+  "authorized_exception_file": "modal_worker/creator_tops_exception_019.json",
   "requires_one_shot_launch_commit": true,
-  "authorized_launch_commit_message": null,
+  "authorized_launch_commit_message": "Recover Creator Top 019 nonce 2",
   "catalog_wide_launch_authorized": false,
-  "launch_nonce": 1,
-  "notes": "Fail-closed single-style recovery. A style may be recovered either from committed read-only Modal proof that its previous FunctionCall never started, or after explicit duplicate-risk acceptance for an ambiguous/completed prior execution. Every paid recovery requires an exact one-shot commit message for the named style and nonce."
+  "launch_nonce": 2,
+  "notes": "One-shot recovery for Creator Top 019. Read-only Modal evidence proves the previous FunctionCall never started, so this replacement does not duplicate completed paid render work."
 }
