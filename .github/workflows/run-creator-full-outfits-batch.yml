@@ -24,6 +24,28 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: freeframe-modal-worker
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install no-spend preflight dependencies
+        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
+      - name: Compile Full Outfits path without production
+        run: python -m compileall -q modal_worker/creator_full_outfits_batch.py modal_worker/creator_full_outfits_style_catalog.py modal_worker/creator_tops_batch.py modal_worker/creator_bottoms_batch.py
+      - name: Verify locked outfit geometry without production
+        run: |
+          python - <<'PY'
+          from modal_worker.creator_full_outfits_batch import _locked_outfit_mask
+          m=_locked_outfit_mask()
+          assert m.size==(144,192) and m.getbbox() is not None
+          for row in range(4):
+            cells=[]
+            for col in range(3):
+              a=m.crop((col*48,row*48,(col+1)*48,(row+1)*48)); b=a.getbbox()
+              assert b is not None and b[1]>=4 and b[3]<=46
+              cells.append(a.tobytes())
+            assert len(set(cells))>1, 'locked outfit movement phases collapsed'
+          print('locked top+bottom outfit mask contract verified')
+          PY
       - id: plan
         name: Validate bounded Creator Full Outfits wave
         run: |
