@@ -1,0 +1,30 @@
+{
+  "schema": "plushbound.creator_full_outfits_v1_scope.v1",
+  "family": "creator/full-outfits",
+  "ledger_total": 96,
+  "v1_target": 48,
+  "dimensions": "144x192",
+  "layout": "3x4-48px",
+  "runtime_role": "character_creator_rgba_overlay",
+  "source_art_required": true,
+  "deterministic_finalization_required": true,
+  "selected_ids": [1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,49,51,53,55,57,59,61,63,65,67,69,71,73,75,77,79,81,83,85,87,89,91,93,95],
+  "canary_ids": [1,49,95],
+  "design_families": [
+    {"name":"plushtopia_everyday","count":4,"brief":"complete everyday outfits with stitched layers and readable practical silhouettes"},
+    {"name":"victorian_tailored","count":4,"brief":"complete Victorian-inspired coordinated outfits with structured tailoring and restrained ornament"},
+    {"name":"japanese_layered","count":4,"brief":"complete Japanese-influenced layered outfits with wrap construction, short coats and sash accents"},
+    {"name":"chinese_inspired","count":4,"brief":"complete Chinese-influenced coordinated outfits using cross collars, stand collars, panels and subtle knot detailing"},
+    {"name":"adventurer_practical","count":4,"brief":"complete field-ready travel outfits with reinforced layers, belts and practical movement"},
+    {"name":"artisan_crafter","count":4,"brief":"complete workshop and crafter outfits with aprons, rolled layers and utility details"},
+    {"name":"regional_festival","count":4,"brief":"complete celebratory outfits with ribbons, textile motifs and region-friendly variation"},
+    {"name":"scholar_court","count":4,"brief":"complete scholar and court outfits with refined formal layering and elegant silhouettes"},
+    {"name":"rugged_frontier","count":4,"brief":"complete weathered frontier outfits with sturdy wraps, layered cloth and travel protection"},
+    {"name":"cute_plush","count":4,"brief":"complete soft plush-forward outfits with rounded silhouettes, bows and handcrafted details"},
+    {"name":"guardian_fanwear","count":4,"brief":"complete outfits with subtle Guardian-inspired motifs without copying unique Guardian bodies"},
+    {"name":"neutral_mixmatch","count":4,"brief":"complete gender-flexible coordinated outfits designed for broad Creator compatibility"}
+  ],
+  "selection_rule": "Reduced V1 keeps 48 evenly distributed stable logical IDs across the original 96 while assigning deliberately varied design families for maximum visual breadth.",
+  "canary_rule": "Do not launch bulk Full Outfits until all three canaries pass source-art review, locked-body movement fit, alpha validation and duplicate-silhouette review.",
+  "bulk_rule": "After canary pass, produce only the remaining approved V1 IDs; never auto-expand to all 96 without explicit user instruction."
+}
