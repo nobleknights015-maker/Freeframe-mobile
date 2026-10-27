@@ -10,6 +10,6 @@
   "deterministic_only": true,
   "requires_locked_body_qc": true,
   "catalog_wide_launch_authorized": false,
-  "launch_nonce": 1,
-  "notes": "Initial deterministic Creator Eyes canary. IDs span first/middle/final catalog positions; expand only after evidence and locked-body visual QC pass."
+  "launch_nonce": 2,
+  "notes": "Retry after artifact-path handoff repair. Compiler/evidence passed on nonce 1; zero paid renders/extractions; expand only after artifact evidence and locked-body visual QC pass."
 }
