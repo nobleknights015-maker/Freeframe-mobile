@@ -1,0 +1,26 @@
+{
+  "schema": "plushbound.creator_footwear_v1_scope.v1",
+  "family": "creator/footwear",
+  "ledger_total": 64,
+  "v1_target": 32,
+  "dimensions": "144x192",
+  "layout": "3x4-48px",
+  "runtime_role": "character_creator_rgba_overlay",
+  "source_art_required": true,
+  "deterministic_finalization_required": true,
+  "selected_ids": [1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,49,51,53,55,57,59,61,63],
+  "canary_ids": [1,33,63],
+  "design_families": [
+    {"name":"plushtopia_everyday","count":4,"brief":"comfortable everyday shoes and boots with stitched fabric or soft leather details"},
+    {"name":"victorian_tailored","count":4,"brief":"refined Victorian-inspired boots, button shoes and formal footwear with restrained trim"},
+    {"name":"japanese_layered","count":4,"brief":"Japanese-influenced sandals, tabi-like boots and layered travel footwear adapted to Plushtopia"},
+    {"name":"chinese_inspired","count":4,"brief":"Chinese-influenced cloth shoes and short boots with subtle knot, panel and embroidered accents"},
+    {"name":"adventurer_practical","count":4,"brief":"field-ready travel boots and reinforced shoes built for readable JRPG movement"},
+    {"name":"artisan_workwear","count":4,"brief":"durable workshop shoes and practical crafter boots with handcrafted construction"},
+    {"name":"regional_festival","count":4,"brief":"celebratory footwear with ribbons, textile motifs and region-friendly variation"},
+    {"name":"cute_plush","count":4,"brief":"soft plush-forward shoes and boots with rounded silhouettes and whimsical stitch details"}
+  ],
+  "selection_rule": "Reduced V1 keeps 32 evenly distributed stable logical IDs across the original 64 while maximizing silhouette and cultural-style variety.",
+  "canary_rule": "Do not launch bulk Footwear until all three canaries pass source-art review, locked-body movement fit, alpha validation and duplicate-silhouette review.",
+  "bulk_rule": "After canary pass, produce only the remaining approved V1 IDs; never auto-expand to all 64 without explicit user instruction."
+}
