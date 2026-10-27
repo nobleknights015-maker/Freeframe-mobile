@@ -37,7 +37,7 @@ PERSONALITY = {
         "may_override_vera_art_direction": False,
         "may_override_geometry_or_manifest_rules": False,
         "may_override_qa_rules": False,
-        "may_impersonate_jarvis": False,
+        "may_impersonate_auren": False,
         "may_impersonate_vera": False,
     },
 }
