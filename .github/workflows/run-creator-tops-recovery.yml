@@ -1,0 +1,134 @@
+name: Plushbound Creator Tops Recovery
+
+on:
+  push:
+    branches: [freeframe-modal-worker]
+    paths:
+      - modal_worker/creator_tops_recovery_trigger.json
+      - modal_worker/creator_tops_exception_*.json
+      - .github/workflows/run-creator-tops-recovery.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plushbound-creator-tops-recovery
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    outputs:
+      enabled: ${{ steps.plan.outputs.enabled }}
+      style: ${{ steps.plan.outputs.style }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - id: plan
+        name: Validate explicit single-style quarantined recovery
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          from pathlib import Path
+          d=json.loads(Path('modal_worker/creator_tops_recovery_trigger.json').read_text())
+          assert d['schema']=='plushbound.creator_tops_recovery_trigger.v1'
+          assert d['requires_quarantined_exception'] is True
+          assert d['requires_explicit_duplicate_risk_acceptance'] is True
+          assert d['catalog_wide_launch_authorized'] is False
+          assert int(d['max_paid_renders'])==5
+          assert int(d['max_paid_extractions'])==0
+          assert int(d['max_parallel'])==1
+          assert int(d['launch_nonce'])>=1
+          style=d.get('style_index')
+          exc_path=d.get('authorized_exception_file')
+          if d['enabled'] is True:
+              assert isinstance(style,int) and style>0
+              assert d['duplicate_risk_accepted'] is True, 'explicit duplicate-risk acceptance required'
+              assert isinstance(exc_path,str) and exc_path.startswith('modal_worker/creator_tops_exception_')
+              p=Path(exc_path); assert p.exists(), 'authorized exception file missing'
+              e=json.loads(p.read_text())
+              assert e['schema']=='plushbound.creator_tops_exception.v1'
+              assert int(e['style_index'])==style
+              assert e['status']=='quarantined_ambiguous_paid_state'
+              assert e['automatic_retry_allowed'] is False
+              assert e['blocks_tops_completion_contract'] is True
+              assert e['paid_state']=='ambiguous'
+          else:
+              assert d['duplicate_risk_accepted'] is False
+              assert style is None
+              assert exc_path is None
+          print(f"enabled={'true' if d['enabled'] is True else 'false'}")
+          print(f"style={style if style is not None else 0}")
+          PY
+
+  recover:
+    needs: preflight
+    if: needs.preflight.outputs.enabled == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Require Modal credentials
+        run: |
+          test -n "$MODAL_TOKEN_ID" || { echo 'MODAL_TOKEN_ID missing' >&2; exit 1; }
+          test -n "$MODAL_TOKEN_SECRET" || { echo 'MODAL_TOKEN_SECRET missing' >&2; exit 1; }
+      - name: Install bounded production dependencies
+        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
+      - name: Compile Creator Tops recovery runner
+        run: python -m compileall -q modal_worker/creator_tops_batch_v2.py modal_worker/creator_tops_style_catalog.py
+      - name: Recover exactly one explicitly authorized Creator Top
+        shell: bash
+        run: |
+          set -euo pipefail
+          STYLE='${{ needs.preflight.outputs.style }}'
+          LOG="creator-tops-recovery-${STYLE}.log"
+          timeout --signal=TERM --kill-after=2m 35m env PYTHONPATH=. modal run modal_worker/creator_tops_batch_v2.py --style-index "$STYLE" >"$LOG.tmp" 2>&1
+          code=$?
+          cat "$LOG.tmp" >> "$LOG"
+          rm -f "$LOG.tmp"
+          if [ "$code" -eq 124 ] || [ "$code" -eq 137 ]; then
+            echo 'Recovery watchdog stopped a hung Modal invocation; refusing any further automatic retry.' | tee -a "$LOG"
+          fi
+          exit "$code"
+      - name: Verify recovered Creator Tops evidence
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from PIL import Image
+          style=int('${{ needs.preflight.outputs.style }}')
+          root=Path(f'creator-tops-batch-output/style-{style:03d}')
+          report=json.loads((root/'report.json').read_text())
+          assert report['schema']=='plushbound.creator_tops_batch.v1'
+          assert report['style_index']==style
+          assert report['paid_render_count']==5 and report['paid_extraction_count']==0
+          assert report['source_art_persisted_before_extraction'] is True
+          assert report['compiler_owns_final_geometry'] is True
+          raw=root/'sources'/'raw'
+          assert all((raw/f'{name}.png').exists() for name in ('reference','down','left','right','up'))
+          p=root/f'creator-top-{style:03d}.png'
+          with Image.open(p) as im:
+              im.load(); assert im.size==(144,192) and im.mode=='RGBA'
+          print(f'creator top recovery {style:03d} evidence verified')
+          PY
+      - name: Upload recovered Creator Top evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: creator-tops-recovery-${{ needs.preflight.outputs.style }}-${{ github.run_id }}
+          path: |
+            creator-tops-recovery-${{ needs.preflight.outputs.style }}.log
+            creator-tops-batch-output/style-*/
+          if-no-files-found: error
+          retention-days: 14
