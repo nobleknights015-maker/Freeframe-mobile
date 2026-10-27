@@ -1,0 +1,36 @@
+{
+  "schema": "plushbound.creator_bottoms_v1_scope.v1",
+  "family": "creator/bottoms",
+  "ledger_total": 96,
+  "v1_target": 48,
+  "dimensions": "144x192",
+  "layout": "3x4-48px",
+  "runtime_role": "character_creator_rgba_overlay",
+  "source_art_required": true,
+  "deterministic_finalization_required": true,
+  "selected_ids": [1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,49,51,53,55,57,59,61,63,65,67,69,71,73,75,77,79,81,83,85,87,89,91,93,95],
+  "design_families": [
+    {"name":"everyday_trousers","count":4,"brief":"clean stitched everyday trousers with readable hems and pockets"},
+    {"name":"everyday_skirts","count":4,"brief":"simple layered skirts and practical skirt silhouettes with handcrafted trim"},
+    {"name":"shorts_cropped","count":4,"brief":"shorts and cropped lower garments designed for travel and casual wear"},
+    {"name":"victorian_tailored","count":4,"brief":"tailored Victorian-inspired trousers, split skirts and fitted lower silhouettes"},
+    {"name":"japanese_layered","count":4,"brief":"hakama-inspired, wrap-skirt and layered Japanese-influenced lower garments"},
+    {"name":"chinese_inspired","count":4,"brief":"flowing trousers and panelled lower garments with restrained Chinese-inspired detailing"},
+    {"name":"adventurer_utility","count":4,"brief":"field trousers, reinforced knees, utility straps and travel-ready lower wear"},
+    {"name":"artisan_workwear","count":4,"brief":"work trousers, apron-skirt layers and sturdy crafter-focused silhouettes"},
+    {"name":"regional_festival","count":4,"brief":"celebratory lower garments with ribbon, trim and textile motifs"},
+    {"name":"rugged_frontier","count":4,"brief":"weathered field trousers, wrapped leggings and frontier-ready lower wear"},
+    {"name":"cute_plush","count":4,"brief":"soft rounded skirts, bloomers and playful stitched lower silhouettes"},
+    {"name":"neutral_mixmatch","count":4,"brief":"gender-flexible lower garments designed to combine cleanly with many tops and outerwear"}
+  ],
+  "art_direction": [
+    "original Plushbound identity",
+    "MV-cover / MV-Trinity-inspired JRPG polish without copying proprietary art",
+    "clean sprite-scale readability",
+    "fabric, stitch, thread and handcrafted motifs",
+    "Chinese, Japanese and Victorian influences distributed across the set",
+    "no baked-in skin; preserve compatibility with locked Creator Body and Skin layers"
+  ],
+  "canary_ids": [1,49,95],
+  "bulk_rule": "After canary pass, produce only the remaining selected V1 IDs; never auto-expand to all 96 without explicit user instruction."
+}
