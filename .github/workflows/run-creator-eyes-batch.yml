@@ -108,6 +108,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: creator-eyes-batch-${{ matrix.style_index }}-${{ github.run_id }}
-          path: creator-eyes-batch-output/style-${{ matrix.style_index }}/
+          path: creator-eyes-batch-output/style-*/
           if-no-files-found: error
           retention-days: 14
