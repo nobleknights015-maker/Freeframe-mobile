@@ -1,0 +1,10 @@
+{
+  "schema": "plushbound.creator_facial_details_bundle_trigger.v1",
+  "enabled": true,
+  "asset_count": 48,
+  "source_run_id": 40514049172,
+  "deterministic_only": true,
+  "paid_render_budget": 0,
+  "paid_extraction_budget": 0,
+  "launch_nonce": 1
+}
