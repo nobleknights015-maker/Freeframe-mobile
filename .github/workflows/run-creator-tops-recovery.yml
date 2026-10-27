@@ -6,6 +6,7 @@ on:
     paths:
       - modal_worker/creator_tops_recovery_trigger.json
       - modal_worker/creator_tops_exception_*.json
+      - modal_worker/creator_tops_remote_evidence_*.json
       - .github/workflows/run-creator-tops-recovery.yml
   workflow_dispatch:
 
@@ -27,15 +28,29 @@ jobs:
         with:
           ref: ${{ github.sha }}
       - id: plan
-        name: Validate explicit single-style quarantined recovery
+        name: Validate single-style quarantined recovery authorization
+        env:
+          HEAD_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
           python - <<'PY' >> "$GITHUB_OUTPUT"
-          import json
+          import json, os
           from pathlib import Path
           d=json.loads(Path('modal_worker/creator_tops_recovery_trigger.json').read_text())
-          assert d['schema']=='plushbound.creator_tops_recovery_trigger.v1'
+          schema=d.get('schema')
+          if schema=='plushbound.creator_tops_recovery_trigger.v1':
+              # Legacy disabled state is accepted only so this workflow can be
+              # upgraded without opening the recovery lane.
+              assert d['enabled'] is False
+              assert d['duplicate_risk_accepted'] is False
+              assert d.get('style_index') is None
+              assert d.get('authorized_exception_file') is None
+              print('enabled=false')
+              print('style=0')
+              raise SystemExit(0)
+
+          assert schema=='plushbound.creator_tops_recovery_trigger.v2'
           assert d['requires_quarantined_exception'] is True
-          assert d['requires_explicit_duplicate_risk_acceptance'] is True
+          assert d['requires_one_shot_launch_commit'] is True
           assert d['catalog_wide_launch_authorized'] is False
           assert int(d['max_paid_renders'])==5
           assert int(d['max_paid_extractions'])==0
@@ -43,9 +58,13 @@ jobs:
           assert int(d['launch_nonce'])>=1
           style=d.get('style_index')
           exc_path=d.get('authorized_exception_file')
+          proof_path=d.get('remote_no_execution_evidence_file')
+          auth_mode=d.get('authorization_mode')
+          authorized_message=d.get('authorized_launch_commit_message')
+
           if d['enabled'] is True:
+              assert os.environ.get('GITHUB_EVENT_NAME')=='push', 'paid recovery requires a one-shot push commit'
               assert isinstance(style,int) and style>0
-              assert d['duplicate_risk_accepted'] is True, 'explicit duplicate-risk acceptance required'
               assert isinstance(exc_path,str) and exc_path.startswith('modal_worker/creator_tops_exception_')
               p=Path(exc_path); assert p.exists(), 'authorized exception file missing'
               e=json.loads(p.read_text())
@@ -55,10 +74,38 @@ jobs:
               assert e['automatic_retry_allowed'] is False
               assert e['blocks_tops_completion_contract'] is True
               assert e['paid_state']=='ambiguous'
+
+              expected=f"Recover Creator Top {style:03d} nonce {int(d['launch_nonce'])}"
+              assert authorized_message==expected, 'authorized launch message does not match style/nonce'
+              assert os.environ.get('HEAD_COMMIT_MESSAGE','')==expected, 'this push is not the one-shot authorized recovery commit'
+
+              if auth_mode=='remote_no_execution_proven':
+                  assert d['duplicate_risk_accepted'] is False
+                  assert isinstance(proof_path,str) and proof_path.startswith('modal_worker/creator_tops_remote_evidence_')
+                  q=Path(proof_path); assert q.exists(), 'remote no-execution proof missing'
+                  proof=json.loads(q.read_text())
+                  assert proof['schema']=='plushbound.creator_tops_remote_evidence.v1'
+                  assert int(proof['style_index'])==style
+                  assert proof['resolution']=='no_remote_function_execution_observed'
+                  assert proof['allows_single_style_recovery_without_duplicate_risk_acceptance'] is True
+                  assert proof['remote_execution_observed'] is False
+                  assert proof['paid_creator_render_execution_observed'] is False
+                  assert proof['started_at'] is None
+                  assert proof['container_id'] is None
+                  assert proof['execution_time_seconds'] is None
+              elif auth_mode=='duplicate_risk_accepted':
+                  assert d['duplicate_risk_accepted'] is True, 'explicit duplicate-risk acceptance required'
+                  assert proof_path is None
+              else:
+                  raise AssertionError('unsupported recovery authorization_mode')
           else:
               assert d['duplicate_risk_accepted'] is False
               assert style is None
               assert exc_path is None
+              assert proof_path is None
+              assert auth_mode is None
+              assert authorized_message is None
+
           print(f"enabled={'true' if d['enabled'] is True else 'false'}")
           print(f"style={style if style is not None else 0}")
           PY
@@ -84,21 +131,26 @@ jobs:
           test -n "$MODAL_TOKEN_ID" || { echo 'MODAL_TOKEN_ID missing' >&2; exit 1; }
           test -n "$MODAL_TOKEN_SECRET" || { echo 'MODAL_TOKEN_SECRET missing' >&2; exit 1; }
       - name: Install bounded production dependencies
-        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
+        run: python -m pip install --disable-pip-version-check 'modal>=1.6,<2' 'pillow>=10.4,<12'
       - name: Compile Creator Tops recovery runner
         run: python -m compileall -q modal_worker/creator_tops_batch_v2.py modal_worker/creator_tops_style_catalog.py
-      - name: Recover exactly one explicitly authorized Creator Top
+      - name: Recover exactly one authorized Creator Top
         shell: bash
         run: |
           set -euo pipefail
           STYLE='${{ needs.preflight.outputs.style }}'
           LOG="creator-tops-recovery-${STYLE}.log"
+          touch "$LOG.tmp"
+          set +e
           timeout --signal=TERM --kill-after=2m 35m env PYTHONPATH=. modal run modal_worker/creator_tops_batch_v2.py --style-index "$STYLE" >"$LOG.tmp" 2>&1
           code=$?
+          set -e
           cat "$LOG.tmp" >> "$LOG"
           rm -f "$LOG.tmp"
           if [ "$code" -eq 124 ] || [ "$code" -eq 137 ]; then
             echo 'Recovery watchdog stopped a hung Modal invocation; refusing any further automatic retry.' | tee -a "$LOG"
+          elif [ "$code" -ne 0 ]; then
+            echo 'Recovery failed after launch; refusing any further automatic retry.' | tee -a "$LOG"
           fi
           exit "$code"
       - name: Verify recovered Creator Tops evidence
