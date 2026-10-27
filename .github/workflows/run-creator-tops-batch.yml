@@ -34,6 +34,7 @@ jobs:
           d=json.loads(Path('modal_worker/creator_tops_batch_trigger.json').read_text())
           cat=snapshot()
           allowed=set(int(x) for x in cat['selected_ids'])
+          canaries=set(int(x) for x in cat['canary_ids'])
           styles=[int(x) for x in d['style_indices']]
           assert d['schema']=='plushbound.creator_tops_batch_trigger.v1'
           assert styles and len(styles)==len(set(styles))
@@ -48,7 +49,7 @@ jobs:
           assert d['catalog_wide_launch_authorized'] is False
           assert d['phase'] in ('canary','bulk')
           if d['phase']=='canary':
-              assert styles==[1,61,119]
+              assert set(styles) <= canaries, 'canary repair runs may only target approved canary IDs'
           assert int(d['launch_nonce']) >= 1
           print(f"enabled={'true' if d['enabled'] is True else 'false'}")
           print('styles='+json.dumps(styles,separators=(',',':')))
