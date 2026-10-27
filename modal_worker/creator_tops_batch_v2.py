@@ -79,7 +79,10 @@ def _border_white_extract(encoded: str) -> Image.Image:
     return rgba.crop(bbox)
 
 
-@app.local_entrypoint()
+# The base module already owns a local entrypoint named ``main`` on this same
+# Modal app. Give the hardened wrapper an explicit distinct tag so importing the
+# base production rail cannot fail before any remote/paid work begins.
+@app.local_entrypoint(name="hardened_main")
 def main(style_index: int):
     style_index = int(style_index)
     style = base.get_style(style_index)
