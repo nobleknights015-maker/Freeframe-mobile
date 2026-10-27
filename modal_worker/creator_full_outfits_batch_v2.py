@@ -1,26 +1,189 @@
-"""Hardened Creator Full Outfits finishing wrapper.
+"""Self-contained hardened Creator Full Outfits production runner.
 
-This wrapper preserves the original bounded Vera source-generation contract while
-preventing transparent/white gaps inside extracted coordinated outfits from being
-reintroduced when compiler-owned alpha is applied. Generated alpha is used only
-to clean/fill texture holes; final Engine v1 geometry remains entirely locked.
+Vera creates one coordinated outfit reference plus four directional outfit-only
+renders. Paid sources are persisted before deterministic local extraction. The
+compiler owns all final Engine v1 alpha/geometry using the accepted Tops+Bottoms
+motion-mask union. Extracted alpha is used only to fill source texture holes so
+white background cannot be reintroduced into the locked clothing silhouette.
 """
 from __future__ import annotations
 
 import base64
+import io
 import json
+import os
+import time
 from pathlib import Path
 
+import modal
 from PIL import Image, ImageChops, ImageEnhance, ImageFilter, ImageStat
 
-from modal_worker import creator_full_outfits_batch as base
+from modal_worker.creator_full_outfits_style_catalog import get_style, snapshot
 
-app = base.app
-OUT_ROOT = base.OUT_ROOT
-CELL = base.CELL
-SHEET_W = base.SHEET_W
-SHEET_H = base.SHEET_H
-DIRECTIONS = base.DIRECTIONS
+APP_NAME = "freeframe-creator-full-outfits-batch-v2"
+MODEL_ID = "black-forest-labs/FLUX.2-klein-4B"
+CACHE_DIR = "/cache"
+MODEL_VOLUME = "freeframe-model-cache"
+OUT_ROOT = "creator-full-outfits-batch-output"
+CELL = 48
+SHEET_W = 144
+SHEET_H = 192
+DIRECTIONS = ("down", "left", "right", "up")
+DIRECTION_TEXT = {
+    "down": "front-facing view toward the viewer",
+    "left": "left profile view",
+    "right": "right profile view",
+    "up": "rear-facing view showing the back of the outfit",
+}
+
+image = (
+    modal.Image.debian_slim(python_version="3.11")
+    .apt_install("libgl1", "libglib2.0-0")
+    .pip_install(
+        "accelerate",
+        "diffusers",
+        "numpy",
+        "pillow>=10.4,<12",
+        "safetensors",
+        "sentencepiece",
+        "torch>=2.6,<3",
+        "transformers",
+    )
+    .add_local_python_source("modal_worker")
+)
+app = modal.App(APP_NAME)
+model_cache = modal.Volume.from_name(MODEL_VOLUME, create_if_missing=True)
+
+
+def _style_prompt(style: dict) -> str:
+    return (
+        "isolated original Plushtopia fantasy JRPG complete coordinated clothing outfit, upper garment plus lower garment as one cohesive ensemble, "
+        f"{style['brief']}, {style['variant']} interpretation, "
+        "RPG Maker MV cover-art / MV Trinity-inspired polish without copying proprietary artwork, "
+        "clean anime-JRPG fabric rendering, visible stitching and handcrafted textile detail, restrained neutral base colors suitable for later tinting, "
+        "upper and lower garments must meet or overlap naturally at the waist with no white gap between them, arranged exactly as if worn together, "
+        "clothing only on pure white background: no person, no mannequin, no head, no face, no hair, no skin, no hands, no exposed body, "
+        "no shoes, no hat, no jewelry, no weapon, no prop, no text, one centered coordinated outfit"
+    )
+
+
+def _direction_prompt(style: dict, direction: str) -> str:
+    return (
+        "Preserve the exact same complete outfit identity, construction, seams, trim, fabric, palette, upper garment and lower garment from the reference. "
+        f"Render the isolated complete coordinated outfit only as a {DIRECTION_TEXT[direction]}. "
+        f"Design brief: {style['brief']}; variant: {style['variant']}. "
+        "Keep upper and lower garments meeting or overlapping naturally at the waist with no white gap between pieces. "
+        "No person, mannequin, head, face, hair, skin, hands, exposed body, shoes, hat, jewelry, weapon or prop. "
+        "Keep collar, sleeves, waist, hems, panels and leg separation readable at small JRPG sprite scale, centered on pure white background, no text, no border."
+    )
+
+
+@app.cls(gpu="L4", image=image, volumes={CACHE_DIR: model_cache}, scaledown_window=120, timeout=1200)
+class CreatorFullOutfitsBatchRunner:
+    @modal.enter()
+    def load(self):
+        import torch
+        from diffusers import DiffusionPipeline
+
+        os.environ.setdefault("HF_HOME", CACHE_DIR)
+        os.environ.setdefault("HF_HUB_CACHE", f"{CACHE_DIR}/hub")
+        self.torch = torch
+        self.pipe = DiffusionPipeline.from_pretrained(
+            MODEL_ID, torch_dtype=torch.bfloat16, cache_dir=CACHE_DIR
+        ).to("cuda")
+
+    def _generate(self, prompt: str, seed: int, reference=None):
+        generator = self.torch.Generator(device="cuda").manual_seed(seed)
+        kwargs = dict(
+            prompt=prompt,
+            width=512,
+            height=512,
+            guidance_scale=1.0,
+            num_inference_steps=4,
+            generator=generator,
+        )
+        if reference is not None:
+            kwargs["image"] = [reference]
+        started = time.monotonic()
+        output = self.pipe(**kwargs).images[0]
+        return output, round(time.monotonic() - started, 3)
+
+    @modal.method()
+    def generate(self, style_index: int) -> dict:
+        style = get_style(style_index)
+        seed0 = 960000 + int(style_index) * 100
+        reference, reference_seconds = self._generate(_style_prompt(style), seed0)
+        reference_buffer = io.BytesIO()
+        reference.save(reference_buffer, format="PNG")
+        directions = []
+        for offset, direction in enumerate(DIRECTIONS, start=1):
+            frame, elapsed = self._generate(
+                _direction_prompt(style, direction), seed0 + offset, reference
+            )
+            frame_buffer = io.BytesIO()
+            frame.save(frame_buffer, format="PNG")
+            directions.append({
+                "direction": direction,
+                "seed": seed0 + offset,
+                "seconds": elapsed,
+                "png": base64.b64encode(frame_buffer.getvalue()).decode("ascii"),
+            })
+        return {
+            "style": style,
+            "model": MODEL_ID,
+            "reference_seed": seed0,
+            "reference_seconds": reference_seconds,
+            "reference_png": base64.b64encode(reference_buffer.getvalue()).decode("ascii"),
+            "directions": directions,
+        }
+
+
+def _border_white_extract(encoded: str) -> Image.Image:
+    raw = base64.b64decode(encoded, validate=True)
+    with Image.open(io.BytesIO(raw)) as source:
+        rgb = source.convert("RGB")
+    width, height = rgb.size
+    pixels = rgb.load()
+    seen = bytearray(width * height)
+    stack: list[tuple[int, int]] = []
+
+    def candidate(x: int, y: int) -> bool:
+        r, g, b = pixels[x, y]
+        return r >= 210 and g >= 210 and b >= 210
+
+    def push(x: int, y: int) -> None:
+        index = y * width + x
+        if not seen[index] and candidate(x, y):
+            seen[index] = 1
+            stack.append((x, y))
+
+    for x in range(width):
+        push(x, 0)
+        push(x, height - 1)
+    for y in range(height):
+        push(0, y)
+        push(width - 1, y)
+    while stack:
+        x, y = stack.pop()
+        if x:
+            push(x - 1, y)
+        if x + 1 < width:
+            push(x + 1, y)
+        if y:
+            push(x, y - 1)
+        if y + 1 < height:
+            push(x, y + 1)
+
+    alpha = bytearray(b"\xff") * (width * height)
+    for index, is_background in enumerate(seen):
+        if is_background:
+            alpha[index] = 0
+    rgba = rgb.convert("RGBA")
+    rgba.putalpha(Image.frombytes("L", (width, height), bytes(alpha)))
+    bbox = rgba.getchannel("A").getbbox()
+    if bbox is None:
+        raise RuntimeError("deterministic full-outfit extraction is empty")
+    return rgba.crop(bbox)
 
 
 def _opaque_texture(piece: Image.Image) -> Image.Image:
@@ -36,9 +199,20 @@ def _opaque_texture(piece: Image.Image) -> Image.Image:
     return opaque.convert("RGBA")
 
 
+def _locked_outfit_mask() -> Image.Image:
+    from modal_worker.creator_tops_batch import _locked_mask as locked_top_mask
+    from modal_worker.creator_bottoms_batch import _locked_mask as locked_bottom_mask
+
+    top = locked_top_mask()
+    bottom = locked_bottom_mask()
+    if top.size != (SHEET_W, SHEET_H) or bottom.size != (SHEET_W, SHEET_H):
+        raise RuntimeError("locked clothing masks have incompatible dimensions")
+    return ImageChops.lighter(top, bottom)
+
+
 def _compile_sheet(style: dict, pieces: dict[str, Image.Image]) -> tuple[Image.Image, dict]:
     del style
-    locked = base._locked_outfit_mask()
+    locked = _locked_outfit_mask()
     output = Image.new("RGBA", (SHEET_W, SHEET_H), (0, 0, 0, 0))
     stats = []
     for row, direction in enumerate(DIRECTIONS):
@@ -73,7 +247,7 @@ def _compile_sheet(style: dict, pieces: dict[str, Image.Image]) -> tuple[Image.I
 @app.local_entrypoint()
 def main(style_index: int):
     style_index = int(style_index)
-    style = base.get_style(style_index)
+    style = get_style(style_index)
     out_dir = Path(OUT_ROOT) / f"style-{style_index:03d}"
     raw_dir = out_dir / "sources" / "raw"
     extracted_dir = out_dir / "sources" / "extracted"
@@ -81,7 +255,7 @@ def main(style_index: int):
     extracted_dir.mkdir(parents=True, exist_ok=True)
 
     print(f"creator full outfit {style_index:03d}: starting Vera render batch", flush=True)
-    remote = base.CreatorFullOutfitsBatchRunner().generate.remote(style_index)
+    remote = CreatorFullOutfitsBatchRunner().generate.remote(style_index)
     print(f"creator full outfit {style_index:03d}: Vera render batch complete; persisting paid sources", flush=True)
 
     reference_raw = base64.b64decode(remote["reference_png"], validate=True)
@@ -95,7 +269,7 @@ def main(style_index: int):
     extraction = []
     for item in remote["directions"]:
         direction = item["direction"]
-        piece = base._border_white_extract(item["png"])
+        piece = _border_white_extract(item["png"])
         pieces[direction] = piece
         piece.save(extracted_dir / f"{direction}.png", format="PNG", optimize=False)
         extraction.append({
@@ -137,7 +311,7 @@ def main(style_index: int):
         "next_gate": "locked-body visual QC before banking",
     }
     (out_dir / "report.json").write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
-    (out_dir / "catalog_snapshot.json").write_text(json.dumps(base.snapshot(), indent=2, sort_keys=True) + "\n")
+    (out_dir / "catalog_snapshot.json").write_text(json.dumps(snapshot(), indent=2, sort_keys=True) + "\n")
     print(json.dumps({
         "schema": report["schema"],
         "style_index": style_index,
