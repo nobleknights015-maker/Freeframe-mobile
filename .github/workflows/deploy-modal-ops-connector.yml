@@ -1,0 +1,40 @@
+name: Deploy FreeFrame Modal Ops Connector
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [freeframe-modal-worker]
+    paths:
+      - 'modal_connector/modal_ops_connector.py'
+      - '.github/workflows/deploy-modal-ops-connector.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: freeframe-modal-ops-connector-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Require Modal credentials
+        shell: bash
+        run: |
+          test -n "$MODAL_TOKEN_ID" || { echo 'MODAL_TOKEN_ID secret is not configured.' >&2; exit 1; }
+          test -n "$MODAL_TOKEN_SECRET" || { echo 'MODAL_TOKEN_SECRET secret is not configured.' >&2; exit 1; }
+      - name: Install connector deployment dependencies
+        run: python -m pip install --disable-pip-version-check 'modal>=1.6.2,<2'
+      - name: Compile connector
+        run: python -m compileall -q modal_connector
+      - name: Deploy read-only Modal operations connector
+        run: modal deploy --strategy rolling modal_connector/modal_ops_connector.py
