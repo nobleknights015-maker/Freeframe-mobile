@@ -58,6 +58,7 @@ def _not_launched(c: dict) -> dict:
         "unexpected_produce_jobs": [],
         "contract_failures": ["Full Outfits canary production_run_id is not populated"],
         "locked_body_visual_qc_passed": False,
+        "canary_verified": False,
         "ready_for_bulk": False,
         "styles": {f"{i:03d}": {"ready": False, "status": "not_launched"} for i in expected},
     }
@@ -76,7 +77,8 @@ def audit(contract_path: Path, repo_root: Path) -> dict:
     assert c["require_exact_triggering_sha"] is True
     assert c["require_locked_body_visual_qc"] is True
     assert c["require_no_unresolved_exceptions"] is True
-    assert c["bulk_authorized"] is False
+    assert isinstance(c.get("bulk_authorized"), bool)
+    assert isinstance(c.get("locked_body_visual_qc_passed", False), bool)
 
     if c.get("production_run_id") is None:
         return _not_launched(c)
@@ -177,18 +179,16 @@ def audit(contract_path: Path, repo_root: Path) -> dict:
             })
 
     ready_count = sum(1 for x in styles.values() if x["ready"])
-    # Visual QC is intentionally never inferred from job metadata. A human/vision review must
-    # explicitly update the contract after inspecting the three finished sprites on locked bodies.
     visual_qc_passed = bool(c.get("locked_body_visual_qc_passed", False))
-    ready_for_bulk = bool(
+    canary_verified = bool(
         run.get("status") == "completed"
         and ready_count == len(expected)
         and not unresolved_exceptions
         and not unexpected_produce_jobs
         and not contract_failures
         and visual_qc_passed
-        and c.get("bulk_authorized") is True
     )
+    ready_for_bulk = bool(canary_verified and c.get("bulk_authorized") is True)
 
     return {
         "schema": "plushbound.creator_full_outfits_canary_completion_audit.v1",
@@ -204,6 +204,7 @@ def audit(contract_path: Path, repo_root: Path) -> dict:
         "unexpected_produce_jobs": unexpected_produce_jobs,
         "contract_failures": sorted(set(contract_failures)),
         "locked_body_visual_qc_passed": visual_qc_passed,
+        "canary_verified": canary_verified,
         "ready_for_bulk": ready_for_bulk,
         "styles": styles,
     }
@@ -220,10 +221,12 @@ def main() -> None:
     print(json.dumps({k: result[k] for k in (
         "production_run_id", "run_status", "run_conclusion", "expected_style_count",
         "ready_style_count", "active_or_queued_job_count", "failed_job_count",
-        "unresolved_exceptions", "locked_body_visual_qc_passed", "ready_for_bulk"
+        "unresolved_exceptions", "locked_body_visual_qc_passed", "canary_verified", "ready_for_bulk"
     )}, indent=2))
     if result["ready_for_bulk"]:
         print("Full Outfits canary completion contract PASSED for separately authorized bulk expansion.")
+    elif result["canary_verified"]:
+        print("Full Outfits canary is verified; bulk remains closed until separately authorized.")
     else:
         print("Full Outfits canary contract NOT PASSED: bulk remains closed.")
 
