@@ -93,7 +93,9 @@ def main(style_index: int):
     extracted_dir.mkdir(parents=True, exist_ok=True)
 
     print(f"creator top {style_index:03d}: starting Vera render batch", flush=True)
-    remote = base.CreatorTopsBatchRunner().generate.remote(style_index)
+    call = base.CreatorTopsBatchRunner().generate.spawn(style_index)
+    print(f"creator top {style_index:03d}: Modal FunctionCall {call.object_id}", flush=True)
+    remote = call.get()
     print(f"creator top {style_index:03d}: Vera render batch complete; persisting paid sources", flush=True)
 
     reference_raw = base64.b64decode(remote["reference_png"], validate=True)
