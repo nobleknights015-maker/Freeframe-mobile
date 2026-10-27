@@ -1,16 +1,16 @@
 {
   "schema": "plushbound.creator_tops_batch_trigger.v1",
-  "enabled": false,
+  "enabled": true,
   "phase": "canary",
-  "style_indices": [1, 119],
-  "style_count": 2,
-  "max_paid_renders": 10,
-  "max_paid_extractions": 8,
+  "style_indices": [61],
+  "style_count": 1,
+  "max_paid_renders": 5,
+  "max_paid_extractions": 4,
   "max_parallel": 2,
   "source_art_required": true,
   "deterministic_finalization_required": true,
   "requires_locked_body_qc": true,
   "catalog_wide_launch_authorized": false,
-  "launch_nonce": 2,
-  "notes": "Disabled targeted canary-repair staging only. IDs 001 and 119 previously failed before rendering due the old missing-scope-file dependency. Do not enable until style 061 resolves and is accepted."
+  "launch_nonce": 3,
+  "notes": "Targeted resend of style 061 only after cancelling the stale original canary run. Uses the repaired self-contained Creator Tops catalog and current compiler rail."
 }
