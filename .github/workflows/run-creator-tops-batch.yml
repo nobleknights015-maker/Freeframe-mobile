@@ -64,7 +64,7 @@ jobs:
       matrix:
         style_index: ${{ fromJSON(needs.preflight.outputs.styles) }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 90
+    timeout-minutes: 45
     env:
       MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
       MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
@@ -93,11 +93,15 @@ jobs:
           sleep $((STYLE % 2 * 10))
           for attempt in 1 2 3 4; do
             set +e
-            PYTHONPATH=. modal run modal_worker/creator_tops_batch.py --style-index "$STYLE" >"$LOG.tmp" 2>&1
+            timeout --signal=TERM --kill-after=2m 35m env PYTHONPATH=. modal run modal_worker/creator_tops_batch.py --style-index "$STYLE" >"$LOG.tmp" 2>&1
             code=$?
             set -e
             cat "$LOG.tmp" >> "$LOG"
             if [ "$code" -eq 0 ]; then rm -f "$LOG.tmp"; exit 0; fi
+            if [ "$code" -eq 124 ] || [ "$code" -eq 137 ]; then
+              echo 'Creator Tops watchdog stopped a hung Modal invocation; refusing automatic paid retry.' | tee -a "$LOG"
+              rm -f "$LOG.tmp"; exit "$code"
+            fi
             if ! grep -Fq 'App create rate limit exceeded' "$LOG.tmp"; then
               echo 'Non-prelaunch failure; refusing automatic paid retry.' | tee -a "$LOG"
               rm -f "$LOG.tmp"; exit "$code"
