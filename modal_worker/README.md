@@ -2,11 +2,11 @@
 
 FreeFrame's cloud/headless worker is isolated from the Android app and handles generation, extraction, validation, reference storage, and Plushbound production planning.
 
-## Plushbound Brain / Mini-Jarvis
+## Plushbound Brain / Mini-Auren
 
 `plushbound_brain.py` is the shared deterministic source of truth for asset-family contracts, required context, required outputs, pipeline state, and the catalog-wide production lock.
 
-`mini_jarvis_controller.py` plans structured asset intents through the same `production_request_builder.py` used by batch generation. A future compact chat model can translate conversation into these intents, but it cannot override engine geometry, reference rights, family rules, or production authorization.
+`mini_auren_controller.py` is the canonical controller name for the compact assistant integration. When present, it plans structured asset intents through the same `production_request_builder.py` used by batch generation. A future compact chat model can translate conversation into these intents, but it cannot override engine geometry, reference rights, family rules, or production authorization.
 
 Authenticated CPU endpoints:
 
