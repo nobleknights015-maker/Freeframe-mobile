@@ -1,0 +1,40 @@
+{
+  "schema": "plushbound.creator_tops_v1_scope.v1",
+  "family": "creator/tops",
+  "ledger_total": 120,
+  "v1_target": 60,
+  "dimensions": "144x192",
+  "layout": "3x4-48px",
+  "runtime_role": "character_creator_rgba_overlay",
+  "source_art_required": true,
+  "deterministic_finalization_required": true,
+  "paid_generation_policy": "Vera/model generation allowed only for source visual creation after a bounded canary passes; slicing, normalization, alignment, recolor masks, packaging, and validation must be deterministic.",
+  "selection_rule": "Use evenly distributed stable logical IDs across the original 001-120 ledger, then assign deliberately varied silhouettes so V1 maximizes wardrobe breadth rather than near-duplicates.",
+  "selected_ids": [1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,49,51,53,55,57,59,61,63,65,67,69,71,73,75,77,79,81,83,85,87,89,91,93,95,97,99,101,103,105,107,109,111,113,115,117,119],
+  "design_families": [
+    {"name":"plushtopia_everyday","count":5,"brief":"simple stitched everyday shirts and blouses with clean readable silhouettes"},
+    {"name":"victorian_tailored","count":5,"brief":"waistcoats, high collars, fitted vests, lace-front and structured Victorian-inspired tops"},
+    {"name":"japanese_layered","count":5,"brief":"haori-inspired short layers, wrap fronts, sash-accented tops, restrained festival influence"},
+    {"name":"chinese_inspired","count":5,"brief":"cross-collar and stand-collar tops with knot, piping and brocade-inspired details"},
+    {"name":"adventurer_practical","count":5,"brief":"travel tunics, reinforced shirts, belts, shoulder wraps and field-ready layers"},
+    {"name":"artisan_crafter","count":5,"brief":"apron-front, tool-loop, rolled-sleeve and workshop-inspired upper garments"},
+    {"name":"guardian_fanwear","count":5,"brief":"subtle Guardian motif shirts and jackets without copying unique Guardian bodies"},
+    {"name":"regional_festival","count":5,"brief":"bright celebratory tops using ribbons, trim and regional textile motifs"},
+    {"name":"scholar_court","count":5,"brief":"refined formal shirts, scholar coats, cravats and elegant layered collars"},
+    {"name":"rugged_frontier","count":5,"brief":"weathered overshirts, poncho-cut uppers, utility wraps and sturdy stitched pieces"},
+    {"name":"cute_plush","count":5,"brief":"soft rounded cardigans, puff sleeves, bow accents and handcrafted plush-forward silhouettes"},
+    {"name":"neutral_mixmatch","count":5,"brief":"gender-flexible mix-and-match tops deliberately designed to combine with many bottoms and outerwear"}
+  ],
+  "art_direction": [
+    "original Plushbound identity",
+    "RPG Maker MV cover-art / MV Trinity-inspired JRPG polish without copying proprietary art",
+    "clean anime/JRPG readability at sprite scale",
+    "fabric, stitch, thread, charm and handcrafted motifs",
+    "Chinese, Japanese and Victorian influences balanced across the set",
+    "normal anatomy and body-safe overlay geometry",
+    "avoid baked-in skin so every top remains compatible with locked Creator Body and Skin layers"
+  ],
+  "canary_ids": [1,61,119],
+  "canary_rule": "Do not launch bulk Tops until all three canaries pass source-art review, alpha/body-fit validation on locked narrow/median/broad Creator Bodies, movement-grid validation, and duplicate-silhouette review.",
+  "bulk_rule": "After canary pass, produce only the remaining selected V1 IDs; never auto-expand to all 120 without explicit user instruction."
+}
