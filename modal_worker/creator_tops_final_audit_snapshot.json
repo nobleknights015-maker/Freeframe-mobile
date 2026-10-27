@@ -1,0 +1,24 @@
+{
+  "schema": "plushbound.creator_tops_final_audit_snapshot.v1",
+  "source_bulk_run_id": 40541409733,
+  "source_bulk_head_sha": "94acd9404788bb2012b18a71efa450c0d35b6167",
+  "source_audit_run_id": 40598930976,
+  "source_audit_head_sha": "a896c7c97e67b5a6923ff305dcb695204b2ae362",
+  "source_audit_artifact_id": 12776734256,
+  "bulk_run_status": "completed",
+  "bulk_run_conclusion": "failure",
+  "expected_style_count": 59,
+  "ready_style_count": 55,
+  "active_or_queued_job_count": 0,
+  "failed_job_count": 4,
+  "unresolved_exception_files": [
+    "modal_worker/creator_tops_exception_019.json",
+    "modal_worker/creator_tops_exception_033.json",
+    "modal_worker/creator_tops_exception_035.json",
+    "modal_worker/creator_tops_exception_065.json"
+  ],
+  "ready_for_handoff": false,
+  "full_outfits_paid_launch_allowed": false,
+  "automatic_retry_allowed_for_quarantines": false,
+  "notes": "Canonical no-spend final audit snapshot after Creator Tops bulk run 40541409733 fully drained. Exactly 55 of 59 expected bulk styles satisfy the completion contract. The only blockers are quarantined ambiguous-paid-state styles 019, 033, 035, and 065. No active or queued Tops jobs remain. Full Outfits remains fail-closed until all four exceptions are legitimately resolved and a fresh deterministic Tops audit reaches 59/59 ready with zero unresolved exceptions."
+}
