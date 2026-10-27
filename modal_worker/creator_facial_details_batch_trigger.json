@@ -1,15 +1,15 @@
 {
   "schema": "plushbound.creator_facial_details_batch_trigger.v1",
   "enabled": true,
-  "phase": "canary",
-  "style_indices": [1, 24, 48],
-  "style_count": 3,
-  "max_parallel": 3,
+  "phase": "bulk",
+  "style_indices": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47],
+  "style_count": 45,
+  "max_parallel": 4,
   "paid_render_budget": 0,
   "paid_extraction_budget": 0,
   "deterministic_only": true,
   "requires_locked_body_qc": true,
   "catalog_wide_launch_authorized": false,
-  "launch_nonce": 1,
-  "notes": "Initial deterministic Creator Facial Details canary across first/middle/final catalog positions. Expand only after evidence and locked-body QC pass."
+  "launch_nonce": 2,
+  "notes": "Bulk Creator Facial Details expansion after canary IDs 001/024/048 passed compiler, evidence, artifact upload, and locked-body QC. Accepted canaries excluded to prevent duplicate logical IDs."
 }
