@@ -30,11 +30,11 @@ jobs:
       - name: Install no-spend preflight dependencies
         run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
       - name: Compile Full Outfits path without production
-        run: python -m compileall -q modal_worker/creator_full_outfits_batch.py modal_worker/creator_full_outfits_batch_v2.py modal_worker/creator_full_outfits_style_catalog.py modal_worker/creator_tops_batch.py modal_worker/creator_bottoms_batch.py
+        run: python -m compileall -q modal_worker/creator_full_outfits_batch_v2.py modal_worker/creator_full_outfits_style_catalog.py modal_worker/creator_tops_batch.py modal_worker/creator_bottoms_batch.py
       - name: Verify locked outfit geometry without production
         run: |
           python - <<'PY'
-          from modal_worker.creator_full_outfits_batch import _locked_outfit_mask
+          from modal_worker.creator_full_outfits_batch_v2 import _locked_outfit_mask
           m=_locked_outfit_mask()
           assert m.size==(144,192) and m.getbbox() is not None
           for row in range(4):
@@ -51,8 +51,7 @@ jobs:
           python - <<'PY'
           import base64, io
           from PIL import Image, ImageDraw
-          from modal_worker.creator_full_outfits_batch import _border_white_extract, _locked_outfit_mask
-          from modal_worker.creator_full_outfits_batch_v2 import _compile_sheet, _opaque_texture
+          from modal_worker.creator_full_outfits_batch_v2 import _border_white_extract, _locked_outfit_mask, _compile_sheet, _opaque_texture
           from modal_worker.creator_full_outfits_style_catalog import get_style
 
           src=Image.new('RGB',(128,160),'white')
@@ -135,7 +134,7 @@ jobs:
       - name: Install bounded production dependencies
         run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
       - name: Compile Creator Full Outfits runner
-        run: python -m compileall -q modal_worker/creator_full_outfits_batch.py modal_worker/creator_full_outfits_batch_v2.py modal_worker/creator_full_outfits_style_catalog.py modal_worker/creator_tops_batch.py modal_worker/creator_bottoms_batch.py
+        run: python -m compileall -q modal_worker/creator_full_outfits_batch_v2.py modal_worker/creator_full_outfits_style_catalog.py modal_worker/creator_tops_batch.py modal_worker/creator_bottoms_batch.py
       - name: Produce one Creator Full Outfit
         shell: bash
         run: |
