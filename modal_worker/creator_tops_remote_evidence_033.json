@@ -1,0 +1,20 @@
+{
+  "schema": "plushbound.creator_tops_remote_evidence.v1",
+  "style_index": 33,
+  "inspection_run_id": 40602930447,
+  "app_id": "ap-NmpU0XYKdTgGzMNmm7xcTE",
+  "function_id": "fu-zv4FMXJbmmOPwfK5xTGVoX",
+  "function_call_id": "fc-01M5ZAKCRAHEZ0Y8DD1X8JX6Y4",
+  "function_call_status": "success",
+  "enqueued_at": "2026-10-27T18:40:13.069667Z",
+  "started_at": "2026-10-27T19:16:18.600685Z",
+  "container_id": "ta-01M5ZCMJD729X1TX9JZM1ENRPR",
+  "execution_time_seconds": 10.933367,
+  "remote_execution_observed": true,
+  "paid_creator_render_execution_observed": true,
+  "result_currently_retrievable": false,
+  "result_lookup_error": "NotFoundError",
+  "resolution": "completed_paid_execution_result_unavailable",
+  "allows_single_style_recovery_without_duplicate_risk_acceptance": false,
+  "notes": "Read-only Modal history proves the generate FunctionCall ran successfully after GitHub disconnected. Its result is no longer retrievable through FunctionCall.get(). Do not rerender without explicit acceptance of possible duplicate paid render spend."
+}
