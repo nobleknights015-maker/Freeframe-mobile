@@ -1,0 +1,28 @@
+{
+  "schema": "plushbound.creator_tops_exception.v1",
+  "style_index": 33,
+  "bulk_run_id": 40541409733,
+  "job_id": 122320565261,
+  "status": "quarantined_ambiguous_paid_state",
+  "failure_class": "watchdog_timeout_after_modal_launch",
+  "automatic_retry_allowed": false,
+  "paid_state": "ambiguous",
+  "bulk_trigger_head_sha": "94acd9404788bb2012b18a71efa450c0d35b6167",
+  "job_checkout_sha": "7008d29cf20d1137f1894af418300054ca66418e",
+  "checkout_drift_observed": true,
+  "artifact_id": 12762834181,
+  "artifact_name": "creator-tops-batch-33-40541409733",
+  "artifact_size_bytes": 437,
+  "persisted_sprite_present": false,
+  "evidence_report_present": false,
+  "captured_log_summary": [
+    "Creator Top 033 entered the Modal production invocation.",
+    "The GitHub watchdog terminated the invocation after 35 minutes with exit code 124.",
+    "The evidence-verification step did not run successfully.",
+    "Only the captured log was uploaded; no sprite or evidence bundle was persisted.",
+    "The job checked out moving branch commit 7008d29cf20d1137f1894af418300054ca66418e rather than the bulk trigger head SHA because this matrix predates the immutable-checkout hardening."
+  ],
+  "required_resolution": "Do not rerun automatically. Resolve only after confirming the remote Modal invocation produced no usable paid output, or by an explicit later decision accepting a replacement render despite possible duplicate spend.",
+  "blocks_tops_completion_contract": true,
+  "notes": "Fail closed. Continue unrelated Tops styles normally. The active bulk matrix predates the immutable-SHA workflow fix, so do not modify Creator Tops runner/catalog code while its queued jobs are still executing."
+}
