@@ -1,0 +1,30 @@
+{
+  "schema": "plushbound.creator_accessories_v1_scope.v1",
+  "family": "creator/accessories",
+  "ledger_total": 96,
+  "v1_target": 48,
+  "dimensions": "144x192",
+  "layout": "3x4-48px",
+  "runtime_role": "character_creator_rgba_overlay",
+  "source_art_required": true,
+  "deterministic_finalization_required": true,
+  "selected_ids": [1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,49,51,53,55,57,59,61,63,65,67,69,71,73,75,77,79,81,83,85,87,89,91,93,95],
+  "canary_ids": [1,49,95],
+  "design_families": [
+    {"name":"scarves_neckwear","count":4,"brief":"scarves, kerchiefs and soft neckwear with stitched textile readability"},
+    {"name":"belts_sashes","count":4,"brief":"belts, sashes and waist ties with handcrafted clasps and knots"},
+    {"name":"bags_pouches","count":4,"brief":"small bags, satchels and pouches suitable for JRPG field silhouettes"},
+    {"name":"shoulder_capes","count":4,"brief":"short shoulder capes, capelets and mantle-like accessories"},
+    {"name":"gloves_wrist","count":4,"brief":"gloves, cuffs, wrist wraps and textile hand-adjacent accessories without skin"},
+    {"name":"charms_brooches","count":4,"brief":"fabric charms, brooches and stitched insignia accents"},
+    {"name":"japanese_accents","count":4,"brief":"Japanese-influenced obi ornaments, cords and layered textile accents"},
+    {"name":"chinese_accents","count":4,"brief":"Chinese-influenced knots, tassels and decorative fastening accents"},
+    {"name":"victorian_accents","count":4,"brief":"Victorian-inspired ribbons, cravats, brooches and tailored accessory pieces"},
+    {"name":"regional_festival","count":4,"brief":"festival ribbons, rosettes and region-friendly celebratory accents"},
+    {"name":"guardian_motifs","count":4,"brief":"subtle Guardian-inspired charms without copying unique Guardian bodies"},
+    {"name":"neutral_mixmatch","count":4,"brief":"gender-flexible utility and decorative accessories for broad Creator compatibility"}
+  ],
+  "selection_rule": "Reduced V1 keeps 48 evenly distributed stable logical IDs across the original 96 and maximizes silhouette, region and style breadth.",
+  "canary_rule": "Do not launch bulk Accessories until all three canaries pass source-art review, locked-body fit, alpha validation and clipping review.",
+  "bulk_rule": "After canary pass, produce only the remaining approved V1 IDs; never auto-expand to all 96 without explicit user instruction."
+}
