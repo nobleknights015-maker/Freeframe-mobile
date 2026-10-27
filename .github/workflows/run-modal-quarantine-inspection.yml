@@ -1,0 +1,69 @@
+name: Plushbound Modal Quarantine Read-Only Inspection
+
+on:
+  push:
+    branches: [freeframe-modal-worker]
+    paths:
+      - modal_worker/modal_quarantine_inspect.py
+      - modal_worker/modal_quarantine_inspect_trigger.json
+      - .github/workflows/run-modal-quarantine-inspection.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plushbound-modal-quarantine-readonly-inspection
+  cancel-in-progress: false
+
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Require existing Modal read credentials
+        run: |
+          test -n "$MODAL_TOKEN_ID" || { echo 'MODAL_TOKEN_ID missing' >&2; exit 1; }
+          test -n "$MODAL_TOKEN_SECRET" || { echo 'MODAL_TOKEN_SECRET missing' >&2; exit 1; }
+      - name: Install Modal client only
+        run: python -m pip install --disable-pip-version-check 'modal>=1.6,<2'
+      - name: Compile read-only inspector
+        run: python -m py_compile modal_worker/modal_quarantine_inspect.py
+      - name: Inspect quarantined Modal runs without mutation
+        run: python modal_worker/modal_quarantine_inspect.py
+      - name: Publish inspection summary
+        if: always()
+        run: |
+          if [ -f modal-quarantine-inspection-output/summary.json ]; then
+            python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          d=json.load(open('modal-quarantine-inspection-output/summary.json'))
+          print('# Modal quarantine read-only inspection')
+          print(f"- New paid renders launched: **{d['new_paid_render_launched']}**")
+          print(f"- Recovered paid outputs: **{d['recovered_styles']}**")
+          for r in d['styles']:
+              print(f"- Top {r['style_index']:03d}: `{r['remote_evidence_state']}`; calls={len(r['function_call_ids'])}; recovered={r['usable_paid_output_recovered']}")
+          print('- Automatic paid retry authorized: **False**')
+          PY
+          else
+            echo '# Modal quarantine read-only inspection' >> "$GITHUB_STEP_SUMMARY"
+            echo '- Inspector did not produce summary.json.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload read-only Modal evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: modal-quarantine-inspection-${{ github.run_id }}
+          path: modal-quarantine-inspection-output/
+          if-no-files-found: warn
+          retention-days: 14
