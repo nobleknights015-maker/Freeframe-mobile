@@ -1,0 +1,20 @@
+{
+  "schema": "plushbound.creator_tops_remote_evidence.v1",
+  "style_index": 19,
+  "inspection_run_id": 40602930447,
+  "app_id": "ap-SVH77pkfA0sTd2j7y6zVM7",
+  "function_id": "fu-jYLtOPGM7qpZfTTGmXNu1z",
+  "function_call_id": "fc-01M5Z7PXAVTP12N2MBKRM9PAR2",
+  "function_call_status": "terminated",
+  "enqueued_at": "2026-10-27T17:49:42.621575Z",
+  "started_at": null,
+  "container_id": null,
+  "execution_time_seconds": null,
+  "app_logs_showed_gpu_capacity_wait": true,
+  "app_stopped_on_client_disconnect": true,
+  "remote_execution_observed": false,
+  "paid_creator_render_execution_observed": false,
+  "resolution": "no_remote_function_execution_observed",
+  "allows_single_style_recovery_without_duplicate_risk_acceptance": true,
+  "notes": "Read-only Modal history proves the generate FunctionCall was terminated before it started: no container, no started_at, and no execution time. A single guarded replacement attempt does not duplicate a completed paid render."
+}
