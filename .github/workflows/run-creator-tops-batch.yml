@@ -1,0 +1,147 @@
+name: Plushbound Creator Tops Batch
+
+on:
+  push:
+    branches: [freeframe-modal-worker]
+    paths:
+      - modal_worker/creator_tops_batch_trigger.json
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plushbound-creator-tops-batch
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    outputs:
+      enabled: ${{ steps.plan.outputs.enabled }}
+      styles: ${{ steps.plan.outputs.styles }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: freeframe-modal-worker
+      - id: plan
+        name: Validate bounded Creator Tops wave
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          from pathlib import Path
+          from modal_worker.creator_tops_style_catalog import snapshot
+          d=json.loads(Path('modal_worker/creator_tops_batch_trigger.json').read_text())
+          cat=snapshot()
+          allowed=set(int(x) for x in cat['selected_ids'])
+          styles=[int(x) for x in d['style_indices']]
+          assert d['schema']=='plushbound.creator_tops_batch_trigger.v1'
+          assert styles and len(styles)==len(set(styles))
+          assert set(styles) <= allowed
+          assert int(d['style_count'])==len(styles)
+          assert int(d['max_paid_renders'])==len(styles)*5
+          assert int(d['max_paid_extractions'])==len(styles)*4
+          assert int(d['max_parallel'])==2
+          assert d['source_art_required'] is True
+          assert d['deterministic_finalization_required'] is True
+          assert d['requires_locked_body_qc'] is True
+          assert d['catalog_wide_launch_authorized'] is False
+          assert d['phase'] in ('canary','bulk')
+          if d['phase']=='canary':
+              assert styles==[1,61,119]
+          assert int(d['launch_nonce']) >= 1
+          print(f"enabled={'true' if d['enabled'] is True else 'false'}")
+          print('styles='+json.dumps(styles,separators=(',',':')))
+          PY
+
+  produce:
+    needs: preflight
+    if: needs.preflight.outputs.enabled == 'true'
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        style_index: ${{ fromJSON(needs.preflight.outputs.styles) }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: freeframe-modal-worker
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Require Modal credentials
+        run: |
+          test -n "$MODAL_TOKEN_ID" || { echo 'MODAL_TOKEN_ID missing' >&2; exit 1; }
+          test -n "$MODAL_TOKEN_SECRET" || { echo 'MODAL_TOKEN_SECRET missing' >&2; exit 1; }
+      - name: Install bounded production dependencies
+        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
+      - name: Compile Creator Tops runner
+        run: python -m compileall -q modal_worker/creator_tops_batch.py modal_worker/creator_tops_style_catalog.py
+      - name: Produce one Creator Top
+        shell: bash
+        run: |
+          set -euo pipefail
+          STYLE='${{ matrix.style_index }}'
+          LOG="creator-tops-batch-${STYLE}.log"
+          sleep $((STYLE % 2 * 10))
+          for attempt in 1 2 3 4; do
+            set +e
+            PYTHONPATH=. modal run modal_worker/creator_tops_batch.py --style-index "$STYLE" >"$LOG.tmp" 2>&1
+            code=$?
+            set -e
+            cat "$LOG.tmp" >> "$LOG"
+            if [ "$code" -eq 0 ]; then rm -f "$LOG.tmp"; exit 0; fi
+            if ! grep -Fq 'App create rate limit exceeded' "$LOG.tmp"; then
+              echo 'Non-prelaunch failure; refusing automatic paid retry.' | tee -a "$LOG"
+              rm -f "$LOG.tmp"; exit "$code"
+            fi
+            rm -f "$LOG.tmp"
+            if [ "$attempt" -lt 4 ]; then sleep $((attempt * 20)); fi
+          done
+          exit 1
+      - name: Verify Creator Tops evidence
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from PIL import Image
+          style=int('${{ matrix.style_index }}')
+          root=Path(f'creator-tops-batch-output/style-{style:03d}')
+          report=json.loads((root/'report.json').read_text())
+          assert report['schema']=='plushbound.creator_tops_batch.v1'
+          assert report['style_index']==style
+          assert report['logical_id']==f'creator/tops/{style:03d}'
+          assert report['paid_render_count']==5
+          assert report['paid_extraction_count']==4
+          assert report['compiler_owns_final_geometry'] is True
+          assert report['generated_alpha_discarded'] is True
+          assert report['catalog_wide_launch_authorized'] is False
+          p=root/f'creator-top-{style:03d}.png'
+          with Image.open(p) as im:
+            im.load(); assert im.size==(144,192); assert im.mode=='RGBA'
+            alpha=im.getchannel('A'); assert alpha.getbbox() is not None
+            for row in range(4):
+              cells=[]
+              for col in range(3):
+                a=alpha.crop((col*48,row*48,(col+1)*48,(row+1)*48))
+                b=a.getbbox(); assert b is not None; assert b[1]>=4 and b[3]<=35
+                cells.append(a.tobytes())
+              assert len(set(cells))>1, 'movement phases must preserve motion geometry rather than clone one static cell'
+          print(f'creator top {style:03d} evidence verified')
+          PY
+      - name: Upload Creator Tops evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: creator-tops-batch-${{ matrix.style_index }}-${{ github.run_id }}
+          path: |
+            creator-tops-batch-${{ matrix.style_index }}.log
+            creator-tops-batch-output/style-*/
+          if-no-files-found: error
+          retention-days: 14
