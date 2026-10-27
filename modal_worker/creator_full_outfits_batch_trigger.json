@@ -10,7 +10,8 @@
   "source_art_required": true,
   "deterministic_finalization_required": true,
   "requires_locked_body_qc": true,
+  "requires_tops_handoff_gate": true,
   "catalog_wide_launch_authorized": false,
-  "launch_nonce": 4,
-  "notes": "Primary clothing track remains Full Outfits. Disabled no-spend canary staging only while Creator Tops bulk completes. Self-contained v2 runner avoids duplicate Modal entrypoint registration and uses opaque deterministic texture fill to prevent white/transparent source gaps from leaking into compiler-owned geometry. Bottoms remains deferred optional; do not spend automatically."
+  "launch_nonce": 5,
+  "notes": "Primary clothing track remains Full Outfits. Disabled no-spend canary staging while Creator Tops bulk completes. Paid Full Outfits production is fail-closed behind creator_clothing_handoff.json and requires Tops bulk completion, evidence verification, and explicit canary authorization. Self-contained v2 runner uses deterministic opaque texture fill; Bottoms remains deferred optional and must not launch automatically."
 }
