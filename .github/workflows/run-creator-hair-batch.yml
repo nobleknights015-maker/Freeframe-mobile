@@ -40,7 +40,10 @@ jobs:
           assert int(d['style_count'])==len(styles)
           assert int(d['max_paid_renders'])==len(styles)*5
           assert int(d['max_paid_extractions'])==len(styles)*4
+          assert int(d['max_parallel'])==2
+          assert d['requires_archetype_gate'] is True
           assert d['catalog_wide_launch_authorized'] is False
+          assert int(d['launch_nonce']) >= 1
           enabled = d['enabled'] is True
           print(f"enabled={'true' if enabled else 'false'}")
           print('styles='+json.dumps(styles, separators=(',',':')))
@@ -55,10 +58,11 @@ jobs:
       matrix:
         style_index: ${{ fromJSON(needs.preflight.outputs.styles) }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 90
     env:
       MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
       MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+      PYTHONUNBUFFERED: '1'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -91,8 +95,11 @@ jobs:
               rm -f "$LOG.tmp"
               exit 0
             fi
-            if ! grep -Eq 'App create rate limit exceeded|Status\.RESOURCE_EXHAUSTED' "$LOG.tmp"; then
-              echo 'Non-throttle failure; refusing automatic paid retry.' | tee -a "$LOG"
+            # Only retry the explicit app-creation throttle, which occurs before paid
+            # generation starts. Generic RESOURCE_EXHAUSTED failures are intentionally
+            # not retried because they may happen after paid work has already occurred.
+            if ! grep -Fq 'App create rate limit exceeded' "$LOG.tmp"; then
+              echo 'Non-prelaunch failure; refusing automatic paid retry.' | tee -a "$LOG"
               rm -f "$LOG.tmp"
               exit "$code"
             fi
