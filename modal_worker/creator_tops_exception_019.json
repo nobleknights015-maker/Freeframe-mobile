@@ -1,0 +1,25 @@
+{
+  "schema": "plushbound.creator_tops_exception.v1",
+  "style_index": 19,
+  "bulk_run_id": 40541409733,
+  "job_id": 122320562418,
+  "status": "quarantined_ambiguous_paid_state",
+  "failure_class": "watchdog_timeout_after_modal_launch",
+  "automatic_retry_allowed": false,
+  "paid_state": "ambiguous",
+  "modal_run_url": "https://modal.com/apps/nobleknights015-maker/main/ap-SVH77pkfA0sTd2j7y6zVM7",
+  "artifact_id": 12757974847,
+  "artifact_name": "creator-tops-batch-19-40541409733",
+  "artifact_size_bytes": 437,
+  "persisted_sprite_present": false,
+  "evidence_report_present": false,
+  "captured_log_summary": [
+    "Modal app initialized and function created.",
+    "creator top 019: starting Vera render batch",
+    "GitHub watchdog terminated the invocation after 35 minutes.",
+    "Only the log file was uploaded; no sprite or evidence bundle was persisted."
+  ],
+  "required_resolution": "Do not rerun automatically. Resolve only after confirming the remote Modal run did not complete usable paid output, or by an explicit later decision accepting a replacement render despite possible duplicate spend.",
+  "blocks_tops_completion_contract": true,
+  "notes": "Fail closed. Continue unrelated Tops styles normally, but Creator Tops cannot be marked fully verified and Full Outfits handoff cannot open while this exception is unresolved."
+}
