@@ -1,0 +1,15 @@
+{
+  "schema": "plushbound.creator_tops_recovery_trigger.v1",
+  "enabled": false,
+  "style_index": null,
+  "max_paid_renders": 5,
+  "max_paid_extractions": 0,
+  "max_parallel": 1,
+  "requires_quarantined_exception": true,
+  "requires_explicit_duplicate_risk_acceptance": true,
+  "duplicate_risk_accepted": false,
+  "authorized_exception_file": null,
+  "catalog_wide_launch_authorized": false,
+  "launch_nonce": 1,
+  "notes": "Fail-closed single-style recovery path for quarantined Creator Tops only. Never enable automatically. A recovery may run only after an explicit later user decision accepting possible duplicate paid render spend for the named quarantined style. Bulk recovery is forbidden."
+}
