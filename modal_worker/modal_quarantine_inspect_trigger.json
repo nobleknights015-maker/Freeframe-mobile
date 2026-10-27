@@ -1,0 +1,7 @@
+{
+  "schema": "plushbound.modal_quarantine_inspect_trigger.v1",
+  "read_only": true,
+  "style_indices": [19, 33, 35, 65],
+  "inspection_nonce": 1,
+  "notes": "Read-only inspection only. No launch, retry, cancel, deploy, delete, or other Modal mutation is authorized."
+}
