@@ -41,6 +41,16 @@ FRONT_VARIANTS = (
     ("curtain_fringe", "curtain fringe opening at the center with two face-framing sections"),
 )
 
+# User-authorized terminal Creator Hair set. These overrides are deliberately
+# narrow: only the five final IDs are re-described, preserving all completed IDs.
+FINAL_ROLE_OVERRIDES = {
+    61: ("long_low_ponytail__side_swept_fringe", "smooth crown feeding a long low ponytail, side-swept fringe crossing part of the forehead", "single long low ponytail centered at the nape with full length readable inside the sprite silhouette"),
+    62: ("long_low_ponytail__center_part", "smooth crown feeding a long low ponytail, clean center part with face-framing front sections", "single long low ponytail centered at the nape with full length readable inside the sprite silhouette"),
+    66: ("short_high_ponytail__center_part", "lifted crown feeding a short high ponytail, clean center part with face-framing front sections", "single short high ponytail with compact cropped arc"),
+    67: ("short_high_ponytail__soft_full_fringe", "lifted crown feeding a short high ponytail, soft full fringe with separated readable tips", "single short high ponytail with compact cropped arc"),
+    89: ("low_bun__side_swept_fringe", "smooth crown feeding a low bun, side-swept fringe crossing part of the forehead", "compact low bun at the nape"),
+}
+
 
 def build_catalog() -> tuple[dict, ...]:
     entries = []
@@ -48,16 +58,19 @@ def build_catalog() -> tuple[dict, ...]:
     for base_name, crown, back in BASE_STYLES:
         for front_name, front_desc in FRONT_VARIANTS:
             style_name = f"{base_name}__{front_name}"
-            # Preserve the already-launched canary's stable semantic name for 001.
             if index == 1:
                 style_name = "short_side_swept_fringe"
+            front_description = f"{crown}, {front_desc}"
+            back_description = back
+            if index in FINAL_ROLE_OVERRIDES:
+                style_name, front_description, back_description = FINAL_ROLE_OVERRIDES[index]
             entries.append({
                 "index": index,
                 "front_logical_id": f"creator/front-hair/{index:03d}",
                 "back_logical_id": f"creator/back-hair/{index:03d}",
                 "style_name": style_name,
-                "front_description": f"{crown}, {front_desc}",
-                "back_description": back,
+                "front_description": front_description,
+                "back_description": back_description,
                 "neutral_source_color": "cool graphite-silver",
                 "runtime_tintable": True,
                 "accessories_baked_in": False,
