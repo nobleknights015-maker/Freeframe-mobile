@@ -1,0 +1,61 @@
+name: Plushbound Creator Facial Details Bundle
+
+on:
+  push:
+    branches: [freeframe-modal-worker]
+    paths:
+      - modal_worker/creator_facial_details_bundle_trigger.json
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bundle:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: freeframe-modal-worker
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install deterministic dependency
+        run: python -m pip install --disable-pip-version-check 'pillow>=10.4,<12'
+      - name: Compile all 48 accepted facial-detail overlays
+        run: |
+          set -euo pipefail
+          rm -rf creator-facial-details-ready
+          mkdir -p creator-facial-details-ready/assets
+          for i in $(seq 1 48); do
+            PYTHONPATH=modal_worker python modal_worker/creator_facial_details_batch.py --style-index "$i" --output-root bundle-work >/dev/null
+            cp "bundle-work/style-$(printf '%03d' "$i")/creator-facial-details-$(printf '%03d' "$i").png" creator-facial-details-ready/assets/
+            cp "bundle-work/style-$(printf '%03d' "$i")/report.json" "creator-facial-details-ready/report-$(printf '%03d' "$i").json"
+          done
+      - name: Verify bundle and write manifest
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          from PIL import Image
+          root=Path('creator-facial-details-ready')
+          assets=sorted((root/'assets').glob('creator-facial-details-*.png'))
+          assert len(assets)==48
+          entries=[]
+          for i,p in enumerate(assets,1):
+              assert p.name==f'creator-facial-details-{i:03d}.png'
+              with Image.open(p) as im:
+                  im.load(); assert im.size==(144,192); assert im.mode=='RGBA'; assert im.getchannel('A').getbbox() is not None
+              entries.append({'logical_id':f'creator/facial-details/{i:03d}','file':f'assets/{p.name}','sha256':hashlib.sha256(p.read_bytes()).hexdigest()})
+          manifest={'schema':'plushbound.creator_facial_details_ready.v1','status':'VERIFIED_READY_TO_USE','asset_count':48,'dimensions':[144,192],'layout':'3x4-48px','paid_render_count':0,'paid_extraction_count':0,'entries':entries}
+          (root/'manifest.json').write_text(json.dumps(manifest,indent=2,sort_keys=True)+'\n')
+          PY
+          zip -qr creator-facial-details-ready-v1-48.zip creator-facial-details-ready
+      - name: Upload sealed bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: creator-facial-details-ready-v1-48-${{ github.run_id }}
+          path: creator-facial-details-ready-v1-48.zip
+          if-no-files-found: error
+          retention-days: 14
