@@ -18,7 +18,10 @@
   "require_nonempty_artifacts": true,
   "allow_duplicate_style_artifacts": false,
   "require_no_unresolved_exceptions": true,
-  "unresolved_exception_files": ["modal_worker/creator_tops_exception_019.json"],
+  "unresolved_exception_files": [
+    "modal_worker/creator_tops_exception_019.json",
+    "modal_worker/creator_tops_exception_033.json"
+  ],
   "handoff_target": "creator_full_outfits_canary_001_049_095",
   "notes": "Authoritative completion contract for Creator Tops before opening the Full Outfits handoff. Bulk run must prove all 59 expected styles independently; Creator Top 061 is separately verified by its canary run and must not be regenerated. Any exception listed in unresolved_exception_files blocks completion until its blocks_tops_completion_contract field is false and resolution evidence is recorded. Do not infer completion from overall run status alone."
 }
