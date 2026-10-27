@@ -1,0 +1,23 @@
+name: Cancel Stuck Creator Tops
+
+on:
+  push:
+    branches: [freeframe-modal-worker]
+    paths:
+      - modal_worker/creator_tops_cancel_trigger.json
+
+permissions:
+  contents: read
+
+# One-shot breaker: a run in this same concurrency group with
+# cancel-in-progress=true clears any stale/pending Tops run first.
+concurrency:
+  group: plushbound-creator-tops-batch
+  cancel-in-progress: true
+
+jobs:
+  clear-stuck-lane:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Clear stale Creator Tops lane
+        run: echo 'Creator Tops lane cleared; no paid generation launched.'
