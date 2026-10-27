@@ -37,7 +37,7 @@ jobs:
           assert styles and len(styles)==len(set(styles)) and set(styles)<=allowed
           assert int(d['style_count'])==len(styles)
           assert int(d['max_paid_renders'])==len(styles)*5
-          assert int(d['max_paid_extractions'])==len(styles)*4
+          assert int(d['max_paid_extractions'])==0
           assert int(d['max_parallel'])==2
           assert d['source_art_required'] is True
           assert d['deterministic_finalization_required'] is True
@@ -59,7 +59,7 @@ jobs:
       matrix:
         style_index: ${{ fromJSON(needs.preflight.outputs.styles) }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 90
+    timeout-minutes: 45
     env:
       MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
       MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
@@ -78,7 +78,7 @@ jobs:
       - name: Install bounded production dependencies
         run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
       - name: Compile Creator Bottoms runner
-        run: python -m compileall -q modal_worker/creator_bottoms_batch.py modal_worker/creator_bottoms_style_catalog.py
+        run: python -m compileall -q modal_worker/creator_bottoms_batch.py modal_worker/creator_bottoms_batch_v2.py modal_worker/creator_bottoms_style_catalog.py
       - name: Produce one Creator Bottom
         shell: bash
         run: |
@@ -88,11 +88,15 @@ jobs:
           sleep $((STYLE % 2 * 10))
           for attempt in 1 2 3 4; do
             set +e
-            PYTHONPATH=. modal run modal_worker/creator_bottoms_batch.py --style-index "$STYLE" >"$LOG.tmp" 2>&1
+            timeout --signal=TERM --kill-after=2m 35m env PYTHONPATH=. modal run modal_worker/creator_bottoms_batch_v2.py --style-index "$STYLE" >"$LOG.tmp" 2>&1
             code=$?
             set -e
             cat "$LOG.tmp" >> "$LOG"
             if [ "$code" -eq 0 ]; then rm -f "$LOG.tmp"; exit 0; fi
+            if [ "$code" -eq 124 ] || [ "$code" -eq 137 ]; then
+              echo 'Creator Bottoms watchdog stopped a hung Modal invocation; refusing automatic paid retry.' | tee -a "$LOG"
+              rm -f "$LOG.tmp"; exit "$code"
+            fi
             if ! grep -Fq 'App create rate limit exceeded' "$LOG.tmp"; then
               echo 'Non-prelaunch failure; refusing automatic paid retry.' | tee -a "$LOG"
               rm -f "$LOG.tmp"; exit "$code"
@@ -111,9 +115,13 @@ jobs:
           report=json.loads((root/'report.json').read_text())
           assert report['schema']=='plushbound.creator_bottoms_batch.v1'
           assert report['style_index']==style and report['logical_id']==f'creator/bottoms/{style:03d}'
-          assert report['paid_render_count']==5 and report['paid_extraction_count']==4
+          assert report['paid_render_count']==5 and report['paid_extraction_count']==0
+          assert report['extraction_backend']=='deterministic_border_connected_white_v1'
+          assert report['source_art_persisted_before_extraction'] is True
           assert report['compiler_owns_final_geometry'] is True and report['generated_alpha_discarded'] is True
           assert report['catalog_wide_launch_authorized'] is False
+          raw=root/'sources'/'raw'
+          assert all((raw/f'{name}.png').exists() for name in ('reference','down','left','right','up'))
           p=root/f'creator-bottom-{style:03d}.png'
           with Image.open(p) as im:
             im.load(); assert im.size==(144,192) and im.mode=='RGBA'
