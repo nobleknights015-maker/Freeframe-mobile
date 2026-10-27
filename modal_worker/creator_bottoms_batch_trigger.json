@@ -11,6 +11,6 @@
   "deterministic_finalization_required": true,
   "requires_locked_body_qc": true,
   "catalog_wide_launch_authorized": false,
-  "launch_nonce": 2,
-  "notes": "Disabled hardened staging preflight only. Remote extraction removed; raw paid sources will persist before deterministic local extraction. Do not spend until Creator Tops is complete."
+  "launch_nonce": 3,
+  "notes": "DEFERRED OPTIONAL TRACK. Do not launch automatically after Creator Tops. Plushbound Creator clothing strategy now uses Full Outfits as the primary wardrobe path; existing Creator Tops remain optional modular/bonus clothing. Keep Bottoms disabled unless a later explicit decision authorizes a small modular bonus set."
 }
