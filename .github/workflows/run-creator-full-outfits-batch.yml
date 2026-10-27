@@ -5,6 +5,8 @@ on:
     branches: [freeframe-modal-worker]
     paths:
       - modal_worker/creator_full_outfits_batch_trigger.json
+      - modal_worker/creator_clothing_handoff.json
+      - .github/workflows/run-creator-full-outfits-batch.yml
   workflow_dispatch:
 
 permissions:
@@ -81,15 +83,19 @@ jobs:
           print('deterministic extraction + opaque texture fill + locked compiler smoke test verified')
           PY
       - id: plan
-        name: Validate bounded Creator Full Outfits wave
+        name: Validate bounded Creator Full Outfits wave and Tops handoff
         run: |
           python - <<'PY' >> "$GITHUB_OUTPUT"
           import json
           from pathlib import Path
           from modal_worker.creator_full_outfits_style_catalog import snapshot
           d=json.loads(Path('modal_worker/creator_full_outfits_batch_trigger.json').read_text())
+          h=json.loads(Path('modal_worker/creator_clothing_handoff.json').read_text())
           cat=snapshot(); allowed=set(int(x) for x in cat['selected_ids']); styles=[int(x) for x in d['style_indices']]
           assert d['schema']=='plushbound.creator_full_outfits_batch_trigger.v1'
+          assert h['schema']=='plushbound.creator_clothing_handoff.v1'
+          assert int(h['tops_bulk_run_id'])==40541409733
+          assert h['bottoms_deferred'] is True
           assert styles and len(styles)==len(set(styles)) and set(styles)<=allowed
           assert int(d['style_count'])==len(styles)
           assert int(d['max_paid_renders'])==len(styles)*5
@@ -98,9 +104,14 @@ jobs:
           assert d['source_art_required'] is True
           assert d['deterministic_finalization_required'] is True
           assert d['requires_locked_body_qc'] is True
+          assert d['requires_tops_handoff_gate'] is True
           assert d['catalog_wide_launch_authorized'] is False
           assert d['phase'] in ('canary','bulk')
           if d['phase']=='canary': assert styles==[1,49,95]
+          if d['enabled'] is True:
+            assert h['tops_bulk_complete'] is True, 'refusing Full Outfits spend before Creator Tops bulk completion'
+            assert h['tops_bulk_verified'] is True, 'refusing Full Outfits spend before Creator Tops evidence verification'
+            assert h['full_outfits_canary_authorized'] is True, 'refusing Full Outfits spend without explicit canary handoff authorization'
           assert int(d['launch_nonce'])>=1
           print(f"enabled={'true' if d['enabled'] is True else 'false'}")
           print('styles='+json.dumps(styles,separators=(',',':')))
