@@ -10,10 +10,10 @@
   "source_art_required": true,
   "deterministic_finalization_required": true,
   "requires_locked_body_qc": true,
-  "requires_tops_handoff_gate": true,
+  "requires_tops_handoff_gate": false,
   "requires_one_shot_launch_commit": true,
   "authorized_launch_commit_message": null,
   "catalog_wide_launch_authorized": false,
-  "launch_nonce": 5,
-  "notes": "Primary clothing track remains Full Outfits. Disabled no-spend canary staging while Creator Tops bulk completes. Paid Full Outfits production is fail-closed behind creator_clothing_handoff.json, a live 59/59 Tops audit, and a one-shot launch commit authorization. When later enabling the bounded canary, authorized_launch_commit_message must equal exactly 'Launch Creator Full Outfits canary nonce <launch_nonce>' and the enabling commit must use that exact message; any later unrelated push fails closed. Self-contained v2 runner uses deterministic opaque texture fill; Bottoms remains deferred optional and must not launch automatically."
+  "launch_nonce": 6,
+  "notes": "Primary clothing track is Full Outfits. Bounded 001/049/095 canary is staged independently from optional Creator Tops exceptions. Paid production remains fail-closed behind the clothing handoff, exact one-shot launch commit, source persistence, deterministic finalization, locked geometry checks, and the Full Outfits canary completion/QC contract. Bottoms remains deferred optional."
 }
