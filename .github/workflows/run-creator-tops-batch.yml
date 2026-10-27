@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: freeframe-modal-worker
+          ref: ${{ github.sha }}
       - id: plan
         name: Validate bounded Creator Tops wave
         run: |
@@ -72,7 +72,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: freeframe-modal-worker
+          ref: ${{ github.sha }}
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
