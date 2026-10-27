@@ -2,6 +2,10 @@
   "schema": "plushbound.creator_tops_completion_contract.v1",
   "bulk_run_id": 40541409733,
   "bulk_head_sha": "94acd9404788bb2012b18a71efa450c0d35b6167",
+  "bulk_run_drained": true,
+  "bulk_run_status": "completed",
+  "bulk_run_conclusion": "failure",
+  "bulk_run_completed_at": "2026-10-27T22:24:20Z",
   "canary_run_id": 40540595901,
   "canary_style_index": 61,
   "canary_already_verified": true,
@@ -25,5 +29,5 @@
     "modal_worker/creator_tops_exception_065.json"
   ],
   "handoff_target": "creator_full_outfits_canary_001_049_095",
-  "notes": "Authoritative completion contract for Creator Tops before opening the Full Outfits handoff. Bulk run must prove all 59 expected styles independently; Creator Top 061 is separately verified by its canary run and must not be regenerated. Any exception listed in unresolved_exception_files blocks completion until its blocks_tops_completion_contract field is false and resolution evidence is recorded. Do not infer completion from overall run status alone."
+  "notes": "Authoritative completion contract for Creator Tops before opening the Full Outfits handoff. Bulk run 40541409733 has fully drained; the GitHub workflow conclusion is failure because unresolved quarantined jobs remain. Bulk run must prove all 59 expected styles independently; Creator Top 061 is separately verified by its canary run and must not be regenerated. Any exception listed in unresolved_exception_files blocks completion until its blocks_tops_completion_contract field is false and resolution evidence is recorded. Do not infer completion from overall run status alone."
 }
