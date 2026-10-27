@@ -211,8 +211,8 @@ jobs:
             for row in range(4):
               cells=[]
               for col in range(3):
-                a=alpha.crop((col*48,row*48,(col+1)*48,(col+1)*48)); b=a.getbbox()
-                assert b is not None
+                a=alpha.crop((col*48,row*48,(col+1)*48,(row+1)*48)); b=a.getbbox()
+                assert b is not None and b[1]>=4 and b[3]<=46
                 cells.append(a.tobytes())
               assert len(set(cells))>1, 'movement phases must preserve motion geometry'
           print(f'creator full outfit {style:03d} evidence verified')
