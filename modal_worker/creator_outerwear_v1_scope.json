@@ -1,0 +1,30 @@
+{
+  "schema": "plushbound.creator_outerwear_v1_scope.v1",
+  "family": "creator/outerwear",
+  "ledger_total": 72,
+  "v1_target": 36,
+  "dimensions": "144x192",
+  "layout": "3x4-48px",
+  "runtime_role": "character_creator_rgba_overlay",
+  "source_art_required": true,
+  "deterministic_finalization_required": true,
+  "selected_ids": [1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,49,51,53,55,57,59,61,63,65,67,69,71],
+  "canary_ids": [1,37,71],
+  "design_families": [
+    {"name":"everyday_jackets","count":3,"brief":"practical stitched jackets and light coats for everyday Plushtopia wear"},
+    {"name":"victorian_coats","count":3,"brief":"tailored Victorian-inspired coats and long structured outer layers"},
+    {"name":"japanese_haori","count":3,"brief":"haori-inspired and short layered Japanese-influenced outerwear"},
+    {"name":"chinese_overrobes","count":3,"brief":"panelled Chinese-influenced overrobes and restrained stand-collar outer layers"},
+    {"name":"adventurer_cloaks","count":3,"brief":"travel cloaks, field coats and weather-ready adventurer outerwear"},
+    {"name":"artisan_workcoats","count":3,"brief":"work coats and protective crafter layers with visible stitching and utility detail"},
+    {"name":"regional_festival","count":3,"brief":"decorative regional festival outer layers with ribbons and textile motifs"},
+    {"name":"scholar_court","count":3,"brief":"refined scholar and court outerwear with elegant layered silhouettes"},
+    {"name":"rugged_frontier","count":3,"brief":"weathered frontier coats, poncho-like layers and rugged travel protection"},
+    {"name":"cute_plush","count":3,"brief":"soft rounded plush-forward capes and coats with handcrafted charm"},
+    {"name":"guardian_fanwear","count":3,"brief":"outerwear with subtle Guardian-inspired motifs without copying Guardian bodies"},
+    {"name":"neutral_mixmatch","count":3,"brief":"gender-flexible outer layers designed to combine cleanly with many tops and outfits"}
+  ],
+  "selection_rule": "Reduced V1 keeps 36 evenly distributed stable logical IDs across the original 72 while maximizing silhouette and regional variety.",
+  "canary_rule": "Do not launch bulk Outerwear until all three canaries pass source-art review, locked-body movement fit, alpha validation and duplicate-silhouette review.",
+  "bulk_rule": "After canary pass, produce only the remaining approved V1 IDs; never auto-expand to all 72 without explicit user instruction."
+}
