@@ -1,9 +1,10 @@
 {
   "schema": "plushbound.creator_clothing_handoff.v1",
   "tops_bulk_run_id": 40541409733,
+  "tops_completion_contract": "modal_worker/creator_tops_completion_contract.json",
   "tops_bulk_complete": false,
   "tops_bulk_verified": false,
   "full_outfits_canary_authorized": false,
   "bottoms_deferred": true,
-  "notes": "Fail-closed clothing handoff. Do not authorize Full Outfits paid canary until Creator Tops bulk run 40541409733 has completed successfully and its successful evidence/artifacts have been verified. Bottoms remains deferred optional work."
+  "notes": "Fail-closed clothing handoff. Do not authorize Full Outfits paid canary until Creator Tops bulk run 40541409733 has completed successfully and every style/evidence/artifact requirement in modal_worker/creator_tops_completion_contract.json has been verified. Bottoms remains deferred optional work."
 }
