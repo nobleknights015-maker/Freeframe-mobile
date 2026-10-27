@@ -16,9 +16,11 @@
   "allow_duplicate_style_artifacts": false,
   "require_exact_triggering_sha": true,
   "require_locked_body_visual_qc": true,
+  "locked_body_visual_qc_passed": false,
   "require_no_unresolved_exceptions": true,
   "unresolved_exception_files": [],
+  "canary_verified": false,
   "ready_for_bulk": false,
   "bulk_authorized": false,
-  "notes": "Fail-closed completion definition for the first paid Full Outfits canary only. Populate production_run_id and production_head_sha only after the Tops handoff is fully verified and the bounded 001/049/095 canary is deliberately launched. Never infer bulk readiness from overall workflow success alone. All three jobs, evidence steps, artifacts, exact-SHA provenance, and locked-body visual QC must pass before ready_for_bulk may become true. bulk_authorized remains false until a separate deliberate decision after canary review."
+  "notes": "Fail-closed completion definition for the first paid Full Outfits canary only. Populate production_run_id and production_head_sha after the bounded 001/049/095 canary launches. All three jobs, evidence steps, artifacts, exact-SHA provenance, and locked-body visual QC must pass before canary_verified may become true. Bulk remains separately gated by bulk_authorized and is never inferred from canary workflow success alone. Modular Creator Tops exceptions are tracked independently and do not block this primary Full Outfits canary."
 }
