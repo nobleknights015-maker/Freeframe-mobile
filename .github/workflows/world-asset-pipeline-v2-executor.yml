@@ -43,7 +43,7 @@ jobs:
           import os
           from pathlib import Path
 
-          from modal_worker.world_asset_pipeline_v2_planner import build_rows, paid_gate_open
+          from modal_worker.world_asset_pipeline_v2_planner import build_rows, paid_gate_open, validate_receiver_contract
           from modal_worker.world_asset_pipeline_v2_runner import declaration_validation
 
           trigger = json.loads(Path('modal_worker/world_asset_pipeline_v2_run_trigger.json').read_text())
@@ -58,12 +58,15 @@ jobs:
           assert trigger['manual_visual_qa_required'] is True
           assert trigger['compile_authorized'] is False
           assert trigger['catalog_wide_launch_authorized'] is False
-          assert trigger['runtime_import_proof'] is False
+          assert trigger['runtime_import_proof'] is True
           assert state['catalog_wide_launch_authorized'] is False
-          assert state['runtime_import_proof'] is False
+          assert state['runtime_import_proof'] is True
           assert freeze['catalog_wide_launch_authorized'] is False
+          assert freeze['runtime_import_proof'] is True
           assert freeze['accepted_assets_immutable'] is True
           assert freeze['missing_local_artifact_is_not_rerender_authority'] is True
+          receiver = validate_receiver_contract(state_data=state, freeze_data=freeze)
+          assert receiver['status'] == 'PASS_ENGINE_V1_RECEIVER_RUNTIME_CONTRACT'
 
           declaration = declaration_validation()
           assert declaration['status'] == 'PASS_ZERO_GPU_SINGLE_RUNNER_DECLARATION'
@@ -100,7 +103,25 @@ jobs:
       - name: Record preflight evidence
         shell: bash
         run: |
-          printf '%s\n' '{"schema":"plushbound.world_asset_pipeline_v2_executor_preflight.v1","status":"PASS","credentials_exposed":false,"provider_calls":0,"gpu_calls":0,"generation_calls":0,"compile_authorized":false,"catalog_wide_launch_authorized":false,"runtime_import_proof":false}' > world-asset-v2-executor-preflight.json
+          PYTHONPATH=. python - <<'PY'
+          import json
+          from pathlib import Path
+          from modal_worker.world_asset_pipeline_v2_planner import validate_receiver_contract
+          receiver = validate_receiver_contract()
+          report = {
+            'schema': 'plushbound.world_asset_pipeline_v2_executor_preflight.v1',
+            'status': 'PASS',
+            'credentials_exposed': False,
+            'provider_calls': 0,
+            'gpu_calls': 0,
+            'generation_calls': 0,
+            'compile_authorized': False,
+            'catalog_wide_launch_authorized': False,
+            'runtime_import_proof': True,
+            'receiver_contract_status': receiver['status'],
+          }
+          Path('world-asset-v2-executor-preflight.json').write_text(json.dumps(report, sort_keys=True))
+          PY
 
       - name: Upload preflight evidence
         uses: actions/upload-artifact@v4
@@ -136,10 +157,12 @@ jobs:
           import json
           import os
           from pathlib import Path
-          from modal_worker.world_asset_pipeline_v2_planner import build_rows, paid_gate_open
+          from modal_worker.world_asset_pipeline_v2_planner import build_rows, paid_gate_open, validate_receiver_contract
 
           trigger = json.loads(Path('modal_worker/world_asset_pipeline_v2_run_trigger.json').read_text())
           assert trigger['enabled'] is True
+          assert trigger['runtime_import_proof'] is True
+          validate_receiver_contract()
           region = trigger['region']
           ids = trigger['requested_source_ids']
           paid_gate_open(region)
