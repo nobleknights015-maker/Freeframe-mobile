@@ -1,10 +1,10 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_run_trigger.v1",
-  "enabled": false,
+  "enabled": true,
   "mode": "selected_ids_one_region",
   "guard_validation_revision": 22,
-  "region": null,
-  "requested_source_ids": [],
+  "region": "crownweave",
+  "requested_source_ids": ["tileset.crownweave.a5.source.highland_grass"],
   "generation_attempts_per_requested_id_cap": 1,
   "one_region_only": true,
   "accepted_ids_must_be_excluded": true,
@@ -12,7 +12,7 @@
   "compile_authorized": false,
   "catalog_wide_launch_authorized": false,
   "runtime_import_proof": true,
-  "validated_zero_gpu_preflight_run_id": 40773933179,
+  "validated_zero_gpu_preflight_run_id": 40775286553,
   "last_authorized_frostlace_canary_commit": "13ade52de71c534f568764870965cd49fef687a5",
   "last_authorized_frostlace_canary_executor_run_id": 40754030630,
   "last_authorized_frostlace_batch_commit": "93232195ae8098c067d8179dc8352c40cebf0def",
@@ -29,5 +29,5 @@
   "last_authorized_cinderreach_charred_timber_executor_run_id": 40771566618,
   "last_authorized_cinderreach_ember_veined_rock_commit": "fadde0af0ab98529356d169d8832691a54036222",
   "last_authorized_cinderreach_ember_veined_rock_executor_run_id": 40774167698,
-  "note": "Trigger disabled immediately after exact Cinderreach ember_veined_rock executor was pinned."
+  "note": "Exact one-source Crownweave highland_grass canary authorized after zero-GPU Crownweave preflight."
 }
