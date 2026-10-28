@@ -1,0 +1,95 @@
+{
+  "schema": "plushbound.tileset_regional_a5_seven_repair_review.v1",
+  "region": "gloamfen",
+  "workflow_run_id": 40715821580,
+  "artifact_id": 12827768333,
+  "artifact_sha256": "ff73fdc482586b45b69a3cdea392231039b8dc3ea3c1d32eaa439459ab9bd70b",
+  "generation_count": 7,
+  "generation_retry_count": 0,
+  "total_gpu_seconds": 7.175,
+  "accepted_probe_rerender_count": 0,
+  "machine_pass_count": 5,
+  "machine_quarantined_count": 2,
+  "compile_authorized": false,
+  "deterministic_finalize_authorized": false,
+  "catalog_wide_launch_authorized": false,
+  "runtime_import_proof": false,
+  "manual_review": {
+    "tileset.gloamfen.a5.source.boardwalk_timber": {
+      "machine_status": "PASS",
+      "manual_visual_status": "PASS",
+      "raw_sha256": "094a834d59b20eae3b97b6913ddfdb45a449af70ef0c27397303027342c8b196",
+      "normalized_sha256": "2ceba1a4d81f63981a508a6460ee0726cc0243d9de61337120f2b21839590568",
+      "rgb_stddev": 6.3892,
+      "edge_discontinuity": 0.019077,
+      "reason": "continuous wet weathered charcoal-brown timber grain; no scene composition or isolated object"
+    },
+    "tileset.gloamfen.a5.source.damp_moss": {
+      "machine_status": "PASS",
+      "manual_visual_status": "PASS",
+      "raw_sha256": "66fb8f4f336f18bc3d18b2c278ec1246affda3e07bbf5cbd4974afaf74bc28bc",
+      "normalized_sha256": "cc2e5fd3d906baa90bbfc20cac1e4e5adda83e83c870fd0cdd7b3f820e4d8d1a",
+      "rgb_stddev": 3.1705,
+      "edge_discontinuity": 0.007734,
+      "reason": "continuous close-scale damp moss-fiber surface without plants or environment composition"
+    },
+    "tileset.gloamfen.a5.source.dark_peat": {
+      "machine_status": "FAIL_READABILITY_ONLY",
+      "manual_visual_status": "PASS_SEMANTICS_PENDING_ZERO_GPU_READABILITY_RESCUE",
+      "raw_sha256": "ee905f45702d3036d45fda906f465a297edac4c05aeb4041cf8ba753606225ab",
+      "old_normalized_sha256": "868a0e80033f47fdb8192b682426a933ad274c453b839013724eff1ef79620db",
+      "source_rgb_stddev": 7.4678,
+      "pre_rescue_rgb_stddev": 1.2901,
+      "current_final_rgb_stddev": 2.5802,
+      "edge_discontinuity": 0.005801,
+      "reason": "raw source is a continuous near-black peat texture with genuine detail; the existing 2.0 contrast cap is insufficient to preserve readability at 48px"
+    },
+    "tileset.gloamfen.a5.source.drowned_stone": {
+      "machine_status": "PASS",
+      "manual_visual_status": "PASS",
+      "raw_sha256": "0362604480b3404532ed02ce2c3bb26e20a4eab698b574b8cf40e3ba72ff8afa",
+      "normalized_sha256": "e8298439a11bc20b422f263d1f6dac27bf977a373897b7356d899e6fd68a6aac",
+      "rgb_stddev": 12.2332,
+      "edge_discontinuity": 0.021106,
+      "reason": "frame-filling dark water-aged stone surface with moss staining; no perspective or environment scene"
+    },
+    "tileset.gloamfen.a5.source.fungal_moss": {
+      "machine_status": "PASS",
+      "manual_visual_status": "PASS",
+      "raw_sha256": "a276abe1635191c2ed4fd299cde57cd762507e389093fb56bac4e3636d2ca03d",
+      "normalized_sha256": "9368403d2097dc703f2fbbaf1317fdad4c1a2210145731dcd643f267b2cf4310",
+      "rgb_stddev": 3.1329,
+      "edge_discontinuity": 0.011846,
+      "reason": "continuous muted olive/pale fungal-green fiber texture without discrete fungi or objects"
+    },
+    "tileset.gloamfen.a5.source.reed_matting": {
+      "machine_status": "FAIL_READABILITY",
+      "manual_visual_status": "FAIL_SEMANTIC_BORDERED_OBJECT",
+      "raw_sha256": "702a4f49f68ee4711b45697f85daf17ee8695dca0e434be729b6c70359ce8b44",
+      "old_normalized_sha256": "77904cfb802b070810971b0929e7c4528878a3fe98343dedfc8e465f9076a961",
+      "rgb_stddev": 2.6081,
+      "edge_discontinuity": 0.010566,
+      "reason": "render contains a visible rectangular woven mat perimeter/border rather than an edge-to-edge continuous woven reed substrate; deterministic contrast rescue cannot fix semantics"
+    },
+    "tileset.gloamfen.a5.source.shallow_silt": {
+      "machine_status": "PASS",
+      "manual_visual_status": "PASS",
+      "raw_sha256": "56678627991e8bd8e5d1ba3f421c06c3f14e03a9eaefdbec1c00178c8f9b9f7d",
+      "normalized_sha256": "305fc41fa894fa575c9289b7795aa80a3346911a8e6ed56ed0591239c4df3d45",
+      "rgb_stddev": 6.7042,
+      "edge_discontinuity": 0.008878,
+      "reason": "continuous fine gray-green silt surface with soft mineral variation and no standing water body"
+    }
+  },
+  "bank_now": [
+    "tileset.gloamfen.a5.source.boardwalk_timber",
+    "tileset.gloamfen.a5.source.damp_moss",
+    "tileset.gloamfen.a5.source.drowned_stone",
+    "tileset.gloamfen.a5.source.fungal_moss",
+    "tileset.gloamfen.a5.source.shallow_silt"
+  ],
+  "zero_gpu_rescue_candidate": "tileset.gloamfen.a5.source.dark_peat",
+  "rerender_only": [
+    "tileset.gloamfen.a5.source.reed_matting"
+  ]
+}
