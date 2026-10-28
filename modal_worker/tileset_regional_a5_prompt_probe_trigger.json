@@ -20,5 +20,9 @@
   "deterministic_finalize_authorized": false,
   "accepted_assets_immutable": true,
   "creator_full_outfits_remain_closed_at": 24,
-  "source_scope_head": "3dbf87ee341ff6c093e5668df5c2f02d99f99142"
+  "source_scope_head": "48b2b84d8154226c0a1834a6ac29bc870f83088e",
+  "probe_attempt": 2,
+  "previous_probe_run_id": 40702715312,
+  "previous_probe_conclusion": "cancelled",
+  "previous_probe_evidence": "modal_worker/tileset_gloamfen_a5_prompt_probe_attempt1_cancelled.json"
 }
