@@ -66,6 +66,8 @@ jobs:
             modal_worker/world_asset_pipeline_v2_planner.py \
             modal_worker/world_asset_pipeline_v2_runner.py \
             modal_worker/world_asset_pipeline_v2_acceptance.py \
+            modal_worker/world_asset_pipeline_v2_normalizer.py \
+            modal_worker/world_asset_pipeline_v2_compiler.py \
             modal_worker/tileset_source_normalizer.py \
             modal_worker/tileset_regional_a5_compiler.py \
             modal_worker/engine_v1_a5_compatibility_validator.py
@@ -115,6 +117,7 @@ jobs:
           assert p['status'] == 'PASS_ZERO_GPU_SHARED_GENERATOR_PLANNER'
           assert r['status'] == 'PASS_ZERO_GPU_SINGLE_RUNNER_DECLARATION'
           assert r['gpu_candidates'] == ['L4', 'A10G']
+          assert r['normalizer_policy'] == 'WORLD_ASSET_PIPELINE_V2'
           assert r['failure_isolated_to_asset_id'] is True
           assert r['batch_art_rejection_does_not_abort_sibling_assets'] is True
           assert [r['provider_calls'], r['gpu_calls'], r['generation_calls']] == [0, 0, 0]
@@ -132,29 +135,30 @@ jobs:
         run: |
           PYTHONPATH=. python modal_worker/world_asset_pipeline_v2_acceptance.py --self-test | tee v2-acceptance-self-test.json
 
-      - name: Run deterministic normalizer self-test
+      - name: Run unified V2 normalizer self-test
         run: |
-          PYTHONPATH=. python modal_worker/tileset_source_normalizer.py --self-test | tee normalizer-self-test.json
+          PYTHONPATH=. python modal_worker/world_asset_pipeline_v2_normalizer.py | tee v2-normalizer-self-test.json
 
-      - name: Rehearse compiler contracts for every unfinished region
+      - name: Rehearse V2 compiler contracts for every unfinished region
         shell: bash
         run: |
           set -euo pipefail
-          : > compiler-self-tests.jsonl
+          : > v2-compiler-self-tests.jsonl
           for region in crownweave silkspire gloamfen verdancia tideglass-coast moonpatch-steppe sunspool-desert cinderreach frostlace; do
-            PYTHONPATH=. python modal_worker/tileset_regional_a5_compiler.py --region "$region" --self-test >> compiler-self-tests.jsonl
+            PYTHONPATH=. python modal_worker/world_asset_pipeline_v2_compiler.py --region "$region" --self-test >> v2-compiler-self-tests.jsonl
           done
           python - <<'PY'
           import json
           from pathlib import Path
-          text = Path('compiler-self-tests.jsonl').read_text()
+          text = Path('v2-compiler-self-tests.jsonl').read_text()
           decoder = json.JSONDecoder(); idx = 0; rows = []
           while idx < len(text):
               while idx < len(text) and text[idx].isspace(): idx += 1
               if idx >= len(text): break
               obj, idx = decoder.raw_decode(text, idx); rows.append(obj)
           assert len(rows) == 9
-          assert all(r['status'] == 'PASS' for r in rows)
+          assert all(r['status'] == 'PASS_ZERO_GPU_V2_COMPILER_CONTRACT' for r in rows)
+          assert all(r['normalizer_policy'] == 'WORLD_ASSET_PIPELINE_V2' for r in rows)
           assert all([r['provider_calls'], r['gpu_calls'], r['generation_calls']] == [0, 0, 0] for r in rows)
           assert all(r['sheet_size'] == [384, 768] for r in rows)
           assert all(r['slot_count'] == 128 for r in rows)
@@ -169,7 +173,7 @@ jobs:
           from pathlib import Path
           summary = {
             'schema': 'plushbound.world_asset_pipeline_v2_preflight_report.v1',
-            'status': 'PASS_ZERO_GPU_V2_CONTROL_SHARED_WORKER_AND_ACCEPTANCE_READY',
+            'status': 'PASS_ZERO_GPU_V2_END_TO_END_CONTRACT_READY',
             'production_frozen': True,
             'legacy_pipeline_mode': 'READ_ONLY_EVIDENCE',
             'accepted_asset_rerender_refusal': True,
@@ -180,14 +184,15 @@ jobs:
             'one_region_planning': True,
             'one_shared_generation_path': True,
             'shared_worker_paid_gate_refusal_while_frozen': True,
-            'deterministic_normalization': True,
+            'unified_v2_normalizer_policy': True,
+            'v2_compiler_uses_same_normalizer_policy': True,
             'deterministic_compiler_regions_green': 9,
             'provider_calls': 0,
             'gpu_calls': 0,
             'generation_calls': 0,
             'catalog_wide_launch_authorized': False,
             'runtime_import_proof': False,
-            'paid_generation_worker_authorized': False,
+            'production_executor_installed': False,
           }
           Path('world-asset-v2-preflight-summary.json').write_text(json.dumps(summary, indent=2, sort_keys=True))
           print(json.dumps(summary, sort_keys=True))
@@ -204,8 +209,8 @@ jobs:
             v2-plan-silkspire.json
             v2-shared-worker-validation.json
             v2-acceptance-self-test.json
-            normalizer-self-test.json
-            compiler-self-tests.jsonl
+            v2-normalizer-self-test.json
+            v2-compiler-self-tests.jsonl
             world-asset-v2-preflight-summary.json
           if-no-files-found: error
           retention-days: 14
