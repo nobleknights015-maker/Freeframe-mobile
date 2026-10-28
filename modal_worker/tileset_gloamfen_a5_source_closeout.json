@@ -1,0 +1,87 @@
+{
+  "schema": "plushbound.tileset_regional_a5_source_closeout.v1",
+  "status": "CLOSED_GREEN_8_OF_8",
+  "region": "gloamfen",
+  "target_sheet_type": "A5",
+  "stable_sheet_id": "tileset.gloamfen.a5",
+  "prompt_contract_version": "regional-a5-material-swatch-v2",
+  "machine_gate": "PASS_8_OF_8",
+  "manual_visual_gate": "PASS_8_OF_8",
+  "source_count": 8,
+  "accepted_source_ids_protected_from_rerender": true,
+  "accepted_assets_immutable": true,
+  "missing_local_artifact_is_not_rerender_authority": true,
+  "source_artifact_run_id": 40718139937,
+  "source_artifact_name": "plushbound-a5-gloamfen-eight-source-candidate-40718139937",
+  "source_artifact_id": 12828713378,
+  "source_artifact_sha256": "ea3b3b5551d51d474b775e50424be3a334b8cf61b1d401093cedd7e4c3c11ff5",
+  "deterministic_compile_authorized": true,
+  "catalog_wide_launch_authorized": false,
+  "runtime_import_proof": false,
+  "sources": [
+    {
+      "asset_id": "tileset.gloamfen.a5.source.marsh_mud",
+      "material_key": "marsh_mud",
+      "raw_sha256": "8df77a999da3abfccb1a56b25693cdec10e4f4a658b2ce9fea1aff62e8a12877",
+      "normalized_sha256": "bb121e2ca2e9b835882dab5ce3c0aee423f3aa7fea42fe65b49bc341e7222401",
+      "machine_status": "PASS",
+      "manual_visual_status": "PASS"
+    },
+    {
+      "asset_id": "tileset.gloamfen.a5.source.damp_moss",
+      "material_key": "damp_moss",
+      "raw_sha256": "66fb8f4f336f18bc3d18b2c278ec1246affda3e07bbf5cbd4974afaf74bc28bc",
+      "normalized_sha256": "cc2e5fd3d906baa90bbfc20cac1e4e5adda83e83c870fd0cdd7b3f820e4d8d1a",
+      "machine_status": "PASS",
+      "manual_visual_status": "PASS"
+    },
+    {
+      "asset_id": "tileset.gloamfen.a5.source.shallow_silt",
+      "material_key": "shallow_silt",
+      "raw_sha256": "56678627991e8bd8e5d1ba3f421c06c3f14e03a9eaefdbec1c00178c8f9b9f7d",
+      "normalized_sha256": "305fc41fa894fa575c9289b7795aa80a3346911a8e6ed56ed0591239c4df3d45",
+      "machine_status": "PASS",
+      "manual_visual_status": "PASS"
+    },
+    {
+      "asset_id": "tileset.gloamfen.a5.source.reed_matting",
+      "material_key": "reed_matting",
+      "raw_sha256": "b79ee202734afeb9682f81109c9c13a08dc73c276156a8867fa04a91dff7cb26",
+      "normalized_sha256": "5704be7f292caba8835e872f79093b9eb9b16fd0914bc55bb537d6bc60c2087b",
+      "machine_status": "PASS_AFTER_ZERO_GPU_BORDER_CLEANUP",
+      "manual_visual_status": "PASS"
+    },
+    {
+      "asset_id": "tileset.gloamfen.a5.source.boardwalk_timber",
+      "material_key": "boardwalk_timber",
+      "raw_sha256": "094a834d59b20eae3b97b6913ddfdb45a449af70ef0c27397303027342c8b196",
+      "normalized_sha256": "2ceba1a4d81f63981a508a6460ee0726cc0243d9de61337120f2b21839590568",
+      "machine_status": "PASS",
+      "manual_visual_status": "PASS"
+    },
+    {
+      "asset_id": "tileset.gloamfen.a5.source.drowned_stone",
+      "material_key": "drowned_stone",
+      "raw_sha256": "0362604480b3404532ed02ce2c3bb26e20a4eab698b574b8cf40e3ba72ff8afa",
+      "normalized_sha256": "e8298439a11bc20b422f263d1f6dac27bf977a373897b7356d899e6fd68a6aac",
+      "machine_status": "PASS",
+      "manual_visual_status": "PASS"
+    },
+    {
+      "asset_id": "tileset.gloamfen.a5.source.fungal_moss",
+      "material_key": "fungal_moss",
+      "raw_sha256": "a276abe1635191c2ed4fd299cde57cd762507e389093fb56bac4e3636d2ca03d",
+      "normalized_sha256": "9368403d2097dc703f2fbbaf1317fdad4c1a2210145731dcd643f267b2cf4310",
+      "machine_status": "PASS",
+      "manual_visual_status": "PASS"
+    },
+    {
+      "asset_id": "tileset.gloamfen.a5.source.dark_peat",
+      "material_key": "dark_peat",
+      "raw_sha256": "ee905f45702d3036d45fda906f465a297edac4c05aeb4041cf8ba753606225ab",
+      "normalized_sha256": "d9efc38ed665dd419fa6a360b41c406c4a64186bdc90c5f7d8ad603185f4d8c6",
+      "machine_status": "PASS_AFTER_ZERO_GPU_LOW_LIGHT_RESCUE",
+      "manual_visual_status": "PASS"
+    }
+  ]
+}
