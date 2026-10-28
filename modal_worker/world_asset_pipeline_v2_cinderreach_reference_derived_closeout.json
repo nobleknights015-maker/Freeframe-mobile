@@ -1,0 +1,51 @@
+{
+  "assets": [
+    {
+      "asset_id": "tileset.cinderreach.a5.source.foundry_masonry",
+      "generation_calls": 0,
+      "gpu_calls": 0,
+      "manual_visual_gate": "PASS",
+      "material_key": "foundry_masonry",
+      "normalized_sha256": "4304f7e718e3882542852eb061aca12af822c80d2455e0005ac5aab88d63a1ee",
+      "provider_calls": 0,
+      "raw_sha256": "e87e8e949abfafeef79b4d446e9d00762837f352f355ba530352b2b3cc2093e6",
+      "source_reference_sha256": "cdd12639d50f88b59114664dbd1f407be1732abbd1d105eb032312689f1fc2de",
+      "v2_edge_discontinuity": 0.04281,
+      "v2_rgb_stddev": 12.9311
+    },
+    {
+      "asset_id": "tileset.cinderreach.a5.source.metal_floor_plate",
+      "generation_calls": 0,
+      "gpu_calls": 0,
+      "manual_visual_gate": "PASS",
+      "material_key": "metal_floor_plate",
+      "normalized_sha256": "be5c469647474952cd36442c000f5318ced06e0fc196c7061d96a5ee5bba7905",
+      "provider_calls": 0,
+      "raw_sha256": "c8e62b2596648ac5b90dfa60b953dbaa529290ff90004c3b90d459de53530246",
+      "source_reference_sha256": "d8c74eb812946b6911b7e297a7ce3f28ae7fce8941bef3fc9389d3194fafd12e",
+      "v2_edge_discontinuity": 0.024414,
+      "v2_rgb_stddev": 10.3285
+    },
+    {
+      "asset_id": "tileset.cinderreach.a5.source.cooled_lava",
+      "generation_calls": 0,
+      "gpu_calls": 0,
+      "manual_visual_gate": "PASS",
+      "material_key": "cooled_lava",
+      "normalized_sha256": "73999687a47c58f5c69407d9868693d554ef01a92d2ce8fce81a2fdead714803",
+      "provider_calls": 0,
+      "raw_sha256": "6c1d32928fbbdfa8a8b53d4279e64c1fb7629ac2bd7fd15f080e035868720f3d",
+      "source_reference_sha256": "d734e44eb6e4089f7a2e34e4edd06cbeefecc3a42e68933aa886b8985983da7a",
+      "v2_edge_discontinuity": 0.059423,
+      "v2_rgb_stddev": 15.1039
+    }
+  ],
+  "generation_calls": 0,
+  "gpu_calls": 0,
+  "provider_calls": 0,
+  "reference_role": "World Editor / V1 Engine visual authority supplied by user/Vera",
+  "region": "cinderreach",
+  "runtime_import_proof": false,
+  "schema": "plushbound.world_asset_pipeline_v2_reference_derived_batch_closeout.v1",
+  "status": "PASS_ZERO_GPU_REFERENCE_DERIVED_3_OF_3"
+}
