@@ -1,0 +1,20 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_manual_qa.v1",
+  "status": "FAIL",
+  "asset_id": "tileset.frostlace.a5.source.archive_stone",
+  "region": "frostlace",
+  "material_key": "archive_stone",
+  "semantic_material_surface": false,
+  "no_scene_or_object_composition": false,
+  "edge_to_edge_substrate": true,
+  "no_border_or_inset_panel": true,
+  "no_horizon_or_perspective": true,
+  "no_character_creature_prop_or_structure": true,
+  "readable_at_48px": true,
+  "region_material_identity_matches": false,
+  "notes": "Reject: large broken polygon slab boundaries dominate the source. Retry as smooth pale-gray dressed stone with restrained cool mineral grain; no large cracks, slab outlines, paving polygons or broken-stone shapes.",
+  "source_executor_run_id": 40755360893,
+  "source_artifact_id": 12844814359,
+  "raw_sha256": "169a155754270eda38846626fde85f411b12f1ea1588cd0b40cfea23b0a9eddf",
+  "normalized_sha256": "65f328ba99219a9a359b9f01042de53695ca3cdf1438338ac9f93a81f7bb66f0"
+}
