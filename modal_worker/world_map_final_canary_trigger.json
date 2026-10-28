@@ -1,0 +1,17 @@
+{
+  "schema": "plushbound.world_map_final_canary_trigger.v1",
+  "enabled": true,
+  "mode": "bounded_final_canary",
+  "asset_cap": 8,
+  "preflight_run_id": 40619587708,
+  "preflight_conclusion": "success",
+  "preflight_head_sha": "d4d3a6af7ad53b425d01726cb5182383eba39572",
+  "producer_commit_sha": "f062b8c0256af77236480fd2583879d97646a98f",
+  "workflow_commit_sha": "42f110bab957e050db191a5deff007fba2d1906c",
+  "never_stack_paid_runs": true,
+  "stop_on_validation_failure": true,
+  "checkpoint_and_bank_evidence": true,
+  "resume_without_regenerating_completed_asset_ids": true,
+  "catalog_wide_launch_authorized": false,
+  "creator_full_outfits_remain_closed_at": 24
+}
