@@ -2,7 +2,7 @@
   "schema": "plushbound.world_asset_pipeline_v2_preflight_trigger.v1",
   "enabled": true,
   "mode": "zero_gpu_next_region_validation",
-  "validation_revision": 26,
+  "validation_revision": 27,
   "provider_calls_allowed": 0,
   "gpu_calls_allowed": 0,
   "generation_calls_allowed": 0,
