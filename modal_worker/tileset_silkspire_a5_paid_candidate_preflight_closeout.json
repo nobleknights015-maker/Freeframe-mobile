@@ -1,0 +1,38 @@
+{
+  "schema": "plushbound.tileset_regional_a5_paid_candidate_preflight_closeout.v1",
+  "region": "silkspire",
+  "stable_sheet_id": "tileset.silkspire.a5",
+  "candidate_path": "modal_worker/tileset_silkspire_a5_paid_candidate.json",
+  "candidate_enabled": false,
+  "prompt_contract_version": "regional-a5-material-swatch-v2",
+  "run_id": 40708479178,
+  "head_sha": "97a838076fbfd2802c5f7fd4d3991801b8ddc758",
+  "status": "PASS_DISABLED_NO_SPEND_READY_FOR_FUTURE_EXPLICIT_TRIGGER",
+  "conclusion": "success",
+  "production_skipped": true,
+  "paid_remote_execution_skipped": true,
+  "provider_calls": 0,
+  "gpu_calls": 0,
+  "generation_calls": 0,
+  "region_state_required": "PREFLIGHT_PENDING",
+  "asset_cap": 8,
+  "generation_attempts_per_asset_cap": 1,
+  "one_region_only": true,
+  "never_stack_paid_runs": true,
+  "manual_visual_qa_required": true,
+  "compile_authorized": false,
+  "deterministic_finalize_authorized": false,
+  "catalog_wide_launch_authorized": false,
+  "artifact": {
+    "id": 12823938654,
+    "name": "plushbound-a5-silkspire-paid-candidate-40708479178",
+    "size_bytes": 1728,
+    "sha256": "c2a160a5bdf5f283091148c18f084f8c491c37a7dbc4752065c574e7e180f3da"
+  },
+  "activation_blockers": [
+    "Shared plushbound-regional-a5-paid concurrency lane must be clear.",
+    "Current-head regional preflight must still pass.",
+    "Generic paid workflow must validate this staged candidate against the current scope manifest.",
+    "A successful machine gate still requires manual semantic visual QA before source closeout or final A5 compile."
+  ]
+}
