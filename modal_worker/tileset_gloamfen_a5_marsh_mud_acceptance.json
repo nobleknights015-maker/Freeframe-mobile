@@ -1,0 +1,56 @@
+{
+  "schema": "plushbound.tileset_regional_a5_source_acceptance.v1",
+  "region": "gloamfen",
+  "target_sheet_type": "A5",
+  "stable_sheet_id": "tileset.gloamfen.a5",
+  "asset_id": "tileset.gloamfen.a5.source.marsh_mud",
+  "material_key": "marsh_mud",
+  "status": "ACCEPTED_IMMUTABLE_1_OF_8",
+  "source_generation": {
+    "run_id": 40713292000,
+    "artifact_id": 12827271245,
+    "artifact_sha256": "5f85c0b186aed404c77d5610a2ebe0aec4293c692f3b0afc06ce713a03c7d74b",
+    "gpu_seconds": 1.526,
+    "generation_attempts": 1,
+    "raw_sha256": "8df77a999da3abfccb1a56b25693cdec10e4f4a658b2ce9fea1aff62e8a12877",
+    "prompt_sha256": "bcbf513ef160b29aba82c3fd6fabeaba94b1a8bb1ace7b5426767eaa21cf3393",
+    "prompt_contract_version": "regional-a5-material-swatch-v2"
+  },
+  "deterministic_renormalization": {
+    "run_id": 40714038937,
+    "artifact_id": 12826434791,
+    "artifact_sha256": "e78c94d18af8f62cbd29d6cdd1286e7b62bb75b09891207474933ffb189b6dd3",
+    "provider_calls": 0,
+    "gpu_calls": 0,
+    "generation_calls": 0,
+    "normalized_sha256": "bb121e2ca2e9b835882dab5ce3c0aee423f3aa7fea42fe65b49bc341e7222401",
+    "source_rgb_stddev": 5.279,
+    "pre_rescue_rgb_stddev": 1.6862,
+    "readability_contrast_factor": 1.868078,
+    "final_rgb_stddev": 3.0858,
+    "minimum_rgb_stddev": 3.0,
+    "edge_discontinuity": 0.005882,
+    "maximum_edge_discontinuity": 0.25,
+    "machine_gate": "PASS"
+  },
+  "manual_visual_qa": {
+    "continuous_material_swatch": "PASS",
+    "mud_material_readability": "PASS",
+    "scene_composition_absent": "PASS",
+    "horizon_perspective_absent": "PASS",
+    "isolated_objects_absent": "PASS",
+    "game_scale_48px_readability": "PASS",
+    "overall": "PASS"
+  },
+  "accepted_assets_immutable": true,
+  "rerender_authorized": false,
+  "missing_local_artifact_is_not_rerender_authority": true,
+  "compile_authorized": false,
+  "deterministic_finalize_authorized": false,
+  "remaining_seven_generation_authorized": true,
+  "remaining_seven_must_exclude": [
+    "tileset.gloamfen.a5.source.marsh_mud"
+  ],
+  "catalog_wide_launch_authorized": false,
+  "runtime_import_proof": false
+}
