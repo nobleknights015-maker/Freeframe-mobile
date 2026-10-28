@@ -1,0 +1,21 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_manual_qa.v1",
+  "status": "FAIL",
+  "asset_id": "tileset.frostlace.a5.source.archive_stone",
+  "region": "frostlace",
+  "material_key": "archive_stone",
+  "semantic_material_surface": false,
+  "no_scene_or_object_composition": false,
+  "edge_to_edge_substrate": false,
+  "no_border_or_inset_panel": true,
+  "no_horizon_or_perspective": true,
+  "no_character_creature_prop_or_structure": true,
+  "readable_at_48px": true,
+  "region_material_identity_matches": false,
+  "review_basis": "raw 384x384 repair source plus normalized 48x48 visual review",
+  "executor_run_id": 40757599963,
+  "source_artifact_id": 12846192023,
+  "raw_sha256": "340518730fb1161650e72f16363f11cb8c9c8ecd3357c863c167dd56fee707be",
+  "normalized_sha256": "c37c4ef1a9bb814259ce44432678d76787d9dc5df9ef943b041a5a3c8c5ad353",
+  "notes": "Second semantic rejection: large irregular slab boundaries and bright joints still dominate. The source reads as broken/paved stone pieces instead of one smooth continuous dressed-stone substrate."
+}
