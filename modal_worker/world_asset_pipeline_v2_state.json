@@ -12,6 +12,7 @@
   "accepted_region_source_closeouts": {
     "gloamfen": "modal_worker/tileset_gloamfen_a5_source_closeout.json"
   },
+  "accepted_asset_records": {},
   "closed_region_sheets": {
     "elyndor": {
       "stable_sheet_id": "tileset.elyndor.a5",
@@ -44,7 +45,9 @@
     "requested_ids_only": true,
     "attempts_per_requested_id_cap": 1,
     "failure_isolated_to_asset_id": true,
-    "manual_visual_qa_required": true
+    "manual_visual_qa_required": true,
+    "individual_asset_acceptance_is_hash_bound": true,
+    "region_closeout_only_after_all_8_assets_accepted": true
   },
   "deterministic_policy": {
     "normalization_zero_gpu": true,
