@@ -1,0 +1,22 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_manual_qa.v1",
+  "status": "PASS",
+  "asset_id": "tileset.crownweave.a5.source.highland_grass",
+  "region": "crownweave",
+  "material_key": "highland_grass",
+  "semantic_material_surface": true,
+  "no_scene_or_object_composition": true,
+  "manual_visual_gate": "PASS",
+  "review_notes": "Continuous short dense green highland ground-cover texture with fine clipped blade/fiber character. No border, inset panel, plant clump object, landscape, path, scene, frame or focal composition. Clean edge-to-edge A5 source material.",
+  "raw_sha256": "6ae2c06ded72ba9b75c038bdef0e31ea8d2fda49f48a3bdd9b6f1b911ebe7faf",
+  "normalized_sha256": "b0e1a2d6ec1d4f597ebe8902eb3172f435f46d9323bd93f92a62284af08b7101",
+  "v2_rgb_stddev": 9.5515,
+  "v2_edge_discontinuity": 0.04104,
+  "source_executor_run_id": 40776314827,
+  "source_artifact_id": 12853894576,
+  "source_artifact_sha256": "0cc1e6dfc19c0398e8b912ed00fa3dd31a7b82c01a4ee2ac3660ae52034b1502",
+  "gpu_seconds": 1.555,
+  "provider_calls_after_review": 0,
+  "gpu_calls_after_review": 0,
+  "generation_calls_after_review": 0
+}
