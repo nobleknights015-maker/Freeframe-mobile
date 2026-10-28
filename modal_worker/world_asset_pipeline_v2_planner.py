@@ -10,6 +10,7 @@ from modal_worker.world_asset_pipeline_v2_controller import plan_region, resolve
 SCOPE_PATH = Path("modal_worker/tileset_regional_a5_scope_manifest.json")
 STATE_PATH = Path("modal_worker/world_asset_pipeline_v2_state.json")
 FREEZE_PATH = Path("modal_worker/world_asset_pipeline_v2_freeze.json")
+RECEIVER_PATH = Path("modal_worker/world_asset_pipeline_v2_receiver_contract.json")
 PROMPT_CONTRACT_VERSION = "regional-a5-material-swatch-v2"
 WORKER_VERSION = "plushbound-world-asset-pipeline-v2-worker-v1"
 MAX_BATCH_SIZE = 8
@@ -26,6 +27,57 @@ def _seed(asset_id: str, prompt_sha256: str) -> int:
         f"{WORKER_VERSION}:{asset_id}:{prompt_sha256}".encode("utf-8")
     ).digest()
     return int.from_bytes(digest[:4], "big") & 0x7FFFFFFF
+
+
+def validate_receiver_contract(
+    *,
+    state_data: dict | None = None,
+    freeze_data: dict | None = None,
+    receiver_data: dict | None = None,
+) -> dict:
+    """Validate the banked game-side Engine v1 receiver proof in one place."""
+    state = dict(state_data) if state_data is not None else _load(STATE_PATH)
+    freeze = dict(freeze_data) if freeze_data is not None else _load(FREEZE_PATH)
+    receiver = dict(receiver_data) if receiver_data is not None else _load(RECEIVER_PATH)
+
+    if receiver.get("schema") != "plushbound.world_asset_pipeline_v2_receiver_contract.v1":
+        raise RuntimeError("V2 receiver contract schema mismatch")
+    if receiver.get("status") != "PASS_ENGINE_V1_RECEIVER_RUNTIME_GREEN":
+        raise RuntimeError("V2 receiver runtime is not green")
+    if receiver.get("runtime_import_proof") is not True:
+        raise RuntimeError("V2 receiver runtime proof is not banked")
+    if receiver.get("pipeline_resume_blocker") is not False:
+        raise RuntimeError("V2 receiver still blocks production resume")
+    if receiver.get("engine_profile") != "mv_tileset_a5":
+        raise RuntimeError("V2 receiver engine profile drift")
+    if receiver.get("sheet_size") != [384, 768]:
+        raise RuntimeError("V2 receiver sheet geometry drift")
+    if receiver.get("tile_size") != [48, 48] or receiver.get("grid") != [8, 16]:
+        raise RuntimeError("V2 receiver tile/grid geometry drift")
+    if receiver.get("slot_count") != 128:
+        raise RuntimeError("V2 receiver slot contract drift")
+    if receiver.get("accepted_assets_immutable") is not True:
+        raise RuntimeError("V2 receiver does not preserve accepted-asset immutability")
+    if receiver.get("missing_local_package_is_not_rerender_authority") is not True:
+        raise RuntimeError("V2 receiver lost missing-package rerender protection")
+    if receiver.get("catalog_wide_launch_authorized") is not False:
+        raise RuntimeError("V2 receiver must not authorize catalog-wide generation")
+    if state.get("runtime_import_proof") is not True:
+        raise RuntimeError("V2 state disagrees with banked receiver proof")
+    if freeze.get("runtime_import_proof") is not True:
+        raise RuntimeError("V2 freeze/gate disagrees with banked receiver proof")
+
+    return {
+        "status": "PASS_ENGINE_V1_RECEIVER_RUNTIME_CONTRACT",
+        "runtime_import_proof": True,
+        "profile": "mv_tileset_a5",
+        "sheet_size": [384, 768],
+        "tile_size": [48, 48],
+        "grid": [8, 16],
+        "slot_count": 128,
+        "pipeline_resume_blocker": False,
+        "catalog_wide_launch_authorized": False,
+    }
 
 
 def build_rows(region: str, requested_ids: list[str] | None = None) -> tuple[list[dict], dict]:
@@ -96,10 +148,16 @@ def validate_paid_gate(
     *,
     state_data: dict | None = None,
     freeze_data: dict | None = None,
+    receiver_data: dict | None = None,
 ) -> dict:
     """Validate the paid gate. Optional in-memory data enables zero-spend shadow tests."""
     state = dict(state_data) if state_data is not None else _load(STATE_PATH)
     freeze = dict(freeze_data) if freeze_data is not None else _load(FREEZE_PATH)
+    receiver = validate_receiver_contract(
+        state_data=state,
+        freeze_data=freeze,
+        receiver_data=receiver_data,
+    )
     if freeze.get("production_frozen") is True or freeze.get("paid_remote_execution_allowed") is not True:
         raise RuntimeError("V2 generation remains frozen")
     if state.get("production_frozen") is True or state.get("paid_execution_enabled") is not True:
@@ -108,18 +166,19 @@ def validate_paid_gate(
         raise RuntimeError("V2 generation is not bound to this region")
     if state.get("catalog_wide_launch_authorized") is not False:
         raise RuntimeError("catalog-wide generation must remain disabled")
-    if state.get("runtime_import_proof") is not False:
-        raise RuntimeError("runtime import proof must remain false during source generation")
     if freeze.get("catalog_wide_launch_authorized") is not False:
         raise RuntimeError("freeze manifest must keep catalog-wide generation disabled")
     if freeze.get("accepted_assets_immutable") is not True:
         raise RuntimeError("accepted-asset immutability gate is not asserted")
+    if freeze.get("missing_local_artifact_is_not_rerender_authority") is not True:
+        raise RuntimeError("missing local artifact protection is not asserted")
     return {
         "status": "PASS_PAID_GATE",
         "region": region,
         "one_region_only": True,
         "catalog_wide_launch_authorized": False,
-        "runtime_import_proof": False,
+        "runtime_import_proof": True,
+        "receiver_contract_status": receiver["status"],
     }
 
 
@@ -134,6 +193,7 @@ def validate_rebuild_contract() -> dict:
         raise RuntimeError("V2 rebuild validation expected frozen state")
     if not freeze.get("production_frozen") or freeze.get("paid_remote_execution_allowed"):
         raise RuntimeError("V2 rebuild validation expected frozen gate")
+    receiver = validate_receiver_contract(state_data=state, freeze_data=freeze)
     gloamfen_rows, gp = build_rows("gloamfen")
     silkspire_rows, sp = build_rows("silkspire")
     if gloamfen_rows or gp["selected_generation_count"] != 0:
@@ -147,9 +207,10 @@ def validate_rebuild_contract() -> dict:
         "silkspire_selected": 8,
         "max_batch_size": MAX_BATCH_SIZE,
         "accepted_id_refusal": "PASS",
+        "receiver_contract_status": receiver["status"],
         "provider_calls": 0,
         "gpu_calls": 0,
         "generation_calls": 0,
         "production_frozen": True,
-        "runtime_import_proof": False,
+        "runtime_import_proof": True,
     }
