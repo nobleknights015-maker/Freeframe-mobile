@@ -1,6 +1,6 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_rebuild_checkpoint.v1",
-  "status": "V2_REBUILT_REAL_DATA_QUALIFIED_GUARDED_EXECUTOR_ZERO_SPEND_VALIDATED",
+  "status": "V2_STRUCTURALLY_READY_LIVE_TRIGGER_BLOCKED_PRODUCTION_REFROZEN",
   "production_frozen": true,
   "paid_execution_enabled": false,
   "production_executor_installed": true,
@@ -15,17 +15,10 @@
   "unified_v2_normalizer_policy": true,
   "v2_compiler_uses_same_normalizer_policy": true,
   "accepted_asset_rerender_refusal": true,
-  "disabled_run_trigger_guard": {
-    "status": "PASS_DISABLED_ZERO_SPEND",
-    "workflow_run_id": 40722849499,
-    "workflow_head_sha": "c43c5c7e2252d30f3eca0a6719bd6b6effdfd2a6",
-    "artifact_id": 12832065717,
-    "artifact_sha256": "f37a7c3826f31403a4167c246f99a718a0b82c2de66888e75393b29db4871156"
-  },
   "guarded_executor_validation": {
     "status": "PASS_DISABLED_ZERO_SPEND_PAID_JOB_SKIPPED",
-    "workflow_run_id": 40725739863,
-    "workflow_head_sha": "da0f99c2316b51553c6c836db065515586c6d8d4"
+    "workflow_run_id": 40726337123,
+    "guard_run_id": 40726337027
   },
   "master_preflight_revision_6": {
     "status": "PASS_ZERO_GPU_V2_END_TO_END_CONTRACT_READY_WITH_EXECUTOR_INSTALLED",
@@ -38,21 +31,22 @@
   "real_data_gloamfen_qualification": {
     "status": "PASS_REAL_DATA_V2_COMPILE_AND_ENGINE_V1_CONTRACT",
     "workflow_run_id": 40723804195,
-    "workflow_head_sha": "fd8675623aded18d6faf7e42b9fc5bc05fde6a68",
-    "artifact_id": 12832535564,
-    "artifact_sha256": "2b449efcdf59c521cec5ac620708d54dbe25d6404206bfc294e7eb90323c798a",
     "sheet_sha256": "03f0f49fd8539b48c68b2a27e830e5daca4e67b4d2d2bab97cfea864490ea85e",
     "sheet_size": [384, 768],
     "slot_count": 128,
     "unique_slot_hashes": 128,
-    "engine_v1_compatibility_status": "PASS_ENGINE_V1_COMPATIBILITY_CONTRACT",
     "runtime_import_proof": false
   },
-  "provider_calls_during_rebuild_validation": 0,
-  "gpu_calls_during_rebuild_validation": 0,
-  "generation_calls_during_rebuild_validation": 0,
+  "silkspire_live_canary": {
+    "asset_id": "tileset.silkspire.a5.source.city_stone_paving",
+    "trigger_write_result": "BLOCKED_BEFORE_ENABLE",
+    "provider_calls": 0,
+    "gpu_calls": 0,
+    "generation_calls": 0,
+    "production_refrozen": true
+  },
   "catalog_wide_launch_authorized": false,
   "runtime_import_proof": false,
   "next_fresh_region_after_qualification": "silkspire",
-  "next_manager_action": "RUN_ONE_SOURCE_SILKSPIRE_CITY_STONE_PAVING_LIVE_CANARY_THEN_REFREEZE_AND_MANUAL_QA"
+  "next_manager_action": "KEEP_PRODUCTION_FROZEN; LIVE_CANARY_REMAINS READY BUT UNRUN"
 }
