@@ -1,0 +1,23 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_asset_acceptance.v1",
+  "status": "ACCEPTED",
+  "asset_id": "tileset.silkspire.a5.source.city_stone_paving",
+  "region": "silkspire",
+  "material_key": "city_stone_paving",
+  "machine_gate": "PASS",
+  "manual_visual_gate": "PASS",
+  "raw_sha256": "ade00323a341fa1ec1bafed21f6a3e1760048eaf09e5f492437d4ecc32039a47",
+  "normalized_sha256": "740a5212ef8b9e16920e891e6b3ee23380c2f22b9ec156647e512b915db592cc",
+  "source_report": "modal_worker/world_asset_pipeline_v2_silkspire_city_stone_reinspection.json",
+  "manual_qa_evidence": "modal_worker/world_asset_pipeline_v2_manual_qa_silkspire_city_stone_paving.json",
+  "source_artifact_id": 12835729347,
+  "source_artifact_sha256": "cd5902b70c45e1b2c7a5101730fb9a7013e4982a237f32f0deb9dfc96ff19b3a",
+  "source_executor_run_id": 40735013050,
+  "original_render_gpu_seconds": 1.466,
+  "immutable": true,
+  "rerender_allowed": false,
+  "compile_authorized": false,
+  "catalog_wide_launch_authorized": false,
+  "runtime_import_proof": false,
+  "accepted_without_rerender_after_policy_correction": true
+}
