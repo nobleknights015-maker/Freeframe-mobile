@@ -1,0 +1,44 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_receiver_contract.v1",
+  "status": "PASS_ENGINE_V1_RECEIVER_RUNTIME_GREEN",
+  "producer_repo": "nobleknights015-maker/Freeframe-mobile",
+  "receiver_repo": "nobleknights015-maker/Plushbound-Legends-mobile",
+  "receiver_branch": "main",
+  "runtime_importer_path": "overrides/a5_runtime_importer.js",
+  "runtime_installer_path": "overrides/patch_a5_runtime_importer.py",
+  "runtime_contract_doc": "docs/A5_RUNTIME_IMPORT_CONTRACT.md",
+  "manifest_schema": "plushbound.a5_runtime_package.v1",
+  "engine_profile": "mv_tileset_a5",
+  "stable_sheet_id_pattern": "tileset.<region>.a5",
+  "sheet_size": [384, 768],
+  "tile_size": [48, 48],
+  "grid": [8, 16],
+  "slot_count": 128,
+  "accepted_assets_immutable": true,
+  "missing_local_package_is_not_rerender_authority": true,
+  "runtime_browser_import_proof": {
+    "status": "PASS",
+    "workflow_run_id": 40731881573,
+    "job_id": 122970077917,
+    "smoke_scope": "real browser loads manifest and PNG, maps 128 slots, draws slot 0 and 127, releases region",
+    "fixture_is_production_art": false
+  },
+  "apk_packaging_proof": {
+    "status": "PASS",
+    "workflow_run_id": 40731881573,
+    "artifact_id": 12834673241,
+    "artifact_sha256": "6fbc9708dea308f0efd675033bff12472a2b5257a80f8d1c1d82b417c19f33df",
+    "importer_assets_verified_inside_apk": true
+  },
+  "real_gloamfen_cross_repo_evidence": {
+    "producer_sheet_sha256": "03f0f49fd8539b48c68b2a27e830e5daca4e67b4d2d2bab97cfea864490ea85e",
+    "producer_bridge_roundtrip": "PASS",
+    "runtime_fixture_claimed_as_gloamfen": false
+  },
+  "runtime_import_proof": true,
+  "runtime_import_proof_scope": "game-side JavaScript runtime importer exercised in headless Chromium plus importer assets verified inside built Android APK",
+  "android_physical_device_webview_proof": false,
+  "world_editor_ui_import_proof": false,
+  "pipeline_resume_blocker": false,
+  "catalog_wide_launch_authorized": false
+}
