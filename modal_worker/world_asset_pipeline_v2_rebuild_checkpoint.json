@@ -1,6 +1,6 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_rebuild_checkpoint.v1",
-  "status": "V2_STRUCTURALLY_READY_SHADOW_LIVE_CANARY_GREEN_PRODUCTION_FROZEN",
+  "status": "V2_STRUCTURALLY_READY_A5_IMPORT_BRIDGE_GREEN_PRODUCTION_FROZEN",
   "production_frozen": true,
   "paid_execution_enabled": false,
   "production_executor_installed": true,
@@ -20,15 +20,16 @@
     "workflow_run_id": 40726337123,
     "guard_run_id": 40726337027
   },
-  "master_preflight_revision_7": {
-    "status": "PASS_ZERO_GPU_V2_END_TO_END_PLUS_SHADOW_LIVE_CANARY",
-    "workflow_run_id": 40727252906,
-    "workflow_head_sha": "244886757dd4bf1f34fc8f4a2a51ea705feb3ec7",
-    "artifact_id": 12832404285,
-    "artifact_sha256": "613efc635dc207ab8322f5abdadacbbad5216619e7c13d820a90729bf45f1e37",
+  "master_preflight_revision_8": {
+    "status": "PASS_ZERO_GPU_V2_END_TO_END_PLUS_SHADOW_CANARY_PLUS_A5_IMPORT_BRIDGE",
+    "workflow_run_id": 40728457440,
+    "workflow_head_sha": "28f04118ce4e6e0ae6924b2785d7e08e96c865c7",
+    "artifact_id": 12832909352,
+    "artifact_sha256": "cb5b1944508f7895d6d13e67482715679a7aa41f5db618e620ac6e1b7ecdc5f7",
     "regional_compiler_contracts_green": 9,
     "shadow_live_canary_authorization": "PASS",
     "shadow_live_canary_asset_id": "tileset.silkspire.a5.source.city_stone_paving",
+    "a5_import_bridge_roundtrip": "PASS",
     "real_production_remained_frozen": true,
     "provider_calls": 0,
     "gpu_calls": 0,
@@ -37,10 +38,23 @@
   "real_data_gloamfen_qualification": {
     "status": "PASS_REAL_DATA_V2_COMPILE_AND_ENGINE_V1_CONTRACT",
     "workflow_run_id": 40723804195,
+    "source_artifact_id": 12832535564,
     "sheet_sha256": "03f0f49fd8539b48c68b2a27e830e5daca4e67b4d2d2bab97cfea864490ea85e",
     "sheet_size": [384, 768],
     "slot_count": 128,
     "unique_slot_hashes": 128,
+    "runtime_import_proof": false
+  },
+  "a5_import_bridge": {
+    "status": "PASS_SYNTHETIC_CI_AND_REAL_GLOAMFEN_ROUNDTRIP",
+    "module": "modal_worker/world_asset_pipeline_v2_a5_import_bridge.py",
+    "real_data_evidence": "modal_worker/world_asset_pipeline_v2_gloamfen_a5_import_bridge_qualification.json",
+    "engine_profile": "mv_tileset_a5",
+    "byte_identity_preserved": true,
+    "slot_count": 128,
+    "unique_slot_hashes": 128,
+    "live_importer_present_in_repository": false,
+    "proof_scope": "engine-facing deterministic staging and round-trip handoff only",
     "runtime_import_proof": false
   },
   "silkspire_live_canary": {
@@ -56,6 +70,7 @@
   "activation_protocol": "LOCKED_WITH_PRE_ACTIVATION_AND_POST_RUN_SEQUENCE",
   "catalog_wide_launch_authorized": false,
   "runtime_import_proof": false,
+  "runtime_import_blocker": "repository does not currently contain a live World Editor/Engine v1 A5 importer",
   "next_fresh_region_after_qualification": "silkspire",
-  "next_manager_action": "KEEP_PRODUCTION_FROZEN; LIVE_CANARY LOGIC IS PROVEN IN SHADOW MODE AND AWAITS A PERMITTED LIVE_TRIGGER_PATH"
+  "next_manager_action": "KEEP_PRODUCTION_FROZEN; A5 HANDOFF BRIDGE IS GREEN; TRUE RUNTIME IMPORT PROOF REQUIRES A REAL WORLD EDITOR/ENGINE IMPORTER OR SUPPORTED RUNTIME HOOK"
 }
