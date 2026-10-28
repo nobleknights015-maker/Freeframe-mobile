@@ -1,0 +1,32 @@
+{
+  "accepted_ids_excluded": [
+    "tileset.silkspire.a5.source.city_stone_paving"
+  ],
+  "authorized_trigger_commit": "d117139d3d9cb83ffbcefad142cb6f826dbefe7c",
+  "automatic_acceptance": false,
+  "automatic_compile": false,
+  "catalog_wide_launch_authorized": false,
+  "executor_run_id": 40742860868,
+  "failure_isolated_to_asset_id": true,
+  "generation_count": 7,
+  "machine_pass_count": 7,
+  "manual_pass_count": 5,
+  "manual_rejected_semantic_count": 2,
+  "production_refrozen_before_review": true,
+  "region": "silkspire",
+  "requested_count": 7,
+  "results": [
+    {"asset_id":"tileset.silkspire.a5.source.workshop_timber","material_key":"workshop_timber","machine_gate":"PASS","manual_visual_gate":"PASS","raw_sha256":"558368ead9d69001d2ae618a942071a037ae51f5e967775ad531f75f00ea081e","normalized_sha256":"fc8323884a66fe98c5f01365a2841ca71607d0bea2977880090bda23ff4bea83","edge_discontinuity":0.013617,"rgb_stddev":5.3946,"gpu_seconds":1.486,"note":"Continuous edge-to-edge medium-brown utilitarian wood grain; no scene, object, frame, or inset panel; remains readable after 48px normalization."},
+    {"asset_id":"tileset.silkspire.a5.source.pale_masonry","material_key":"pale_masonry","machine_gate":"PASS","manual_visual_gate":"PASS","raw_sha256":"75636c8a08085458e71bdde9b00bb08e73f9085c5fdbcc29b9fdf9fbd40c713b","normalized_sha256":"b946748873c6b8c165232e1e2c6d59e669ebf64df3027492a39d830b78989fe7","edge_discontinuity":0.04198,"rgb_stddev":8.4225,"gpu_seconds":0.725,"note":"Continuous pale pearl-gray masonry surface with restrained mortar joints crossing the frame; no scene, focal object, perimeter frame, or perspective."},
+    {"asset_id":"tileset.silkspire.a5.source.dark_masonry","material_key":"dark_masonry","machine_gate":"PASS","manual_visual_gate":"PASS","raw_sha256":"ec1d1f1c46805bd360730d0be453a4bda2c3aac32557cc2ac717102ab44bdf38","normalized_sha256":"af1ad605aff8f4ecae7e20794e7d6e97fac9583427a714a8d36325026b920840","edge_discontinuity":0.009069,"rgb_stddev":13.2774,"gpu_seconds":0.727,"note":"Continuous smoky charcoal masonry surface with regular joints and material variation; no scene, focal object, perimeter frame, or perspective."},
+    {"asset_id":"tileset.silkspire.a5.source.bridge_timber","material_key":"bridge_timber","machine_gate":"PASS","manual_visual_gate":"PASS","raw_sha256":"28692c32d8a043cae7cbf5bb25fad6881bdc31c3ab200fefd98759ad2d7f4bd2","normalized_sha256":"2221cf2573458ab90696169a06be9ab18022bc198eb600d0b88a8d7d438b67b2","edge_discontinuity":0.010444,"rgb_stddev":9.1354,"gpu_seconds":0.726,"note":"Edge-to-edge weathered structural wood surface with linear wear and plank/wood grain; no isolated bridge object, frame, or scene composition."},
+    {"asset_id":"tileset.silkspire.a5.source.guild_floorboards","material_key":"guild_floorboards","machine_gate":"PASS","manual_visual_gate":"PASS","raw_sha256":"357e6e0bf866fee8f603e1bee4a4d6395560a2492a22f37b8cddd0c96841772e","normalized_sha256":"509d17196728dcc8cc558fc83fdc9c4294185704d5a29a72ed8423efb4b5eda9","edge_discontinuity":0.009341,"rgb_stddev":7.8778,"gpu_seconds":0.724,"note":"Edge-to-edge lacquered dark wood/floorboard surface with fine linear grain/seams; no room scene, object, border, or perspective."},
+    {"asset_id":"tileset.silkspire.a5.source.roof_tile","material_key":"roof_tile","machine_gate":"PASS","manual_visual_gate":"FAIL","raw_sha256":"7753f2aa27ed8a4d6618bb804a3610a75415ec3b815cf0f50a6df8f8f54c664b","normalized_sha256":"64782427ca086d2e6d180cb06dfc1f55f4cdeb039c3b0336999d6b14508dfbca","edge_discontinuity":0.012078,"rgb_stddev":8.0976,"gpu_seconds":0.726,"note":"Reject semantic: render reads as one large rounded-square/inset blue panel with a visible perimeter rather than a continuous roof-tile material extending beyond all four edges."},
+    {"asset_id":"tileset.silkspire.a5.source.workshop_metal_plate","material_key":"workshop_metal_plate","machine_gate":"PASS","manual_visual_gate":"FAIL","raw_sha256":"eb3b39d51d978ed6d6bcf325eb5be68d06cfca95c5c3dab072a9c45973bb0964","normalized_sha256":"5e5822f23e4f786c5904bf3176b33e5d07fd911ee63c057342df5351e0a9cd82","edge_discontinuity":0.006427,"rgb_stddev":26.0635,"gpu_seconds":0.727,"note":"Reject semantic: render reads as a framed rectangular metal plate with an obvious perimeter/border and corner wear rather than a continuous metal substrate extending beyond all four edges."}
+  ],
+  "schema": "plushbound.world_asset_pipeline_v2_batch_review.v1",
+  "source_artifact_id": 12840027078,
+  "source_artifact_sha256": "9f32ba6b6def3f47063017073016a1fa0e08b8bdcc151fe6ff66f63632d4c27c",
+  "status": "MANUAL_QA_COMPLETE_5_PASS_2_REJECTED_SEMANTIC",
+  "total_gpu_seconds": 5.842
+}
