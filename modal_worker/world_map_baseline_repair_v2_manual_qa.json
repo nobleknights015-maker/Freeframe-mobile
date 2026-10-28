@@ -1,0 +1,42 @@
+{
+  "schema": "plushbound.world_map_baseline_repair_manual_qa.v1",
+  "repair_version": "v2",
+  "source_run_id": 40623431974,
+  "source_artifact_id": 12788303482,
+  "source_artifact_name": "plushbound-world-map-baseline-repair-v2-40623431974",
+  "machine_gate": "PASS_2_OF_2",
+  "manual_visual_gate": "PASS_2_OF_2",
+  "accepted_count": 2,
+  "quarantined_count": 0,
+  "ten_region_baseline_complete": true,
+  "catalog_wide_launch_authorized": false,
+  "creator_full_outfits_remain_closed_at": 24,
+  "accepted_and_banked": [
+    {
+      "asset_id": "world.cinderreach.environment_master",
+      "sha256": "00633d8b17360fbfe9ebfc5d7876f2a140c59a57383a1569182bd651dedd510a",
+      "decision": "ACCEPT",
+      "reason": "wide geology-first composition is visually clean; settlement remains distant and unmarked with no pseudo-text or modern-road reading"
+    },
+    {
+      "asset_id": "world.frostlace.environment_master",
+      "sha256": "90f57c6f7be3f2b48c7d23febe9b48280106f72984cb05046413a8d7b2fb1ca1",
+      "decision": "ACCEPT",
+      "reason": "open frozen valley is visually clean; no banners, rune/glyph decoration, signage, or modern infrastructure reading"
+    }
+  ],
+  "protected_preexisting_accepted_count": 8,
+  "protected_preexisting_accepted_contract": "modal_worker/world_map_final_canary_closeout.json",
+  "resulting_baseline_state": {
+    "canonical_region_count": 10,
+    "accepted_count": 10,
+    "quarantined_count": 0,
+    "status": "COMPLETE_10_OF_10_VISUAL_AND_DETERMINISTIC"
+  },
+  "policy": {
+    "rerender_accepted_ids": false,
+    "protect_all_ten_baseline_masters": true,
+    "tilesets_remain_separate_specialized_lane": true,
+    "catalog_wide_launch_authorized": false
+  }
+}
