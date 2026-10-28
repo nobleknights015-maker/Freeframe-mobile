@@ -1,0 +1,23 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_shared_worker_preflight_closeout.v1",
+  "status": "PASS_ZERO_GPU_V2_CONTROL_AND_SHARED_WORKER_READY",
+  "workflow_run_id": 40722452368,
+  "workflow_head_sha": "a6aea152229a7399cd914713085bb2692249facf",
+  "artifact_id": 12830219803,
+  "artifact_name": "plushbound-world-asset-pipeline-v2-preflight-40722452368",
+  "artifact_sha256": "a1b4d6b81cd0a8fffc8d745569be60fd6ea58fdd143e077a871be69f6359f2e7",
+  "control_plane_green": true,
+  "shared_generator_planner_green": true,
+  "single_modal_runner_declaration_green": true,
+  "accepted_id_rerender_refusal_green": true,
+  "failure_isolated_to_asset_id": true,
+  "batch_art_rejection_does_not_abort_sibling_assets": true,
+  "gpu_fallback_candidates": ["L4", "A10G"],
+  "production_frozen": true,
+  "paid_generation_authorized": false,
+  "provider_calls": 0,
+  "gpu_calls": 0,
+  "generation_calls": 0,
+  "catalog_wide_launch_authorized": false,
+  "runtime_import_proof": false
+}
