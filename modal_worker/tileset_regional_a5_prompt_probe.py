@@ -24,8 +24,10 @@ MODEL_VOLUME = "freeframe-model-cache"
 SCOPE_PATH = Path("modal_worker/tileset_regional_a5_scope_manifest.json")
 OUTPUT_ROOT = Path("tileset-regional-a5-prompt-probe")
 PROMPT_CONTRACT_VERSION = "regional-a5-material-swatch-v2"
-PROBE_VERSION = "plushbound-regional-a5-prompt-probe-v1"
-REMOTE_TIMEOUT_SECONDS = 420
+PROBE_VERSION = "plushbound-regional-a5-prompt-probe-v2-gpu-fallback-cache-only"
+GPU_CANDIDATES = ["L4", "A10G"]
+STARTUP_TIMEOUT_SECONDS = 180
+REMOTE_TIMEOUT_SECONDS = 120
 
 image = (
     modal.Image.debian_slim(python_version="3.11")
@@ -138,27 +140,40 @@ def build_probe(region: str, asset_id: str) -> dict:
 
 
 @app.cls(
-    gpu="L4",
+    gpu=GPU_CANDIDATES,
     image=image,
     volumes={CACHE_DIR: model_cache},
     scaledown_window=120,
+    startup_timeout=STARTUP_TIMEOUT_SECONDS,
     timeout=REMOTE_TIMEOUT_SECONDS,
 )
 class PromptProbeRunner:
     @modal.enter()
     def load(self):
+        # The model was already proven from this shared cache by the successful
+        # eight-source canary. Never let a paid GPU container block on a hub
+        # network lookup or model redownload during a one-source diagnostic.
+        os.environ["HF_HOME"] = CACHE_DIR
+        os.environ["HF_HUB_CACHE"] = f"{CACHE_DIR}/hub"
+        os.environ["HF_HUB_OFFLINE"] = "1"
+        os.environ["TRANSFORMERS_OFFLINE"] = "1"
+        print("A5_PROBE_STARTUP_STAGE=CONTAINER_STARTED", flush=True)
+        print(f"A5_PROBE_GPU_CANDIDATES={','.join(GPU_CANDIDATES)}", flush=True)
+        print("A5_PROBE_STARTUP_STAGE=CACHE_ONLY_MODEL_LOAD_BEGIN", flush=True)
+
         import torch
         from diffusers import DiffusionPipeline
 
-        os.environ.setdefault("HF_HOME", CACHE_DIR)
-        os.environ.setdefault("HF_HUB_CACHE", f"{CACHE_DIR}/hub")
         self.torch = torch
         self.pipe = DiffusionPipeline.from_pretrained(
             MODEL_ID,
             torch_dtype=torch.bfloat16,
             cache_dir=CACHE_DIR,
+            local_files_only=True,
         )
+        print("A5_PROBE_STARTUP_STAGE=PIPELINE_CPU_READY", flush=True)
         self.pipe.to("cuda")
+        print("A5_PROBE_STARTUP_STAGE=CUDA_READY", flush=True)
 
     @modal.method()
     def run_one(self, item: dict) -> dict:
@@ -196,6 +211,7 @@ class PromptProbeRunner:
                 raise RuntimeError(f"{item['asset_id']}: invariant {key} drifted")
 
         generator = self.torch.Generator(device="cuda").manual_seed(int(request["seed"]))
+        print(f"A5_PROBE_RENDER_STAGE=BEGIN:{item['asset_id']}", flush=True)
         started = time.monotonic()
         result = self.pipe(
             prompt=str(request["prompt"]),
@@ -206,6 +222,7 @@ class PromptProbeRunner:
             generator=generator,
         ).images[0]
         elapsed = time.monotonic() - started
+        print(f"A5_PROBE_RENDER_STAGE=IMAGE_READY:{elapsed:.3f}s", flush=True)
         raw_buffer = io.BytesIO()
         result.save(raw_buffer, format="PNG")
         raw = raw_buffer.getvalue()
@@ -249,7 +266,8 @@ class PromptProbeRunner:
             "machine_accepted": machine_accepted,
             "quarantined": not machine_accepted,
             "model": MODEL_ID,
-            "gpu": "L4",
+            "gpu": "L4_or_A10G",
+            "gpu_candidates": GPU_CANDIDATES,
             "gpu_seconds": round(elapsed, 3),
             "generation_attempts": 1,
             "seed": int(request["seed"]),
