@@ -1,0 +1,79 @@
+name: Plushbound MV Tileset Compiler Validation
+
+on:
+  push:
+    branches:
+      - freeframe-modal-worker
+    paths:
+      - 'modal_worker/tileset_mv_compiler.py'
+      - 'modal_worker/tileset_region_sheet_occupancy_manifest.json'
+      - '.github/workflows/tileset-mv-compiler-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-compiler-no-spend:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      PLUSHBOUND_PRODUCTION_ENABLED: '0'
+      PLUSHBOUND_PAID_REMOTE_ENABLED: '0'
+    steps:
+      - name: Checkout production branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install deterministic compiler dependency only
+        run: python -m pip install --disable-pip-version-check 'pillow>=10.4,<12'
+
+      - name: Validate manifest, MV geometry and synthetic compilation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python modal_worker/tileset_mv_compiler.py \
+            --manifest modal_worker/tileset_region_sheet_occupancy_manifest.json \
+            --validate-only \
+            --self-test > tileset-compiler-validation.json
+          cat tileset-compiler-validation.json
+
+      - name: Assert compiler is deterministic and no-spend
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r = json.loads(Path('tileset-compiler-validation.json').read_text(encoding='utf-8'))
+          assert r['schema'] == 'plushbound.tileset_mv_compiler_validation.v1'
+          assert r['manifest_valid'] is True
+          assert r['tile_size'] == 48
+          assert r['phase1_sheet_count'] == 67
+          assert r['phase2_sheet_count'] == 20
+          assert r['final_sheet_count'] == 87
+          assert r['paid_generation_authorized'] is False
+          assert r['self_test']['status'] == 'PASS'
+          assert r['self_test']['compiled_test_sheets'] == 3
+          assert r['self_test']['layouts_validated'] == 9
+          expected = {
+              'A1':[768,576], 'A2':[768,576], 'A3':[768,384],
+              'A4':[768,720], 'A5':[384,768],
+              'B':[768,768], 'C':[768,768], 'D':[768,768], 'E':[768,768],
+          }
+          assert r['sheet_geometry'] == expected
+          print('TILESET_MV_COMPILER=PASS_NO_SPEND')
+          print('PAID_GENERATION_AUTHORIZED=false')
+          PY
+
+      - name: Upload compiler validation evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: plushbound-tileset-mv-compiler-validation-${{ github.run_id }}
+          path: tileset-compiler-validation.json
+          if-no-files-found: error
+          retention-days: 14
