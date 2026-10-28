@@ -1,10 +1,10 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_run_trigger.v1",
-  "enabled": true,
+  "enabled": false,
   "mode": "selected_ids_one_region",
   "guard_validation_revision": 21,
-  "region": "cinderreach",
-  "requested_source_ids": ["tileset.cinderreach.a5.source.charred_timber"],
+  "region": null,
+  "requested_source_ids": [],
   "generation_attempts_per_requested_id_cap": 1,
   "one_region_only": true,
   "accepted_ids_must_be_excluded": true,
@@ -25,5 +25,7 @@
   "last_authorized_cinderreach_ash_soil_executor_run_id": 40767242073,
   "last_authorized_cinderreach_forge_stone_commit": "1df682cc7fb6fb8a2bd1d351735348f1d87dd9b0",
   "last_authorized_cinderreach_forge_stone_executor_run_id": 40769256248,
-  "note": "Exactly one Cinderreach charred_timber source authorized after revision 24 zero-GPU preflight."
+  "last_authorized_cinderreach_charred_timber_commit": "1f295ad6274fbfc5a4119d02bfdae723fbe19aac",
+  "last_authorized_cinderreach_charred_timber_executor_run_id": 40771566618,
+  "note": "Trigger disabled immediately after exact Cinderreach charred_timber executor was pinned."
 }
