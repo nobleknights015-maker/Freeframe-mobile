@@ -1,0 +1,56 @@
+{
+  "schema": "plushbound.tileset_regional_a5_partial_acceptance.v1",
+  "status": "PARTIAL_ACCEPTANCE_PROBE_GREEN_1_OF_8",
+  "region": "gloamfen",
+  "target_sheet_type": "A5",
+  "stable_sheet_id": "tileset.gloamfen.a5",
+  "prompt_contract_version": "regional-a5-material-swatch-v2",
+  "qa_contract_schema": "plushbound.tileset_regional_a5_visual_qa_contract.v1",
+  "source_quarantine_path": "modal_worker/tileset_gloamfen_a5_source_quarantine.json",
+  "accepted_probe_run_id": 40714618651,
+  "accepted_probe_artifact_name": "plushbound-a5-gloamfen-accepted-probe-40714618651",
+  "accepted_probe_artifact_id": 12828200219,
+  "accepted_probe_artifact_sha256": "6a3d68c1b2cc42ad6aea6ea807ddefd1e81f56373dec5160f01bd20ed5ddff31",
+  "accepted_source_count": 1,
+  "accepted_source_ids": [
+    "tileset.gloamfen.a5.source.marsh_mud"
+  ],
+  "accepted_sources": [
+    {
+      "asset_id": "tileset.gloamfen.a5.source.marsh_mud",
+      "material_key": "marsh_mud",
+      "machine_status": "PASS",
+      "manual_visual_status": "PASS",
+      "generation_attempts": 1,
+      "source_size": [384, 384],
+      "normalized_size": [48, 48],
+      "raw_sha256": "8df77a999da3abfccb1a56b25693cdec10e4f4a658b2ce9fea1aff62e8a12877",
+      "normalized_sha256": "bb121e2ca2e9b835882dab5ce3c0aee423f3aa7fea42fe65b49bc341e7222401",
+      "manual_checks": {
+        "material_semantics": "PASS",
+        "surface_not_scene": "PASS",
+        "no_grid_or_contact_sheet": "PASS",
+        "no_text_or_symbols": "PASS",
+        "no_isolated_objects": "PASS",
+        "seam_friendly_distribution": "PASS",
+        "plushbound_material_language": "PASS",
+        "region_coherence": "PASS"
+      }
+    }
+  ],
+  "remaining_failed_source_ids": [
+    "tileset.gloamfen.a5.source.boardwalk_timber",
+    "tileset.gloamfen.a5.source.damp_moss",
+    "tileset.gloamfen.a5.source.dark_peat",
+    "tileset.gloamfen.a5.source.drowned_stone",
+    "tileset.gloamfen.a5.source.fungal_moss",
+    "tileset.gloamfen.a5.source.reed_matting",
+    "tileset.gloamfen.a5.source.shallow_silt"
+  ],
+  "accepted_source_ids_protected_from_rerender": true,
+  "remaining_repair_authorized": true,
+  "compile_authorized": false,
+  "deterministic_finalize_authorized": false,
+  "catalog_wide_launch_authorized": false,
+  "runtime_import_proof": false
+}
