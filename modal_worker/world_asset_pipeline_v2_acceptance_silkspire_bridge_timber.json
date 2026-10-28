@@ -1,0 +1,22 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_asset_acceptance.v1",
+  "status": "ACCEPTED",
+  "asset_id": "tileset.silkspire.a5.source.bridge_timber",
+  "region": "silkspire",
+  "material_key": "bridge_timber",
+  "machine_gate": "PASS",
+  "manual_visual_gate": "PASS",
+  "raw_sha256": "28692c32d8a043cae7cbf5bb25fad6881bdc31c3ab200fefd98759ad2d7f4bd2",
+  "normalized_sha256": "2221cf2573458ab90696169a06be9ab18022bc198eb600d0b88a8d7d438b67b2",
+  "source_report": "modal_worker/world_asset_pipeline_v2_silkspire_batch_40742860868_review.json",
+  "manual_qa_evidence": "modal_worker/world_asset_pipeline_v2_manual_qa_silkspire_bridge_timber.json",
+  "source_executor_run_id": 40742860868,
+  "source_trigger_commit": "d117139d3d9cb83ffbcefad142cb6f826dbefe7c",
+  "source_artifact_id": 12840027078,
+  "source_artifact_sha256": "9f32ba6b6def3f47063017073016a1fa0e08b8bdcc151fe6ff66f63632d4c27c",
+  "immutable": true,
+  "rerender_allowed": false,
+  "compile_authorized": false,
+  "catalog_wide_launch_authorized": false,
+  "runtime_import_proof": true
+}
