@@ -1,0 +1,24 @@
+{
+  "schema": "plushbound.tileset_gloamfen_a5_final_compile_trigger.v1",
+  "enabled": true,
+  "mode": "compile_closed_green_eight_source_bank",
+  "region": "gloamfen",
+  "source_count": 8,
+  "source_closeout_path": "modal_worker/tileset_gloamfen_a5_source_closeout.json",
+  "source_artifact_run_id": 40718139937,
+  "source_artifact_name": "plushbound-a5-gloamfen-eight-source-candidate-40718139937",
+  "source_artifact_id": 12828713378,
+  "source_artifact_sha256": "ea3b3b5551d51d474b775e50424be3a334b8cf61b1d401093cedd7e4c3c11ff5",
+  "provider_calls_allowed": 0,
+  "gpu_calls_allowed": 0,
+  "generation_calls_allowed": 0,
+  "catalog_wide_launch_authorized": false,
+  "runtime_import_proof": false,
+  "compiler_contract": {
+    "sheet_size": [384, 768],
+    "tile_size": 48,
+    "grid": [8, 16],
+    "slot_count": 128,
+    "unique_slot_hashes_required": 128
+  }
+}
