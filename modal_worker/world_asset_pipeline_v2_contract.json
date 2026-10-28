@@ -1,0 +1,79 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_contract.v1",
+  "pipeline_version": 2,
+  "scope": "remaining regional/world asset source generation, QA, deterministic finishing, regional A5 compile, and Engine v1 compatibility-contract validation",
+  "legacy_pipeline": {
+    "mode": "READ_ONLY_EVIDENCE",
+    "may_supply_accepted_hashes": true,
+    "may_be_replayed": false,
+    "may_authorize_new_paid_work": false
+  },
+  "asset_states": {
+    "PENDING": "eligible for explicit generation",
+    "ACCEPTED": "immutable, hash-bound, never generation-eligible",
+    "REJECTED_SEMANTIC": "eligible only for explicit targeted regeneration after prompt/state review",
+    "REJECTED_TECHNICAL": "eligible only for explicit targeted regeneration after technical/state review"
+  },
+  "candidate_lifecycle": [
+    "PLAN_SELECTED_IDS",
+    "GENERATE_ONCE_PER_SELECTED_ID",
+    "MACHINE_QA",
+    "MANUAL_VISUAL_QA",
+    "BANK_ACCEPTED_ASSET_RECORD_OR_REJECT_SINGLE_ID"
+  ],
+  "acceptance_contract": {
+    "schema": "plushbound.world_asset_pipeline_v2_asset_acceptance.v1",
+    "required_fields": [
+      "asset_id",
+      "region",
+      "material_key",
+      "raw_sha256",
+      "normalized_sha256",
+      "machine_gate",
+      "manual_visual_gate",
+      "immutable",
+      "rerender_allowed",
+      "provenance"
+    ],
+    "accepted_requires_machine_gate": "PASS",
+    "accepted_requires_manual_visual_gate": "PASS",
+    "immutable": true,
+    "rerender_allowed": false
+  },
+  "regional_closeout": {
+    "requires_exact_accepted_sources": 8,
+    "requires_no_pending_or_rejected_sources": true,
+    "compile_authorized_only_after_closeout": true
+  },
+  "generation": {
+    "shared_worker_count": 1,
+    "regions_per_paid_run": 1,
+    "selected_assets_per_run_min": 1,
+    "selected_assets_per_run_max": 8,
+    "attempts_per_selected_asset": 1,
+    "automatic_retry": false,
+    "accepted_id_refused": true,
+    "cross_region_generation": false,
+    "catalog_wide_launch_authorized": false
+  },
+  "failure_isolation": {
+    "single_asset_failure_may_not_invalidate_sibling_acceptances": true,
+    "machine_failure_scope": "asset_id",
+    "semantic_failure_scope": "asset_id",
+    "infrastructure_failure_scope": "run_without_acceptance_state_change_unless_candidate_bytes_exist"
+  },
+  "deterministic_finishing": {
+    "provider_calls": 0,
+    "gpu_calls": 0,
+    "normalization": "tileset_source_normalizer.py",
+    "regional_a5_compile": "tileset_regional_a5_compiler.py",
+    "engine_v1_validation": "engine_v1_a5_compatibility_validator.py",
+    "runtime_import_proof": false
+  },
+  "resume_behavior": {
+    "source_of_truth": "world_asset_pipeline_v2_state.json plus hash-bound acceptance evidence",
+    "resume_action": "select only non-ACCEPTED IDs",
+    "accepted_assets_survive_chat_or_job interruption": true,
+    "missing_local_copy_is_not_rerender_authority": true
+  }
+}
