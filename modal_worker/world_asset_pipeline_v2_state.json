@@ -1,10 +1,10 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_state.v1",
-  "status": "SILKSPIRE_REMAINING_7_AUTHORIZED_PRODUCTION_REFROZEN",
+  "status": "SILKSPIRE_REMAINING_7_VALIDATED_PAID_WINDOW_OPEN",
   "pipeline_version": 2,
-  "production_frozen": true,
-  "paid_execution_enabled": false,
-  "active_paid_region": null,
+  "production_frozen": false,
+  "paid_execution_enabled": true,
+  "active_paid_region": "silkspire",
   "catalog_wide_launch_authorized": false,
   "runtime_import_proof": true,
   "runtime_import_proof_scope": "game-side A5 runtime importer smoke plus Android APK packaging proof",
@@ -48,7 +48,9 @@
     "individual_asset_acceptance_is_hash_bound": true,
     "region_closeout_only_after_all_8_assets_accepted": true,
     "paid_render_preserved_before_post_render_qa": true,
-    "tileset_inspection_preset": "plushbound_tileset_source"
+    "tileset_inspection_preset": "plushbound_tileset_source",
+    "bounded_live_batch_cap_1_to_8": true,
+    "exact_requested_count_gate_required": true
   },
   "deterministic_policy": {
     "normalization_zero_gpu": true,
@@ -69,8 +71,15 @@
     "automatic_compile": false,
     "accepted_after_policy_correction_without_rerender": true
   },
-  "last_authorized_region_batch": {
+  "last_failed_zero_spend_region_batch": {
     "commit": "113b5a9d83462bb3cad859e05eae51021f1f9702",
+    "region": "silkspire",
+    "failure_stage": "PREFLIGHT_BEFORE_CREDENTIALS",
+    "provider_calls": 0,
+    "gpu_calls": 0,
+    "generation_calls": 0
+  },
+  "current_paid_window": {
     "region": "silkspire",
     "requested_source_ids": [
       "tileset.silkspire.a5.source.workshop_timber",
@@ -86,7 +95,7 @@
     "max_generation_calls": 7,
     "automatic_acceptance": false,
     "automatic_compile": false,
-    "execution_status": "IN_PROGRESS_OR_PENDING_RESULT_REVIEW"
+    "validated_zero_gpu_preflight_run_id": 40742687799
   },
   "next_fresh_region_after_v2_validation": "silkspire"
 }
