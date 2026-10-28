@@ -1,0 +1,57 @@
+{
+  "schema": "plushbound.world_map_final_repair_manual_qa.v1",
+  "repair_version": "v3",
+  "source_run_id": 40621601567,
+  "source_artifact_id": 12786654486,
+  "source_artifact_name": "plushbound-world-map-final-repair-v3-40621601567",
+  "machine_gate": "PASS_3_OF_3",
+  "manual_visual_gate": "QUARANTINE_2_OF_3",
+  "scaling_authorized": false,
+  "catalog_wide_launch_authorized": false,
+  "creator_full_outfits_remain_closed_at": 24,
+  "accepted_and_banked": [
+    {
+      "asset_id": "world.elyndor.environment_master",
+      "sha256": "528bb9a9a5ad74b6ed26b2252cabb2701cea69339420bbeaad39b0d56f7bdbf1",
+      "decision": "ACCEPT",
+      "reason": "unpaved natural earthen path now reads correctly; modern highway/asphalt failure removed"
+    }
+  ],
+  "quarantined_for_targeted_repair": [
+    {
+      "asset_id": "world.silkspire.environment_master",
+      "sha256": "34f0a2b5a6bdeaffdf4c0aed835cb0799b49ff73cf525a85135a8b373cf0ced1",
+      "decision": "QUARANTINE",
+      "reason": "visible banners, pseudo-text/glyph-like signage, decorative hanging fabric and emblem-like marks remain"
+    },
+    {
+      "asset_id": "world.moonpatch-steppe.environment_master",
+      "sha256": "25f695d2152fa62403da27ff3f9bb5391b3bceff3a94b6110a0c9369eaeebf98",
+      "decision": "QUARANTINE",
+      "reason": "natural trail is fixed, but camp tents and rope lines still contain multiple emblem/glyph banners and decorative flags"
+    }
+  ],
+  "logical_canary_state_after_v3": {
+    "accepted_count": 6,
+    "quarantined_count": 2,
+    "accepted_asset_ids": [
+      "world.gloamfen.environment_master",
+      "world.sunspool-desert.environment_master",
+      "world.crownweave.environment_master",
+      "world.tideglass-coast.environment_master",
+      "world.verdancia.environment_master",
+      "world.elyndor.environment_master"
+    ],
+    "repair_v4_asset_ids": [
+      "world.silkspire.environment_master",
+      "world.moonpatch-steppe.environment_master"
+    ]
+  },
+  "policy": {
+    "rerender_only_quarantined_ids": true,
+    "preserve_accepted_asset_ids": true,
+    "never_stack_paid_runs": true,
+    "scale_only_after_manual_visual_pass": true,
+    "do_not_repeat_failed_prompt_structure": true
+  }
+}
