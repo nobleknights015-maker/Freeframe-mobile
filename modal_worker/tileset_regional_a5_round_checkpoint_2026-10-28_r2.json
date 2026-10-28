@@ -25,9 +25,9 @@
     "workflow_run_id": 40707208055,
     "status": "completed",
     "conclusion": "success",
-    "expected_provider_calls": 0,
-    "expected_gpu_calls": 0,
-    "expected_generation_calls": 0,
+    "provider_calls": 0,
+    "gpu_calls": 0,
+    "generation_calls": 0,
     "catalog_wide_launch_authorized": false
   },
   "fresh_canary_preflight": {
@@ -68,6 +68,21 @@
     "compile_authorized": false,
     "deterministic_finalize_authorized": false,
     "catalog_wide_launch_authorized": false
+  },
+  "disabled_trigger_proof": {
+    "workflow_run_id": 40707817987,
+    "job_name": "one-source-fresh-canary",
+    "status": "completed",
+    "conclusion": "failure_expected_fail_closed",
+    "failed_step": "Validate explicit one-source trigger",
+    "modal_credentials_step": "skipped",
+    "dependency_install_step": "skipped",
+    "modal_render_step": "skipped",
+    "machine_gate_step": "skipped",
+    "provider_calls": 0,
+    "gpu_calls": 0,
+    "generation_calls": 0,
+    "reason": "Disabled trigger intentionally refused before any paid execution."
   },
   "next_safe_action": "Activate only the exact staged Silkspire one-source canary when an explicit paid-trigger write is accepted; then inspect the resulting 384x384 image semantically before authorizing any of the remaining seven sources."
 }
