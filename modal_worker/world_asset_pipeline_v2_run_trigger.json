@@ -2,6 +2,7 @@
   "schema": "plushbound.world_asset_pipeline_v2_run_trigger.v1",
   "enabled": false,
   "mode": "selected_ids_one_region",
+  "guard_validation_revision": 1,
   "region": null,
   "requested_source_ids": [],
   "generation_attempts_per_requested_id_cap": 1,
