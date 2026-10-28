@@ -24,6 +24,25 @@
         "weathered_stone": "14d3a6674f068f25b3d3c43f5f4402fed9ec4fc334ca4d20824ee4bf128820e0"
       },
       "conditioning_prompt_prefix": "Use the supplied image only as Tideglass Coast regional visual and material-language authority. Generate a NEW seamless-looking continuous material swatch that follows the written material target exactly. Preserve the handcrafted Plushbound JRPG material language, palette relationships, surface finish, and stylized grain. Do not reproduce the reference sheet layout, labels, text, borders, panels, props, buildings, symbols, or any individual source object. The output must be newly generated artwork, not a crop, copy, collage, or resized portion of the reference."
+    },
+    "crownweave": {
+      "status": "REFERENCE_AUTHORITY_ACCEPTED",
+      "production_batch": "crownweave-core-materials",
+      "anchor_path": "modal_worker/project_references/crownweave_reference_anchor_256.jpg",
+      "anchor_sha256": "27cb1e071d6554a4f2fd24b3652aed70250b19795c3cb8416b236fdfc7c8a5ac",
+      "reference_mode": "style",
+      "reference_scale": 0.35,
+      "reference_role": "regional_visual_material_authority_only",
+      "reference_sheet_pixels_may_be_runtime_art": false,
+      "required_producer": "vera-modal",
+      "source_reference_hashes": {
+        "archive_stone": "532ee641c6c899e0dce716ff05bbff70039982fce7e4cc4d238870de13bbd15b",
+        "gilded_paver": "fdcf3465adc5bb8f3172324575b6589f770ebb33ce14636e158702f8dd056a82",
+        "lantern_brick": "8f81dfe050e9d7f69580e6a9c1f7c3c16c7dc4a83ab919fa24935a98adde3fe2",
+        "civic_stone": "7f59ca9affdd31036cc91a30d418765c444b75ea52ab1580f97e4a26efa59be2",
+        "silkward_tile": "9bde69d37b0f28e27afe2f9155d287cc6dad626742d305fae27166a6b5207f1a"
+      },
+      "conditioning_prompt_prefix": "Use the supplied image only as Crownweave regional visual and material-language authority. Generate a NEW seamless-looking continuous material swatch that follows the written material target exactly. Preserve Crownweave's refined warm ivory, moss green, muted gold, slate-blue, civic, ceremonial, archival and textile-informed Plushbound JRPG material language. Do not reproduce the reference sheet layout, labels, text, borders, panels, props, buildings, symbols, or any individual source object. The output must be newly generated artwork, not a crop, copy, collage, or resized portion of the reference."
     }
   }
 }
