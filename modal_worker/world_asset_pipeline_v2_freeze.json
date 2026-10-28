@@ -1,12 +1,12 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_freeze.v1",
-  "status": "PAID_WORLD_ASSET_PRODUCTION_REFROZEN_AFTER_QA_FIXED_CANARY",
+  "status": "PAID_WORLD_ASSET_PRODUCTION_OPEN_SILKSPIRE_REMAINING_7",
   "branch": "freeframe-modal-worker",
-  "production_frozen": true,
-  "paid_remote_execution_allowed": false,
-  "provider_calls_allowed": 0,
-  "gpu_calls_allowed": 0,
-  "generation_calls_allowed": 0,
+  "production_frozen": false,
+  "paid_remote_execution_allowed": true,
+  "provider_calls_allowed": 7,
+  "gpu_calls_allowed": 7,
+  "generation_calls_allowed": 7,
   "catalog_wide_launch_authorized": false,
   "legacy_pipeline_mode": "READ_ONLY_EVIDENCE_AND_ACCEPTED_HASH_SOURCE",
   "legacy_paid_triggers_must_not_be_modified_or_replayed": true,
@@ -33,5 +33,9 @@
     "paid_render_preserved_before_post_render_qa": true,
     "tileset_inspection_identity_locked": true
   },
-  "last_authorized_live_canary_commit": "53654a09e9439795f4c094b0555d46e30670111e"
+  "last_authorized_live_canary_commit": "53654a09e9439795f4c094b0555d46e30670111e",
+  "authorized_region": "silkspire",
+  "authorized_requested_source_count": 7,
+  "automatic_acceptance": false,
+  "automatic_compile": false
 }
