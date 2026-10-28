@@ -1,0 +1,17 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_manual_qa.v1",
+  "status": "PASS",
+  "asset_id": "tileset.cinderreach.a5.source.ash_soil",
+  "region": "cinderreach",
+  "material_key": "ash_soil",
+  "semantic_material_surface": true,
+  "no_scene_or_object_composition": true,
+  "manual_visual_gate": "PASS",
+  "review_notes": "Continuous dark brown-gray volcanic ash/soil substrate with fine grit and embedded small stone texture. No framed perimeter, inset panel, large lava fissures, props, wall geometry or object silhouette. Matches the supplied World Editor / V1 Engine ash_soil reference material language.",
+  "source_reference_sha256": "0320c21469342487e52596d7bec43f9a507059cdcaa8466864cca4c5c2cd3437",
+  "derived_master_sha256": "e5382737d9e51168f477e229a3365f33989216ae76c8976681cbacf05a66000f",
+  "normalized_sha256": "8e14bc85cbe1979ae858b402d1bbe042c2e1264d9c81f3df7c62a97218efd284",
+  "provider_calls": 0,
+  "gpu_calls": 0,
+  "generation_calls": 0
+}
