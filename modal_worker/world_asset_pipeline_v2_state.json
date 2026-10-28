@@ -1,6 +1,6 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_state.v1",
-  "status": "SILKSPIRE_REMAINING_7_VALIDATED_AUTHORIZED_PRODUCTION_REFROZEN",
+  "status": "SILKSPIRE_PARTIAL_6_OF_8_ACCEPTED_TWO_SEMANTIC_REPAIRS_PENDING",
   "pipeline_version": 2,
   "production_frozen": true,
   "paid_execution_enabled": false,
@@ -15,7 +15,12 @@
     "gloamfen": "modal_worker/tileset_gloamfen_a5_source_closeout.json"
   },
   "accepted_asset_records": {
-    "tileset.silkspire.a5.source.city_stone_paving": "modal_worker/world_asset_pipeline_v2_acceptance_silkspire_city_stone_paving.json"
+    "tileset.silkspire.a5.source.city_stone_paving": "modal_worker/world_asset_pipeline_v2_acceptance_silkspire_city_stone_paving.json",
+    "tileset.silkspire.a5.source.workshop_timber": "modal_worker/world_asset_pipeline_v2_acceptance_silkspire_workshop_timber.json",
+    "tileset.silkspire.a5.source.pale_masonry": "modal_worker/world_asset_pipeline_v2_acceptance_silkspire_pale_masonry.json",
+    "tileset.silkspire.a5.source.dark_masonry": "modal_worker/world_asset_pipeline_v2_acceptance_silkspire_dark_masonry.json",
+    "tileset.silkspire.a5.source.bridge_timber": "modal_worker/world_asset_pipeline_v2_acceptance_silkspire_bridge_timber.json",
+    "tileset.silkspire.a5.source.guild_floorboards": "modal_worker/world_asset_pipeline_v2_acceptance_silkspire_guild_floorboards.json"
   },
   "closed_region_sheets": {
     "elyndor": {
@@ -27,7 +32,7 @@
   "region_overrides": {
     "gloamfen": "SOURCES_ACCEPTED_8_OF_8_PENDING_DETERMINISTIC_COMPILE",
     "crownweave": "PENDING",
-    "silkspire": "PARTIAL_1_OF_8_ACCEPTED",
+    "silkspire": "PARTIAL_6_OF_8_ACCEPTED_TWO_SEMANTIC_REPAIRS_PENDING",
     "verdancia": "PENDING",
     "tideglass-coast": "PENDING",
     "moonpatch-steppe": "PENDING",
@@ -35,7 +40,20 @@
     "cinderreach": "PENDING",
     "frostlace": "PENDING"
   },
-  "asset_state_overrides": {},
+  "asset_state_overrides": {
+    "tileset.silkspire.a5.source.roof_tile": {
+      "state": "REJECTED_SEMANTIC",
+      "reason": "Manual QA rejected the source because it reads as one large rounded-square/inset blue panel with a visible perimeter rather than a continuous roof-tile substrate.",
+      "manual_qa_evidence": "modal_worker/world_asset_pipeline_v2_manual_qa_silkspire_roof_tile.json",
+      "prompt_suffix": "The material MUST continue beyond all four image edges as a repeating roof-tile substrate. Show multiple shallow ceramic tile joints that are visibly cut off by the frame edges. Absolutely no single tile, rounded-square slab, framed panel, border, perimeter, inset plate, beveled outer edge, or vignette."
+    },
+    "tileset.silkspire.a5.source.workshop_metal_plate": {
+      "state": "REJECTED_SEMANTIC",
+      "reason": "Manual QA rejected the source because it reads as a framed rectangular metal plate with a strong perimeter and corner wear rather than continuous sheet metal.",
+      "manual_qa_evidence": "modal_worker/world_asset_pipeline_v2_manual_qa_silkspire_workshop_metal_plate.json",
+      "prompt_suffix": "The material MUST be continuous brushed gunmetal extending beyond all four image edges. Any subtle seams must cross and be cut by the image boundaries. Absolutely no rectangular plate object, framed panel, perimeter line, riveted border, inset slab, corner frame, beveled outer edge, or decorative border; distribute restrained brass wear across the substrate instead of around edges."
+    }
+  },
   "allowed_asset_states": ["PENDING", "ACCEPTED", "REJECTED_SEMANTIC", "REJECTED_TECHNICAL"],
   "generation_policy": {
     "one_shared_worker": true,
@@ -97,7 +115,14 @@
     "automatic_acceptance": false,
     "automatic_compile": false,
     "validated_zero_gpu_preflight_run_id": 40742687799,
-    "execution_status": "IN_PROGRESS_OR_PENDING_RESULT_REVIEW"
+    "executor_run_id": 40742860868,
+    "source_artifact_id": 12840027078,
+    "source_artifact_sha256": "9f32ba6b6def3f47063017073016a1fa0e08b8bdcc151fe6ff66f63632d4c27c",
+    "machine_pass_count": 7,
+    "manual_pass_count": 5,
+    "manual_rejected_semantic_count": 2,
+    "total_gpu_seconds": 5.842,
+    "execution_status": "REVIEWED_5_ACCEPTED_2_REJECTED_SEMANTIC"
   },
   "next_fresh_region_after_v2_validation": "silkspire"
 }
