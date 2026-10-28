@@ -5,7 +5,7 @@ on:
     branches:
       - freeframe-modal-worker
     paths:
-      - 'modal_worker/world_map_final_repair_v3_trigger.json'
+      - 'modal_worker/world_map_final_repair_trigger.json'
 
 permissions:
   contents: read
@@ -57,7 +57,7 @@ jobs:
           import json
           from pathlib import Path
           qa = json.loads(Path('modal_worker/world_map_final_repair_v2_manual_qa.json').read_text(encoding='utf-8'))
-          trigger = json.loads(Path('modal_worker/world_map_final_repair_v3_trigger.json').read_text(encoding='utf-8'))
+          trigger = json.loads(Path('modal_worker/world_map_final_repair_trigger.json').read_text(encoding='utf-8'))
           assert qa['source_run_id'] == 40620527152
           assert qa['source_artifact_id'] == 12786938008
           assert qa['machine_gate'] == 'PASS_6_OF_6'
@@ -78,7 +78,7 @@ jobs:
           assert trigger['asset_cap'] == 3
           assert set(trigger['asset_ids']) == quarantine
           assert trigger['preserve_accepted_asset_ids'] is True
-          assert trigger['never_stack_paid_runs'] is True
+          assert trigger['never_stack_paid_runs'] is true
           assert trigger['catalog_wide_launch_authorized'] is False
           assert trigger['creator_full_outfits_remain_closed_at'] == 24
           print('TARGETED_REPAIR_V3_TRIGGER=VALID_3_ONLY')
