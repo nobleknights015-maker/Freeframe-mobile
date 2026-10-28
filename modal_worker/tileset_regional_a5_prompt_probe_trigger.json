@@ -21,8 +21,9 @@
   "accepted_assets_immutable": true,
   "creator_full_outfits_remain_closed_at": 24,
   "source_scope_head": "48b2b84d8154226c0a1834a6ac29bc870f83088e",
-  "probe_attempt": 2,
-  "previous_probe_run_id": 40702715312,
-  "previous_probe_conclusion": "cancelled",
-  "previous_probe_evidence": "modal_worker/tileset_gloamfen_a5_prompt_probe_attempt1_cancelled.json"
+  "probe_attempt": 3,
+  "previous_probe_run_id": 40708309669,
+  "previous_probe_conclusion": "failure",
+  "previous_probe_evidence": "modal_worker/tileset_gloamfen_a5_prompt_probe_attempt2_timeout.json",
+  "retry_reason": "replace L4-only scheduling with L4/A10G fallback, enforce offline cache-only model load, and add explicit startup telemetry"
 }
