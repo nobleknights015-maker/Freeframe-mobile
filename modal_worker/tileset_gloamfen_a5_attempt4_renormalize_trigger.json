@@ -10,6 +10,8 @@
   "raw_sha256": "8df77a999da3abfccb1a56b25693cdec10e4f4a658b2ce9fea1aff62e8a12877",
   "old_normalized_sha256": "497ecba2b8fca5d346e0179ed7c1096783d23b997ad37b67ee9d4fb6c1c2b875",
   "normalizer_fix_commit": "91c8b3f5a3d1225a136ec5d090109feb1c96d928",
+  "adapter_workflow_commit": "10f5ddc6448db4ef47613bd39b040b738e0caaa6",
+  "adapter_repack_attempt": 2,
   "provider_calls_allowed": 0,
   "gpu_calls_allowed": 0,
   "generation_calls_allowed": 0,
