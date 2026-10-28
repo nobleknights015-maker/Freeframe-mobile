@@ -1,0 +1,37 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_rebuild_checkpoint.v1",
+  "status": "V2_REBUILT_ZERO_GPU_VALIDATED_PRODUCTION_STILL_FROZEN",
+  "production_frozen": true,
+  "paid_execution_enabled": false,
+  "legacy_pipeline_mode": "READ_ONLY_EVIDENCE",
+  "control_plane": "GREEN",
+  "single_shared_generation_path": "GREEN_DECLARATION_ONLY",
+  "per_asset_failure_isolation": true,
+  "individual_hash_bound_acceptance": true,
+  "exact_eight_regional_rollup": true,
+  "unified_v2_normalizer_policy": true,
+  "v2_compiler_uses_same_normalizer_policy": true,
+  "accepted_asset_rerender_refusal": true,
+  "disabled_run_trigger_guard": {
+    "status": "PASS_DISABLED_ZERO_SPEND",
+    "workflow_run_id": 40722849499,
+    "workflow_head_sha": "c43c5c7e2252d30f3eca0a6719bd6b6effdfd2a6",
+    "artifact_id": 12832065717,
+    "artifact_sha256": "f37a7c3826f31403a4167c246f99a718a0b82c2de66888e75393b29db4871156"
+  },
+  "master_preflight_revision_4": {
+    "status": "PASS_ZERO_GPU_V2_END_TO_END_CONTRACT_READY",
+    "workflow_run_id": 40723674880,
+    "workflow_head_sha": "36e0bda4ad97c829cd7a56ecb31f694019ebd31b",
+    "artifact_id": 12830937798,
+    "artifact_sha256": "791b1b2bc68694a9fcfdca19abef93870e943dca6b9f55553266485967d15d25",
+    "regional_compiler_contracts_green": 9
+  },
+  "real_data_gloamfen_qualification": "PENDING_TERMINAL_RESULT",
+  "provider_calls_during_rebuild_validation": 0,
+  "gpu_calls_during_rebuild_validation": 0,
+  "generation_calls_during_rebuild_validation": 0,
+  "catalog_wide_launch_authorized": false,
+  "runtime_import_proof": false,
+  "next_fresh_region_after_qualification": "silkspire"
+}
