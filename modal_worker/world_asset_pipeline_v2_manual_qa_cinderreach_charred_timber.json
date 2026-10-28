@@ -1,0 +1,22 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_manual_qa.v1",
+  "status": "PASS",
+  "asset_id": "tileset.cinderreach.a5.source.charred_timber",
+  "region": "cinderreach",
+  "material_key": "charred_timber",
+  "semantic_material_surface": true,
+  "no_scene_or_object_composition": true,
+  "manual_visual_gate": "PASS",
+  "review_notes": "Continuous charcoal-brown burned wood grain with fine linear fibers and restrained warm brown variation. No border, inset panel, plank object, prop, scene, frame or focal composition. Clean edge-to-edge A5 source material.",
+  "raw_sha256": "d39000c89bdfc74a6ed85747550c5f14d54cf63c634b7aba31a1d936f53f5c97",
+  "normalized_sha256": "8f13f44fda8792ce7f30055ac4ae231855c3ba4af6c5c69a3ebd20cf1e73b4d5",
+  "v2_rgb_stddev": 6.7053,
+  "v2_edge_discontinuity": 0.016435,
+  "source_executor_run_id": 40771566618,
+  "source_artifact_id": 12852498510,
+  "source_artifact_sha256": "64319e436e347d09b7ad7cb8a2225d0592a5a4816563079d46b87f4ec21cd37c",
+  "gpu_seconds": 1.986,
+  "provider_calls_after_review": 0,
+  "gpu_calls_after_review": 0,
+  "generation_calls_after_review": 0
+}
