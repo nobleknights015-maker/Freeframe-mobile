@@ -1,10 +1,10 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_state.v1",
-  "status": "SILKSPIRE_TWO_SEMANTIC_REPAIRS_PAID_WINDOW_OPEN",
+  "status": "SILKSPIRE_TWO_SEMANTIC_REPAIRS_AUTHORIZED_PRODUCTION_REFROZEN",
   "pipeline_version": 2,
-  "production_frozen": false,
-  "paid_execution_enabled": true,
-  "active_paid_region": "silkspire",
+  "production_frozen": true,
+  "paid_execution_enabled": false,
+  "active_paid_region": null,
   "catalog_wide_launch_authorized": false,
   "runtime_import_proof": true,
   "runtime_import_proof_scope": "game-side A5 runtime importer smoke plus Android APK packaging proof",
@@ -32,7 +32,7 @@
   "region_overrides": {
     "gloamfen": "SOURCES_ACCEPTED_8_OF_8_PENDING_DETERMINISTIC_COMPILE",
     "crownweave": "PENDING",
-    "silkspire": "PARTIAL_6_OF_8_ACCEPTED_TWO_SEMANTIC_REPAIRS_ACTIVE",
+    "silkspire": "PARTIAL_6_OF_8_ACCEPTED_TWO_SEMANTIC_REPAIRS_IN_FLIGHT",
     "verdancia": "PENDING",
     "tideglass-coast": "PENDING",
     "moonpatch-steppe": "PENDING",
@@ -124,7 +124,8 @@
     "total_gpu_seconds": 5.842,
     "execution_status": "REVIEWED_5_ACCEPTED_2_REJECTED_SEMANTIC"
   },
-  "current_paid_window": {
+  "last_authorized_repair": {
+    "commit": "d02905f52451a72660b9c162e624a85a88b21960",
     "region": "silkspire",
     "requested_source_ids": [
       "tileset.silkspire.a5.source.roof_tile",
@@ -135,7 +136,9 @@
     "max_generation_calls": 2,
     "automatic_acceptance": false,
     "automatic_compile": false,
-    "validated_zero_gpu_preflight_run_id": 40743938012
+    "validated_zero_gpu_preflight_run_id": 40743938012,
+    "executor_run_id": 40744207970,
+    "execution_status": "IN_PROGRESS_OR_PENDING_RESULT_REVIEW"
   },
   "next_fresh_region_after_v2_validation": "silkspire"
 }
