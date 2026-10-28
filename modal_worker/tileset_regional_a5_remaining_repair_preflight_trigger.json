@@ -1,0 +1,21 @@
+{
+  "schema": "plushbound.tileset_regional_a5_remaining_repair_preflight_trigger.v1",
+  "enabled": true,
+  "mode": "remaining_failed_sources_no_spend_preflight",
+  "region": "gloamfen",
+  "prompt_contract_version": "regional-a5-material-swatch-v2",
+  "accepted_source_count": 1,
+  "remaining_source_count": 7,
+  "provider_calls_allowed": 0,
+  "gpu_calls_allowed": 0,
+  "generation_jobs_allowed": 0,
+  "catalog_wide_launch_authorized": false,
+  "compile_authorized": false,
+  "deterministic_finalize_authorized": false,
+  "accepted_source_ids_immutable": true,
+  "partial_acceptance_path": "modal_worker/tileset_gloamfen_a5_partial_acceptance.json",
+  "accepted_probe_run_id": 40714618651,
+  "accepted_probe_artifact_name": "plushbound-a5-gloamfen-accepted-probe-40714618651",
+  "accepted_probe_artifact_id": 12828200219,
+  "accepted_probe_artifact_sha256": "6a3d68c1b2cc42ad6aea6ea807ddefd1e81f56373dec5160f01bd20ed5ddff31"
+}
