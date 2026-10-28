@@ -1,0 +1,14 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_manual_qa.v1",
+  "asset_id": "tileset.silkspire.a5.source.city_stone_paving",
+  "status": "PASS",
+  "semantic_material_surface": true,
+  "no_scene_or_object_composition": true,
+  "edge_to_edge_substrate": true,
+  "no_border_or_inset_panel": true,
+  "no_horizon_or_perspective": true,
+  "no_character_creature_prop_or_structure": true,
+  "readable_at_48px": true,
+  "region_material_identity_matches": true,
+  "notes": "Manual visual QA reviewed the exact raw 384px and normalized 48px images from executor run 40735013050. The source is one continuous cool-gray cut-stone paving material with legitimate masonry joints, not a scene, object layout, contact sheet, or inset panel. The generic panel detector false-positive is handled by the corrected tileset_master policy. The 48px result remains readable and matches Silkspire's refined cool-gray engineered material identity."
+}
