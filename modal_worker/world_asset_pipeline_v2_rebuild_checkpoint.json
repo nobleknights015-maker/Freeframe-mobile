@@ -1,6 +1,6 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_rebuild_checkpoint.v1",
-  "status": "V2_STRUCTURALLY_READY_A5_IMPORT_BRIDGE_GREEN_PRODUCTION_FROZEN",
+  "status": "V2_STRUCTURALLY_READY_ENGINE_RECEIVER_RUNTIME_GREEN_PRODUCTION_FROZEN",
   "production_frozen": true,
   "paid_execution_enabled": false,
   "production_executor_installed": true,
@@ -42,8 +42,7 @@
     "sheet_sha256": "03f0f49fd8539b48c68b2a27e830e5daca4e67b4d2d2bab97cfea864490ea85e",
     "sheet_size": [384, 768],
     "slot_count": 128,
-    "unique_slot_hashes": 128,
-    "runtime_import_proof": false
+    "unique_slot_hashes": 128
   },
   "a5_import_bridge": {
     "status": "PASS_SYNTHETIC_CI_AND_REAL_GLOAMFEN_ROUNDTRIP",
@@ -52,10 +51,21 @@
     "engine_profile": "mv_tileset_a5",
     "byte_identity_preserved": true,
     "slot_count": 128,
-    "unique_slot_hashes": 128,
-    "live_importer_present_in_repository": false,
-    "proof_scope": "engine-facing deterministic staging and round-trip handoff only",
-    "runtime_import_proof": false
+    "unique_slot_hashes": 128
+  },
+  "engine_v1_receiver": {
+    "status": "PASS_GAME_SIDE_RUNTIME_IMPORTER_AND_APK_PACKAGE",
+    "contract": "modal_worker/world_asset_pipeline_v2_receiver_contract.json",
+    "receiver_repo": "nobleknights015-maker/Plushbound-Legends-mobile",
+    "workflow_run_id": 40731881573,
+    "workflow_job_id": 122970077917,
+    "browser_runtime_import": "PASS",
+    "apk_packaging": "PASS",
+    "apk_artifact_id": 12834673241,
+    "apk_artifact_sha256": "6fbc9708dea308f0efd675033bff12472a2b5257a80f8d1c1d82b417c19f33df",
+    "runtime_import_proof_scope": "game-side JavaScript runtime importer in headless Chromium plus importer assets inside Android APK",
+    "android_physical_device_webview_proof": false,
+    "world_editor_ui_import_proof": false
   },
   "silkspire_live_canary": {
     "asset_id": "tileset.silkspire.a5.source.city_stone_paving",
@@ -69,8 +79,9 @@
   },
   "activation_protocol": "LOCKED_WITH_PRE_ACTIVATION_AND_POST_RUN_SEQUENCE",
   "catalog_wide_launch_authorized": false,
-  "runtime_import_proof": false,
-  "runtime_import_blocker": "repository does not currently contain a live World Editor/Engine v1 A5 importer",
+  "runtime_import_proof": true,
+  "runtime_import_proof_scope": "game-side runtime importer and APK packaging; physical Android WebView and editor UI remain separate optional qualifications",
+  "pipeline_resume_blocker": false,
   "next_fresh_region_after_qualification": "silkspire",
-  "next_manager_action": "KEEP_PRODUCTION_FROZEN; A5 HANDOFF BRIDGE IS GREEN; TRUE RUNTIME IMPORT PROOF REQUIRES A REAL WORLD EDITOR/ENGINE IMPORTER OR SUPPORTED RUNTIME HOOK"
+  "next_manager_action": "RECEIVER BLOCKER CLOSED; KEEP CATALOG-WIDE LOCK; RESUME ONLY THE SINGLE SILKSPIRE CITY_STONE_PAVING LIVE CANARY THROUGH THE GUARDED V2 EXECUTOR"
 }
