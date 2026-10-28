@@ -1,0 +1,38 @@
+name: FreeFrame Modal Diagnostics
+
+on:
+  push:
+    branches:
+      - freeframe-modal-worker
+    paths:
+      - '.github/workflows/modal-freeframe-diagnostics.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnostics:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Modal CLI
+        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2'
+      - name: Fetch recent FreeFrame worker logs
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${MODAL_TOKEN_ID:-}"
+          test -n "${MODAL_TOKEN_SECRET:-}"
+          modal app logs freeframe-worker --since 30m --tail 1000 --timestamps --show-function-id --show-function-call-id --show-container-id 2>&1 | tee freeframe-modal-diagnostics.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: freeframe-modal-diagnostics-${{ github.run_id }}
+          path: freeframe-modal-diagnostics.log
+          if-no-files-found: error
+          retention-days: 7
