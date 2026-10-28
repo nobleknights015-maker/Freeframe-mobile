@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, asdict
 
-PLUSHBOUND_STYLE_VERSION = "v3.5"
+PLUSHBOUND_STYLE_VERSION = "v3.6-tileset-source"
 PLUSHBOUND_STYLE = (
     "Plushbound Legends style, warm handcrafted fantasy JRPG world, clean contemporary 2D game illustration, "
     "crisp readable shapes, controlled directional lighting, tactile natural materials, rich disciplined color, sharp digital finish"
@@ -54,6 +54,12 @@ PRESETS: dict[str, ProductionPreset] = {
         f"{PLUSHBOUND_STYLE}. Outdoor landscape only, no foreground hero, traversable fantasy JRPG environment, clear pathing and depth, coherent foreground middle-ground and background, region-specific vegetation and architecture, readable natural landmarks, current-generation 2D game environment presentation",
         f"{BASE_NEGATIVE}, foreground character, hero portrait, character poster, presentation board, impossible pathing, photoreal landscape, excessive haze",
         1024,768,28,5.0,
+    ),
+    "plushbound_tileset_source": ProductionPreset(
+        "plushbound_tileset_source",
+        f"{PLUSHBOUND_STYLE}. one square top-down orthographic game-material texture source only, full-canvas surface sample, physically coherent handcrafted material, crisp medium-scale detail designed to survive deterministic reduction into a 48x48 RPG tile, flat even lighting, no horizon, no perspective, no object silhouette, no scene composition, seamless repeating-material intent",
+        f"{BASE_NEGATIVE}, scene, landscape, horizon, sky, perspective, isometric view, room, building facade, character, creature, object, prop, icon, tile grid, checkerboard, contact sheet, multiple swatches, vignette, central emblem, sign, lettering, glyph, rune, pseudo-text, heraldry",
+        384,384,28,5.0,
     ),
 }
 
