@@ -1,0 +1,64 @@
+name: Plushbound World Maps Final No-Spend Preflight
+
+on:
+  push:
+    branches:
+      - freeframe-modal-worker
+    paths:
+      - '.github/preflight/world_map_final_preflight.py'
+      - '.github/preflight/world_map_final_preflight_contract.json'
+      - '.github/workflows/world-map-final-preflight.yml'
+      - 'modal_worker/production_presets.py'
+      - 'modal_worker/guardian_runtime_ready_archive_lock.json'
+      - 'modal_worker/npc_mv_ready_archive_lock.json'
+      - 'modal_worker/enemy_master_archive_lock.json'
+      - 'modal_worker/creator_full_outfits_half_scope_contract.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preflight-no-spend:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      PLUSHBOUND_PRODUCTION_ENABLED: '0'
+      PLUSHBOUND_PAID_REMOTE_ENABLED: '0'
+    steps:
+      - name: Checkout production branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run deterministic zero-spend preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python .github/preflight/world_map_final_preflight.py > world-map-preflight-report.json
+          cat world-map-preflight-report.json
+
+      - name: Assert production was skipped and all deterministic gates passed
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          report = json.loads(Path('world-map-preflight-report.json').read_text(encoding='utf-8'))
+          assert report['status'] == 'PASS_NO_SPEND'
+          assert report['production_skipped'] is True
+          assert report['paid_remote_execution_skipped'] is True
+          assert report['generation_calls'] == 0
+          assert report['gpu_calls'] == 0
+          assert report['provider_calls'] == 0
+          assert report['manifest_count'] == 10
+          assert all(value == 'PASS' for value in report['checks'].values())
+          print('WORLD_MAP_FINAL_PREFLIGHT=PASS_NO_SPEND')
+          print('PRODUCTION_SKIPPED=true')
+          print('GENERATION_CALLS=0')
+          PY
