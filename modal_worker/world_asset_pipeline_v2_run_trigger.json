@@ -1,10 +1,18 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_run_trigger.v1",
-  "enabled": false,
+  "enabled": true,
   "mode": "selected_ids_one_region",
-  "guard_validation_revision": 12,
-  "region": null,
-  "requested_source_ids": [],
+  "guard_validation_revision": 13,
+  "region": "frostlace",
+  "requested_source_ids": [
+    "tileset.frostlace.a5.source.blue_ice",
+    "tileset.frostlace.a5.source.frosted_stone",
+    "tileset.frostlace.a5.source.frozen_soil",
+    "tileset.frostlace.a5.source.archive_stone",
+    "tileset.frostlace.a5.source.pale_timber",
+    "tileset.frostlace.a5.source.crystal_stone",
+    "tileset.frostlace.a5.source.cold_gravel"
+  ],
   "generation_attempts_per_requested_id_cap": 1,
   "one_region_only": true,
   "accepted_ids_must_be_excluded": true,
@@ -12,8 +20,8 @@
   "compile_authorized": false,
   "catalog_wide_launch_authorized": false,
   "runtime_import_proof": true,
-  "validated_zero_gpu_preflight_run_id": 40753858590,
+  "validated_zero_gpu_preflight_run_id": 40755189578,
   "last_authorized_frostlace_canary_commit": "13ade52de71c534f568764870965cd49fef687a5",
   "last_authorized_frostlace_canary_executor_run_id": 40754030630,
-  "note": "Trigger disabled immediately after one-source Frostlace packed-snow canary authorization."
+  "note": "Authorize exactly the seven remaining Frostlace sources; packed_snow is accepted and excluded."
 }
