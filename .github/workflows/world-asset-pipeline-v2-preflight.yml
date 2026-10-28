@@ -90,7 +90,7 @@ jobs:
         run: |
           PYTHONPATH=. python modal_worker/world_asset_pipeline_v2_controller.py --resolve | tee v2-resolved-state.json
 
-      - name: Prove Gloamfen is protected and Silkspire is cleanly selectable
+      - name: Prove Gloamfen protection and Silkspire exact-eight accounting
         shell: bash
         run: |
           set -euo pipefail
@@ -105,13 +105,13 @@ jobs:
           assert g['selected_generation_count'] == 0
           assert g['compile_eligible'] is True
           assert len(g['accepted_ids_excluded']) == 8
-          assert s['accepted_source_count'] == 0
-          assert s['selected_generation_count'] == 8
-          assert s['compile_eligible'] is False
-          assert len(s['selected_generation_ids']) == 8
+          assert s['accepted_source_count'] + s['selected_generation_count'] == 8
+          assert len(s['selected_generation_ids']) == s['selected_generation_count']
+          assert not set(s['accepted_ids_excluded']).intersection(s['selected_generation_ids'])
+          assert s['compile_eligible'] == (s['accepted_source_count'] == 8)
           assert [g['provider_calls'], g['gpu_calls'], g['generation_calls']] == [0, 0, 0]
           assert [s['provider_calls'], s['gpu_calls'], s['generation_calls']] == [0, 0, 0]
-          print('WORLD_ASSET_V2_PLANNING=PASS')
+          print('WORLD_ASSET_V2_PLANNING=PASS_PROGRESS_AWARE')
           PY
 
       - name: Validate shared planner, receiver and runner declaration
@@ -128,12 +128,14 @@ jobs:
           assert p['status'] == 'PASS_ZERO_GPU_SHARED_GENERATOR_PLANNER'
           assert p['runtime_import_proof'] is True
           assert p['receiver_contract_status'] == 'PASS_ENGINE_V1_RECEIVER_RUNTIME_CONTRACT'
+          assert p['silkspire_accepted'] + p['silkspire_selected'] == 8
           assert receiver['status'] == 'PASS_ENGINE_V1_RECEIVER_RUNTIME_CONTRACT'
           assert r['status'] == 'PASS_ZERO_GPU_SINGLE_RUNNER_DECLARATION'
           assert r['gpu_candidates'] == ['L4', 'A10G']
           assert r['normalizer_policy'] == 'WORLD_ASSET_PIPELINE_V2'
           assert r['failure_isolated_to_asset_id'] is True
           assert r['batch_art_rejection_does_not_abort_sibling_assets'] is True
+          assert r['exact_requested_count_gate_required'] is True
           assert [r['provider_calls'], r['gpu_calls'], r['generation_calls']] == [0, 0, 0]
           try:
               paid_gate_open('silkspire')
@@ -145,7 +147,7 @@ jobs:
           print(json.dumps(result, indent=2, sort_keys=True))
           PY
 
-      - name: Prove exact Silkspire live canary would authorize in shadow mode
+      - name: Prove current Silkspire regional batch would authorize in shadow mode
         shell: bash
         run: |
           set -euo pipefail
@@ -154,16 +156,19 @@ jobs:
           import json
           from pathlib import Path
           r = json.loads(Path('v2-shadow-activation.json').read_text())
-          assert r['status'] == 'PASS_ZERO_SPEND_SHADOW_LIVE_CANARY_AUTHORIZATION'
+          assert r['status'] == 'PASS_ZERO_SPEND_SHADOW_REGION_BATCH_AUTHORIZATION'
           assert r['region'] == 'silkspire'
-          assert r['requested_source_ids'] == ['tileset.silkspire.a5.source.city_stone_paving']
-          assert r['selected_generation_count'] == 1
+          assert 1 <= r['selected_generation_count'] <= 8
+          assert r['accepted_source_count'] + r['selected_generation_count'] == 8
+          assert r['authorized_call_cap'] == r['selected_generation_count']
+          assert len(r['requested_source_ids']) == r['selected_generation_count']
+          assert not set(r['requested_source_ids']).intersection(r['accepted_ids_excluded'])
           assert r['paid_gate_would_open'] is True
           assert r['real_production_remained_frozen'] is True
           assert r['runtime_import_proof'] is True
           assert r['receiver_contract_status'] == 'PASS_ENGINE_V1_RECEIVER_RUNTIME_CONTRACT'
           assert [r['provider_calls'], r['gpu_calls'], r['generation_calls']] == [0, 0, 0]
-          print('WORLD_ASSET_V2_SHADOW_ACTIVATION=PASS')
+          print('WORLD_ASSET_V2_SHADOW_BATCH=PASS')
           PY
 
       - name: Validate unified per-asset acceptance and exact-eight rollup contract
@@ -214,8 +219,6 @@ jobs:
           assert r['byte_identity_preserved'] is True
           assert r['slot_count'] == 128
           assert r['unique_slot_hashes'] == 128
-          # This module proves the producer-side handoff only; the separate
-          # receiver contract below carries the live game-runtime proof.
           assert r['live_importer_present_in_repository'] is False
           assert r['runtime_import_proof'] is False
           assert [r['provider_calls'], r['gpu_calls'], r['generation_calls']] == [0, 0, 0]
@@ -247,6 +250,7 @@ jobs:
           python - <<'PY'
           import json
           from pathlib import Path
+          shadow = json.loads(Path('v2-shadow-activation.json').read_text())
           summary = {
             'schema': 'plushbound.world_asset_pipeline_v2_preflight_report.v1',
             'status': 'PASS_ZERO_GPU_V2_END_TO_END_RECEIVER_RUNTIME_READY',
@@ -260,8 +264,11 @@ jobs:
             'one_region_planning': True,
             'one_shared_generation_path': True,
             'shared_worker_paid_gate_refusal_while_frozen': True,
-            'shadow_live_canary_authorization_passed': True,
-            'shadow_live_canary_asset_id': 'tileset.silkspire.a5.source.city_stone_paving',
+            'bounded_live_batch_cap_1_to_8': True,
+            'exact_requested_count_gate_required': True,
+            'shadow_region_batch_authorization_passed': True,
+            'shadow_region_batch_requested_count': shadow['selected_generation_count'],
+            'shadow_region_batch_accepted_count': shadow['accepted_source_count'],
             'unified_v2_normalizer_policy': True,
             'v2_compiler_uses_same_normalizer_policy': True,
             'deterministic_compiler_regions_green': 9,
