@@ -1,8 +1,7 @@
 """One-source paid prompt-repair probe for a quarantined regional A5 source.
 
-This is intentionally smaller than the regional producer. It renders exactly one
-previously failed source ID after a repaired no-spend prompt contract passes.
-No retries, no second source, no compile and no cross-region work are permitted.
+Exactly one previously failed source ID may be rendered. No retries, no second
+source, no compile and no cross-region work are permitted.
 """
 from __future__ import annotations
 
@@ -24,10 +23,16 @@ MODEL_VOLUME = "freeframe-model-cache"
 SCOPE_PATH = Path("modal_worker/tileset_regional_a5_scope_manifest.json")
 OUTPUT_ROOT = Path("tileset-regional-a5-prompt-probe")
 PROMPT_CONTRACT_VERSION = "regional-a5-material-swatch-v2"
-PROBE_VERSION = "plushbound-regional-a5-prompt-probe-v2-gpu-fallback-cache-only"
+PROBE_VERSION = "plushbound-regional-a5-prompt-probe-v3-readable-microtexture"
 GPU_CANDIDATES = ["L4", "A10G"]
 STARTUP_TIMEOUT_SECONDS = 180
 REMOTE_TIMEOUT_SECONDS = 120
+REPAIR_DETAIL_CLAUSE = (
+    " Preserve clearly visible fine-scale tonal mottling, tiny sediment or fiber micrograin, "
+    "and moderate local contrast across the entire material surface so texture remains readable "
+    "after strong downsampling. Avoid broad flat color fields, large patches, isolated marks, "
+    "objects, or scene-like composition."
+)
 
 image = (
     modal.Image.debian_slim(python_version="3.11")
@@ -88,35 +93,33 @@ def build_probe(region: str, asset_id: str) -> dict:
         raise RuntimeError("quarantine accounting drift")
     if quarantine.get("compile_authorized") is not False or quarantine.get("deterministic_finalize_authorized") is not False:
         raise RuntimeError("quarantine unexpectedly authorizes compile/finalize")
+
     failed_ids = set(quarantine["rerender_authority"]["failed_source_ids"])
     if asset_id not in failed_ids:
         raise RuntimeError("probe asset ID is not authorized by quarantine failure evidence")
-
     prefix = f"tileset.{region}.a5.source."
     if not asset_id.startswith(prefix):
         raise RuntimeError("probe asset stable ID does not belong to target region")
     material_key = asset_id[len(prefix):]
     materials = regional.get("materials", [])
-    if material_key not in materials:
-        raise RuntimeError("probe material key is not in locked regional scope")
     labels = regional.get("material_prompt_labels", {})
-    if set(labels) != set(materials):
-        raise RuntimeError("material prompt label map does not match stable source scope")
+    if material_key not in materials or set(labels) != set(materials):
+        raise RuntimeError("probe material scope or label map drift")
 
     source_contract = scope["source_contract"]
     if source_contract.get("prompt_contract_version") != PROMPT_CONTRACT_VERSION:
-        raise RuntimeError("prompt contract version is not the repaired v2 contract")
+        raise RuntimeError("prompt contract version is not repaired v2")
     if source_contract.get("generation_attempts_per_material_cap") != 1:
         raise RuntimeError("generation attempt cap drift")
-    hint = str(regional.get("region_material_hint", "")).strip()
-    prompt = str(source_contract["prompt_template"]).format(
-        region_material_hint=hint,
+
+    base_prompt = str(source_contract["prompt_template"]).format(
+        region_material_hint=str(regional.get("region_material_hint", "")).strip(),
         material_name=labels[material_key],
     )
-    prompt_lower = prompt.lower()
     required = [str(x).lower() for x in source_contract.get("required_prompt_phrases", [])]
-    if not required or not all(phrase in prompt_lower for phrase in required):
+    if not required or not all(phrase in base_prompt.lower() for phrase in required):
         raise RuntimeError("rendered prompt does not satisfy repaired anti-scene contract")
+    prompt = base_prompt + REPAIR_DETAIL_CLAUSE
 
     prior = next((row for row in quarantine.get("sources", []) if row.get("asset_id") == asset_id), None)
     if prior is None:
@@ -130,6 +133,7 @@ def build_probe(region: str, asset_id: str) -> dict:
         "prompt": prompt,
         "prompt_sha256": hashlib.sha256(prompt.encode("utf-8")).hexdigest(),
         "prompt_contract_version": PROMPT_CONTRACT_VERSION,
+        "repair_detail_clause_sha256": hashlib.sha256(REPAIR_DETAIL_CLAUSE.encode("utf-8")).hexdigest(),
         "seed": _seed(asset_id),
         "prior_failed_run_id": quarantine["source_run_id"],
         "prior_failed_raw_sha256": prior["raw_sha256"],
@@ -150,9 +154,6 @@ def build_probe(region: str, asset_id: str) -> dict:
 class PromptProbeRunner:
     @modal.enter()
     def load(self):
-        # The model was already proven from this shared cache by the successful
-        # eight-source canary. Never let a paid GPU container block on a hub
-        # network lookup or model redownload during a one-source diagnostic.
         os.environ["HF_HOME"] = CACHE_DIR
         os.environ["HF_HUB_CACHE"] = f"{CACHE_DIR}/hub"
         os.environ["HF_HUB_OFFLINE"] = "1"
@@ -223,10 +224,10 @@ class PromptProbeRunner:
         ).images[0]
         elapsed = time.monotonic() - started
         print(f"A5_PROBE_RENDER_STAGE=IMAGE_READY:{elapsed:.3f}s", flush=True)
+
         raw_buffer = io.BytesIO()
         result.save(raw_buffer, format="PNG")
         raw = raw_buffer.getvalue()
-
         raw_payload = {
             "image_base64": base64.b64encode(raw).decode("ascii"),
             "width": 384,
@@ -255,6 +256,7 @@ class PromptProbeRunner:
             "stable_sheet_id": f"tileset.{item['region']}.a5",
             "prompt_contract_version": item["prompt_contract_version"],
             "prompt_sha256": item["prompt_sha256"],
+            "repair_detail_clause_sha256": item["repair_detail_clause_sha256"],
             "generation_count": 1,
             "generation_retry_count": 0,
             "cross_region_generation_count": 0,
@@ -276,7 +278,10 @@ class PromptProbeRunner:
             "raw_sha256": hashlib.sha256(raw).hexdigest(),
             "normalized_sha256": hashlib.sha256(normalized_raw).hexdigest(),
             "edge_discontinuity": round(edge, 6),
+            "maximum_edge_discontinuity": MAX_EDGE_DISCONTINUITY,
             "rgb_stddev": round(stddev, 4),
+            "minimum_rgb_stddev": MIN_RGB_STDDEV,
+            "normalizer_accepted": normalizer_accepted,
             "raw_inspection": inspection,
             "prior_failed_run_id": item["prior_failed_run_id"],
             "prior_failed_raw_sha256": item["prior_failed_raw_sha256"],
