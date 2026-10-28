@@ -1,0 +1,72 @@
+name: Plushbound 48px Tilesets Final No-Spend Preflight
+
+on:
+  push:
+    branches:
+      - freeframe-modal-worker
+    paths:
+      - '.github/preflight/tileset_48px_final_preflight_contract.json'
+      - '.github/preflight/tileset_48px_final_preflight.py'
+      - '.github/workflows/tileset-48px-final-preflight.yml'
+      - 'modal_worker/world_map_environment_master_baseline_closeout.json'
+      - 'modal_worker/creator_full_outfits_half_scope_contract.json'
+      - 'modal_worker/production_presets.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preflight-no-spend:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      PLUSHBOUND_PRODUCTION_ENABLED: '0'
+      PLUSHBOUND_PAID_REMOTE_ENABLED: '0'
+    steps:
+      - name: Checkout production branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run deterministic tileset zero-spend preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python .github/preflight/tileset_48px_final_preflight.py > tileset-48px-preflight-report.json
+          cat tileset-48px-preflight-report.json
+
+      - name: Assert zero spend and fail-closed route state
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r = json.loads(Path('tileset-48px-preflight-report.json').read_text(encoding='utf-8'))
+          assert r['status'] == 'PASS_NO_SPEND_ROUTE_NOT_YET_AUTHORIZED'
+          assert r['production_skipped'] is True
+          assert r['paid_remote_execution_skipped'] is True
+          assert r['generation_calls'] == 0
+          assert r['gpu_calls'] == 0
+          assert r['provider_calls'] == 0
+          assert r['tile_size'] == [48, 48]
+          assert r['canonical_region_count'] == 10
+          assert r['protected_environment_master_count'] == 10
+          assert r['existing_tileset_production_route'] is False
+          assert r['paid_tileset_generation_authorized'] is False
+          assert all(v == 'PASS' for v in r['checks'].values())
+          print('TILESET_48PX_PREFLIGHT=PASS_NO_SPEND_ROUTE_NOT_YET_AUTHORIZED')
+          print('GENERATION_CALLS=0')
+          PY
+
+      - name: Upload preflight evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: plushbound-tileset-48px-preflight-${{ github.run_id }}
+          path: tileset-48px-preflight-report.json
+          if-no-files-found: error
+          retention-days: 14
