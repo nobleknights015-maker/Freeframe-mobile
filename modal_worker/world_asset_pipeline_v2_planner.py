@@ -91,9 +91,15 @@ def build_rows(region: str, requested_ids: list[str] | None = None) -> tuple[lis
     return rows, plan
 
 
-def paid_gate_open(region: str) -> None:
-    state = _load(STATE_PATH)
-    freeze = _load(FREEZE_PATH)
+def validate_paid_gate(
+    region: str,
+    *,
+    state_data: dict | None = None,
+    freeze_data: dict | None = None,
+) -> dict:
+    """Validate the paid gate. Optional in-memory data enables zero-spend shadow tests."""
+    state = dict(state_data) if state_data is not None else _load(STATE_PATH)
+    freeze = dict(freeze_data) if freeze_data is not None else _load(FREEZE_PATH)
     if freeze.get("production_frozen") is True or freeze.get("paid_remote_execution_allowed") is not True:
         raise RuntimeError("V2 generation remains frozen")
     if state.get("production_frozen") is True or state.get("paid_execution_enabled") is not True:
@@ -102,6 +108,23 @@ def paid_gate_open(region: str) -> None:
         raise RuntimeError("V2 generation is not bound to this region")
     if state.get("catalog_wide_launch_authorized") is not False:
         raise RuntimeError("catalog-wide generation must remain disabled")
+    if state.get("runtime_import_proof") is not False:
+        raise RuntimeError("runtime import proof must remain false during source generation")
+    if freeze.get("catalog_wide_launch_authorized") is not False:
+        raise RuntimeError("freeze manifest must keep catalog-wide generation disabled")
+    if freeze.get("accepted_assets_immutable") is not True:
+        raise RuntimeError("accepted-asset immutability gate is not asserted")
+    return {
+        "status": "PASS_PAID_GATE",
+        "region": region,
+        "one_region_only": True,
+        "catalog_wide_launch_authorized": False,
+        "runtime_import_proof": False,
+    }
+
+
+def paid_gate_open(region: str) -> None:
+    validate_paid_gate(region)
 
 
 def validate_rebuild_contract() -> dict:
