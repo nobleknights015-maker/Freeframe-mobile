@@ -72,6 +72,7 @@ jobs:
           assert declaration['status'] == 'PASS_ZERO_GPU_SINGLE_RUNNER_DECLARATION'
           assert declaration['failure_isolated_to_asset_id'] is True
           assert declaration['batch_art_rejection_does_not_abort_sibling_assets'] is True
+          assert declaration['exact_requested_count_gate_required'] is True
 
           execute = False
           if trigger['enabled']:
@@ -83,7 +84,7 @@ jobs:
               rows, plan = build_rows(region, ids)
               assert [row['asset_id'] for row in rows] == ids
               assert not set(ids).intersection(plan['accepted_ids_excluded'])
-              paid_gate_open(region)
+              paid_gate_open(region, requested_count=len(ids))
               execute = True
           else:
               assert trigger['region'] is None
@@ -165,10 +166,10 @@ jobs:
           validate_receiver_contract()
           region = trigger['region']
           ids = trigger['requested_source_ids']
-          paid_gate_open(region)
           rows, plan = build_rows(region, ids)
           assert [row['asset_id'] for row in rows] == ids
           assert not set(ids).intersection(plan['accepted_ids_excluded'])
+          paid_gate_open(region, requested_count=len(rows))
 
           out = Path(os.environ['GITHUB_OUTPUT'])
           with out.open('a', encoding='utf-8') as fh:
