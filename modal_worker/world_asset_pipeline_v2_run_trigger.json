@@ -1,10 +1,10 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_run_trigger.v1",
-  "enabled": true,
+  "enabled": false,
   "mode": "selected_ids_one_region",
   "guard_validation_revision": 6,
-  "region": "silkspire",
-  "requested_source_ids": ["tileset.silkspire.a5.source.city_stone_paving"],
+  "region": null,
+  "requested_source_ids": [],
   "generation_attempts_per_requested_id_cap": 1,
   "one_region_only": true,
   "accepted_ids_must_be_excluded": true,
@@ -12,5 +12,6 @@
   "compile_authorized": false,
   "catalog_wide_launch_authorized": false,
   "runtime_import_proof": true,
-  "note": "QA-fixed live V2 canary after tileset inspection identity and paid-render preservation passed revision 11."
+  "last_authorized_live_canary_commit": "53654a09e9439795f4c094b0555d46e30670111e",
+  "note": "Trigger disabled immediately after QA-fixed single Silkspire city_stone_paving canary authorization."
 }
