@@ -78,7 +78,7 @@ jobs:
           assert trigger['asset_cap'] == 3
           assert set(trigger['asset_ids']) == quarantine
           assert trigger['preserve_accepted_asset_ids'] is True
-          assert trigger['never_stack_paid_runs'] is true
+          assert trigger['never_stack_paid_runs'] is True
           assert trigger['catalog_wide_launch_authorized'] is False
           assert trigger['creator_full_outfits_remain_closed_at'] == 24
           print('TARGETED_REPAIR_V3_TRIGGER=VALID_3_ONLY')
