@@ -10,13 +10,14 @@ from typing import Any
 from modal_worker.style_profiles import STYLE_PROFILE_VERSION, get_style_profile
 
 
-PRODUCTION_STYLE_POLICY_VERSION = "style-policy-v5-living-fabric"
+PRODUCTION_STYLE_POLICY_VERSION = "style-policy-v6-tileset-source"
 
 VALIDATED_STYLE_BY_PRESET: dict[str, str] = {
     "plushbound_character": "plushbound_trinity",
     "plushbound_guardian": "plushbound_guardian_2d_candidate",
     "plushbound_enemy": "plushbound_trinity_creature",
     "plushbound_environment": "plushbound_trinity_environment",
+    "plushbound_tileset_source": "plushbound_tileset_source",
 }
 
 
