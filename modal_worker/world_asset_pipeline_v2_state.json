@@ -1,6 +1,6 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_state.v1",
-  "status": "FROSTLACE_PACKED_SNOW_CANARY_AUTHORIZED_PRODUCTION_REFROZEN",
+  "status": "FROSTLACE_PARTIAL_1_OF_8_ACCEPTED",
   "pipeline_version": 2,
   "production_frozen": true,
   "paid_execution_enabled": false,
@@ -23,7 +23,8 @@
     "tileset.silkspire.a5.source.bridge_timber": "modal_worker/world_asset_pipeline_v2_acceptance_silkspire_bridge_timber.json",
     "tileset.silkspire.a5.source.guild_floorboards": "modal_worker/world_asset_pipeline_v2_acceptance_silkspire_guild_floorboards.json",
     "tileset.silkspire.a5.source.roof_tile": "modal_worker/world_asset_pipeline_v2_acceptance_silkspire_roof_tile.json",
-    "tileset.silkspire.a5.source.workshop_metal_plate": "modal_worker/world_asset_pipeline_v2_acceptance_silkspire_workshop_metal_plate.json"
+    "tileset.silkspire.a5.source.workshop_metal_plate": "modal_worker/world_asset_pipeline_v2_acceptance_silkspire_workshop_metal_plate.json",
+    "tileset.frostlace.a5.source.packed_snow": "modal_worker/world_asset_pipeline_v2_acceptance_frostlace_packed_snow.json"
   },
   "closed_region_sheets": {
     "elyndor": {
@@ -50,7 +51,7 @@
     "moonpatch-steppe": "PENDING",
     "sunspool-desert": "PENDING",
     "cinderreach": "PENDING",
-    "frostlace": "CANARY_PACKED_SNOW_AUTHORIZED_PENDING_RESULT_REVIEW"
+    "frostlace": "PARTIAL_1_OF_8_ACCEPTED"
   },
   "asset_state_overrides": {},
   "allowed_asset_states": ["PENDING", "ACCEPTED", "REJECTED_SEMANTIC", "REJECTED_TECHNICAL"],
@@ -122,8 +123,13 @@
     "validated_zero_gpu_preflight_run_id": 40753858590,
     "executor_run_id": 40754030630,
     "authorized_commit": "13ade52de71c534f568764870965cd49fef687a5",
+    "source_artifact_id": 12845940312,
+    "source_artifact_sha256": "3653c4b04cf4ee072ba3e71798981825cc5ca6a251f06af9ca1f902c6a291018",
+    "raw_sha256": "b11afb8a81f045dff6031893df26c1f530b2f2a11624f73966a9fd4a05676ff4",
+    "normalized_sha256": "cde474bfd77f91e35e8d94b773ba6e2cada7e605866b091740020aef64b5929a",
+    "gpu_seconds": 1.982,
     "automatic_acceptance": false,
     "automatic_compile": false,
-    "status": "IN_PROGRESS_OR_PENDING_RESULT_REVIEW"
+    "status": "ACCEPTED_MANUAL_QA_PASS"
   }
 }
