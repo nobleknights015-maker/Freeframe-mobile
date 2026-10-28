@@ -1,0 +1,58 @@
+{
+  "schema": "plushbound.tileset_regional_a5_repair_policy.v1",
+  "purpose": "Fail-closed policy for repairing regional A5 source sets after manual semantic/visual failure without rerendering accepted work or widening GPU scope.",
+  "prompt_contract_version": "regional-a5-material-swatch-v2",
+  "failure_handling": {
+    "machine_pass_does_not_equal_manual_acceptance": true,
+    "manual_failure_must_be_banked_before_repair": true,
+    "systemic_scene_composition_failure_requires_prompt_contract_repair": true,
+    "compile_while_any_source_is_manually_failed": false,
+    "deterministic_finalize_while_any_source_is_manually_failed": false,
+    "catalog_wide_launch_authorized": false
+  },
+  "probe": {
+    "required_after_systemic_prompt_failure": true,
+    "asset_cap": 1,
+    "generation_attempts_per_asset_cap": 1,
+    "source_must_be_selected_from_quarantined_failed_ids": true,
+    "accepted_ids_must_be_excluded": true,
+    "machine_pass_requires_manual_visual_qa": true,
+    "manual_pass_required_before_remaining_repair": true,
+    "compile_authorized_after_probe_only": false
+  },
+  "remaining_repair": {
+    "authorized_only_after_probe_manual_pass_is_banked": true,
+    "scope": "only previously failed IDs not already manually accepted",
+    "generation_attempts_per_remaining_asset_cap": 1,
+    "accepted_source_ids_immutable": true,
+    "accepted_probe_source_must_be_reused_by_exact_sha256": true,
+    "accepted_probe_source_must_not_be_rerendered": true,
+    "one_region_only": true,
+    "never_stack_paid_runs": true,
+    "cross_region_generation_authorized": false,
+    "catalog_wide_launch_authorized": false
+  },
+  "closeout": {
+    "required_manual_source_pass_count": 8,
+    "required_machine_source_pass_count": 8,
+    "all_eight_stable_source_ids_required": true,
+    "raw_and_normalized_sha256_required_per_source": true,
+    "manual_region_contact_sheet_review_required": true,
+    "deterministic_compile_only_after_closed_green_8_of_8": true,
+    "engine_v1_contract": {
+      "sheet_size": [384, 768],
+      "tile_size": [48, 48],
+      "grid": [8, 16],
+      "slot_count": 128,
+      "runtime_import_proof": false
+    }
+  },
+  "locks": {
+    "creator_full_outfits_closed_at": 24,
+    "guardians_locked_at": 960,
+    "npcs_locked_at": 320,
+    "enemies_accounted_total": 640,
+    "missing_local_artifact_is_not_rerender_authority": true,
+    "accepted_assets_immutable": true
+  }
+}
