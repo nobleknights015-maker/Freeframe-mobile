@@ -1,14 +1,10 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_run_trigger.v1",
-  "enabled": true,
+  "enabled": false,
   "mode": "selected_ids_one_region",
   "guard_validation_revision": 17,
-  "region": "frostlace",
-  "requested_source_ids": [
-    "tileset.frostlace.a5.source.frosted_stone",
-    "tileset.frostlace.a5.source.archive_stone",
-    "tileset.frostlace.a5.source.crystal_stone"
-  ],
+  "region": null,
+  "requested_source_ids": [],
   "generation_attempts_per_requested_id_cap": 1,
   "one_region_only": true,
   "accepted_ids_must_be_excluded": true,
@@ -21,7 +17,7 @@
   "last_authorized_frostlace_canary_executor_run_id": 40754030630,
   "last_authorized_frostlace_batch_commit": "93232195ae8098c067d8179dc8352c40cebf0def",
   "last_authorized_frostlace_batch_executor_run_id": 40755360893,
-  "last_authorized_frostlace_repair_commit": "b1715c02dc3967deab0448202886218515780575",
-  "last_authorized_frostlace_repair_executor_run_id": 40757599963,
-  "note": "Exact three remaining Frostlace semantic repairs only; accepted IDs excluded; one attempt each; no automatic acceptance or compile."
+  "last_authorized_frostlace_repair_commit": "6499cc0299cb26d3360153e9289dd5d2f66ea45b",
+  "last_authorized_frostlace_repair_executor_run_id": 40758764663,
+  "note": "Trigger disabled immediately after exact three-source Frostlace repair executor was pinned."
 }
