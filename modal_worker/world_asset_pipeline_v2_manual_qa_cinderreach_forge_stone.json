@@ -1,0 +1,22 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_manual_qa.v1",
+  "status": "REJECTED_SEMANTIC",
+  "asset_id": "tileset.cinderreach.a5.source.forge_stone",
+  "region": "cinderreach",
+  "material_key": "forge_stone",
+  "semantic_material_surface": false,
+  "no_scene_or_object_composition": false,
+  "manual_visual_gate": "REJECTED_SEMANTIC",
+  "review_notes": "Machine-pass output is visually a framed/inset dressed-stone slab with a dominant large crack/boundary in the lower-right. It is not an edge-to-edge continuous forge-stone substrate suitable as the A5 source master.",
+  "raw_sha256": "c7c5c02827d0a61f4ea05a99a00ddea3b44c6c7e1912c6b9ecf70c8fdfb12aaa",
+  "normalized_sha256": "700c3e9af12840a8b1af42c4bfa1104a484a48ccb7024fda22656546cd707fd6",
+  "source_executor_run_id": 40769256248,
+  "source_artifact_id": 12850229778,
+  "source_artifact_sha256": "0eedf1566859e5b4177d3adfb9877204697d2fd5094c5546f9cd04ba8ea02605",
+  "gpu_seconds": 2.004,
+  "rerender_in_same_round": false,
+  "replacement_strategy": "user/Vera World Editor / V1 Engine reference sheet, then zero-GPU reference-derived source",
+  "provider_calls_after_reject": 0,
+  "gpu_calls_after_reject": 0,
+  "generation_calls_after_reject": 0
+}
