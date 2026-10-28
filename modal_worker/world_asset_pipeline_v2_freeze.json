@@ -1,12 +1,12 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_freeze.v1",
-  "status": "PAID_WORLD_ASSET_PRODUCTION_OPEN_FROSTLACE_PACKED_SNOW_CANARY",
+  "status": "PAID_WORLD_ASSET_PRODUCTION_REFROZEN_AFTER_FROSTLACE_PACKED_SNOW_AUTHORIZATION",
   "branch": "freeframe-modal-worker",
-  "production_frozen": false,
-  "paid_remote_execution_allowed": true,
-  "provider_calls_allowed": 1,
-  "gpu_calls_allowed": 1,
-  "generation_calls_allowed": 1,
+  "production_frozen": true,
+  "paid_remote_execution_allowed": false,
+  "provider_calls_allowed": 0,
+  "gpu_calls_allowed": 0,
+  "generation_calls_allowed": 0,
   "catalog_wide_launch_authorized": false,
   "legacy_pipeline_mode": "READ_ONLY_EVIDENCE_AND_ACCEPTED_HASH_SOURCE",
   "legacy_paid_triggers_must_not_be_modified_or_replayed": true,
@@ -36,6 +36,6 @@
     "provider_gpu_generation_caps_must_match": true
   },
   "validated_batch_preflight_run_id": 40753858590,
-  "authorized_region": "frostlace",
-  "authorized_source_ids": ["tileset.frostlace.a5.source.packed_snow"]
+  "last_authorized_frostlace_canary_commit": "13ade52de71c534f568764870965cd49fef687a5",
+  "last_authorized_frostlace_canary_executor_run_id": 40754030630
 }
