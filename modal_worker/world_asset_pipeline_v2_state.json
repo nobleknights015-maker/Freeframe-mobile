@@ -1,10 +1,10 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_state.v1",
-  "status": "SILKSPIRE_PARTIAL_1_OF_8_ACCEPTED_PRODUCTION_FROZEN",
+  "status": "SILKSPIRE_REMAINING_7_PAID_WINDOW_OPEN",
   "pipeline_version": 2,
-  "production_frozen": true,
-  "paid_execution_enabled": false,
-  "active_paid_region": null,
+  "production_frozen": false,
+  "paid_execution_enabled": true,
+  "active_paid_region": "silkspire",
   "catalog_wide_launch_authorized": false,
   "runtime_import_proof": true,
   "runtime_import_proof_scope": "game-side A5 runtime importer smoke plus Android APK packaging proof",
@@ -68,6 +68,23 @@
     "automatic_acceptance": false,
     "automatic_compile": false,
     "accepted_after_policy_correction_without_rerender": true
+  },
+  "current_paid_window": {
+    "region": "silkspire",
+    "requested_source_ids": [
+      "tileset.silkspire.a5.source.workshop_timber",
+      "tileset.silkspire.a5.source.pale_masonry",
+      "tileset.silkspire.a5.source.dark_masonry",
+      "tileset.silkspire.a5.source.bridge_timber",
+      "tileset.silkspire.a5.source.guild_floorboards",
+      "tileset.silkspire.a5.source.roof_tile",
+      "tileset.silkspire.a5.source.workshop_metal_plate"
+    ],
+    "max_provider_calls": 7,
+    "max_gpu_calls": 7,
+    "max_generation_calls": 7,
+    "automatic_acceptance": false,
+    "automatic_compile": false
   },
   "next_fresh_region_after_v2_validation": "silkspire"
 }
