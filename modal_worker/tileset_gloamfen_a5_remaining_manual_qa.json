@@ -1,0 +1,60 @@
+{
+  "schema": "plushbound.tileset_regional_a5_remaining_manual_qa.v1",
+  "region": "gloamfen",
+  "status": "PENDING_RENDER_ARTIFACT",
+  "accepted_source_excluded": "tileset.gloamfen.a5.source.marsh_mud",
+  "global_checks": [
+    "continuous single material surface",
+    "no environment or terrain scene composition",
+    "no horizon or perspective",
+    "no bridge building ruin tree bush water body path road character creature prop debris or isolated object",
+    "no tile grid checkerboard contact sheet text glyph logo or sign",
+    "material remains readable at 48x48",
+    "edge distribution is seam-friendly",
+    "regional palette is coherent with muted bog olive peat brown algae green and wet charcoal",
+    "handcrafted Plushbound fiber or grain character is embedded in the material rather than represented as objects"
+  ],
+  "sources": [
+    {
+      "asset_id": "tileset.gloamfen.a5.source.boardwalk_timber",
+      "expected": "wet weathered charcoal-brown wood grain with fine linear fibers",
+      "manual_status": "PENDING"
+    },
+    {
+      "asset_id": "tileset.gloamfen.a5.source.damp_moss",
+      "expected": "dense damp green moss-fiber texture at close uniform scale without visible plants or clumps",
+      "manual_status": "PENDING"
+    },
+    {
+      "asset_id": "tileset.gloamfen.a5.source.dark_peat",
+      "expected": "near-black peat soil texture with soft brown organic grain",
+      "manual_status": "PENDING"
+    },
+    {
+      "asset_id": "tileset.gloamfen.a5.source.drowned_stone",
+      "expected": "dark water-aged gray stone with mossy mineral staining and no standing liquid",
+      "manual_status": "PENDING"
+    },
+    {
+      "asset_id": "tileset.gloamfen.a5.source.fungal_moss",
+      "expected": "muted olive and pale fungal-green moss-fiber texture at close uniform scale without distinct fungi or vegetation objects",
+      "manual_status": "PENDING"
+    },
+    {
+      "asset_id": "tileset.gloamfen.a5.source.reed_matting",
+      "expected": "tightly woven muted-olive reed-fiber mat texture with regular fine weave and no loose reed objects",
+      "manual_status": "PENDING"
+    },
+    {
+      "asset_id": "tileset.gloamfen.a5.source.shallow_silt",
+      "expected": "fine gray-green silty sediment texture with soft mineral variation and no visible water body",
+      "manual_status": "PENDING"
+    }
+  ],
+  "machine_gate_required": "PASS_7_OF_7",
+  "manual_gate_required": "PASS_7_OF_7",
+  "compile_authorized": false,
+  "deterministic_finalize_authorized": false,
+  "catalog_wide_launch_authorized": false,
+  "runtime_import_proof": false
+}
