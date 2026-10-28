@@ -1,6 +1,7 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_gloamfen_qualification_trigger.v1",
   "enabled": true,
+  "qualification_revision": 1,
   "region": "gloamfen",
   "source_artifact_run_id": 40718139937,
   "source_artifact_id": 12828713378,
