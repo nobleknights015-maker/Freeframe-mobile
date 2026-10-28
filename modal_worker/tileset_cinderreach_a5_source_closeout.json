@@ -1,0 +1,28 @@
+{
+  "accepted_source_ids_protected_from_rerender": true,
+  "catalog_wide_launch_authorized": false,
+  "compile_authorized": true,
+  "ember_manual_qa_evidence": "modal_worker/world_asset_pipeline_v2_manual_qa_cinderreach_ember_veined_rock.json",
+  "generation_calls_for_reference_derived_assets": 0,
+  "gpu_calls_for_reference_derived_assets": 0,
+  "machine_gate": "PASS_8_OF_8",
+  "manual_visual_gate": "PASS_8_OF_8",
+  "provider_calls_for_reference_derived_assets": 0,
+  "reference_derived_evidence": "modal_worker/world_asset_pipeline_v2_cinderreach_reference_derived_closeout.json",
+  "region": "cinderreach",
+  "runtime_import_proof": false,
+  "schema": "plushbound.tileset_regional_a5_source_closeout.v1",
+  "sources": [
+    {"asset_id":"tileset.cinderreach.a5.source.basalt","material_key":"basalt","normalized_sha256":"d681dd052a949c4cbbfdb869e45101eb7721ab7b0195b8aa464767be48107ef8","provenance":"PRIOR_IMMUTABLE_ASSET_ACCEPTANCE","raw_sha256":"f1eaefd6abd82bbb7dc2db99bf7aa06ece9cfd22a057df8d79d75cd30ddb8718"},
+    {"asset_id":"tileset.cinderreach.a5.source.ash_soil","material_key":"ash_soil","normalized_sha256":"8e14bc85cbe1979ae858b402d1bbe042c2e1264d9c81f3df7c62a97218efd284","provenance":"PRIOR_IMMUTABLE_ASSET_ACCEPTANCE","raw_sha256":"e5382737d9e51168f477e229a3365f33989216ae76c8976681cbacf05a66000f"},
+    {"asset_id":"tileset.cinderreach.a5.source.ember_veined_rock","gpu_seconds":2.059,"material_key":"ember_veined_rock","normalized_sha256":"44735db266a55f11794c529f63d0d4441995e6200cb50040592c4f65821be3ac","provenance":"V2_PAID_CANARY_MANUAL_QA_PASS","raw_sha256":"828a741025ffd5339007720f3062841b7bd780052b05534ed663e2731ee3d31e","source_executor_run_id":40774167698},
+    {"asset_id":"tileset.cinderreach.a5.source.forge_stone","material_key":"forge_stone","normalized_sha256":"d86e59124a41805b0a54bd84496e5ca6e0cac412554117108cb3cbce0196881c","provenance":"PRIOR_IMMUTABLE_ASSET_ACCEPTANCE","raw_sha256":"5d612fcc6d669df7844a04d1641b3c65f998f539621f30682134b0d73acf245a"},
+    {"asset_id":"tileset.cinderreach.a5.source.charred_timber","material_key":"charred_timber","normalized_sha256":"8f13f44fda8792ce7f30055ac4ae231855c3ba4af6c5c69a3ebd20cf1e73b4d5","provenance":"PRIOR_IMMUTABLE_ASSET_ACCEPTANCE","raw_sha256":"d39000c89bdfc74a6ed85747550c5f14d54cf63c634b7aba31a1d936f53f5c97"},
+    {"asset_id":"tileset.cinderreach.a5.source.foundry_masonry","material_key":"foundry_masonry","normalized_sha256":"4304f7e718e3882542852eb061aca12af822c80d2455e0005ac5aab88d63a1ee","provenance":"USER_VERA_REFERENCE_DERIVED_ZERO_GPU","raw_sha256":"e87e8e949abfafeef79b4d446e9d00762837f352f355ba530352b2b3cc2093e6","source_reference_sha256":"cdd12639d50f88b59114664dbd1f407be1732abbd1d105eb032312689f1fc2de"},
+    {"asset_id":"tileset.cinderreach.a5.source.metal_floor_plate","material_key":"metal_floor_plate","normalized_sha256":"be5c469647474952cd36442c000f5318ced06e0fc196c7061d96a5ee5bba7905","provenance":"USER_VERA_REFERENCE_DERIVED_ZERO_GPU","raw_sha256":"c8e62b2596648ac5b90dfa60b953dbaa529290ff90004c3b90d459de53530246","source_reference_sha256":"d8c74eb812946b6911b7e297a7ce3f28ae7fce8941bef3fc9389d3194fafd12e"},
+    {"asset_id":"tileset.cinderreach.a5.source.cooled_lava","material_key":"cooled_lava","normalized_sha256":"73999687a47c58f5c69407d9868693d554ef01a92d2ce8fce81a2fdead714803","provenance":"USER_VERA_REFERENCE_DERIVED_ZERO_GPU","raw_sha256":"6c1d32928fbbdfa8a8b53d4279e64c1fb7629ac2bd7fd15f080e035868720f3d","source_reference_sha256":"d734e44eb6e4089f7a2e34e4edd06cbeefecc3a42e68933aa886b8985983da7a"}
+  ],
+  "stable_sheet_id": "tileset.cinderreach.a5",
+  "status": "CLOSED_GREEN_8_OF_8",
+  "target_sheet_type": "A5"
+}
