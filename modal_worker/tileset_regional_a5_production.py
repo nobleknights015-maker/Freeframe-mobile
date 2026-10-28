@@ -27,7 +27,8 @@ MODEL_VOLUME = "freeframe-model-cache"
 SCOPE_PATH = Path("modal_worker/tileset_regional_a5_scope_manifest.json")
 OUTPUT_ROOT = Path("tileset-regional-a5")
 EXPECTED_COUNT = 8
-VERSION = "plushbound-tileset-regional-a5-source-v1"
+PROMPT_CONTRACT_VERSION = "regional-a5-material-swatch-v2"
+VERSION = "plushbound-tileset-regional-a5-source-v2-material-swatch"
 
 image = (
     modal.Image.debian_slim(python_version="3.11")
@@ -65,21 +66,35 @@ def load_assets(region: str) -> list[dict]:
         raise RuntimeError("one-region paid trigger safety changed")
     scope = data["regions"][region]
     if scope["status"] != "PREFLIGHT_PENDING" or scope["sheet_type"] != "A5":
-        raise RuntimeError("regional A5 source scope is not in expected preflight-pending state")
+        raise RuntimeError("full eight-source route requires a fresh PREFLIGHT_PENDING regional A5 scope; quarantined repairs must use the dedicated repair path")
     materials = scope["materials"]
     if len(materials) != EXPECTED_COUNT or len(set(materials)) != EXPECTED_COUNT:
         raise RuntimeError("regional A5 route requires exactly eight unique material keys")
+
     source = data["source_contract"]
     if source["generation_attempts_per_material_cap"] != 1:
         raise RuntimeError("generation attempt cap changed")
+    if source.get("prompt_contract_version") != PROMPT_CONTRACT_VERSION:
+        raise RuntimeError("regional A5 paid route requires repaired material-swatch prompt contract v2")
+    region_hint = str(scope.get("region_material_hint", "")).strip()
+    labels = scope.get("material_prompt_labels")
+    if not region_hint:
+        raise RuntimeError("region material hint is blank")
+    if not isinstance(labels, dict) or set(labels) != set(materials):
+        raise RuntimeError("material prompt labels do not exactly match the regional stable material scope")
+    required_phrases = [str(x).lower() for x in source.get("required_prompt_phrases", [])]
+    if not required_phrases:
+        raise RuntimeError("anti-scene prompt phrase contract is missing")
 
     rows = []
     for material in materials:
         asset_id = f"tileset.{region}.a5.source.{material}"
         prompt = source["prompt_template"].format(
-            region_prompt=scope["region_prompt"],
-            material_name=material.replace("_", " ").replace("-", " "),
+            region_material_hint=region_hint,
+            material_name=labels[material],
         )
+        if not all(phrase in prompt.lower() for phrase in required_phrases):
+            raise RuntimeError(f"{asset_id}: rendered prompt does not satisfy anti-scene contract")
         rows.append({
             "asset_id": asset_id,
             "material_key": material,
@@ -88,6 +103,8 @@ def load_assets(region: str) -> list[dict]:
             "preset": "plushbound_tileset_source",
             "asset_class": "tileset_master",
             "prompt": prompt,
+            "prompt_sha256": hashlib.sha256(prompt.encode("utf-8")).hexdigest(),
+            "prompt_contract_version": PROMPT_CONTRACT_VERSION,
             "seed": stable_seed(region, asset_id),
         })
     if len({row["asset_id"] for row in rows}) != EXPECTED_COUNT:
@@ -148,6 +165,8 @@ class RegionalA5Runner:
 
         if len(rows) != EXPECTED_COUNT or {row["region"] for row in rows} != {region}:
             raise RuntimeError("remote regional A5 request is not exactly one eight-source region")
+        if any(row.get("prompt_contract_version") != PROMPT_CONTRACT_VERSION for row in rows):
+            raise RuntimeError("remote regional A5 request is not bound to prompt contract v2")
         outputs = []
         total_gpu_seconds = 0.0
         wall_started = time.monotonic()
@@ -202,6 +221,8 @@ class RegionalA5Runner:
                 "preset": "plushbound_tileset_source",
                 "model_id": MODEL_ID,
                 "renderer_route": "flux2_klein",
+                "prompt_contract_version": item["prompt_contract_version"],
+                "prompt_sha256": item["prompt_sha256"],
                 "generation_attempts": 1,
                 "seed": int(request["seed"]),
                 "source_width": 384,
@@ -227,6 +248,7 @@ class RegionalA5Runner:
         return {
             "schema": "plushbound.tileset_regional_a5_source_report.v1",
             "version": VERSION,
+            "prompt_contract_version": PROMPT_CONTRACT_VERSION,
             "region": region,
             "target_sheet_type": "A5",
             "requested_count": EXPECTED_COUNT,
