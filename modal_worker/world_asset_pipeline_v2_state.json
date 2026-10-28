@@ -1,10 +1,10 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_state.v1",
-  "status": "FROSTLACE_REMAINING_7_AUTHORIZED",
+  "status": "FROSTLACE_REMAINING_7_PINNED_PRODUCTION_REFROZEN",
   "pipeline_version": 2,
-  "production_frozen": false,
-  "paid_execution_enabled": true,
-  "active_paid_region": "frostlace",
+  "production_frozen": true,
+  "paid_execution_enabled": false,
+  "active_paid_region": null,
   "catalog_wide_launch_authorized": false,
   "runtime_import_proof": true,
   "runtime_import_proof_scope": "game-side A5 runtime importer smoke plus Android APK packaging proof",
@@ -51,7 +51,7 @@
     "moonpatch-steppe": "PENDING",
     "sunspool-desert": "PENDING",
     "cinderreach": "PENDING",
-    "frostlace": "PARTIAL_1_OF_8_REMAINING_7_AUTHORIZED"
+    "frostlace": "PARTIAL_1_OF_8_REMAINING_7_IN_FLIGHT"
   },
   "asset_state_overrides": {},
   "allowed_asset_states": ["PENDING", "ACCEPTED", "REJECTED_SEMANTIC", "REJECTED_TECHNICAL"],
@@ -77,35 +77,6 @@
     "compile_requires_8_of_8_accepted": true,
     "engine_v1_receiver_runtime_importer_present": true,
     "state_resolution_mode_independent": true
-  },
-  "last_authorized_live_canary": {
-    "commit": "53654a09e9439795f4c094b0555d46e30670111e",
-    "region": "silkspire",
-    "executor_run_id": 40735013050,
-    "accepted": true
-  },
-  "last_authorized_region_batch": {
-    "commit": "d117139d3d9cb83ffbcefad142cb6f826dbefe7c",
-    "executor_run_id": 40742860868,
-    "manual_pass_count": 5,
-    "manual_rejected_semantic_count": 2,
-    "total_gpu_seconds": 5.842
-  },
-  "last_authorized_repair": {
-    "commit": "d02905f52451a72660b9c162e624a85a88b21960",
-    "executor_run_id": 40744207970,
-    "manual_pass_count": 1,
-    "manual_rejected_semantic_count": 1,
-    "total_gpu_seconds": 2.309
-  },
-  "last_authorized_final_metal": {
-    "commit": "873f1db88c76cdbf2e51ef592854f86b179ad7ed",
-    "executor_run_id": 40745117913,
-    "source_artifact_id": 12840403827,
-    "original_raw_sha256": "70b8ffab99e2cdf6dd15893cfd2b352f50a1ce62a3df362bc66a930e995c9918",
-    "deterministic_repair": "v2-perimeter-crop-v1",
-    "accepted_repaired_raw_sha256": "635b61db90c6eea5df74ebb84b02e4df54880f10dbcdfb50afe4d02f6b3b209d",
-    "execution_status": "ACCEPTED_AFTER_ZERO_GPU_PERIMETER_CLEANUP"
   },
   "silkspire_compile_closeout": {
     "status": "CLOSED_GREEN_DETERMINISTIC_A5",
@@ -135,6 +106,8 @@
   "current_batch": {
     "region": "frostlace",
     "validated_zero_gpu_preflight_run_id": 40755189578,
+    "executor_run_id": 40755360893,
+    "authorized_commit": "93232195ae8098c067d8179dc8352c40cebf0def",
     "requested_source_ids": [
       "tileset.frostlace.a5.source.blue_ice",
       "tileset.frostlace.a5.source.frosted_stone",
@@ -147,6 +120,6 @@
     "requested_count": 7,
     "automatic_acceptance": false,
     "automatic_compile": false,
-    "status": "AUTHORIZED_WAITING_FOR_TRIGGER"
+    "status": "PINNED_EXECUTOR_IN_FLIGHT_PRODUCTION_REFROZEN"
   }
 }
