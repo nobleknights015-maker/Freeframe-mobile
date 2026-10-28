@@ -1,0 +1,44 @@
+name: Stop Full Outfits Overrun at Half Scope
+
+on:
+  push:
+    branches: [freeframe-modal-worker]
+    paths:
+      - .github/workflows/stop-full-outfits-at-half.yml
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: stop-full-outfits-half-scope
+  cancel-in-progress: false
+
+jobs:
+  stop:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Cancel only the superseded 45-style Full Outfits run
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET_RUN_ID: '40606361749'
+          REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          state="$(curl -fsSL -H "Authorization: Bearer ${GH_TOKEN}" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/${REPO}/actions/runs/${TARGET_RUN_ID}")"
+          status="$(python -c 'import json,sys; print(json.load(sys.stdin)["status"])' <<<"$state")"
+          head_sha="$(python -c 'import json,sys; print(json.load(sys.stdin)["head_sha"])' <<<"$state")"
+          if [[ "$head_sha" != "8e41f19168f71b1ee93c12e06612884087e21775" ]]; then
+            echo "Refusing: target run provenance mismatch: $head_sha" >&2
+            exit 1
+          fi
+          if [[ "$status" == "completed" ]]; then
+            echo "Target run already completed; no cancellation needed."
+            exit 0
+          fi
+          curl -fsSL -X POST \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${REPO}/actions/runs/${TARGET_RUN_ID}/cancel"
+          echo "Cancellation requested for exact superseded run ${TARGET_RUN_ID}."
