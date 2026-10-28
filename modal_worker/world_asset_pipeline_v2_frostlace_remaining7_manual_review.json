@@ -1,0 +1,29 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_batch_manual_review.v1",
+  "status": "REVIEWED_3_PASS_4_REJECTED_SEMANTIC",
+  "region": "frostlace",
+  "executor_run_id": 40755360893,
+  "authorized_commit": "93232195ae8098c067d8179dc8352c40cebf0def",
+  "source_artifact_id": 12844814359,
+  "source_artifact_sha256": "42bec66da9fffa0676a273021debb7cc06b6b817505c4092fe39f306a4886a47",
+  "machine_pass_count": 7,
+  "manual_pass_count": 3,
+  "manual_rejected_semantic_count": 4,
+  "total_gpu_seconds": 5.849,
+  "accepted_materials": ["frozen_soil", "pale_timber", "cold_gravel"],
+  "rejected_materials": ["blue_ice", "frosted_stone", "archive_stone", "crystal_stone"],
+  "decisions": {
+    "blue_ice": "REJECT: large discrete shard/facet forms dominate instead of subtle close-scale continuous ice variation.",
+    "frosted_stone": "REJECT: explicit snowflake-shaped motifs read as discrete decorative symbols rather than fine frost grain.",
+    "frozen_soil": "PASS: edge-to-edge dark compacted soil with fine pale frost speckling; remains readable at 48px.",
+    "archive_stone": "REJECT: large broken polygon slab boundaries dominate instead of smooth pale dressed-stone grain.",
+    "pale_timber": "PASS: edge-to-edge pale timber grain with cool weathering and no scene/object composition.",
+    "crystal_stone": "REJECT: large paving-like polygon facets/joints dominate instead of dense small-scale crystalline mineral facets.",
+    "cold_gravel": "PASS: continuous small-scale frost-gray/pale-blue gravel aggregate with no focal object or scene composition."
+  },
+  "accepted_packed_snow_preserved": true,
+  "automatic_acceptance": false,
+  "automatic_compile": false,
+  "production_refrozen": true,
+  "catalog_wide_launch_authorized": false
+}
