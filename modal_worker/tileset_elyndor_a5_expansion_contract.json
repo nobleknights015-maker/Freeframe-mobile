@@ -1,14 +1,16 @@
 {
-  "schema": "plushbound.tileset_elyndor_a5_expansion_contract.v1",
-  "status": "DESIGN_ONLY_NO_SPEND",
+  "schema": "plushbound.tileset_elyndor_a5_expansion_contract.v2",
+  "status": "DESIGN_ONLY_NO_SPEND_ENGINE_PROFILE_CORRECTED",
   "region": "elyndor",
   "sheet_type": "A5",
+  "engine_profile": "mv_tileset_a5",
+  "engine_profile_source": "modal_worker/asset_profiles.py",
   "engine_tile_size": 48,
-  "sheet_width": 768,
+  "sheet_width": 384,
   "sheet_height": 768,
-  "columns": 16,
+  "columns": 8,
   "rows": 16,
-  "slot_count": 256,
+  "slot_count": 128,
   "source_closeout": "modal_worker/tileset_source_canary_closeout.json",
   "source_count": 8,
   "accepted_source_ids_protected_from_rerender": true,
@@ -19,36 +21,44 @@
   "cross_region_expansion_authorized": false,
   "catalog_wide_launch_authorized": false,
   "creator_full_outfits_remain_closed_at": 24,
+  "correction": {
+    "supersedes_geometry": [768, 768],
+    "superseded_slot_count": 256,
+    "reason": "Repository runtime profile mv_tileset_a5 requires exactly 384x768 RGBA PNG; prior 768x768 compile evidence remains historical but is not Engine v1 compatible.",
+    "paid_regeneration_required": false,
+    "source_rerender_required": false
+  },
   "assembly_policy": {
     "deterministic_only": true,
     "source_master_resolution": [384, 384],
     "output_tile_resolution": [48, 48],
     "derive_variants_from_banked_raw_masters": true,
+    "variants_per_material": 16,
     "never_upscale_normalized_48px_sources": true,
-    "crop_then_downsample": true,
-    "wrap_safe_crop_offsets": true,
+    "wrap_safe_offsets": true,
     "forbid_synthetic_text_symbols_borders": true,
     "preserve_material_identity": true,
     "source_hash_verification_required_before_compile": true
   },
   "material_blocks": [
-    {"material_key": "lush_grass", "source_asset_id": "tileset.elyndor.a5.source.lush_grass", "slots": 32, "variant_policy": "wrapped_crop_offsets_and_subtle_orientation_variants"},
-    {"material_key": "wildflower_grass", "source_asset_id": "tileset.elyndor.a5.source.wildflower_grass", "slots": 32, "variant_policy": "wrapped_crop_offsets_preserving_sparse_flower_distribution"},
-    {"material_key": "warm_soil", "source_asset_id": "tileset.elyndor.a5.source.warm_soil", "slots": 32, "variant_policy": "wrapped_crop_offsets_and_low-frequency tonal_variants"},
-    {"material_key": "dirt_path", "source_asset_id": "tileset.elyndor.a5.source.dirt_path", "slots": 32, "variant_policy": "wrapped_crop_offsets_preserving_unpaved_material_read"},
-    {"material_key": "tilled_farm_soil", "source_asset_id": "tileset.elyndor.a5.source.tilled_farm_soil", "slots": 32, "variant_policy": "crop_offsets_preserving_furrow_direction"},
-    {"material_key": "pale_field_stone", "source_asset_id": "tileset.elyndor.a5.source.pale_field_stone", "slots": 32, "variant_policy": "wrapped_crop_offsets_without_symbolic_shapes"},
-    {"material_key": "village_timber", "source_asset_id": "tileset.elyndor.a5.source.village_timber", "slots": 32, "variant_policy": "crop_offsets_with_orientation_preserved_per_variant_group"},
-    {"material_key": "straw_thatch", "source_asset_id": "tileset.elyndor.a5.source.straw_thatch", "slots": 32, "variant_policy": "crop_offsets_preserving_straw_flow_direction"}
+    {"material_key": "lush_grass", "source_asset_id": "tileset.elyndor.a5.source.lush_grass", "slots": 16},
+    {"material_key": "wildflower_grass", "source_asset_id": "tileset.elyndor.a5.source.wildflower_grass", "slots": 16},
+    {"material_key": "warm_soil", "source_asset_id": "tileset.elyndor.a5.source.warm_soil", "slots": 16},
+    {"material_key": "dirt_path", "source_asset_id": "tileset.elyndor.a5.source.dirt_path", "slots": 16},
+    {"material_key": "tilled_farm_soil", "source_asset_id": "tileset.elyndor.a5.source.tilled_farm_soil", "slots": 16},
+    {"material_key": "pale_field_stone", "source_asset_id": "tileset.elyndor.a5.source.pale_field_stone", "slots": 16},
+    {"material_key": "village_timber", "source_asset_id": "tileset.elyndor.a5.source.village_timber", "slots": 16},
+    {"material_key": "straw_thatch", "source_asset_id": "tileset.elyndor.a5.source.straw_thatch", "slots": 16}
   ],
   "validation_requirements": {
     "exact_sheet_geometry": true,
+    "asset_profile_validation_required": "mv_tileset_a5",
     "exact_slot_count": true,
     "all_tiles_rgba_png": true,
     "no_source_hash_mismatch": true,
     "no_duplicate_slot_hashes_within_material_family_unless_explicitly_allowed": true,
     "manual_visual_contact_sheet_required": true,
-    "engine_v1_import_check_required": true
+    "engine_v1_compatibility_contract_check_required": true
   },
-  "next_action": "IMPLEMENT_DETERMINISTIC_ELYNDOR_A5_COMPILER_AND_RUN_NO_SPEND_VALIDATION"
+  "next_action": "COMPILE_384X768_AND_RUN_ENGINE_V1_COMPATIBILITY_CONTRACT_VALIDATION"
 }
