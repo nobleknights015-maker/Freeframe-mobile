@@ -1,10 +1,10 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_run_trigger.v1",
-  "enabled": false,
+  "enabled": true,
   "mode": "selected_ids_one_region",
-  "guard_validation_revision": 19,
-  "region": null,
-  "requested_source_ids": [],
+  "guard_validation_revision": 20,
+  "region": "cinderreach",
+  "requested_source_ids": ["tileset.cinderreach.a5.source.forge_stone"],
   "generation_attempts_per_requested_id_cap": 1,
   "one_region_only": true,
   "accepted_ids_must_be_excluded": true,
@@ -12,7 +12,7 @@
   "compile_authorized": false,
   "catalog_wide_launch_authorized": false,
   "runtime_import_proof": true,
-  "validated_zero_gpu_preflight_run_id": 40767046153,
+  "validated_zero_gpu_preflight_run_id": 40769049601,
   "last_authorized_frostlace_canary_commit": "13ade52de71c534f568764870965cd49fef687a5",
   "last_authorized_frostlace_canary_executor_run_id": 40754030630,
   "last_authorized_frostlace_batch_commit": "93232195ae8098c067d8179dc8352c40cebf0def",
@@ -23,5 +23,5 @@
   "last_authorized_cinderreach_canary_executor_run_id": 40765470020,
   "last_authorized_cinderreach_ash_soil_commit": "0aeb1fb881daeef15f175ac062e742cbc9fa2987",
   "last_authorized_cinderreach_ash_soil_executor_run_id": 40767242073,
-  "note": "Trigger disabled immediately after exact Cinderreach ash_soil executor was pinned."
+  "note": "Exact one-source Cinderreach forge_stone canary authorized after revision 23 proved 2 accepted + 6 remaining."
 }
