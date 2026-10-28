@@ -1,0 +1,23 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_asset_acceptance.v1",
+  "status": "ACCEPTED",
+  "asset_id": "tileset.frostlace.a5.source.crystal_stone",
+  "region": "frostlace",
+  "material_key": "crystal_stone",
+  "machine_gate": "PASS",
+  "manual_visual_gate": "PASS",
+  "raw_sha256": "5bbfd76f1be967d6703965f93dd856c5ebf13f0b8fa7fa5d31e6b20827ec5b2a",
+  "normalized_sha256": "1c3f1b3a9ea6f7b4af62b2475f10bd72d07ad0b52237c70e6e9c86aec309c493",
+  "deterministic_repair": "modal_worker/world_asset_pipeline_v2_frostlace_reference_derived_closeout.json",
+  "deterministic_transform_id": "reference-derived-microtexture-v1",
+  "manual_qa_evidence": "modal_worker/world_asset_pipeline_v2_frostlace_reference_derived_closeout.json",
+  "source_reference_sha256": "532ee641c6c899e0dce716ff05bbff70039982fce7e4cc4d238870de13bbd15b",
+  "provider_calls": 0,
+  "gpu_calls": 0,
+  "generation_calls": 0,
+  "immutable": true,
+  "rerender_allowed": false,
+  "compile_authorized": false,
+  "catalog_wide_launch_authorized": false,
+  "runtime_import_proof": true
+}
