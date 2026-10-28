@@ -1,0 +1,172 @@
+name: Plushbound World Asset Pipeline V2 Reference Executor
+
+on:
+  push:
+    branches:
+      - freeframe-modal-worker
+    paths:
+      - 'modal_worker/world_asset_pipeline_v2_reference_run_trigger.json'
+      - 'modal_worker/world_asset_pipeline_v2_paid_authorization.json'
+      - 'modal_worker/world_asset_pipeline_v2_reference_batch.py'
+      - 'modal_worker/world_asset_pipeline_v2_reference_runner.py'
+      - 'modal_worker/world_asset_pipeline_v2_reference_conditioning.json'
+      - 'modal_worker/project_references/**'
+      - '.github/workflows/world-asset-pipeline-v2-reference-executor.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plushbound-world-asset-pipeline-v2-reference-paid-executor
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    outputs:
+      execute: ${{ steps.gate.outputs.execute }}
+      region: ${{ steps.gate.outputs.region }}
+      ids_json: ${{ steps.gate.outputs.ids_json }}
+    steps:
+      - name: Checkout production branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install zero-spend validation dependencies
+        run: python -m pip install --disable-pip-version-check 'pillow>=10.4,<12' 'modal>=1.5,<2'
+
+      - name: Validate exact reference-aware gate before credentials
+        id: gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          from modal_worker.world_asset_pipeline_v2_planner import build_rows
+          from modal_worker.world_asset_pipeline_v2_reference_runner import declaration_validation
+          from modal_worker.world_asset_pipeline_v2_reference_batch import validate_reference_paid_authorization
+
+          trigger = json.loads(Path('modal_worker/world_asset_pipeline_v2_reference_run_trigger.json').read_text())
+          auth = json.loads(Path('modal_worker/world_asset_pipeline_v2_paid_authorization.json').read_text())
+
+          assert trigger['schema'] == 'plushbound.world_asset_pipeline_v2_reference_run_trigger.v1'
+          assert trigger['mode'] == 'selected_ids_one_region_reference_aware'
+          assert trigger['generation_attempts_per_requested_id_cap'] == 1
+          assert trigger['one_region_only'] is True
+          assert trigger['accepted_ids_must_be_excluded'] is True
+          assert trigger['manual_visual_qa_required'] is True
+          assert trigger['compile_authorized'] is False
+          assert trigger['catalog_wide_launch_authorized'] is False
+          assert trigger['required_source_art_provenance'] == 'vera-modal-generated'
+          assert trigger['reference_sheet_pixels_used_as_runtime_art'] is False
+          assert int(trigger['validated_reference_preflight_run_id']) == 40786484554
+
+          declaration = declaration_validation()
+          assert declaration['status'] == 'PASS_ZERO_GPU_REFERENCE_AWARE_RUNNER_DECLARATION'
+          assert declaration['reference_sheet_pixels_used_as_runtime_art'] is False
+          assert declaration['required_source_art_provenance'] == 'vera-modal-generated'
+
+          execute = False
+          region = ''
+          ids = []
+          if trigger['enabled']:
+              region = trigger['region']
+              ids = trigger['requested_source_ids']
+              assert isinstance(region, str) and region
+              assert isinstance(ids, list) and 1 <= len(ids) <= 8
+              assert len(ids) == len(set(ids))
+              rows, plan = build_rows(region, ids)
+              assert [row['asset_id'] for row in rows] == ids
+              assert not set(ids).intersection(plan['accepted_ids_excluded'])
+              gate = validate_reference_paid_authorization(region, len(ids))
+              assert gate['status'] == 'PASS_REFERENCE_PAID_AUTHORIZATION'
+              assert gate['compile_authorized'] is False
+              assert gate['catalog_wide_launch_authorized'] is False
+              assert gate['source_art_provenance'] == 'vera-modal-generated'
+              assert gate['reference_sheet_pixels_used_as_runtime_art'] is False
+              execute = True
+          else:
+              assert trigger['region'] is None
+              assert trigger['requested_source_ids'] == []
+              assert auth['enabled'] is False
+              assert auth['region'] is None
+              assert auth['provider_calls_allowed'] == 0
+              assert auth['gpu_calls_allowed'] == 0
+              assert auth['generation_calls_allowed'] == 0
+
+          out = Path(os.environ['GITHUB_OUTPUT'])
+          with out.open('a', encoding='utf-8') as fh:
+              fh.write(f"execute={'true' if execute else 'false'}\n")
+              fh.write(f"region={region}\n")
+              fh.write('ids_json=' + json.dumps(ids, separators=(',', ':')) + '\n')
+          print('REFERENCE_V2_PREFLIGHT=' + ('AUTHORIZED' if execute else 'PASS_DISABLED_ZERO_SPEND'))
+          PY
+
+      - name: Upload preflight receipt
+        run: |
+          printf '%s\n' '{"schema":"plushbound.reference_v2_preflight.v1","status":"PASS","credentials_exposed":false,"compile_authorized":false,"catalog_wide_launch_authorized":false,"required_source_art_provenance":"vera-modal-generated","reference_sheet_pixels_used_as_runtime_art":false}' > reference-v2-preflight.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: plushbound-reference-v2-preflight-${{ github.run_id }}
+          path: reference-v2-preflight.json
+          if-no-files-found: error
+          retention-days: 14
+
+  execute:
+    needs: preflight
+    if: needs.preflight.outputs.execute == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout exact authorized commit
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install execution dependencies
+        run: python -m pip install --disable-pip-version-check 'pillow>=10.4,<12' 'modal>=1.5,<2'
+
+      - name: Deploy current Vera production worker
+        env:
+          MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+          MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+        run: |
+          set -euo pipefail
+          test -n "${MODAL_TOKEN_ID:-}"
+          test -n "${MODAL_TOKEN_SECRET:-}"
+          modal deploy --strategy recreate modal_worker/freeframe_worker.py
+
+      - name: Generate exact bounded reference-aware batch
+        shell: bash
+        env:
+          MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+          MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+          REGION: ${{ needs.preflight.outputs.region }}
+          IDS_JSON: ${{ needs.preflight.outputs.ids_json }}
+        run: |
+          set -euo pipefail
+          test -n "${MODAL_TOKEN_ID:-}"
+          test -n "${MODAL_TOKEN_SECRET:-}"
+          timeout --signal=TERM --kill-after=30s 900s \
+            env PYTHONPATH=. python -u modal_worker/world_asset_pipeline_v2_reference_batch.py \
+              --region "$REGION" \
+              --request-ids-json "$IDS_JSON"
+
+      - name: Upload generated source-art results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: plushbound-reference-v2-results-${{ github.run_id }}
+          path: world-asset-pipeline-v2-output/
+          if-no-files-found: warn
+          retention-days: 14
