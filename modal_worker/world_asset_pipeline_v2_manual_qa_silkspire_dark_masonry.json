@@ -1,0 +1,17 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_manual_qa.v1",
+  "asset_id": "tileset.silkspire.a5.source.dark_masonry",
+  "status": "PASS",
+  "semantic_material_surface": true,
+  "no_scene_or_object_composition": true,
+  "edge_to_edge_substrate": true,
+  "no_border_or_inset_panel": true,
+  "no_horizon_or_perspective": true,
+  "no_character_creature_prop_or_structure": true,
+  "readable_at_48px": true,
+  "region_material_identity_matches": true,
+  "review_basis": "raw 384x384 source plus normalized 48x48 visual review",
+  "executor_run_id": 40742860868,
+  "source_artifact_id": 12840027078,
+  "notes": "Continuous smoky charcoal masonry surface with regular joints and material variation; no scene, focal object, perimeter frame, or perspective."
+}
