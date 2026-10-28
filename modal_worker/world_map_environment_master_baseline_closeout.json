@@ -1,0 +1,38 @@
+{
+  "schema": "plushbound.world_map_environment_master_baseline_closeout.v1",
+  "lane": "maps_world_environment_masters",
+  "status": "COMPLETE_10_OF_10_VISUAL_AND_DETERMINISTIC",
+  "canonical_region_count": 10,
+  "accepted_count": 10,
+  "quarantined_count": 0,
+  "manual_visual_gate": "PASS_10_OF_10",
+  "deterministic_gate": "PASS_10_OF_10",
+  "protected_from_rerender": true,
+  "catalog_wide_launch_authorized": false,
+  "creator_full_outfits_remain_closed_at": 24,
+  "accepted_assets": [
+    {"asset_id":"world.elyndor.environment_master","source":"repair_v3","source_run_id":40621601567,"sha256":"528bb9a9a5ad74b6ed26b2252cabb2701cea69339420bbeaad39b0d56f7bdbf1"},
+    {"asset_id":"world.crownweave.environment_master","source":"repair_v2","source_run_id":40620527152,"sha256":"b53bc62243693383d63da941555fd82194ed55a0c0f1890e541d9ed53f04e422"},
+    {"asset_id":"world.silkspire.environment_master","source":"repair_v5","source_run_id":40622299468,"sha256":"3283b6021416fcb8db22c2f9fad337f1b55436c9fa107b3f38e4621233f4f7fa"},
+    {"asset_id":"world.gloamfen.environment_master","source":"initial_canary","source_run_id":40619802387,"sha256":"ff8b7a80694ff1f943f17d8125b0beba14d983061ff296bb1d7004683dacc758"},
+    {"asset_id":"world.verdancia.environment_master","source":"repair_v2","source_run_id":40620527152,"sha256":"9a10b281f541ef39a82fa39edb988ab2b66c19e4c7b8ce4a3401da889a752c63"},
+    {"asset_id":"world.tideglass-coast.environment_master","source":"repair_v2","source_run_id":40620527152,"sha256":"b610b4a74769f91648231c41c9c2de68c263b5b7819830103846783ff989b653"},
+    {"asset_id":"world.moonpatch-steppe.environment_master","source":"repair_v4","source_run_id":40621975556,"sha256":"8576ae09c46e2193b9d304f1bb0dafd2f2453894813bbcf0d758ab84c9a34b53"},
+    {"asset_id":"world.sunspool-desert.environment_master","source":"initial_canary","source_run_id":40619802387,"sha256":"08b19b1799c5d280025509ff7735ae90e73d4f02b4d7b34c3f73b36292793c71"},
+    {"asset_id":"world.cinderreach.environment_master","source":"baseline_repair_v2","source_run_id":40623431974,"sha256":"00633d8b17360fbfe9ebfc5d7876f2a140c59a57383a1569182bd651dedd510a"},
+    {"asset_id":"world.frostlace.environment_master","source":"baseline_repair_v2","source_run_id":40623431974,"sha256":"90f57c6f7be3f2b48c7d23febe9b48280106f72984cb05046413a8d7b2fb1ca1"}
+  ],
+  "evidence": [
+    "modal_worker/world_map_final_canary_closeout.json",
+    "modal_worker/world_map_baseline_completion_manual_qa.json",
+    "modal_worker/world_map_baseline_repair_v2_manual_qa.json"
+  ],
+  "scope_boundary": {
+    "environment_master_baseline_complete": true,
+    "playable_map_geometry_complete": false,
+    "tilesets_48px_complete": false,
+    "world_catalog_complete": false
+  },
+  "next_specialized_lane": "tilesets_48px_region_assets",
+  "next_action": "AUDIT_AND_RUN_OWN_NO_SPEND_PREFLIGHT_FOR_TILESETS"
+}
