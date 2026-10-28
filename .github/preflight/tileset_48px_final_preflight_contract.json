@@ -1,0 +1,92 @@
+{
+  "schema": "plushbound.tileset_48px_final_preflight.v1",
+  "lane": "tilesets_48px_region_assets",
+  "status": "PREFLIGHT_ONLY_DISABLED",
+  "source_checkpoint": "839b4079e3f356d4a4ed4f492878318fbfaa483c",
+  "selection_basis": "Next unfinished specialized lane after the ten-region environment-master baseline closed at deterministic and manual visual 10/10.",
+  "spend_gate": {
+    "production_enabled": false,
+    "paid_remote_execution_allowed": false,
+    "provider_calls_allowed": 0,
+    "gpu_calls_allowed": 0,
+    "generation_jobs_allowed": 0,
+    "automatic_full_production_authorized": false,
+    "catalog_wide_launch_authorized": false
+  },
+  "completed_world_reference_lock": {
+    "path": "modal_worker/world_map_environment_master_baseline_closeout.json",
+    "required_status": "COMPLETE_10_OF_10_VISUAL_AND_DETERMINISTIC",
+    "required_region_count": 10,
+    "must_be_protected_from_rerender": true
+  },
+  "creator_lock": {
+    "path": "modal_worker/creator_full_outfits_half_scope_contract.json",
+    "required_final_total": 24,
+    "must_remain_closed": true
+  },
+  "mv_geometry_contract": {
+    "tile_width": 48,
+    "tile_height": 48,
+    "A1": {"width": 768, "height": 576, "role": "animated_water_and_waterfall_autotiles"},
+    "A2": {"width": 768, "height": 576, "role": "ground_autotiles"},
+    "A3": {"width": 768, "height": 384, "role": "building_autotiles"},
+    "A4": {"width": 768, "height": 720, "role": "wall_and_dungeon_autotiles"},
+    "A5": {"width": 384, "height": 768, "role": "normal_lower_layer_tiles", "grid_columns": 8, "grid_rows": 16},
+    "B": {"width": 768, "height": 768, "role": "upper_layer_tiles", "grid_columns": 16, "grid_rows": 16, "top_left_tile_must_be_blank": true},
+    "C": {"width": 768, "height": 768, "role": "upper_layer_tiles", "grid_columns": 16, "grid_rows": 16},
+    "D": {"width": 768, "height": 768, "role": "upper_layer_tiles", "grid_columns": 16, "grid_rows": 16},
+    "E": {"width": 768, "height": 768, "role": "upper_layer_tiles", "grid_columns": 16, "grid_rows": 16}
+  },
+  "canonical_regions": [
+    "elyndor",
+    "crownweave",
+    "silkspire",
+    "gloamfen",
+    "verdancia",
+    "tideglass-coast",
+    "moonpatch-steppe",
+    "sunspool-desert",
+    "cinderreach",
+    "frostlace"
+  ],
+  "branch_audit": {
+    "recursive_tree_checkpoint": "5cecb228544c89e0208c5f2d88d425e82621ded1",
+    "existing_tileset_named_paths_found": 0,
+    "existing_48px_named_paths_found": 0,
+    "production_preset_present": false,
+    "final_tileset_contract_present_before_this_preflight": false,
+    "conclusion": "NO_EXISTING_FINAL_TILESET_PRODUCTION_ROUTE_FOUND"
+  },
+  "production_architecture_requirement": {
+    "visual_source_creation_owner": "Vera_generation_route",
+    "final_sheet_geometry_owner": "deterministic_tileset_compiler",
+    "world_editor_must_not_infer_layout_visually": true,
+    "generated_source_art_may_not_define_final_sheet_coordinates": true,
+    "final_sheet_must_be_compiled_to_locked_mv_slots": true,
+    "autotile_topology_must_be_validated": true,
+    "alpha_and_seam_validation_required": true,
+    "B_top_left_blank_validation_required": true,
+    "region_and_sheet_stable_ids_required": true
+  },
+  "catalog_policy": {
+    "full_capacity_per_region": ["A1","A2","A3","A4","A5","B","C","D","E"],
+    "maximum_full_capacity_sheet_count_for_10_regions": 90,
+    "do_not_generate_90_blindly": true,
+    "require_region_sheet_occupancy_manifest_before_paid_generation": true,
+    "require_first_bounded_canary_after_compiler_is_green": true,
+    "never_stack_paid_runs": true,
+    "checkpoint_each_wave": true,
+    "stop_on_validation_failure": true,
+    "quarantine_anomalies": true,
+    "resume_without_regenerating_accepted_ids": true
+  },
+  "policy": {
+    "fail_closed": true,
+    "preflight_may_not_call_network_generation_providers": true,
+    "preflight_may_not_use_gpu": true,
+    "environment_master_baseline_read_only": true,
+    "creator_read_only": true,
+    "paid_generation_before_compiler_and_manifest": false
+  },
+  "next_action_after_green_preflight": "IMPLEMENT_DETERMINISTIC_TILESET_COMPILER_AND_REGION_SHEET_OCCUPANCY_MANIFEST_NO_SPEND_FIRST"
+}
