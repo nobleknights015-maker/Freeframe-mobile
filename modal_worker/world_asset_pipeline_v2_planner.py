@@ -187,6 +187,8 @@ def paid_gate_open(region: str) -> None:
 
 
 def validate_rebuild_contract() -> dict:
+    from modal_worker.production_pipeline import inspect_master
+
     state = _load(STATE_PATH)
     freeze = _load(FREEZE_PATH)
     if not state.get("production_frozen") or state.get("paid_execution_enabled"):
@@ -200,6 +202,31 @@ def validate_rebuild_contract() -> dict:
         raise RuntimeError("accepted Gloamfen IDs were not protected")
     if len(silkspire_rows) != 8 or sp["selected_generation_count"] != 8:
         raise RuntimeError("fresh Silkspire scope did not resolve to eight IDs")
+
+    tileset_grid = inspect_master(
+        asset_class="tileset_master",
+        fmt="PNG",
+        width=384,
+        height=384,
+        has_alpha=False,
+        panel_grid_detected=True,
+    )
+    if not tileset_grid.accepted or tileset_grid.errors:
+        raise RuntimeError("V2 tileset material grid policy incorrectly rejects periodic seams")
+    if not any("grid-like periodicity permitted" in warning for warning in tileset_grid.warnings):
+        raise RuntimeError("V2 tileset grid policy lost its manual-QA warning")
+
+    character_grid = inspect_master(
+        asset_class="character_master",
+        fmt="PNG",
+        width=384,
+        height=384,
+        has_alpha=False,
+        panel_grid_detected=True,
+    )
+    if character_grid.accepted or "multi-panel or model-sheet composition detected" not in character_grid.errors:
+        raise RuntimeError("V2 character grid policy no longer rejects model-sheet composition")
+
     return {
         "schema": "plushbound.world_asset_pipeline_v2_planner_validation.v1",
         "status": "PASS_ZERO_GPU_SHARED_GENERATOR_PLANNER",
@@ -208,6 +235,8 @@ def validate_rebuild_contract() -> dict:
         "max_batch_size": MAX_BATCH_SIZE,
         "accepted_id_refusal": "PASS",
         "receiver_contract_status": receiver["status"],
+        "tileset_panel_grid_policy": "WARN_MANUAL_QA",
+        "character_panel_grid_policy": "REJECT",
         "provider_calls": 0,
         "gpu_calls": 0,
         "generation_calls": 0,
