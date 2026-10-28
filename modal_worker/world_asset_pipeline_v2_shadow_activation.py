@@ -27,11 +27,14 @@ def run_shadow_activation() -> dict:
     assert real_state["production_frozen"] is True
     assert real_state["paid_execution_enabled"] is False
     assert real_state["active_paid_region"] is None
+    assert real_state["runtime_import_proof"] is True
     assert real_freeze["production_frozen"] is True
     assert real_freeze["paid_remote_execution_allowed"] is False
+    assert real_freeze["runtime_import_proof"] is True
     assert real_trigger["enabled"] is False
     assert real_trigger["region"] is None
     assert real_trigger["requested_source_ids"] == []
+    assert real_trigger["runtime_import_proof"] is True
 
     region = canary["region"]
     ids = list(canary["requested_source_ids"])
@@ -50,7 +53,7 @@ def run_shadow_activation() -> dict:
         "paid_execution_enabled": True,
         "active_paid_region": region,
         "catalog_wide_launch_authorized": False,
-        "runtime_import_proof": False,
+        "runtime_import_proof": True,
     })
     shadow_freeze = deepcopy(real_freeze)
     shadow_freeze.update({
@@ -61,11 +64,14 @@ def run_shadow_activation() -> dict:
         "generation_calls_allowed": 1,
         "catalog_wide_launch_authorized": False,
         "accepted_assets_immutable": True,
+        "runtime_import_proof": True,
     })
 
     gate = validate_paid_gate(region, state_data=shadow_state, freeze_data=shadow_freeze)
     rows, plan = build_rows(region, ids)
     assert gate["status"] == "PASS_PAID_GATE"
+    assert gate["runtime_import_proof"] is True
+    assert gate["receiver_contract_status"] == "PASS_ENGINE_V1_RECEIVER_RUNTIME_CONTRACT"
     assert len(rows) == 1
     assert [row["asset_id"] for row in rows] == ids
     assert plan["selected_generation_count"] == 1
@@ -93,7 +99,8 @@ def run_shadow_activation() -> dict:
         "automatic_acceptance": False,
         "automatic_compile": False,
         "catalog_wide_launch_authorized": False,
-        "runtime_import_proof": False,
+        "runtime_import_proof": True,
+        "receiver_contract_status": gate["receiver_contract_status"],
     }
 
 
