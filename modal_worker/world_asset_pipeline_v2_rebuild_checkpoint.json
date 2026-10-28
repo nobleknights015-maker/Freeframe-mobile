@@ -1,12 +1,11 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_rebuild_checkpoint.v1",
-  "status": "V2_STRUCTURALLY_READY_ENGINE_RECEIVER_RUNTIME_GREEN_PRODUCTION_FROZEN",
+  "status": "V2_PRODUCTION_ACTIVE_SILKSPIRE_CLOSED_FROSTLACE_NEXT",
   "production_frozen": true,
   "paid_execution_enabled": false,
   "production_executor_installed": true,
   "legacy_pipeline_mode": "READ_ONLY_EVIDENCE",
   "legacy_high_risk_workflows_retired": 13,
-  "temporary_qualification_plumbing_retired": true,
   "control_plane": "GREEN",
   "single_shared_generation_path": "GREEN",
   "per_asset_failure_isolation": true,
@@ -15,73 +14,57 @@
   "unified_v2_normalizer_policy": true,
   "v2_compiler_uses_same_normalizer_policy": true,
   "accepted_asset_rerender_refusal": true,
-  "guarded_executor_validation": {
-    "status": "PASS_DISABLED_ZERO_SPEND_PAID_JOB_SKIPPED",
-    "workflow_run_id": 40726337123,
-    "guard_run_id": 40726337027
-  },
-  "master_preflight_revision_8": {
-    "status": "PASS_ZERO_GPU_V2_END_TO_END_PLUS_SHADOW_CANARY_PLUS_A5_IMPORT_BRIDGE",
-    "workflow_run_id": 40728457440,
-    "workflow_head_sha": "28f04118ce4e6e0ae6924b2785d7e08e96c865c7",
-    "artifact_id": 12832909352,
-    "artifact_sha256": "cb5b1944508f7895d6d13e67482715679a7aa41f5db618e620ac6e1b7ecdc5f7",
-    "regional_compiler_contracts_green": 9,
-    "shadow_live_canary_authorization": "PASS",
-    "shadow_live_canary_asset_id": "tileset.silkspire.a5.source.city_stone_paving",
-    "a5_import_bridge_roundtrip": "PASS",
-    "real_production_remained_frozen": true,
-    "provider_calls": 0,
-    "gpu_calls": 0,
-    "generation_calls": 0
-  },
-  "real_data_gloamfen_qualification": {
-    "status": "PASS_REAL_DATA_V2_COMPILE_AND_ENGINE_V1_CONTRACT",
-    "workflow_run_id": 40723804195,
-    "source_artifact_id": 12832535564,
-    "sheet_sha256": "03f0f49fd8539b48c68b2a27e830e5daca4e67b4d2d2bab97cfea864490ea85e",
-    "sheet_size": [384, 768],
-    "slot_count": 128,
-    "unique_slot_hashes": 128
-  },
-  "a5_import_bridge": {
-    "status": "PASS_SYNTHETIC_CI_AND_REAL_GLOAMFEN_ROUNDTRIP",
-    "module": "modal_worker/world_asset_pipeline_v2_a5_import_bridge.py",
-    "real_data_evidence": "modal_worker/world_asset_pipeline_v2_gloamfen_a5_import_bridge_qualification.json",
-    "engine_profile": "mv_tileset_a5",
-    "byte_identity_preserved": true,
-    "slot_count": 128,
-    "unique_slot_hashes": 128
-  },
   "engine_v1_receiver": {
     "status": "PASS_GAME_SIDE_RUNTIME_IMPORTER_AND_APK_PACKAGE",
-    "contract": "modal_worker/world_asset_pipeline_v2_receiver_contract.json",
     "receiver_repo": "nobleknights015-maker/Plushbound-Legends-mobile",
-    "workflow_run_id": 40731881573,
-    "workflow_job_id": 122970077917,
-    "browser_runtime_import": "PASS",
-    "apk_packaging": "PASS",
-    "apk_artifact_id": 12834673241,
-    "apk_artifact_sha256": "6fbc9708dea308f0efd675033bff12472a2b5257a80f8d1c1d82b417c19f33df",
-    "runtime_import_proof_scope": "game-side JavaScript runtime importer in headless Chromium plus importer assets inside Android APK",
-    "android_physical_device_webview_proof": false,
+    "runtime_importer": "overrides/a5_runtime_importer.js",
+    "generic_region_package_discovery": true,
+    "runtime_import_proof": true,
+    "physical_android_webview_proof": false,
     "world_editor_ui_import_proof": false
   },
-  "silkspire_live_canary": {
-    "asset_id": "tileset.silkspire.a5.source.city_stone_paving",
-    "previous_trigger_write_result": "BLOCKED_BEFORE_ENABLE",
-    "shadow_activation_status": "PASS_ZERO_SPEND_SHADOW_LIVE_CANARY_AUTHORIZATION",
-    "live_execution_status": "UNRUN",
-    "provider_calls": 0,
-    "gpu_calls": 0,
-    "generation_calls": 0,
-    "production_refrozen": true
+  "gloamfen": {
+    "status": "SOURCES_ACCEPTED_8_OF_8",
+    "sheet_sha256": "03f0f49fd8539b48c68b2a27e830e5daca4e67b4d2d2bab97cfea864490ea85e",
+    "v2_compile_qualification": "PASS",
+    "slot_count": 128,
+    "unique_slot_hashes": 128
   },
-  "activation_protocol": "LOCKED_WITH_PRE_ACTIVATION_AND_POST_RUN_SEQUENCE",
+  "silkspire": {
+    "status": "CLOSED_GREEN_DETERMINISTIC_A5",
+    "source_closeout": "modal_worker/tileset_silkspire_a5_source_closeout.json",
+    "compile_closeout": "modal_worker/tileset_silkspire_a5_compile_closeout.json",
+    "accepted_sources": 8,
+    "sheet_sha256": "261e8b9c6784bd39f465bc3f310091ff874f733301a1301b3dc64c514f916216",
+    "sheet_size": [384, 768],
+    "slot_count": 128,
+    "unique_slot_hashes": 128,
+    "minimum_family_rgb_stddev": 5.3648,
+    "maximum_family_edge_discontinuity": 0.190033,
+    "manual_full_sheet_visual_gate": "PASS",
+    "engine_v1_compatibility_contract": "PASS",
+    "receiver_manifest": "overrides/a5_runtime_silkspire_manifest.json",
+    "receiver_manifest_hash_matches": true,
+    "receiver_binary_transfer_pending": true,
+    "receiver_binary_transfer_is_not_rerender_authority": true,
+    "receiver_binary_transfer_blocks_asset_production": false
+  },
+  "silkspire_generation_history": {
+    "canary_executor_run_id": 40735013050,
+    "seven_source_executor_run_id": 40742860868,
+    "two_source_repair_executor_run_id": 40744207970,
+    "final_metal_executor_run_id": 40745117913,
+    "accepted_assets_preserved_between_repairs": true,
+    "final_metal_zero_gpu_perimeter_cleanup": true
+  },
   "catalog_wide_launch_authorized": false,
   "runtime_import_proof": true,
-  "runtime_import_proof_scope": "game-side runtime importer and APK packaging; physical Android WebView and editor UI remain separate optional qualifications",
   "pipeline_resume_blocker": false,
-  "next_fresh_region_after_qualification": "silkspire",
-  "next_manager_action": "RECEIVER BLOCKER CLOSED; KEEP CATALOG-WIDE LOCK; RESUME ONLY THE SINGLE SILKSPIRE CITY_STONE_PAVING LIVE CANARY THROUGH THE GUARDED V2 EXECUTOR"
+  "next_fresh_region_after_qualification": "frostlace",
+  "transition_cleanup": {
+    "status": "NON_BLOCKING",
+    "detail": "legacy V2 master preflight labels/shadow test still name Silkspire as the current region and should be made next-region-driven before the next paid activation",
+    "production_remains_frozen_until_cleanup": true
+  },
+  "next_manager_action": "REFRESH_ZERO_SPEND_PREFLIGHT_TO_FOLLOW_NEXT_REGION_POINTER_THEN_RUN_FROSTLACE_CANARY"
 }
