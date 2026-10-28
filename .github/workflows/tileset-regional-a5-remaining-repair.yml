@@ -18,7 +18,7 @@ concurrency:
 jobs:
   remaining-seven-targeted-repair:
     runs-on: ubuntu-24.04
-    timeout-minutes: 35
+    timeout-minutes: 20
     env:
       MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
       MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
@@ -154,6 +154,15 @@ jobs:
           pr = json.loads(report.read_text(encoding='utf-8'))
           assert pr['asset_id'] == row['asset_id'] and pr['machine_accepted'] is True
           assert pr['raw_sha256'] == row['raw_sha256'] and pr['normalized_sha256'] == row['normalized_sha256']
+          schema = pr.get('schema')
+          assert schema in {
+              'plushbound.tileset_regional_a5_prompt_probe_report.v1',
+              'plushbound.tileset_regional_a5_accepted_probe_adapter.v1',
+          }
+          if schema == 'plushbound.tileset_regional_a5_accepted_probe_adapter.v1':
+              assert pr['source_generation_machine_accepted'] is False
+              assert pr['deterministic_renormalization_machine_accepted'] is True
+              assert pr['renormalization_is_zero_gpu'] is True
           print(f"ACCEPTED_PROBE_ARTIFACT={row['asset_id']}=HASH_LOCK_PASS")
           PY
 
@@ -173,7 +182,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          modal run modal_worker/tileset_regional_a5_remaining_repair.py --region "$REGION" | tee remaining-repair-paid.log
+          timeout --signal=TERM --kill-after=30s 600s \
+            modal run modal_worker/tileset_regional_a5_remaining_repair.py --region "$REGION" \
+            | tee remaining-repair-paid.log
 
       - name: Assert seven-source machine gate and accepted-ID exclusion
         shell: bash
@@ -196,6 +207,9 @@ jobs:
           assert r['cross_region_generation_count'] == 0 and r['final_a5_generation_count'] == 0
           assert r['compile_authorized'] is False and r['deterministic_finalize_authorized'] is False
           assert r['catalog_wide_launch_authorized'] is False and r['manual_visual_qa_required'] is True
+          assert r['gpu_candidates'] == ['L4', 'A10G']
+          assert r['startup_timeout_seconds'] == 180
+          assert r['remote_timeout_seconds'] == 240
           assert len(r['assets']) == 7 and all(a['generation_attempts'] == 1 for a in r['assets'])
           print(f'TARGETED_REPAIR_MACHINE_GATE={region}=PASS_7_OF_7')
           print('ACCEPTED_PROBE_RERENDER_COUNT=0')
