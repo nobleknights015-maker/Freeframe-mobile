@@ -2,7 +2,7 @@
 from __future__ import annotations
 from dataclasses import asdict, dataclass
 
-STYLE_PROFILE_VERSION = "mt2.3-klein-grounded-scenes"
+STYLE_PROFILE_VERSION = "mt2.4-tileset-source"
 COMMON_AVOID = (
     "early-2000s anime-game rendering, retro visual-novel softness, television-anime cel frame, thick uniform black outlines, flat two-tone cel shading, simple cartoon face shading, hard inked contour around every form, muddy airbrush, watercolor haze, washed-out color, sepia cast, photorealism, excessive bloom, photographic depth of field, indistinct material rendering, flat mobile-game vector art, generic stock-fantasy costume, plastic CGI surfaces"
 )
@@ -35,6 +35,11 @@ STYLE_PROFILES: dict[str, StyleProfile] = {
         COMMON_AVOID + ", ordinary flesh-and-fur animal, realistic mammal, normal wolf, normal cat, normal fox, taxidermy, retail plush toy, stuffed animal, teddy bear, rag doll, toy product render, shelf merchandise, inert object, realistic fur coat",
     ),
     "plushbound_trinity_environment": StyleProfile("plushbound_trinity_environment","premium contemporary fantasy JRPG environment key art, painterly form definition without heavy cartoon outlines, luminous controlled color grading, crisp architecture and vegetation, clear foreground middle-ground and distance hierarchy, layered directional light with reflected color and clean atmospheric separation, rich handcrafted world detail and textile motifs integrated naturally into structures, precise material definition, sharp modern digital finish, traversable path logic, any banners signs and decorative cloth carry purely geometric non-letter motifs only, no foreground hero, no poster composition, no labels logos written symbols runes numbers or pseudo-text and no typography"),
+    "plushbound_tileset_source": StyleProfile(
+        "plushbound_tileset_source",
+        "premium contemporary fantasy JRPG game-material source art, a single top-down orthographic square surface sample filling the canvas edge to edge, tactile handcrafted material definition with subtle Plushbound woven and stitched character only where physically appropriate, clean disciplined color, crisp medium-frequency detail that remains readable after reduction to 48 pixels, flat neutral illumination without directional cast shadows, texture-first composition with no focal object, seamless repeating-surface intent, completely free of letters numbers signs logos glyphs runes emblems heraldry and pseudo-text",
+        COMMON_AVOID + ", scene, landscape, horizon, sky, perspective, isometric view, building, room, character, creature, prop, object silhouette, icon, tile grid, checkerboard, contact sheet, multiple swatches, border, frame, vignette, signage, emblem, symbol, typography",
+    ),
 }
 
 def get_style_profile(name: str) -> StyleProfile:
