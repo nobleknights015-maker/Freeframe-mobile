@@ -1,0 +1,105 @@
+{
+  "schema": "plushbound.final_asset_lane_audit.v1",
+  "audit_date": "2026-10-28",
+  "source_checkpoint": "75f73ceb8998c0d10e9b07753b23d6ff3080881f",
+  "branch": "freeframe-modal-worker",
+  "rules": {
+    "creator_full_outfits_closed_at": 24,
+    "creator_expansion_deferred": true,
+    "do_not_redo_finished_lanes": true,
+    "inspect_paid_remote_evidence_before_rerender": true,
+    "missing_local_artifact_is_not_rerender_authority": true,
+    "specialized_lanes_require_their_own_contracts": true
+  },
+  "lanes": {
+    "character_creator_full_outfits": {
+      "status": "CLOSED_CURRENT_PASS",
+      "verified_count": 24,
+      "evidence": ["modal_worker/creator_full_outfits_half_scope_contract.json"],
+      "next_action": "NONE_CURRENT_PASS"
+    },
+    "guardians": {
+      "status": "COMPLETE_VERIFIED_LOCKED",
+      "verified_runtime_asset_count": 960,
+      "evidence": ["modal_worker/guardian_runtime_ready_archive_lock.json"],
+      "next_action": "READ_ONLY"
+    },
+    "npcs": {
+      "status": "COMPLETE_VERIFIED_LOCKED",
+      "verified_mv_asset_count": 320,
+      "evidence": ["modal_worker/npc_mv_ready_archive_lock.json"],
+      "next_action": "READ_ONLY"
+    },
+    "enemies_bosses": {
+      "status": "COMPLETE_WITH_SOURCE_QUARANTINE",
+      "verified_master_count": 640,
+      "runtime_banked_count": 617,
+      "runtime_quarantined_count": 23,
+      "runtime_accounted_count": 640,
+      "evidence": [
+        "modal_worker/enemy_master_archive_lock.json",
+        "modal_worker/enemy_runtime_bank_completion.json"
+      ],
+      "next_action": "MOVE_ON_NO_REDUNDANT_REGENERATION"
+    },
+    "maps_world_environment_masters": {
+      "status": "ACTIVE_BOUNDED_FINAL_PRODUCTION",
+      "selected_as_first_unfinished_final_lane": true,
+      "selection_reason": "Existing environment renderer canaries prove the generation route, but no final maps/world closeout archive existed at audit time.",
+      "no_spend_preflight_run_id": 40619587708,
+      "no_spend_preflight_conclusion": "success",
+      "first_paid_canary_run_id": 40619802387,
+      "first_paid_canary_deterministic_result": "PASS_8_OF_8",
+      "first_paid_canary_manual_visual_result": "QUARANTINE_6_OF_8",
+      "accepted_without_rerender": [
+        "world.gloamfen.environment_master",
+        "world.sunspool-desert.environment_master"
+      ],
+      "targeted_repair_run_id": 40620527152,
+      "targeted_repair_state_at_audit_write": "IN_PROGRESS",
+      "scaling_authorized": false,
+      "evidence": [
+        ".github/preflight/world_map_final_preflight_contract.json",
+        ".github/preflight/world_map_final_preflight.py",
+        "modal_worker/world_map_final_canary_manual_qa.json"
+      ],
+      "next_action": "COMPLETE_TARGETED_REPAIR_AND_MANUAL_VISUAL_QA_BEFORE_ANY_SCALE"
+    },
+    "tilesets_48px_region_assets": {
+      "status": "UNFINISHED_SPECIALIZED_LANE",
+      "final_contract_present": false,
+      "final_paid_run_authorized": false,
+      "next_action": "OWN_NO_SPEND_PREFLIGHT_AFTER_WORLD_ENVIRONMENT_MASTER_CLOSEOUT"
+    },
+    "animations_vfx": {
+      "status": "UNFINISHED_OR_UNCLOSED_SPECIALIZED_LANE",
+      "final_contract_present": false,
+      "final_paid_run_authorized": false,
+      "next_action": "AUDIT_AND_PREFLIGHT_AFTER_EARLIER_LANES"
+    },
+    "items_equipment_icons": {
+      "status": "UNFINISHED_OR_UNCLOSED_SPECIALIZED_LANE",
+      "final_contract_present": false,
+      "final_paid_run_authorized": false,
+      "next_action": "AUDIT_AND_PREFLIGHT_AFTER_EARLIER_LANES"
+    },
+    "ui": {
+      "status": "UNFINISHED_OR_UNCLOSED_SPECIALIZED_LANE",
+      "final_contract_present": false,
+      "final_paid_run_authorized": false,
+      "next_action": "AUDIT_AND_PREFLIGHT_AFTER_EARLIER_LANES"
+    },
+    "audio": {
+      "status": "UNFINISHED_SEPARATE_ROUTING_REQUIRED",
+      "known_source_entry_count": 592,
+      "final_contract_present": false,
+      "final_paid_run_authorized": false,
+      "next_action": "SEPARATE_AUDIO_ROUTING_CONTRACT_AND_PREFLIGHT"
+    }
+  },
+  "ordering": {
+    "first_genuinely_unfinished_final_lane": "maps_world_environment_masters",
+    "next_specialized_lane_after_environment_master_closeout": "tilesets_48px_region_assets"
+  },
+  "catalog_wide_launch_authorized": false
+}
