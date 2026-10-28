@@ -1,0 +1,47 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_batch_review.v1",
+  "status": "MANUAL_QA_COMPLETE_1_PASS_1_REJECTED_SEMANTIC",
+  "region": "silkspire",
+  "executor_run_id": 40744207970,
+  "authorized_trigger_commit": "d02905f52451a72660b9c162e624a85a88b21960",
+  "source_artifact_id": 12841406302,
+  "source_artifact_sha256": "2a70a3e196a4fa4219a1ba822e088927d3aa6bb3d734bef4133b51878c869353",
+  "requested_count": 2,
+  "generation_count": 2,
+  "machine_pass_count": 2,
+  "manual_pass_count": 1,
+  "manual_rejected_semantic_count": 1,
+  "total_gpu_seconds": 2.309,
+  "accepted_ids_excluded_count": 6,
+  "failure_isolated_to_asset_id": true,
+  "production_refrozen_before_review": true,
+  "automatic_acceptance": false,
+  "automatic_compile": false,
+  "catalog_wide_launch_authorized": false,
+  "results": [
+    {
+      "asset_id": "tileset.silkspire.a5.source.roof_tile",
+      "material_key": "roof_tile",
+      "machine_gate": "PASS",
+      "manual_visual_gate": "PASS",
+      "raw_sha256": "240b0be400b6a38dee501fa04d694bc166e67f52563ad415eade81dd00cf4236",
+      "normalized_sha256": "bdd43ba38692276562a8a3f0c59861b9a191fd8e71edf2e6a136b8c81412b0af",
+      "edge_discontinuity": 0.030379,
+      "rgb_stddev": 7.8062,
+      "gpu_seconds": 1.597,
+      "note": "PASS: repeating smoky blue-gray ceramic roof-tile substrate fills the frame as multiple tiles; no single inset panel; joints remain readable at 48px."
+    },
+    {
+      "asset_id": "tileset.silkspire.a5.source.workshop_metal_plate",
+      "material_key": "workshop_metal_plate",
+      "machine_gate": "PASS",
+      "manual_visual_gate": "FAIL",
+      "raw_sha256": "dbf939c08b2b5c17a81d20050eda6b144536b162b37cc00dd8d12b0a54cbe17a",
+      "normalized_sha256": "f0610673835833436c86261c5a9a0f887b4383616f3f61354a10291128703185",
+      "edge_discontinuity": 0.008184,
+      "rgb_stddev": 23.636,
+      "gpu_seconds": 0.712,
+      "note": "FAIL semantic: despite repair instructions, render is still one framed rectangular metal plate with perimeter/corner framing rather than an edge-to-edge substrate."
+    }
+  ]
+}
