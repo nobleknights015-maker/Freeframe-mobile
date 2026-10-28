@@ -1,6 +1,6 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_state.v1",
-  "status": "SILKSPIRE_SOURCES_ACCEPTED_8_OF_8_PENDING_DETERMINISTIC_COMPILE",
+  "status": "SILKSPIRE_A5_CLOSED_GREEN_FROSTLACE_NEXT",
   "pipeline_version": 2,
   "production_frozen": true,
   "paid_execution_enabled": false,
@@ -30,12 +30,21 @@
       "stable_sheet_id": "tileset.elyndor.a5",
       "sheet_sha256": "d26595d093676bfd0bdfc44259a7795674d96dc4925f6db5773efa06e044a1bb",
       "runtime_import_proof": false
+    },
+    "silkspire": {
+      "stable_sheet_id": "tileset.silkspire.a5",
+      "sheet_sha256": "261e8b9c6784bd39f465bc3f310091ff874f733301a1301b3dc64c514f916216",
+      "compile_closeout": "modal_worker/tileset_silkspire_a5_compile_closeout.json",
+      "receiver_manifest": "overrides/a5_runtime_silkspire_manifest.json",
+      "runtime_import_proof": false,
+      "receiver_binary_transfer_pending": true,
+      "receiver_binary_transfer_is_not_rerender_authority": true
     }
   },
   "region_overrides": {
     "gloamfen": "SOURCES_ACCEPTED_8_OF_8_PENDING_DETERMINISTIC_COMPILE",
     "crownweave": "PENDING",
-    "silkspire": "SOURCES_ACCEPTED_8_OF_8_PENDING_DETERMINISTIC_COMPILE",
+    "silkspire": "CLOSED_GREEN_A5_RECEIVER_BINARY_TRANSFER_PENDING_NON_BLOCKING",
     "verdancia": "PENDING",
     "tideglass-coast": "PENDING",
     "moonpatch-steppe": "PENDING",
@@ -96,6 +105,15 @@
     "deterministic_repair": "v2-perimeter-crop-v1",
     "accepted_repaired_raw_sha256": "635b61db90c6eea5df74ebb84b02e4df54880f10dbcdfb50afe4d02f6b3b209d",
     "execution_status": "ACCEPTED_AFTER_ZERO_GPU_PERIMETER_CLEANUP"
+  },
+  "silkspire_compile_closeout": {
+    "status": "CLOSED_GREEN_DETERMINISTIC_A5",
+    "sheet_sha256": "261e8b9c6784bd39f465bc3f310091ff874f733301a1301b3dc64c514f916216",
+    "slot_count": 128,
+    "unique_slot_hashes": 128,
+    "provider_calls": 0,
+    "gpu_calls": 0,
+    "generation_calls": 0
   },
   "next_fresh_region_after_v2_validation": "frostlace"
 }
