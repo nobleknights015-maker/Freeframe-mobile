@@ -70,13 +70,13 @@ class GenerationSpec:
         if not self.prompt.strip():
             raise ValueError("prompt must not be empty")
         if self.width != 384 or self.height != 384:
-            raise ValueError("reference canary is locked to 384x384")
+            raise ValueError("reference production is locked to 384x384 source masters")
         if self.width % 16 or self.height % 16:
             raise ValueError("FLUX.2 Klein dimensions must be divisible by 16")
         if self.steps != 4:
-            raise ValueError("reference canary is locked to 4 steps")
+            raise ValueError("reference production is locked to 4 steps")
         if self.guidance_scale != 1.0:
-            raise ValueError("reference canary is locked to guidance_scale=1.0")
+            raise ValueError("reference production is locked to guidance_scale=1.0")
         if not 0 <= self.seed <= 2**63 - 1:
             raise ValueError("seed must be between 0 and 2^63-1")
 
@@ -124,6 +124,7 @@ class VeraFlux2ReferenceGenerator:
             PRODUCTION_MODEL,
             torch_dtype=torch.bfloat16,
             cache_dir=CACHE_DIR,
+            local_files_only=True,
         )
         print(
             f"VERA_FLUX2_LOAD=MODEL_READY seconds={time.monotonic()-started:.3f}",
@@ -141,8 +142,8 @@ class VeraFlux2ReferenceGenerator:
         raw = load_reference_bytes(reference_id, REFERENCE_DIR)
         if hashlib.sha256(raw).hexdigest() != reference_id:
             raise RuntimeError("stored reference hash mismatch")
-        image = Image.open(io.BytesIO(raw)).convert("RGB")
-        return image, raw
+        reference_image = Image.open(io.BytesIO(raw)).convert("RGB")
+        return reference_image, raw
 
     @modal.method()
     def generate(self, request: dict) -> dict:
@@ -205,6 +206,18 @@ class VeraFlux2ReferenceGenerator:
             }
         )
         return payload
+
+
+@app.function(image=image, volumes={REFERENCE_DIR: reference_cache}, timeout=60)
+def store_reference_internal(payload: dict) -> dict:
+    """Store a verified conditioning anchor in the same volume used by Vera."""
+    from modal_worker.reference_store import store_reference_bytes
+
+    raw = base64.b64decode(str(payload.get("image_base64", "")), validate=True)
+    expected_sha = str(payload.get("expected_sha256", "")).strip().lower() or None
+    metadata = store_reference_bytes(raw, REFERENCE_DIR, expected_sha256=expected_sha)
+    reference_cache.commit()
+    return {"stored": True, **metadata.metadata()}
 
 
 @app.function(image=image, volumes={CACHE_DIR: model_cache}, timeout=60)
