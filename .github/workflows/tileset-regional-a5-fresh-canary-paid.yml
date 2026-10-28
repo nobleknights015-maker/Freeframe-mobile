@@ -1,0 +1,157 @@
+name: Plushbound Regional A5 Fresh One-Source Paid Canary
+
+on:
+  push:
+    branches:
+      - freeframe-modal-worker
+    paths:
+      - 'modal_worker/tileset_regional_a5_fresh_canary_trigger.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plushbound-regional-a5-paid
+  cancel-in-progress: false
+
+jobs:
+  one-source-fresh-canary:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+      REGION: silkspire
+      ASSET_ID: tileset.silkspire.a5.source.pale_masonry
+    steps:
+      - name: Checkout production branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Validate explicit one-source trigger
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          t = json.loads(Path('modal_worker/tileset_regional_a5_fresh_canary_trigger.json').read_text(encoding='utf-8'))
+          assert t['schema'] == 'plushbound.tileset_regional_a5_fresh_canary_trigger.v1'
+          assert t['enabled'] is True
+          assert t['mode'] == 'one_source_fresh_region_canary'
+          assert t['region'] == os.environ['REGION']
+          assert t['asset_id'] == os.environ['ASSET_ID']
+          assert t['preflight_run_id'] == 40707482622
+          assert t['preflight_conclusion'] == 'success'
+          assert t['prompt_contract_version'] == 'regional-a5-material-swatch-v2'
+          assert t['asset_cap'] == 1
+          assert t['generation_attempts_per_asset_cap'] == 1
+          assert t['one_region_only'] is True and t['one_source_only'] is True
+          assert t['never_stack_paid_runs'] is True
+          assert t['manual_visual_qa_required_before_continuation'] is True
+          assert t['automatic_remaining_seven_authorized'] is False
+          assert t['compile_authorized'] is False
+          assert t['deterministic_finalize_authorized'] is False
+          assert t['catalog_wide_launch_authorized'] is False
+          assert t['creator_full_outfits_remain_closed_at'] == 24
+          print('FRESH_CANARY_TRIGGER=VALID')
+          PY
+
+      - name: Re-run exact current-head zero-spend canary preflight
+        env:
+          PLUSHBOUND_PRODUCTION_ENABLED: '0'
+          PLUSHBOUND_PAID_REMOTE_ENABLED: '0'
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python .github/preflight/tileset_regional_a5_fresh_canary_preflight.py \
+            --region "$REGION" \
+            --material pale_masonry \
+            > fresh-canary-current-head-preflight.json
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          r = json.loads(Path('fresh-canary-current-head-preflight.json').read_text(encoding='utf-8'))
+          assert r['status'] == 'PASS_NO_SPEND_FRESH_CANARY_READY_FOR_EXPLICIT_TRIGGER'
+          assert r['region'] == os.environ['REGION']
+          assert r['asset_id'] == os.environ['ASSET_ID']
+          assert r['priority'] == 1 and r['risk'] == 'low'
+          assert r['asset_cap'] == 1 and r['generation_attempts_per_asset_cap'] == 1
+          assert r['one_source_only'] is True
+          assert r['automatic_remaining_seven_authorized'] is False
+          assert r['compile_authorized'] is False and r['deterministic_finalize_authorized'] is False
+          assert r['catalog_wide_launch_authorized'] is False
+          assert r['production_skipped'] is True and r['paid_remote_execution_skipped'] is True
+          assert [r['provider_calls'], r['gpu_calls'], r['generation_calls']] == [0, 0, 0]
+          assert all(v == 'PASS' for v in r['checks'].values())
+          print('CURRENT_HEAD_FRESH_CANARY_PREFLIGHT=PASS_ZERO_SPEND')
+          PY
+
+      - name: Require Modal credentials
+        shell: bash
+        run: |
+          test -n "$MODAL_TOKEN_ID" || { echo 'MODAL_TOKEN_ID secret is not configured.' >&2; exit 1; }
+          test -n "$MODAL_TOKEN_SECRET" || { echo 'MODAL_TOKEN_SECRET secret is not configured.' >&2; exit 1; }
+
+      - name: Install bounded canary dependencies
+        run: python -m pip install --disable-pip-version-check 'pillow>=10.4,<12' 'modal>=1.5,<2'
+
+      - name: Compile bounded canary runner
+        run: python -m compileall -q modal_worker/tileset_regional_a5_fresh_canary.py
+
+      - name: Run exactly one fresh regional source canary
+        timeout-minutes: 8
+        shell: bash
+        run: |
+          set -euo pipefail
+          modal run modal_worker/tileset_regional_a5_fresh_canary.py \
+            --region "$REGION" \
+            --asset-id "$ASSET_ID" \
+            | tee fresh-canary-paid.log
+
+      - name: Assert one-source machine gate and no expansion
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          p = Path('tileset-regional-a5-fresh-canary') / 'silkspire' / 'pale_masonry' / 'report.json'
+          assert p.is_file(), f'missing canary report: {p}'
+          r = json.loads(p.read_text(encoding='utf-8'))
+          assert r['schema'] == 'plushbound.tileset_regional_a5_fresh_canary_report.v1'
+          assert r['status'] == 'MACHINE_PASS_MANUAL_VISUAL_REQUIRED'
+          assert r['region'] == os.environ['REGION'] and r['asset_id'] == os.environ['ASSET_ID']
+          assert r['prompt_contract_version'] == 'regional-a5-material-swatch-v2'
+          assert r['semantic_priority'] == 1 and r['semantic_risk'] == 'low'
+          assert r['generation_count'] == 1 and r['generation_retry_count'] == 0
+          assert r['cross_region_generation_count'] == 0
+          assert r['remaining_seven_generation_count'] == 0
+          assert r['final_a5_generation_count'] == 0
+          assert r['generation_attempts'] == 1
+          assert r['machine_accepted'] is True and r['manual_visual_qa_required'] is True
+          assert r['automatic_remaining_seven_authorized'] is False
+          assert r['compile_authorized'] is False and r['deterministic_finalize_authorized'] is False
+          assert r['catalog_wide_launch_authorized'] is False
+          assert r['source_size'] == [384, 384] and r['normalized_size'] == [48, 48]
+          print('FRESH_CANARY_MACHINE_GATE=PASS_1_OF_1')
+          print('MANUAL_VISUAL_QA_REQUIRED=true')
+          print('REMAINING_SEVEN_AUTHORIZED=false')
+          print('COMPILE_AUTHORIZED=false')
+          PY
+
+      - name: Upload exact one-source canary evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: plushbound-a5-fresh-canary-silkspire-${{ github.run_id }}
+          path: |
+            fresh-canary-current-head-preflight.json
+            fresh-canary-paid.log
+            tileset-regional-a5-fresh-canary/silkspire/
+          if-no-files-found: warn
+          retention-days: 14
