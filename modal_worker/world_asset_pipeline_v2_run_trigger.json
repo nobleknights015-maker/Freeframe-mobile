@@ -1,10 +1,18 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_run_trigger.v1",
-  "enabled": false,
+  "enabled": true,
   "mode": "selected_ids_one_region",
-  "guard_validation_revision": 7,
-  "region": null,
-  "requested_source_ids": [],
+  "guard_validation_revision": 8,
+  "region": "silkspire",
+  "requested_source_ids": [
+    "tileset.silkspire.a5.source.workshop_timber",
+    "tileset.silkspire.a5.source.pale_masonry",
+    "tileset.silkspire.a5.source.dark_masonry",
+    "tileset.silkspire.a5.source.bridge_timber",
+    "tileset.silkspire.a5.source.guild_floorboards",
+    "tileset.silkspire.a5.source.roof_tile",
+    "tileset.silkspire.a5.source.workshop_metal_plate"
+  ],
   "generation_attempts_per_requested_id_cap": 1,
   "one_region_only": true,
   "accepted_ids_must_be_excluded": true,
@@ -12,7 +20,7 @@
   "compile_authorized": false,
   "catalog_wide_launch_authorized": false,
   "runtime_import_proof": true,
+  "validated_zero_gpu_preflight_run_id": 40742687799,
   "last_authorized_live_canary_commit": "53654a09e9439795f4c094b0555d46e30670111e",
-  "last_authorized_region_batch_commit": "113b5a9d83462bb3cad859e05eae51021f1f9702",
-  "note": "Trigger disabled immediately after authorizing the seven remaining Silkspire sources."
+  "note": "Validated bounded V2 batch for the seven remaining Silkspire sources after city_stone_paving acceptance."
 }
