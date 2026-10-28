@@ -43,33 +43,48 @@
       "next_action": "MOVE_ON_NO_REDUNDANT_REGENERATION"
     },
     "maps_world_environment_masters": {
-      "status": "ACTIVE_BOUNDED_FINAL_PRODUCTION",
+      "status": "CANARY_CLOSED_BASELINE_COMPLETION_PENDING",
       "selected_as_first_unfinished_final_lane": true,
-      "selection_reason": "Existing environment renderer canaries prove the generation route, but no final maps/world closeout archive existed at audit time.",
+      "selection_reason": "Existing environment renderer canaries proved the route, but no final world environment-master closeout existed at audit start.",
       "no_spend_preflight_run_id": 40619587708,
       "no_spend_preflight_conclusion": "success",
-      "first_paid_canary_run_id": 40619802387,
-      "first_paid_canary_deterministic_result": "PASS_8_OF_8",
-      "first_paid_canary_manual_visual_result": "QUARANTINE_6_OF_8",
-      "accepted_without_rerender": [
-        "world.gloamfen.environment_master",
-        "world.sunspool-desert.environment_master"
+      "initial_paid_canary_run_id": 40619802387,
+      "initial_paid_canary_deterministic_result": "PASS_8_OF_8",
+      "initial_paid_canary_manual_visual_result": "QUARANTINE_6_OF_8",
+      "repair_runs": [
+        {"version": "v2", "run_id": 40620527152, "manual_result": "ACCEPT_3_QUARANTINE_3"},
+        {"version": "v3", "run_id": 40621601567, "manual_result": "ACCEPT_1_QUARANTINE_2"},
+        {"version": "v4", "run_id": 40621975556, "manual_result": "ACCEPT_1_QUARANTINE_1"},
+        {"version": "v5", "run_id": 40622299468, "manual_result": "PASS_1_OF_1"}
       ],
-      "targeted_repair_run_id": 40620527152,
-      "targeted_repair_state_at_audit_write": "IN_PROGRESS",
-      "scaling_authorized": false,
+      "initial_canary_closeout": "PASS_8_OF_8_MANUAL_VISUAL",
+      "accepted_and_protected_count": 8,
+      "canonical_region_baseline_total": 10,
+      "canonical_region_baseline_remaining": 2,
+      "remaining_asset_ids": [
+        "world.cinderreach.environment_master",
+        "world.frostlace.environment_master"
+      ],
+      "scaling_authorized": true,
+      "scaling_scope": "ENVIRONMENT_MASTER_LANE_ONLY",
+      "catalog_wide_launch_authorized": false,
       "evidence": [
         ".github/preflight/world_map_final_preflight_contract.json",
         ".github/preflight/world_map_final_preflight.py",
-        "modal_worker/world_map_final_canary_manual_qa.json"
+        "modal_worker/world_map_final_canary_manual_qa.json",
+        "modal_worker/world_map_final_repair_v2_manual_qa.json",
+        "modal_worker/world_map_final_repair_v3_manual_qa.json",
+        "modal_worker/world_map_final_repair_v4_manual_qa.json",
+        "modal_worker/world_map_final_repair_v5_manual_qa.json",
+        "modal_worker/world_map_final_canary_closeout.json"
       ],
-      "next_action": "COMPLETE_TARGETED_REPAIR_AND_MANUAL_VISUAL_QA_BEFORE_ANY_SCALE"
+      "next_action": "NO_SPEND_PREFLIGHT_AND_BOUNDED_TWO_ASSET_COMPLETION_FOR_CINDERREACH_AND_FROSTLACE"
     },
     "tilesets_48px_region_assets": {
       "status": "UNFINISHED_SPECIALIZED_LANE",
       "final_contract_present": false,
       "final_paid_run_authorized": false,
-      "next_action": "OWN_NO_SPEND_PREFLIGHT_AFTER_WORLD_ENVIRONMENT_MASTER_CLOSEOUT"
+      "next_action": "OWN_NO_SPEND_PREFLIGHT_AFTER_TEN_REGION_ENVIRONMENT_MASTER_BASELINE"
     },
     "animations_vfx": {
       "status": "UNFINISHED_OR_UNCLOSED_SPECIALIZED_LANE",
@@ -98,8 +113,9 @@
     }
   },
   "ordering": {
-    "first_genuinely_unfinished_final_lane": "maps_world_environment_masters",
-    "next_specialized_lane_after_environment_master_closeout": "tilesets_48px_region_assets"
+    "current_lane": "maps_world_environment_masters",
+    "current_lane_next_step": "complete Cinderreach and Frostlace baseline masters",
+    "next_specialized_lane_after_environment_master_baseline": "tilesets_48px_region_assets"
   },
   "catalog_wide_launch_authorized": false
 }
