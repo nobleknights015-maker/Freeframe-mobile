@@ -1,0 +1,36 @@
+{
+  "schema": "plushbound.world_map_baseline_completion_manual_qa.v1",
+  "source_run_id": 40622999487,
+  "source_artifact_id": 12787978247,
+  "source_artifact_name": "plushbound-world-map-baseline-completion-40622999487",
+  "machine_gate": "PASS_2_OF_2",
+  "manual_visual_gate": "QUARANTINE_2_OF_2",
+  "accepted_count": 0,
+  "quarantined_count": 2,
+  "ten_region_baseline_complete": false,
+  "catalog_wide_launch_authorized": false,
+  "creator_full_outfits_remain_closed_at": 24,
+  "quarantined_for_targeted_repair": [
+    {
+      "asset_id": "world.cinderreach.environment_master",
+      "sha256": "f45b854640bef9b072f1ba4ac40f3a67d3a41a4832c01d9e8c33a760ef96c54c",
+      "decision": "QUARANTINE",
+      "reason": "visible pseudo-text/signage appears on forge and building facades; machine inspector did not catch semantic text-like decoration"
+    },
+    {
+      "asset_id": "world.frostlace.environment_master",
+      "sha256": "570ec3d82bfa6eddbfab1878e8d5f9f9f0e05f1bb1d616026adfdfe04ba879c0",
+      "decision": "QUARANTINE",
+      "reason": "large hanging banners with rune/glyph symbols appear prominently in the valley despite explicit no-banner/no-glyph constraints"
+    }
+  ],
+  "protected_preexisting_accepted_count": 8,
+  "protected_preexisting_accepted_contract": "modal_worker/world_map_final_canary_closeout.json",
+  "repair_strategy": {
+    "repair_only_quarantined_ids": true,
+    "change_composition_strategy": true,
+    "cinderreach": "wide volcanic landscape with distant tiny settlement and foundry silhouettes; no close facades or sign-bearing surfaces",
+    "frostlace": "open frozen valley and cliffs with distant architecture only; zero fabric/hanging objects and no route markers",
+    "never_stack_paid_runs": true
+  }
+}
