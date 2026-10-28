@@ -26,9 +26,12 @@ MODEL_VOLUME = "freeframe-model-cache"
 SCOPE_PATH = Path("modal_worker/tileset_regional_a5_scope_manifest.json")
 OUTPUT_ROOT = Path("tileset-regional-a5-targeted-repair")
 PROMPT_CONTRACT_VERSION = "regional-a5-material-swatch-v2"
-VERSION = "plushbound-regional-a5-targeted-repair-v1"
+VERSION = "plushbound-regional-a5-targeted-repair-v2-gpu-fallback-cache-only"
 EXPECTED_ACCEPTED_BEFORE_REPAIR = 1
 EXPECTED_REMAINING = 7
+GPU_CANDIDATES = ["L4", "A10G"]
+STARTUP_TIMEOUT_SECONDS = 180
+REMOTE_TIMEOUT_SECONDS = 240
 
 image = (
     modal.Image.debian_slim(python_version="3.11")
@@ -144,30 +147,41 @@ def load_repair_rows(region: str) -> tuple[list[dict], dict]:
 
 
 @app.cls(
-    gpu="L4",
+    gpu=GPU_CANDIDATES,
     image=image,
     volumes={CACHE_DIR: model_cache},
     scaledown_window=120,
-    timeout=1200,
+    startup_timeout=STARTUP_TIMEOUT_SECONDS,
+    timeout=REMOTE_TIMEOUT_SECONDS,
 )
 class RemainingRepairRunner:
     @modal.enter()
     def load(self):
+        os.environ["HF_HOME"] = CACHE_DIR
+        os.environ["HF_HUB_CACHE"] = f"{CACHE_DIR}/hub"
+        os.environ["HF_HUB_OFFLINE"] = "1"
+        os.environ["TRANSFORMERS_OFFLINE"] = "1"
+        print("A5_REPAIR_STARTUP_STAGE=CONTAINER_STARTED", flush=True)
+        print(f"A5_REPAIR_GPU_CANDIDATES={','.join(GPU_CANDIDATES)}", flush=True)
+        print("A5_REPAIR_STARTUP_STAGE=CACHE_ONLY_MODEL_LOAD_BEGIN", flush=True)
+
         import torch
         from diffusers import DiffusionPipeline
 
-        os.environ.setdefault("HF_HOME", CACHE_DIR)
-        os.environ.setdefault("HF_HUB_CACHE", f"{CACHE_DIR}/hub")
         self.torch = torch
         self.pipe = DiffusionPipeline.from_pretrained(
             MODEL_ID,
             torch_dtype=torch.bfloat16,
             cache_dir=CACHE_DIR,
+            local_files_only=True,
         )
+        print("A5_REPAIR_STARTUP_STAGE=PIPELINE_CPU_READY", flush=True)
         self.pipe.to("cuda")
+        print("A5_REPAIR_STARTUP_STAGE=CUDA_READY", flush=True)
 
-    def _render(self, request: dict) -> tuple[bytes, float]:
+    def _render(self, request: dict, asset_id: str) -> tuple[bytes, float]:
         generator = self.torch.Generator(device="cuda").manual_seed(int(request["seed"]))
+        print(f"A5_REPAIR_RENDER_STAGE=BEGIN:{asset_id}", flush=True)
         started = time.monotonic()
         result = self.pipe(
             prompt=str(request["prompt"]),
@@ -178,6 +192,7 @@ class RemainingRepairRunner:
             generator=generator,
         ).images[0]
         elapsed = time.monotonic() - started
+        print(f"A5_REPAIR_RENDER_STAGE=IMAGE_READY:{asset_id}:{elapsed:.3f}s", flush=True)
         buffer = io.BytesIO()
         result.save(buffer, format="PNG")
         return buffer.getvalue(), elapsed
@@ -230,7 +245,7 @@ class RemainingRepairRunner:
                 if request.get(key) != expected:
                     raise RuntimeError(f"{item['asset_id']}: invariant {key} drifted")
 
-            raw, elapsed = self._render(request)
+            raw, elapsed = self._render(request, item["asset_id"])
             total_gpu_seconds += elapsed
             raw_payload = {
                 "image_base64": base64.b64encode(raw).decode("ascii"),
@@ -289,7 +304,10 @@ class RemainingRepairRunner:
             "total_gpu_seconds": round(total_gpu_seconds, 3),
             "wall_seconds": round(time.monotonic() - wall_started, 3),
             "model": MODEL_ID,
-            "gpu": "L4",
+            "gpu": "L4_or_A10G",
+            "gpu_candidates": GPU_CANDIDATES,
+            "startup_timeout_seconds": STARTUP_TIMEOUT_SECONDS,
+            "remote_timeout_seconds": REMOTE_TIMEOUT_SECONDS,
             "cross_region_generation_count": 0,
             "final_a5_generation_count": 0,
             "compile_authorized": False,
