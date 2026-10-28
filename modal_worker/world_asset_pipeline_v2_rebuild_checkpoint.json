@@ -1,6 +1,6 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_rebuild_checkpoint.v1",
-  "status": "V2_FROSTLACE_CLOSED_NEXT_CINDERREACH",
+  "status": "V2_CINDERREACH_CLOSED_NEXT_CROWNWEAVE",
   "production_frozen": true,
   "paid_execution_enabled": false,
   "production_executor_installed": true,
@@ -69,13 +69,38 @@
     "receiver_binary_transfer_is_not_rerender_authority": true,
     "receiver_binary_transfer_blocks_asset_production": false
   },
+  "cinderreach": {
+    "status": "CLOSED_GREEN_DETERMINISTIC_A5",
+    "source_closeout": "modal_worker/tileset_cinderreach_a5_source_closeout.json",
+    "compile_closeout": "modal_worker/tileset_cinderreach_a5_compile_closeout.json",
+    "accepted_sources": 8,
+    "sheet_sha256": "d012bec74d94afac5493b188167744489521e37f70bb405a654212750dcc39ea",
+    "sheet_size": [384, 768],
+    "tile_size": [48, 48],
+    "slot_count": 128,
+    "unique_slot_hashes": 128,
+    "manual_full_sheet_visual_gate": "PASS",
+    "engine_v1_compatibility_contract": "PASS",
+    "reference_derived_source_count": 3,
+    "reference_derived_evidence": "modal_worker/world_asset_pipeline_v2_cinderreach_reference_derived_closeout.json",
+    "reference_derived_strategy_provider_calls": 0,
+    "reference_derived_strategy_gpu_calls": 0,
+    "reference_derived_strategy_generation_calls": 0,
+    "final_paid_canary_asset": "tileset.cinderreach.a5.source.ember_veined_rock",
+    "final_paid_canary_gpu_seconds": 2.059,
+    "compiled_binary_repo_transfer_pending": true,
+    "exact_sheet_runtime_import_proof": false,
+    "receiver_binary_transfer_pending": true,
+    "receiver_binary_transfer_is_not_rerender_authority": true,
+    "receiver_binary_transfer_blocks_asset_production": false
+  },
   "zero_spend_preflight": {
-    "latest_revision": 19,
-    "workflow_run_id": 40758555067,
+    "latest_revision": 25,
+    "workflow_run_id": 40773933179,
     "status": "PASS_EXACT_REMAINING_BATCH_SHADOW",
-    "region": "frostlace",
-    "accepted_count_at_validation": 5,
-    "remaining_count_at_validation": 3,
+    "region": "cinderreach",
+    "accepted_count_at_validation": 4,
+    "remaining_count_at_validation": 4,
     "provider_calls": 0,
     "gpu_calls": 0,
     "generation_calls": 0
@@ -83,6 +108,6 @@
   "catalog_wide_launch_authorized": false,
   "runtime_import_proof": true,
   "pipeline_resume_blocker": false,
-  "next_fresh_region_after_qualification": "cinderreach",
-  "next_manager_action": "KEEP PRODUCTION FROZEN; NEXT ROUND RUN ZERO-SPEND CINDERREACH TRANSITION PREFLIGHT, THEN AT MOST ONE CINDERREACH CANARY; DO NOT REOPEN FROSTLACE OR RERENDER ITS EIGHT ACCEPTED SOURCES"
+  "next_fresh_region_after_qualification": "crownweave",
+  "next_manager_action": "KEEP PRODUCTION FROZEN; NEXT ROUND USE REVISION-26 ZERO-SPEND CROWNWEAVE TRANSITION PREFLIGHT, THEN AT MOST ONE CROWNWEAVE CANARY; DO NOT REOPEN CINDERREACH OR RERENDER ITS EIGHT ACCEPTED SOURCES"
 }
