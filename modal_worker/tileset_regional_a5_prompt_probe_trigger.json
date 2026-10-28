@@ -21,9 +21,10 @@
   "accepted_assets_immutable": true,
   "creator_full_outfits_remain_closed_at": 24,
   "source_scope_head": "48b2b84d8154226c0a1834a6ac29bc870f83088e",
-  "probe_attempt": 3,
-  "previous_probe_run_id": 40708309669,
+  "probe_attempt": 4,
+  "previous_probe_run_id": 40712199805,
   "previous_probe_conclusion": "failure",
-  "previous_probe_evidence": "modal_worker/tileset_gloamfen_a5_prompt_probe_attempt2_timeout.json",
-  "retry_reason": "replace L4-only scheduling with L4/A10G fallback, enforce offline cache-only model load, and add explicit startup telemetry"
+  "previous_probe_evidence": "modal_worker/tileset_gloamfen_a5_prompt_probe_attempt3_quality_fail.json",
+  "repair_code_commit": "46989cb9172af0720e70f077d1cdb40e3fbbe717",
+  "retry_reason": "attempt 3 proved infrastructure and scene repair; preserve locked readability threshold and require visible fine-scale tonal mottling/micrograin that survives downsampling"
 }
