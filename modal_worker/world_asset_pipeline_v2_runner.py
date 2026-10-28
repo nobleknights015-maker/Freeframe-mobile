@@ -16,7 +16,6 @@ from modal_worker.world_asset_pipeline_v2_planner import (
     MAX_BATCH_SIZE,
     build_rows,
     paid_gate_open,
-    validate_rebuild_contract,
 )
 
 APP_NAME = "freeframe-world-asset-pipeline-v2"
@@ -227,15 +226,26 @@ def main(region: str, request_ids_json: str = ""):
 
 
 def declaration_validation() -> dict:
-    base = validate_rebuild_contract()
+    if GPU_CANDIDATES != ["L4", "A10G"]:
+        raise RuntimeError("V2 GPU fallback declaration drift")
+    if not 1 <= MAX_BATCH_SIZE <= 8:
+        raise RuntimeError("V2 batch cap drift")
+    if STARTUP_TIMEOUT_SECONDS <= 0 or REMOTE_TIMEOUT_SECONDS <= 0:
+        raise RuntimeError("V2 timeout declaration invalid")
     return {
-        **base,
         "schema": "plushbound.world_asset_pipeline_v2_runner_validation.v1",
         "status": "PASS_ZERO_GPU_SINGLE_RUNNER_DECLARATION",
+        "model_id": MODEL_ID,
         "gpu_candidates": GPU_CANDIDATES,
         "startup_timeout_seconds": STARTUP_TIMEOUT_SECONDS,
         "remote_timeout_seconds": REMOTE_TIMEOUT_SECONDS,
+        "max_batch_size": MAX_BATCH_SIZE,
         "normalizer_policy": "WORLD_ASSET_PIPELINE_V2",
         "failure_isolated_to_asset_id": True,
         "batch_art_rejection_does_not_abort_sibling_assets": True,
+        "provider_calls": 0,
+        "gpu_calls": 0,
+        "generation_calls": 0,
+        "catalog_wide_launch_authorized": False,
+        "runtime_import_proof": False,
     }
