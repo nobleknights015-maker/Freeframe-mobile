@@ -1,0 +1,19 @@
+{
+  "schema": "plushbound.flux2_reference_canary_authorization.v1",
+  "enabled": true,
+  "region": "tideglass-coast",
+  "asset_id": "tileset.tideglass-coast.a5.source.wet_sand",
+  "generation_calls_allowed": 1,
+  "retry_calls_allowed": 0,
+  "required_app": "freeframe-flux2-reference-worker",
+  "required_class": "VeraFlux2ReferenceGenerator",
+  "required_model": "black-forest-labs/FLUX.2-klein-4B",
+  "required_renderer_route": "flux2_klein_reference_v2",
+  "required_reference_anchor_sha256": "a339ef7407986382d96697364b9ffff1dcd363924fefe301e7f5906006d43f52",
+  "required_source_art_provenance": "vera-modal-generated",
+  "reference_sheet_pixels_used_as_runtime_art": false,
+  "manual_visual_qa_required": true,
+  "compile_authorized": false,
+  "catalog_wide_launch_authorized": false,
+  "preflight_run_id": 40789252831
+}
