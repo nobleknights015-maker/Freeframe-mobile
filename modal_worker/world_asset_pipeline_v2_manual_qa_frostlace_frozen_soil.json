@@ -1,0 +1,20 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_manual_qa.v1",
+  "status": "PASS",
+  "asset_id": "tileset.frostlace.a5.source.frozen_soil",
+  "region": "frostlace",
+  "material_key": "frozen_soil",
+  "semantic_material_surface": true,
+  "no_scene_or_object_composition": true,
+  "edge_to_edge_substrate": true,
+  "no_border_or_inset_panel": true,
+  "no_horizon_or_perspective": true,
+  "no_character_creature_prop_or_structure": true,
+  "readable_at_48px": true,
+  "region_material_identity_matches": true,
+  "notes": "Continuous dark cool-brown compacted soil with fine pale frost speckling. No focal object, scene, border, horizon, structure or large discrete motif; 48px result remains readable.",
+  "source_executor_run_id": 40755360893,
+  "source_artifact_id": 12844814359,
+  "raw_sha256": "eae0d661695db03930194f6d6c34a2a2913f27c00535967eb841f8d04ed5bed5",
+  "normalized_sha256": "22288197f577bcbacc1e69ae51e20f9a093991ef45ad31decfc0f409179cd58b"
+}
