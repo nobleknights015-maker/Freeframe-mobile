@@ -1,6 +1,6 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_state.v1",
-  "status": "REFROZEN_AWAITING_QA_FIXED_SILKSPIRE_CANARY_RESULT",
+  "status": "SILKSPIRE_PARTIAL_1_OF_8_ACCEPTED_PRODUCTION_FROZEN",
   "pipeline_version": 2,
   "production_frozen": true,
   "paid_execution_enabled": false,
@@ -14,7 +14,9 @@
   "accepted_region_source_closeouts": {
     "gloamfen": "modal_worker/tileset_gloamfen_a5_source_closeout.json"
   },
-  "accepted_asset_records": {},
+  "accepted_asset_records": {
+    "tileset.silkspire.a5.source.city_stone_paving": "modal_worker/world_asset_pipeline_v2_acceptance_silkspire_city_stone_paving.json"
+  },
   "closed_region_sheets": {
     "elyndor": {
       "stable_sheet_id": "tileset.elyndor.a5",
@@ -25,7 +27,7 @@
   "region_overrides": {
     "gloamfen": "SOURCES_ACCEPTED_8_OF_8_PENDING_DETERMINISTIC_COMPILE",
     "crownweave": "PENDING",
-    "silkspire": "LIVE_CANARY_IN_FLIGHT_OR_AWAITING_RESULT",
+    "silkspire": "PARTIAL_1_OF_8_ACCEPTED",
     "verdancia": "PENDING",
     "tideglass-coast": "PENDING",
     "moonpatch-steppe": "PENDING",
@@ -64,7 +66,8 @@
     "max_gpu_calls": 1,
     "max_generation_calls": 1,
     "automatic_acceptance": false,
-    "automatic_compile": false
+    "automatic_compile": false,
+    "accepted_after_policy_correction_without_rerender": true
   },
   "next_fresh_region_after_v2_validation": "silkspire"
 }
