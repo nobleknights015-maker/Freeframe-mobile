@@ -1,10 +1,12 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_rebuild_checkpoint.v1",
-  "status": "V2_REBUILT_REAL_DATA_QUALIFIED_PRODUCTION_STILL_FROZEN",
+  "status": "V2_REBUILT_REAL_DATA_QUALIFIED_LEGACY_HIGH_RISK_ORCHESTRATION_RETIRED",
   "production_frozen": true,
   "paid_execution_enabled": false,
   "production_executor_installed": false,
   "legacy_pipeline_mode": "READ_ONLY_EVIDENCE",
+  "legacy_high_risk_workflows_retired": 13,
+  "temporary_qualification_plumbing_retired": true,
   "control_plane": "GREEN",
   "single_shared_generation_path": "GREEN_DECLARATION_ONLY",
   "per_asset_failure_isolation": true,
@@ -46,5 +48,6 @@
   "generation_calls_during_rebuild_validation": 0,
   "catalog_wide_launch_authorized": false,
   "runtime_import_proof": false,
-  "next_fresh_region_after_qualification": "silkspire"
+  "next_fresh_region_after_qualification": "silkspire",
+  "next_manager_action": "KEEP_PRODUCTION_FROZEN_UNTIL_A_SAFE_V2_EXECUTOR_CAN_BE_INSTALLED_AND_ZERO_SPEND_VALIDATED"
 }
