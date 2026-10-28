@@ -1,4 +1,4 @@
-name: Plushbound World Maps Targeted Repair V3
+name: Plushbound World Maps Targeted Repair V4
 
 on:
   push:
@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  targeted-repair-v3:
+  targeted-repair-v4:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
@@ -37,11 +37,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          PYTHONPATH=. python .github/preflight/world_map_final_preflight.py > world-map-repair-v3-preflight.json
+          PYTHONPATH=. python .github/preflight/world_map_final_preflight.py > world-map-repair-v4-preflight.json
           python - <<'PY'
           import json
           from pathlib import Path
-          r = json.loads(Path('world-map-repair-v3-preflight.json').read_text(encoding='utf-8'))
+          r = json.loads(Path('world-map-repair-v4-preflight.json').read_text(encoding='utf-8'))
           assert r['status'] == 'PASS_NO_SPEND'
           assert r['production_skipped'] is True
           assert r['generation_calls'] == 0
@@ -49,39 +49,38 @@ jobs:
           print('CURRENT_HEAD_PREFLIGHT=PASS_NO_SPEND')
           PY
 
-      - name: Validate V2 manual QA and V3 trigger
+      - name: Validate V3 manual QA and V4 trigger
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
           import json
           from pathlib import Path
-          qa = json.loads(Path('modal_worker/world_map_final_repair_v2_manual_qa.json').read_text(encoding='utf-8'))
+          qa = json.loads(Path('modal_worker/world_map_final_repair_v3_manual_qa.json').read_text(encoding='utf-8'))
           trigger = json.loads(Path('modal_worker/world_map_final_repair_trigger.json').read_text(encoding='utf-8'))
-          assert qa['source_run_id'] == 40620527152
-          assert qa['source_artifact_id'] == 12786938008
-          assert qa['machine_gate'] == 'PASS_6_OF_6'
-          assert qa['manual_visual_gate'] == 'QUARANTINE_3_OF_6'
+          assert qa['source_run_id'] == 40621601567
+          assert qa['source_artifact_id'] == 12786654486
+          assert qa['machine_gate'] == 'PASS_3_OF_3'
+          assert qa['manual_visual_gate'] == 'QUARANTINE_2_OF_3'
           assert qa['scaling_authorized'] is False
-          accepted = set(qa['logical_canary_state_after_v2']['accepted_asset_ids'])
-          quarantine = set(qa['logical_canary_state_after_v2']['repair_v3_asset_ids'])
-          assert len(accepted) == 5
+          accepted = set(qa['logical_canary_state_after_v3']['accepted_asset_ids'])
+          quarantine = set(qa['logical_canary_state_after_v3']['repair_v4_asset_ids'])
+          assert len(accepted) == 6
           assert quarantine == {
-              'world.elyndor.environment_master',
               'world.silkspire.environment_master',
               'world.moonpatch-steppe.environment_master',
           }
           assert accepted.isdisjoint(quarantine)
           assert trigger['schema'] == 'plushbound.world_map_final_repair_trigger.v1'
           assert trigger['enabled'] is True
-          assert trigger['mode'] == 'targeted_repair_v3'
-          assert trigger['asset_cap'] == 3
+          assert trigger['mode'] == 'targeted_repair_v4'
+          assert trigger['asset_cap'] == 2
           assert set(trigger['asset_ids']) == quarantine
           assert trigger['preserve_accepted_asset_ids'] is True
           assert trigger['never_stack_paid_runs'] is True
           assert trigger['catalog_wide_launch_authorized'] is False
           assert trigger['creator_full_outfits_remain_closed_at'] == 24
-          print('TARGETED_REPAIR_V3_TRIGGER=VALID_3_ONLY')
+          print('TARGETED_REPAIR_V4_TRIGGER=VALID_2_ONLY')
           PY
 
       - name: Require Modal credentials
@@ -96,50 +95,49 @@ jobs:
       - name: Compile targeted repair producer
         run: python -m compileall -q modal_worker/world_map_final_production.py
 
-      - name: Run only the three remaining quarantined world assets
+      - name: Run only the two remaining quarantined world assets
         shell: bash
         run: |
           set -euo pipefail
-          modal run modal_worker/world_map_final_production.py --mode repair-v3 --limit 3 | tee world-map-final-repair-v3.log
+          modal run modal_worker/world_map_final_production.py --mode repair-v4 --limit 2 | tee world-map-final-repair-v4.log
 
-      - name: Verify Repair V3 report
+      - name: Verify Repair V4 report
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
           import json
           from pathlib import Path
-          p = Path('world-map-final-repair-v3/report.json')
-          assert p.is_file(), 'missing Repair V3 report'
+          p = Path('world-map-final-repair-v4/report.json')
+          assert p.is_file(), 'missing Repair V4 report'
           r = json.loads(p.read_text(encoding='utf-8'))
           assert r['schema'] == 'plushbound.world_map_final_bounded_wave_report.v1'
-          assert r['version'] == 'plushbound-world-map-final-repair-v3-region-specific'
-          assert r['wave_mode'] == 'repair-v3'
-          assert r['requested_count'] == 3
-          assert r['accepted_count'] == 3
+          assert r['version'] == 'plushbound-world-map-final-repair-v4-structure-only'
+          assert r['wave_mode'] == 'repair-v4'
+          assert r['requested_count'] == 2
+          assert r['accepted_count'] == 2
           assert r['quarantined_count'] == 0
           assert r['catalog_wide_launch_authorized'] is False
           assets = r['assets']
-          assert len(assets) == 3
+          assert len(assets) == 2
           assert {a['asset_id'] for a in assets} == {
-              'world.elyndor.environment_master',
               'world.silkspire.environment_master',
               'world.moonpatch-steppe.environment_master',
           }
-          assert len({a['sha256'] for a in assets}) == 3
+          assert len({a['sha256'] for a in assets}) == 2
           assert all(a['width'] == 1024 and a['height'] == 768 for a in assets)
           assert all(a['inspection']['accepted'] is True for a in assets)
-          print('WORLD_MAP_TARGETED_REPAIR_V3=PASS_3_OF_3_DETERMINISTIC')
+          print('WORLD_MAP_TARGETED_REPAIR_V4=PASS_2_OF_2_DETERMINISTIC')
           PY
 
-      - name: Upload Repair V3 products and evidence
+      - name: Upload Repair V4 products and evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: plushbound-world-map-final-repair-v3-${{ github.run_id }}
+          name: plushbound-world-map-final-repair-v4-${{ github.run_id }}
           path: |
-            world-map-repair-v3-preflight.json
-            world-map-final-repair-v3.log
-            world-map-final-repair-v3/
+            world-map-repair-v4-preflight.json
+            world-map-final-repair-v4.log
+            world-map-final-repair-v4/
           if-no-files-found: warn
           retention-days: 14
