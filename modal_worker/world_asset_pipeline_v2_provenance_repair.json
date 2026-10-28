@@ -1,0 +1,42 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_provenance_repair.v1",
+  "status": "AUTHORIZED_CURRENT_CHAT_REPAIR_ONLY",
+  "reason": "User explicitly requested repair of every regional production decision made in the current chat so accepted reference sheets are used only as Vera/Modal conditioning and never as runtime pixels.",
+  "reference_sheet_pixels_used_as_runtime_art": false,
+  "required_source_art_provenance": "vera-modal-generated",
+  "compile_authorized": false,
+  "catalog_wide_launch_authorized": false,
+  "regions": {
+    "tideglass-coast": {
+      "repair_scope": "all-eight-pending-after-failed-reference-run",
+      "source_ids": [
+        "tileset.tideglass-coast.a5.source.wet_sand",
+        "tileset.tideglass-coast.a5.source.dry_sand",
+        "tileset.tideglass-coast.a5.source.sea_glass_pebbles",
+        "tileset.tideglass-coast.a5.source.coastal_stone",
+        "tileset.tideglass-coast.a5.source.cliff_stone",
+        "tileset.tideglass-coast.a5.source.dock_timber",
+        "tileset.tideglass-coast.a5.source.saltworn_board",
+        "tileset.tideglass-coast.a5.source.tidal_silt"
+      ],
+      "superseded_accepted_ids": []
+    },
+    "crownweave": {
+      "repair_scope": "all-eight-reference-aware-regeneration",
+      "source_ids": [
+        "tileset.crownweave.a5.source.highland_grass",
+        "tileset.crownweave.a5.source.civic_earth",
+        "tileset.crownweave.a5.source.woven_stone_paving",
+        "tileset.crownweave.a5.source.terrace_stone",
+        "tileset.crownweave.a5.source.garden_soil",
+        "tileset.crownweave.a5.source.institutional_stone",
+        "tileset.crownweave.a5.source.polished_timber",
+        "tileset.crownweave.a5.source.slate_roof_tile"
+      ],
+      "superseded_accepted_ids": [
+        "tileset.crownweave.a5.source.highland_grass"
+      ],
+      "supersession_rule": "Preserve the old accepted bytes and receipt as immutable historical evidence; permit one new reference-conditioned generation for the same logical source ID because the old canary predates the corrected reference-conditioning requirement."
+    }
+  }
+}
