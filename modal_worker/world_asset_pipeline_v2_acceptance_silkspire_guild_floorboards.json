@@ -1,0 +1,22 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_asset_acceptance.v1",
+  "status": "ACCEPTED",
+  "asset_id": "tileset.silkspire.a5.source.guild_floorboards",
+  "region": "silkspire",
+  "material_key": "guild_floorboards",
+  "machine_gate": "PASS",
+  "manual_visual_gate": "PASS",
+  "raw_sha256": "357e6e0bf866fee8f603e1bee4a4d6395560a2492a22f37b8cddd0c96841772e",
+  "normalized_sha256": "509d17196728dcc8cc558fc83fdc9c4294185704d5a29a72ed8423efb4b5eda9",
+  "source_report": "modal_worker/world_asset_pipeline_v2_silkspire_batch_40742860868_review.json",
+  "manual_qa_evidence": "modal_worker/world_asset_pipeline_v2_manual_qa_silkspire_guild_floorboards.json",
+  "source_executor_run_id": 40742860868,
+  "source_trigger_commit": "d117139d3d9cb83ffbcefad142cb6f826dbefe7c",
+  "source_artifact_id": 12840027078,
+  "source_artifact_sha256": "9f32ba6b6def3f47063017073016a1fa0e08b8bdcc151fe6ff66f63632d4c27c",
+  "immutable": true,
+  "rerender_allowed": false,
+  "compile_authorized": false,
+  "catalog_wide_launch_authorized": false,
+  "runtime_import_proof": true
+}
