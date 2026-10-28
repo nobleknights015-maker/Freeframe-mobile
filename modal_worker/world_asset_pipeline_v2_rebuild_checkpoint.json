@@ -1,14 +1,14 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_rebuild_checkpoint.v1",
-  "status": "V2_REBUILT_REAL_DATA_QUALIFIED_LEGACY_HIGH_RISK_ORCHESTRATION_RETIRED",
+  "status": "V2_REBUILT_REAL_DATA_QUALIFIED_GUARDED_EXECUTOR_ZERO_SPEND_VALIDATED",
   "production_frozen": true,
   "paid_execution_enabled": false,
-  "production_executor_installed": false,
+  "production_executor_installed": true,
   "legacy_pipeline_mode": "READ_ONLY_EVIDENCE",
   "legacy_high_risk_workflows_retired": 13,
   "temporary_qualification_plumbing_retired": true,
   "control_plane": "GREEN",
-  "single_shared_generation_path": "GREEN_DECLARATION_ONLY",
+  "single_shared_generation_path": "GREEN",
   "per_asset_failure_isolation": true,
   "individual_hash_bound_acceptance": true,
   "exact_eight_regional_rollup": true,
@@ -22,12 +22,17 @@
     "artifact_id": 12832065717,
     "artifact_sha256": "f37a7c3826f31403a4167c246f99a718a0b82c2de66888e75393b29db4871156"
   },
-  "master_preflight_revision_4": {
-    "status": "PASS_ZERO_GPU_V2_END_TO_END_CONTRACT_READY",
-    "workflow_run_id": 40723674880,
-    "workflow_head_sha": "36e0bda4ad97c829cd7a56ecb31f694019ebd31b",
-    "artifact_id": 12830937798,
-    "artifact_sha256": "791b1b2bc68694a9fcfdca19abef93870e943dca6b9f55553266485967d15d25",
+  "guarded_executor_validation": {
+    "status": "PASS_DISABLED_ZERO_SPEND_PAID_JOB_SKIPPED",
+    "workflow_run_id": 40725739863,
+    "workflow_head_sha": "da0f99c2316b51553c6c836db065515586c6d8d4"
+  },
+  "master_preflight_revision_6": {
+    "status": "PASS_ZERO_GPU_V2_END_TO_END_CONTRACT_READY_WITH_EXECUTOR_INSTALLED",
+    "workflow_run_id": 40726110592,
+    "workflow_head_sha": "7722a2f49265237eb5c368a1ee8ba8115095e52a",
+    "artifact_id": 12832497031,
+    "artifact_sha256": "da7bc185f7908019b2b112f95fd4ae8f71c8b7112868590f90496ce2dfd13568",
     "regional_compiler_contracts_green": 9
   },
   "real_data_gloamfen_qualification": {
@@ -49,5 +54,5 @@
   "catalog_wide_launch_authorized": false,
   "runtime_import_proof": false,
   "next_fresh_region_after_qualification": "silkspire",
-  "next_manager_action": "KEEP_PRODUCTION_FROZEN_UNTIL_A_SAFE_V2_EXECUTOR_CAN_BE_INSTALLED_AND_ZERO_SPEND_VALIDATED"
+  "next_manager_action": "RUN_ONE_SOURCE_SILKSPIRE_CITY_STONE_PAVING_LIVE_CANARY_THEN_REFREEZE_AND_MANUAL_QA"
 }
