@@ -56,6 +56,7 @@ jobs:
           assert s['production_frozen'] is True
           assert s['paid_execution_enabled'] is False
           assert s['active_paid_region'] is None
+          assert Path('.github/workflows/world-asset-pipeline-v2-executor.yml').is_file()
           print('WORLD_ASSET_V2_FREEZE=PASS')
           PY
 
@@ -192,7 +193,8 @@ jobs:
             'generation_calls': 0,
             'catalog_wide_launch_authorized': False,
             'runtime_import_proof': False,
-            'production_executor_installed': False,
+            'production_executor_installed': Path('.github/workflows/world-asset-pipeline-v2-executor.yml').is_file(),
+            'production_executor_paid_job_must_remain_skipped_while_frozen': True,
           }
           Path('world-asset-v2-preflight-summary.json').write_text(json.dumps(summary, indent=2, sort_keys=True))
           print(json.dumps(summary, sort_keys=True))
