@@ -1,10 +1,10 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_state.v1",
-  "status": "FROSTLACE_PARTIAL_1_OF_8_ACCEPTED",
+  "status": "FROSTLACE_REMAINING_7_AUTHORIZED",
   "pipeline_version": 2,
-  "production_frozen": true,
-  "paid_execution_enabled": false,
-  "active_paid_region": null,
+  "production_frozen": false,
+  "paid_execution_enabled": true,
+  "active_paid_region": "frostlace",
   "catalog_wide_launch_authorized": false,
   "runtime_import_proof": true,
   "runtime_import_proof_scope": "game-side A5 runtime importer smoke plus Android APK packaging proof",
@@ -51,7 +51,7 @@
     "moonpatch-steppe": "PENDING",
     "sunspool-desert": "PENDING",
     "cinderreach": "PENDING",
-    "frostlace": "PARTIAL_1_OF_8_ACCEPTED"
+    "frostlace": "PARTIAL_1_OF_8_REMAINING_7_AUTHORIZED"
   },
   "asset_state_overrides": {},
   "allowed_asset_states": ["PENDING", "ACCEPTED", "REJECTED_SEMANTIC", "REJECTED_TECHNICAL"],
@@ -131,5 +131,22 @@
     "automatic_acceptance": false,
     "automatic_compile": false,
     "status": "ACCEPTED_MANUAL_QA_PASS"
+  },
+  "current_batch": {
+    "region": "frostlace",
+    "validated_zero_gpu_preflight_run_id": 40755189578,
+    "requested_source_ids": [
+      "tileset.frostlace.a5.source.blue_ice",
+      "tileset.frostlace.a5.source.frosted_stone",
+      "tileset.frostlace.a5.source.frozen_soil",
+      "tileset.frostlace.a5.source.archive_stone",
+      "tileset.frostlace.a5.source.pale_timber",
+      "tileset.frostlace.a5.source.crystal_stone",
+      "tileset.frostlace.a5.source.cold_gravel"
+    ],
+    "requested_count": 7,
+    "automatic_acceptance": false,
+    "automatic_compile": false,
+    "status": "AUTHORIZED_WAITING_FOR_TRIGGER"
   }
 }
