@@ -1,6 +1,7 @@
 {
   "schema": "plushbound.tileset_elyndor_a5_no_spend_validation.v1",
-  "status": "PASS_NO_SPEND_DETERMINISTIC_COMPILE",
+  "status": "SUPERSEDED_ENGINE_PROFILE_GEOMETRY_MISMATCH",
+  "historical_compile_status": "PASS_NO_SPEND_DETERMINISTIC_COMPILE",
   "validation_basis": "exact eight banked 384x384 source masters from locked canary and targeted repair artifacts",
   "source_canary_artifact_id": 12788983716,
   "straw_repair_artifact_id": 12815045820,
@@ -16,6 +17,13 @@
   "material_family_count": 8,
   "compiled_sheet_sha256": "7f9c3abd403d2e62a7c53832622f275715d47ecce89e313b48fdc05ce7f9ca74",
   "visual_compile_review": "PASS_MATERIAL_LANGUAGE_AND_SEAM_SAFE_VARIANT_LAYOUT",
+  "engine_profile_validation": {
+    "profile": "mv_tileset_a5",
+    "valid": false,
+    "errors": ["width must be 384"]
+  },
+  "superseded_reason": "Repository asset profile mv_tileset_a5 requires exactly 384x768 RGBA PNG. This 768x768 sheet is retained only as historical deterministic compile evidence and must not be imported as A5.",
+  "superseded_by": "modal_worker/tileset_elyndor_a5_engine_v1_compatibility.json",
   "family_metrics": [
     {"material_key": "lush_grass", "maximum_edge_discontinuity": 0.045112, "minimum_rgb_stddev": 10.1242},
     {"material_key": "wildflower_grass", "maximum_edge_discontinuity": 0.076062, "minimum_rgb_stddev": 17.0908},
@@ -30,9 +38,8 @@
     "maximum_edge_discontinuity": 0.25,
     "minimum_rgb_stddev": 3.0
   },
-  "engine_v1_import_check": "PENDING_DEDICATED_IMPORT_VALIDATION",
   "full_A5_paid_generation_authorized": false,
   "cross_region_expansion_authorized": false,
   "catalog_wide_launch_authorized": false,
-  "next_action": "RUN_ENGINE_V1_IMPORT_VALIDATION_ON_DETERMINISTIC_ELYNDOR_A5_OUTPUT"
+  "next_action": "USE_CORRECTED_384X768_ENGINE_PROFILE_VALIDATION_ONLY"
 }
