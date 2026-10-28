@@ -1,0 +1,20 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_manual_qa.v1",
+  "status": "FAIL",
+  "asset_id": "tileset.frostlace.a5.source.frosted_stone",
+  "region": "frostlace",
+  "material_key": "frosted_stone",
+  "semantic_material_surface": false,
+  "no_scene_or_object_composition": false,
+  "edge_to_edge_substrate": true,
+  "no_border_or_inset_panel": true,
+  "no_horizon_or_perspective": true,
+  "no_character_creature_prop_or_structure": true,
+  "readable_at_48px": true,
+  "region_material_identity_matches": false,
+  "notes": "Reject: explicit snowflake-shaped motifs appear as discrete decorative symbols across the surface. Retry as cool gray stone with fine irregular frost grain only; no recognizable snowflake shapes, icons, motifs or symbols.",
+  "source_executor_run_id": 40755360893,
+  "source_artifact_id": 12844814359,
+  "raw_sha256": "1714c4d8135975cae81b97639fe1a5aa9909d410318069ce6951c015d1add46e",
+  "normalized_sha256": "45994d29d71430f81ece9474e5b04b54f33ad000d9e33ed623786629c50aaec2"
+}
