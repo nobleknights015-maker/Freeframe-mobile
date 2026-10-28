@@ -2,7 +2,7 @@
   "schema": "plushbound.world_asset_pipeline_v2_preflight_trigger.v1",
   "enabled": true,
   "mode": "zero_gpu_end_to_end_pipeline_validation",
-  "validation_revision": 3,
+  "validation_revision": 4,
   "provider_calls_allowed": 0,
   "gpu_calls_allowed": 0,
   "generation_calls_allowed": 0,
@@ -13,6 +13,8 @@
   "validate_paid_gate_refusal_while_frozen": true,
   "validate_unified_asset_acceptance": true,
   "validate_exact_eight_regional_rollup": true,
+  "validate_unified_v2_normalizer": true,
+  "validate_v2_compiler_policy": true,
   "validate_regions": [
     "crownweave",
     "silkspire",
