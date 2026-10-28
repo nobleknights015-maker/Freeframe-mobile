@@ -1,0 +1,20 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_manual_qa.v1",
+  "status": "PASS",
+  "asset_id": "tileset.frostlace.a5.source.packed_snow",
+  "region": "frostlace",
+  "material_key": "packed_snow",
+  "semantic_material_surface": true,
+  "no_scene_or_object_composition": true,
+  "edge_to_edge_substrate": true,
+  "no_border_or_inset_panel": true,
+  "no_horizon_or_perspective": true,
+  "no_character_creature_prop_or_structure": true,
+  "readable_at_48px": true,
+  "region_material_identity": true,
+  "manual_notes": "Continuous blue-white packed snow with fine compressed crystalline grain. No focal object, perimeter, scene composition, horizon or perspective. 48px normalization retains readable cold crystalline variation.",
+  "source_executor_run_id": 40754030630,
+  "source_artifact_id": 12845940312,
+  "raw_sha256": "b11afb8a81f045dff6031893df26c1f530b2f2a11624f73966a9fd4a05676ff4",
+  "normalized_sha256": "cde474bfd77f91e35e8d94b773ba6e2cada7e605866b091740020aef64b5929a"
+}
