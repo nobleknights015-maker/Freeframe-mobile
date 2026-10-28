@@ -38,6 +38,7 @@ class ProductionPolicy:
     single_subject: bool = False
     outdoor_only: bool = False
     target_aspect: str = "free"
+    reject_panel_grid: bool = True
 
 
 POLICIES: dict[str, ProductionPolicy] = {
@@ -47,7 +48,11 @@ POLICIES: dict[str, ProductionPolicy] = {
     "environment_master": ProductionPolicy("environment_master", outdoor_only=True, target_aspect="4:3"),
     "portrait_master": ProductionPolicy("portrait_master", single_subject=True, target_aspect="1:1"),
     "sprite_master": ProductionPolicy("sprite_master", require_alpha=True, single_subject=True),
-    "tileset_master": ProductionPolicy("tileset_master", require_alpha=True),
+    # Tileset materials legitimately contain periodic seams (paving, brick, roof
+    # plate, floorboards, woven matting). A generic panel detector cannot tell
+    # those seams from a contact-sheet separator, so it is advisory here and
+    # manual semantic QA remains authoritative for scene/panel composition.
+    "tileset_master": ProductionPolicy("tileset_master", require_alpha=True, reject_panel_grid=False),
     "icon_master": ProductionPolicy("icon_master", single_subject=True, target_aspect="1:1"),
 }
 
@@ -95,7 +100,10 @@ def inspect_master(
     if width <= 0 or height <= 0:
         errors.append("master dimensions must be positive")
     if panel_grid_detected:
-        errors.append("multi-panel or model-sheet composition detected")
+        if policy.reject_panel_grid:
+            errors.append("multi-panel or model-sheet composition detected")
+        else:
+            warnings.append("grid-like periodicity permitted for tileset material; manual semantic QA required")
     if policy.single_subject and subject_count is not None and subject_count != 1:
         errors.append(f"expected one subject, detected {subject_count}")
     if policy.outdoor_only and indoor_detected:
