@@ -1,0 +1,20 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_asset_acceptance.v1",
+  "status": "ACCEPTED",
+  "asset_id": "tileset.frostlace.a5.source.frozen_soil",
+  "region": "frostlace",
+  "material_key": "frozen_soil",
+  "machine_gate": "PASS",
+  "manual_visual_gate": "PASS",
+  "raw_sha256": "eae0d661695db03930194f6d6c34a2a2913f27c00535967eb841f8d04ed5bed5",
+  "normalized_sha256": "22288197f577bcbacc1e69ae51e20f9a093991ef45ad31decfc0f409179cd58b",
+  "source_executor_run_id": 40755360893,
+  "source_artifact_id": 12844814359,
+  "source_artifact_sha256": "42bec66da9fffa0676a273021debb7cc06b6b817505c4092fe39f306a4886a47",
+  "manual_qa_evidence": "modal_worker/world_asset_pipeline_v2_manual_qa_frostlace_frozen_soil.json",
+  "immutable": true,
+  "rerender_allowed": false,
+  "compile_authorized": false,
+  "catalog_wide_launch_authorized": false,
+  "runtime_import_proof": true
+}
