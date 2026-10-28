@@ -1,0 +1,21 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_manual_qa.v1",
+  "status": "FAIL",
+  "asset_id": "tileset.frostlace.a5.source.frosted_stone",
+  "region": "frostlace",
+  "material_key": "frosted_stone",
+  "semantic_material_surface": false,
+  "no_scene_or_object_composition": false,
+  "edge_to_edge_substrate": false,
+  "no_border_or_inset_panel": true,
+  "no_horizon_or_perspective": true,
+  "no_character_creature_prop_or_structure": true,
+  "readable_at_48px": true,
+  "region_material_identity_matches": false,
+  "review_basis": "raw 384x384 repair source plus normalized 48x48 visual review",
+  "executor_run_id": 40757599963,
+  "source_artifact_id": 12846192023,
+  "raw_sha256": "0b505462a281bcbc68eab1cc92fd40cd0568a28ff298cbbfccff276c1be0ed81",
+  "normalized_sha256": "2931742ce92b4b48fc8ca9ca9096acff1abf04cc79c4842f9cb8b1d6b2b7b1c0",
+  "notes": "Second semantic rejection: explicit snowflake-shaped motifs remain visible and large dark crack/slab boundaries dominate, so the source still reads as decorated broken stone rather than fine frost grain on continuous stone."
+}
