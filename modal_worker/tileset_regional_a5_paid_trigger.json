@@ -1,0 +1,16 @@
+{
+  "schema": "plushbound.tileset_regional_a5_paid_trigger.v1",
+  "enabled": true,
+  "mode": "one_region_a5_source_canary",
+  "region": "gloamfen",
+  "preflight_run_id": 40700162944,
+  "preflight_conclusion": "success",
+  "source_scope_head": "eb5b82decd77230d5e0be117e83313f95ab71137",
+  "asset_cap": 8,
+  "generation_attempts_per_asset_cap": 1,
+  "one_region_only": true,
+  "never_stack_paid_runs": true,
+  "catalog_wide_launch_authorized": false,
+  "accepted_assets_immutable": true,
+  "creator_full_outfits_remain_closed_at": 24
+}
