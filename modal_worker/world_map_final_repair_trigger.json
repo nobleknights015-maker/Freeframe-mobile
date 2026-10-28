@@ -1,12 +1,12 @@
 {
   "schema": "plushbound.world_map_final_repair_trigger.v1",
   "enabled": true,
-  "mode": "baseline_completion_two_regions",
+  "mode": "baseline_repair_v2",
   "asset_cap": 2,
-  "preflight_run_id": 40622878364,
-  "preflight_conclusion": "success",
-  "canary_closeout_contract": "modal_worker/world_map_final_canary_closeout.json",
-  "producer_commit_sha": "e6bac101125446442144521670260698bd238ac6",
+  "source_baseline_run_id": 40622999487,
+  "source_baseline_artifact_id": 12787978247,
+  "manual_qa_commit_sha": "35066e1b98be4f4b6e0ba9d60a0e4e4a38f9e25f",
+  "producer_commit_sha": "d87db7b05a626d7d6ffbcf43c8491e54aa6ac447",
   "asset_ids": [
     "world.cinderreach.environment_master",
     "world.frostlace.environment_master"
@@ -22,6 +22,10 @@
     "world.moonpatch-steppe.environment_master",
     "world.silkspire.environment_master"
   ],
+  "repair_constraints": {
+    "cinderreach": "wide distant geology-first composition; tiny plain settlement silhouettes only; no close facades or readable detail",
+    "frostlace": "open frozen valley; distant plain archive silhouettes only; no suspended decoration or route props"
+  },
   "never_stack_paid_runs": true,
   "stop_on_validation_failure": true,
   "catalog_wide_launch_authorized": false,
