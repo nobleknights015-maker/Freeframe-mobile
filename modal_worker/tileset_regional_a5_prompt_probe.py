@@ -25,6 +25,7 @@ SCOPE_PATH = Path("modal_worker/tileset_regional_a5_scope_manifest.json")
 OUTPUT_ROOT = Path("tileset-regional-a5-prompt-probe")
 PROMPT_CONTRACT_VERSION = "regional-a5-material-swatch-v2"
 PROBE_VERSION = "plushbound-regional-a5-prompt-probe-v1"
+REMOTE_TIMEOUT_SECONDS = 420
 
 image = (
     modal.Image.debian_slim(python_version="3.11")
@@ -141,7 +142,7 @@ def build_probe(region: str, asset_id: str) -> dict:
     image=image,
     volumes={CACHE_DIR: model_cache},
     scaledown_window=120,
-    timeout=1200,
+    timeout=REMOTE_TIMEOUT_SECONDS,
 )
 class PromptProbeRunner:
     @modal.enter()
