@@ -1,0 +1,18 @@
+{
+  "asset_id": "tileset.cinderreach.a5.source.ember_veined_rock",
+  "gpu_seconds": 2.059,
+  "manual_visual_gate": "PASS",
+  "material_key": "ember_veined_rock",
+  "no_scene_or_object_composition": true,
+  "normalized_sha256": "44735db266a55f11794c529f63d0d4441995e6200cb50040592c4f65821be3ac",
+  "raw_sha256": "828a741025ffd5339007720f3062841b7bd780052b05534ed663e2731ee3d31e",
+  "region": "cinderreach",
+  "rerender_in_same_round": false,
+  "review_notes": "Continuous charcoal-black stone substrate with sparse thin rust-red mineral veins. No glow scene, lava pool, frame, panel, large fissure composition, prop or object silhouette.",
+  "schema": "plushbound.world_asset_pipeline_v2_manual_qa.v1",
+  "semantic_material_surface": true,
+  "source_artifact_id": 12853746998,
+  "source_artifact_sha256": "d826265b1b1bc78e0bae45572f67c456c6ab228f16645574a1230607af6790b8",
+  "source_executor_run_id": 40774167698,
+  "status": "PASS"
+}
