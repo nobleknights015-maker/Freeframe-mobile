@@ -29,6 +29,9 @@ OUTPUT_ROOT = Path("tileset-regional-a5")
 EXPECTED_COUNT = 8
 PROMPT_CONTRACT_VERSION = "regional-a5-material-swatch-v2"
 VERSION = "plushbound-tileset-regional-a5-source-v2-material-swatch"
+GPU_CANDIDATES = ["L4", "A10G"]
+STARTUP_TIMEOUT_SECONDS = 180
+REMOTE_TIMEOUT_SECONDS = 180
 
 image = (
     modal.Image.debian_slim(python_version="3.11")
@@ -113,27 +116,37 @@ def load_assets(region: str) -> list[dict]:
 
 
 @app.cls(
-    gpu="L4",
+    gpu=GPU_CANDIDATES,
     image=image,
     volumes={CACHE_DIR: model_cache},
     scaledown_window=120,
-    timeout=1200,
+    startup_timeout=STARTUP_TIMEOUT_SECONDS,
+    timeout=REMOTE_TIMEOUT_SECONDS,
 )
 class RegionalA5Runner:
     @modal.enter()
     def load(self):
+        os.environ["HF_HOME"] = CACHE_DIR
+        os.environ["HF_HUB_CACHE"] = f"{CACHE_DIR}/hub"
+        os.environ["HF_HUB_OFFLINE"] = "1"
+        os.environ["TRANSFORMERS_OFFLINE"] = "1"
+        print("A5_PRODUCTION_STARTUP_STAGE=CONTAINER_STARTED", flush=True)
+        print(f"A5_PRODUCTION_GPU_CANDIDATES={','.join(GPU_CANDIDATES)}", flush=True)
+        print("A5_PRODUCTION_STARTUP_STAGE=CACHE_ONLY_MODEL_LOAD_BEGIN", flush=True)
+
         import torch
         from diffusers import DiffusionPipeline
 
-        os.environ.setdefault("HF_HOME", CACHE_DIR)
-        os.environ.setdefault("HF_HUB_CACHE", f"{CACHE_DIR}/hub")
         self.torch = torch
         self.pipe = DiffusionPipeline.from_pretrained(
             MODEL_ID,
             torch_dtype=torch.bfloat16,
             cache_dir=CACHE_DIR,
+            local_files_only=True,
         )
+        print("A5_PRODUCTION_STARTUP_STAGE=PIPELINE_CPU_READY", flush=True)
         self.pipe.to("cuda")
+        print("A5_PRODUCTION_STARTUP_STAGE=CUDA_READY", flush=True)
 
     def _render(self, request: dict) -> tuple[bytes, float]:
         generator = self.torch.Generator(device="cuda").manual_seed(int(request["seed"]))
@@ -194,7 +207,9 @@ class RegionalA5Runner:
                 if request.get(key) != expected:
                     raise RuntimeError(f"{item['asset_id']}: invariant {key} drifted")
 
+            print(f"A5_PRODUCTION_RENDER_STAGE=BEGIN:{item['asset_id']}", flush=True)
             raw, elapsed = self._render(request)
+            print(f"A5_PRODUCTION_RENDER_STAGE=IMAGE_READY:{item['asset_id']}:{elapsed:.3f}s", flush=True)
             total_gpu_seconds += elapsed
             raw_payload = {
                 "image_base64": base64.b64encode(raw).decode("ascii"),
@@ -259,7 +274,8 @@ class RegionalA5Runner:
             "total_gpu_seconds": round(total_gpu_seconds, 3),
             "wall_seconds": round(time.monotonic() - wall_started, 3),
             "model": MODEL_ID,
-            "gpu": "L4",
+            "gpu": "L4_or_A10G",
+            "gpu_candidates": GPU_CANDIDATES,
             "bounded_production_authorized": True,
             "automatic_full_production_authorized": False,
             "catalog_wide_launch_authorized": False,
