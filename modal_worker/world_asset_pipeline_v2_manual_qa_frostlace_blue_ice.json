@@ -1,0 +1,20 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_manual_qa.v1",
+  "status": "FAIL",
+  "asset_id": "tileset.frostlace.a5.source.blue_ice",
+  "region": "frostlace",
+  "material_key": "blue_ice",
+  "semantic_material_surface": false,
+  "no_scene_or_object_composition": false,
+  "edge_to_edge_substrate": true,
+  "no_border_or_inset_panel": true,
+  "no_horizon_or_perspective": true,
+  "no_character_creature_prop_or_structure": true,
+  "readable_at_48px": true,
+  "region_material_identity_matches": false,
+  "notes": "Reject: the image is dominated by large discrete ice shard/facet forms. Frostlace blue ice needs subtle close-scale continuous crystalline variation with no shard-like objects or large complete facets.",
+  "source_executor_run_id": 40755360893,
+  "source_artifact_id": 12844814359,
+  "raw_sha256": "b732760297b82c12b579935339b1ee575c807d66700b29982790c636d508a898",
+  "normalized_sha256": "670c70a7374d78462b25249dbf98154438e489d518e1d35095c868b7946a54cc"
+}
