@@ -36,7 +36,81 @@
     "materials_per_region": 8,
     "variants_per_material": 16,
     "generation_attempts_per_material_cap": 1,
-    "prompt_template": "{region_prompt}. Seamless {material_name} material viewed straight down, continuous handcrafted fantasy surface with subtle Plushbound woven-fiber character; no text, letters, numbers, glyphs, symbols, logos, signs, borders, isolated objects, tile grid, checkerboard or contact sheet."
+    "prompt_contract_version": "regional-a5-material-swatch-v2",
+    "prompt_template": "Create a single continuous {material_name} material swatch for a 2D JRPG tileset source. Orthographic top-down texture sample, frame completely filled by one material at uniform scale, edge-to-edge substrate, no focal point. Regional palette/material hint only: {region_material_hint}. Subtle handcrafted Plushbound fiber or grain character must exist inside the material itself, never as separate objects. NO environment, landscape, map, terrain scene, diorama, game level, horizon, perspective, bridge, building, ruin, tree, bush, grass clump, water body, pond, river, path, road, character, creature, furniture, tool, prop, debris, isolated object, border, tile grid, checkerboard, contact sheet, text, letters, numbers, glyphs, symbols, logo or sign.",
+    "required_prompt_phrases": [
+      "single continuous",
+      "material swatch",
+      "orthographic top-down texture sample",
+      "frame completely filled by one material",
+      "uniform scale",
+      "edge-to-edge substrate",
+      "no focal point",
+      "no environment",
+      "landscape",
+      "map",
+      "terrain scene",
+      "diorama",
+      "game level",
+      "horizon",
+      "perspective",
+      "bridge",
+      "building",
+      "ruin",
+      "tree",
+      "bush",
+      "grass clump",
+      "water body",
+      "pond",
+      "river",
+      "path",
+      "road",
+      "character",
+      "creature",
+      "furniture",
+      "tool",
+      "prop",
+      "debris",
+      "isolated object",
+      "tile grid",
+      "checkerboard",
+      "contact sheet"
+    ],
+    "forbidden_region_hint_terms": [
+      "environment",
+      "landscape",
+      "map",
+      "terrain",
+      "diorama",
+      "game level",
+      "bridge",
+      "building",
+      "ruin",
+      "tree",
+      "bush",
+      "water",
+      "pond",
+      "river",
+      "path",
+      "road",
+      "character",
+      "creature",
+      "prop",
+      "debris",
+      "wetland",
+      "boardwalk",
+      "marsh",
+      "forest",
+      "harbor",
+      "caravan",
+      "shelter",
+      "desert",
+      "volcanic",
+      "archive",
+      "workshop",
+      "city",
+      "settlement"
+    ]
   },
   "locks": {
     "accepted_assets_immutable": true,
@@ -67,64 +141,155 @@
       "status": "PREFLIGHT_PENDING",
       "sheet_type": "A5",
       "stable_sheet_id": "tileset.crownweave.a5",
-      "region_prompt": "Crownweave ceremonial highlands and civic city material language",
-      "materials": ["highland_grass", "civic_earth", "woven_stone_paving", "terrace_stone", "garden_soil", "institutional_stone", "polished_timber", "slate_roof_tile"]
+      "region_material_hint": "refined warm ivory, moss green, muted gold and slate blue; ceremonial restraint; crisp handcrafted mineral and fiber grain",
+      "materials": ["highland_grass", "civic_earth", "woven_stone_paving", "terrace_stone", "garden_soil", "institutional_stone", "polished_timber", "slate_roof_tile"],
+      "material_prompt_labels": {
+        "highland_grass": "short dense green ground-cover texture with fine clipped blades and woven fiber grain",
+        "civic_earth": "compacted warm brown earth texture with fine mineral grain",
+        "woven_stone_paving": "interlocked pale stone surface texture with shallow woven-like joints",
+        "terrace_stone": "weathered pale stone texture with restrained mineral variation",
+        "garden_soil": "rich dark cultivated soil texture with fine organic grain",
+        "institutional_stone": "smooth cool gray dressed-stone texture with subtle handcrafted grain",
+        "polished_timber": "polished golden-brown wood grain texture with fine linear fibers",
+        "slate_roof_tile": "dark blue-gray slate plate texture with shallow regular joints"
+      }
     },
     "silkspire": {
       "status": "PREFLIGHT_PENDING",
       "sheet_type": "A5",
       "stable_sheet_id": "tileset.silkspire.a5",
-      "region_prompt": "Silkspire vertical urban workshops and elegant structural city material language",
-      "materials": ["city_stone_paving", "workshop_timber", "pale_masonry", "dark_masonry", "bridge_timber", "guild_floorboards", "roof_tile", "workshop_metal_plate"]
+      "region_material_hint": "cool pearl gray, smoky blue, lacquer brown and restrained brass; elegant engineered finish; fine handcrafted grain",
+      "materials": ["city_stone_paving", "workshop_timber", "pale_masonry", "dark_masonry", "bridge_timber", "guild_floorboards", "roof_tile", "workshop_metal_plate"],
+      "material_prompt_labels": {
+        "city_stone_paving": "refined cool-gray cut-stone surface texture with shallow regular joints",
+        "workshop_timber": "medium-brown utilitarian wood grain texture with fine wear",
+        "pale_masonry": "pale pearl-gray masonry texture with restrained mortar seams",
+        "dark_masonry": "smoky charcoal masonry texture with restrained mortar seams",
+        "bridge_timber": "weathered structural brown wood grain texture with subtle linear wear",
+        "guild_floorboards": "lacquered dark wood plank texture with fine regular seams",
+        "roof_tile": "smoky blue-gray ceramic plate texture with shallow regular joints",
+        "workshop_metal_plate": "brushed gunmetal plate texture with subtle regular seams and restrained brass wear"
+      }
     },
     "gloamfen": {
-      "status": "PREFLIGHT_PENDING",
+      "status": "QUARANTINED_PROMPT_REPAIR_REQUIRED",
       "sheet_type": "A5",
       "stable_sheet_id": "tileset.gloamfen.a5",
-      "region_prompt": "Gloamfen wetland, boardwalk, drowned-ruin and marsh material language",
-      "materials": ["marsh_mud", "damp_moss", "shallow_silt", "reed_matting", "boardwalk_timber", "drowned_stone", "fungal_moss", "dark_peat"]
+      "region_material_hint": "muted bog olive, peat brown, algae green and wet charcoal; damp aged finish; subtle handcrafted fiber grain",
+      "materials": ["marsh_mud", "damp_moss", "shallow_silt", "reed_matting", "boardwalk_timber", "drowned_stone", "fungal_moss", "dark_peat"],
+      "material_prompt_labels": {
+        "marsh_mud": "dark olive-brown wet mud texture with fine soft sediment grain",
+        "damp_moss": "dense damp green moss-fiber texture at close uniform scale",
+        "shallow_silt": "fine gray-green silty sediment texture with soft mineral variation",
+        "reed_matting": "tightly woven muted-olive reed-fiber mat texture with regular fine weave",
+        "boardwalk_timber": "wet weathered charcoal-brown wood grain texture with fine linear fibers",
+        "drowned_stone": "dark water-aged gray stone texture with mossy mineral staining but no standing liquid",
+        "fungal_moss": "muted olive and pale fungal-green moss-fiber texture at close uniform scale",
+        "dark_peat": "near-black peat soil texture with soft brown organic grain"
+      },
+      "quarantine_evidence": "modal_worker/tileset_gloamfen_a5_source_quarantine.json"
     },
     "verdancia": {
       "status": "PREFLIGHT_PENDING",
       "sheet_type": "A5",
       "stable_sheet_id": "tileset.verdancia.a5",
-      "region_prompt": "Verdancia living forest settlement, garden and root-path material language",
-      "materials": ["forest_loam", "mossy_ground", "root_path", "herb_garden_soil", "orchard_ground", "living_wood", "mossy_stone", "leaf_litter"]
+      "region_material_hint": "deep leaf green, loam brown, moss jade and warm bark umber; organic soft finish; subtle handcrafted fiber grain",
+      "materials": ["forest_loam", "mossy_ground", "root_path", "herb_garden_soil", "orchard_ground", "living_wood", "mossy_stone", "leaf_litter"],
+      "material_prompt_labels": {
+        "forest_loam": "deep brown loam soil texture with fine organic grain",
+        "mossy_ground": "dense jade-green moss-fiber ground texture at close uniform scale",
+        "root_path": "compacted warm loam texture with subtle embedded woody fibers and no visible route",
+        "herb_garden_soil": "rich cultivated dark soil texture with fine organic grain and no plants",
+        "orchard_ground": "soft brown-green earth texture with fine leaf-fiber flecks but no plants",
+        "living_wood": "warm umber wood grain texture with gentle organic curvature",
+        "mossy_stone": "soft gray stone texture with fine jade moss staining",
+        "leaf_litter": "dense small-scale flattened leaf-fiber texture without distinct whole leaves or objects"
+      }
     },
     "tideglass-coast": {
       "status": "PREFLIGHT_PENDING",
       "sheet_type": "A5",
       "stable_sheet_id": "tileset.tideglass-coast.a5",
-      "region_prompt": "Tideglass Coast shoreline, cliff, harbor and maritime material language",
-      "materials": ["wet_sand", "dry_sand", "sea_glass_pebbles", "coastal_stone", "cliff_stone", "dock_timber", "saltworn_board", "tidal_silt"]
+      "region_material_hint": "sea-glass teal, salt gray, pale aqua, shell beige and weathered brown; saltworn finish; fine handcrafted grain",
+      "materials": ["wet_sand", "dry_sand", "sea_glass_pebbles", "coastal_stone", "cliff_stone", "dock_timber", "saltworn_board", "tidal_silt"],
+      "material_prompt_labels": {
+        "wet_sand": "compact damp beige-gray sand texture with fine darkened mineral grain and no standing liquid",
+        "dry_sand": "soft pale beige sand texture with fine uniform mineral grain",
+        "sea_glass_pebbles": "dense small-scale teal and aqua rounded mineral-glass aggregate texture",
+        "coastal_stone": "salt-gray weathered stone texture with fine pale mineral flecks",
+        "cliff_stone": "layered cool-gray stone texture at close uniform scale with no large rock forms",
+        "dock_timber": "saltworn medium-brown wood grain texture with fine linear fibers",
+        "saltworn_board": "pale weathered wood plank texture with shallow regular seams",
+        "tidal_silt": "fine gray-beige silty sediment texture with subtle teal mineral staining and no standing liquid"
+      }
     },
     "moonpatch-steppe": {
       "status": "PREFLIGHT_PENDING",
       "sheet_type": "A5",
       "stable_sheet_id": "tileset.moonpatch-steppe.a5",
-      "region_prompt": "Moonpatch Steppe moonlit grassland, caravan and shelter material language",
-      "materials": ["silver_grass", "pressed_grass", "caravan_dirt", "steppe_soil", "pale_steppe_stone", "shelter_timber", "woven_reed_mat", "moonlit_gravel"]
+      "region_material_hint": "silver sage, moonlit blue-gray, dusty mauve and warm tan; wind-softened finish; fine handcrafted grain",
+      "materials": ["silver_grass", "pressed_grass", "caravan_dirt", "steppe_soil", "pale_steppe_stone", "shelter_timber", "woven_reed_mat", "moonlit_gravel"],
+      "material_prompt_labels": {
+        "silver_grass": "short dense silver-sage ground-cover fiber texture with fine clipped blades",
+        "pressed_grass": "flattened muted-sage ground-fiber texture at close uniform scale",
+        "caravan_dirt": "compacted warm-tan dirt texture with fine dusty grain and no tracks",
+        "steppe_soil": "dry muted-brown soil texture with fine mineral grain",
+        "pale_steppe_stone": "pale blue-gray weathered stone texture with subtle mineral variation",
+        "shelter_timber": "dry warm-brown structural wood grain texture with fine linear fibers",
+        "woven_reed_mat": "tightly woven pale-tan reed-fiber mat texture with fine regular weave",
+        "moonlit_gravel": "dense small-scale blue-gray and pale-lavender gravel aggregate texture"
+      }
     },
     "sunspool-desert": {
       "status": "PREFLIGHT_PENDING",
       "sheet_type": "A5",
       "stable_sheet_id": "tileset.sunspool-desert.a5",
-      "region_prompt": "Sunspool Desert dune, oasis, shelter and buried-ruin material language",
-      "materials": ["warm_sand", "compacted_desert_soil", "oasis_damp_sand", "salvage_stone", "sunbleached_stone", "shelter_timber", "woven_matting", "buried_ruin_tile"]
+      "region_material_hint": "sun-warmed ochre, saffron beige, terracotta, pale gold and chalk stone; dry matte finish; subtle fiber grain",
+      "materials": ["warm_sand", "compacted_desert_soil", "oasis_damp_sand", "salvage_stone", "sunbleached_stone", "shelter_timber", "woven_matting", "buried_ruin_tile"],
+      "material_prompt_labels": {
+        "warm_sand": "warm saffron-beige sand texture with fine uniform mineral grain",
+        "compacted_desert_soil": "compacted ochre soil texture with fine dry mineral grain",
+        "oasis_damp_sand": "slightly darkened golden-beige damp sand texture with no standing liquid",
+        "salvage_stone": "mixed warm-gray and terracotta dressed-stone texture with restrained joints",
+        "sunbleached_stone": "pale chalk-beige stone texture with soft weathered mineral grain",
+        "shelter_timber": "sun-dried warm-brown wood grain texture with fine linear fibers",
+        "woven_matting": "tightly woven saffron and tan fiber mat texture with fine regular weave",
+        "buried_ruin_tile": "weathered terracotta-and-chalk ceramic plate texture with shallow regular joints and no structural forms"
+      }
     },
     "cinderreach": {
       "status": "PREFLIGHT_PENDING",
       "sheet_type": "A5",
       "stable_sheet_id": "tileset.cinderreach.a5",
-      "region_prompt": "Cinderreach volcanic, forge-settlement and foundry material language",
-      "materials": ["basalt", "ash_soil", "ember_veined_rock", "forge_stone", "charred_timber", "foundry_masonry", "metal_floor_plate", "cooled_lava"]
+      "region_material_hint": "charcoal black, ember rust, iron gray and ash beige; heat-aged matte finish; subtle handcrafted grain",
+      "materials": ["basalt", "ash_soil", "ember_veined_rock", "forge_stone", "charred_timber", "foundry_masonry", "metal_floor_plate", "cooled_lava"],
+      "material_prompt_labels": {
+        "basalt": "dark charcoal basalt stone texture with fine mineral speckling",
+        "ash_soil": "soft ash-gray soil texture with fine powdery mineral grain",
+        "ember_veined_rock": "dark stone texture with sparse thin rust-red mineral veins, no glow or fissure scene",
+        "forge_stone": "heat-aged dark gray dressed-stone texture with subtle rust staining",
+        "charred_timber": "charcoal-brown burned wood grain texture with fine linear fibers",
+        "foundry_masonry": "iron-gray masonry texture with restrained mortar seams and heat staining",
+        "metal_floor_plate": "brushed iron plate texture with shallow regular seams and subtle wear",
+        "cooled_lava": "near-black cooled igneous stone texture with fine wrinkled mineral grain and no molten areas"
+      }
     },
     "frostlace": {
       "status": "PREFLIGHT_PENDING",
       "sheet_type": "A5",
       "stable_sheet_id": "tileset.frostlace.a5",
-      "region_prompt": "Frostlace snow, ice, archive and cold-settlement material language",
-      "materials": ["packed_snow", "blue_ice", "frosted_stone", "frozen_soil", "archive_stone", "pale_timber", "crystal_stone", "cold_gravel"]
+      "region_material_hint": "icy blue-white, frost gray, pale lavender, silver and light wood beige; cold matte finish; fine handcrafted grain",
+      "materials": ["packed_snow", "blue_ice", "frosted_stone", "frozen_soil", "archive_stone", "pale_timber", "crystal_stone", "cold_gravel"],
+      "material_prompt_labels": {
+        "packed_snow": "dense packed blue-white snow texture with fine compressed crystalline grain",
+        "blue_ice": "pale translucent blue ice texture with subtle close-scale crystalline variation and no cracks forming objects",
+        "frosted_stone": "cool gray stone texture with fine white frost grain",
+        "frozen_soil": "dark cool-brown compacted soil texture with fine pale frost speckling",
+        "archive_stone": "smooth pale-gray dressed-stone texture with restrained cool mineral grain",
+        "pale_timber": "light beige wood grain texture with fine linear fibers and cool weathering",
+        "crystal_stone": "pale lavender-gray crystalline stone texture with dense small-scale mineral facets",
+        "cold_gravel": "dense small-scale frost-gray and pale-blue gravel aggregate texture"
+      }
     }
   }
 }
