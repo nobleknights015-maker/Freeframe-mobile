@@ -30,6 +30,17 @@ jobs:
         run: python -m pip install --disable-pip-version-check 'modal>=1.0,<2' 'pillow>=10.4,<12'
       - name: Compile worker
         run: python -m compileall -q modal_worker
+      - name: Validate A5 GPU fallback declaration
+        run: |
+          PYTHONPATH=. python - <<'PY'
+          from modal_worker import tileset_regional_a5_prompt_probe as probe
+          assert probe.GPU_CANDIDATES == ['L4', 'A10G']
+          assert probe.STARTUP_TIMEOUT_SECONDS == 180
+          assert probe.REMOTE_TIMEOUT_SECONDS == 120
+          assert probe.MODEL_VOLUME == 'freeframe-model-cache'
+          assert probe.MODEL_ID == 'black-forest-labs/FLUX.2-klein-4B'
+          print('A5 prompt probe GPU fallback declaration OK')
+          PY
       - name: Run worker core tests
         run: PYTHONPATH=modal_worker python -m unittest discover -s modal_worker -p 'test_*.py' -v
       - name: Verify Modal package import path
