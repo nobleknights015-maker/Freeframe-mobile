@@ -1,0 +1,76 @@
+{
+  "schema": "plushbound.tileset_source_canary.v1",
+  "status": "PREFLIGHT_ONLY_NOT_TRIGGERED",
+  "region": "elyndor",
+  "target_sheet_type": "A5",
+  "source_preset": "plushbound_tileset_source",
+  "source_master_size": [384, 384],
+  "normalized_tile_size": [48, 48],
+  "source_count": 8,
+  "paid_execution_authorized": false,
+  "catalog_wide_launch_authorized": false,
+  "creator_full_outfits_remain_closed_at": 24,
+  "materials": [
+    {
+      "asset_id": "tileset.elyndor.a5.source.lush_grass",
+      "material_key": "lush_grass",
+      "prompt": "Elyndor lush meadow grass, healthy short green blades with subtle woven-fiber character in the soil and plant texture, sparse tiny clover-like leaves, calm pastoral color variation, continuous ground material with no flowers or objects"
+    },
+    {
+      "asset_id": "tileset.elyndor.a5.source.wildflower_grass",
+      "material_key": "wildflower_grass",
+      "prompt": "Elyndor meadow grass with very small scattered pastel wildflower flecks integrated naturally into short green ground cover, subtle handcrafted woven-fiber character, restrained distribution with no large focal blossoms or objects"
+    },
+    {
+      "asset_id": "tileset.elyndor.a5.source.warm_soil",
+      "material_key": "warm_soil",
+      "prompt": "Elyndor warm compacted earth, fine brown soil with tiny natural pebbles and subtle threadlike organic fibers, dry but fertile pastoral ground, even continuous surface without footprints tracks symbols or objects"
+    },
+    {
+      "asset_id": "tileset.elyndor.a5.source.dirt_path",
+      "material_key": "dirt_path",
+      "prompt": "Elyndor packed dirt path material viewed straight down, warm compacted soil with fine irregular gravel and subtle natural wear, handcrafted fantasy ground texture with no wheel marks footprints borders signs or objects"
+    },
+    {
+      "asset_id": "tileset.elyndor.a5.source.tilled_farm_soil",
+      "material_key": "tilled_farm_soil",
+      "prompt": "Elyndor cultivated farm soil material, rich medium-brown earth with subtle shallow organic furrow texture and tiny fibers, evenly distributed agricultural ground with no crops tools footprints text or objects"
+    },
+    {
+      "asset_id": "tileset.elyndor.a5.source.pale_field_stone",
+      "material_key": "pale_field_stone",
+      "prompt": "Elyndor pale weathered fieldstone ground material, small irregular cream and light gray stones fitted naturally with muted moss traces, handcrafted pastoral fantasy masonry surface with no carved symbols letters or borders"
+    },
+    {
+      "asset_id": "tileset.elyndor.a5.source.village_timber",
+      "material_key": "village_timber",
+      "prompt": "Elyndor weathered village timber floor material viewed straight down, warm honey-brown wood grain and subtle handcrafted fiber texture, plain unlabeled wood surface without nails forming symbols carvings letters borders or objects"
+    },
+    {
+      "asset_id": "tileset.elyndor.a5.source.straw_thatch",
+      "material_key": "straw_thatch",
+      "prompt": "Elyndor dry golden straw and thatch material viewed straight down, fine overlapping plant fibers with warm pastoral variation and subtle handcrafted textile character, continuous plain surface with no bundles knots symbols or objects"
+    }
+  ],
+  "normalization_contract": {
+    "input_width": 384,
+    "input_height": 384,
+    "move_outer_seams_to_center_by_wrap_offset": true,
+    "center_seam_blend_band_px": 32,
+    "deterministic_downsample": "LANCZOS",
+    "output_width": 48,
+    "output_height": 48,
+    "output_mode": "RGBA",
+    "output_format": "PNG",
+    "maximum_normalized_edge_discontinuity": 0.25,
+    "minimum_rgb_stddev": 3.0,
+    "visual_semantic_qa_required": true
+  },
+  "scale_policy": {
+    "canary_only": true,
+    "do_not_generate_full_A5_after_machine_pass_alone": true,
+    "manual_visual_pass_required_before_any_expansion": true,
+    "accepted_source_ids_protected_from_rerender": true,
+    "next_step_after_green_machine_and_visual_gate": "DESIGN_ELyndor_A5_EXPANSION_FROM_ACCEPTED_MATERIAL_LANGUAGE"
+  }
+}
