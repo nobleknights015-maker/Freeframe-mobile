@@ -18,12 +18,25 @@ permissions:
 
 jobs:
   synthetic-zero-gpu-compile:
+    strategy:
+      fail-fast: false
+      matrix:
+        region:
+          - crownweave
+          - silkspire
+          - gloamfen
+          - verdancia
+          - tideglass-coast
+          - moonpatch-steppe
+          - sunspool-desert
+          - cinderreach
+          - frostlace
     runs-on: ubuntu-24.04
-    timeout-minutes: 8
+    timeout-minutes: 10
     env:
       PLUSHBOUND_PRODUCTION_ENABLED: '0'
       PLUSHBOUND_PAID_REMOTE_ENABLED: '0'
-      REGION: crownweave
+      REGION: ${{ matrix.region }}
     steps:
       - name: Checkout production branch
         uses: actions/checkout@v4
@@ -43,7 +56,9 @@ jobs:
           from PIL import Image
           region = os.environ['REGION']
           scope = json.loads(Path('modal_worker/tileset_regional_a5_scope_manifest.json').read_text(encoding='utf-8'))
+          assert region in scope['remaining_regions']
           materials = scope['regions'][region]['materials']
+          assert len(materials) == 8 and len(set(materials)) == 8
           root = Path('synthetic-regional-a5') / region / 'raw'
           root.mkdir(parents=True, exist_ok=True)
           rows = []
@@ -54,7 +69,6 @@ jobs:
                   ay = 2.0 * math.pi * y / 384.0
                   for x in range(384):
                       ax = 2.0 * math.pi * x / 384.0
-                      # Fully periodic, smooth, family-distinct material-like fixture.
                       v1 = math.sin(ax + family * 0.17)
                       v2 = math.cos(ay + family * 0.23)
                       v3 = math.sin(ax + ay * 2.0 + family * 0.31)
@@ -64,8 +78,10 @@ jobs:
                       px[x, y] = (r, g, b, 255)
               p = root / f'{material}-384.png'
               im.save(p, format='PNG')
-              raw_hash = hashlib.sha256(p.read_bytes()).hexdigest()
-              rows.append({'asset_id': f'tileset.{region}.a5.source.{material}', 'raw_sha256': raw_hash})
+              rows.append({
+                  'asset_id': f'tileset.{region}.a5.source.{material}',
+                  'raw_sha256': hashlib.sha256(p.read_bytes()).hexdigest()
+              })
           closeout = {
               'schema': 'plushbound.tileset_regional_a5_source_closeout.v1',
               'status': 'CLOSED_GREEN_8_OF_8',
@@ -79,7 +95,7 @@ jobs:
               'test_fixture_only': True
           }
           Path('synthetic-source-closeout.json').write_text(json.dumps(closeout, indent=2, sort_keys=True), encoding='utf-8')
-          print('SYNTHETIC_SOURCE_FIXTURE=8')
+          print(f'SYNTHETIC_SOURCE_FIXTURE={region}=8')
           PY
       - name: Exercise actual regional A5 compiler path
         shell: bash
@@ -116,6 +132,8 @@ jobs:
           comp = json.loads((Path('synthetic-regional-a5') / region / 'final' / 'report.json').read_text(encoding='utf-8'))
           compat = json.loads(Path('synthetic-engine-v1.json').read_text(encoding='utf-8'))
           assert comp['status'] == 'PASS_NO_SPEND_DETERMINISTIC_COMPILE_ENGINE_PROFILE'
+          assert comp['region'] == region
+          assert comp['stable_sheet_id'] == f'tileset.{region}.a5'
           assert [comp['sheet_width'], comp['sheet_height']] == [384, 768]
           assert comp['tile_size'] == 48 and [comp['columns'], comp['rows']] == [8, 16]
           assert comp['slot_count'] == 128 and comp['unique_slot_hashes'] == 128
@@ -123,16 +141,18 @@ jobs:
           assert comp['runtime_import_proof'] is False and comp['catalog_wide_launch_authorized'] is False
           assert compat['status'] == 'PASS_ENGINE_V1_COMPATIBILITY_CONTRACT'
           assert [compat['sheet_width'], compat['sheet_height']] == [384, 768]
+          assert compat['tile_size'] == 48 and [compat['columns'], compat['rows']] == [8, 16]
           assert compat['slot_count'] == 128 and compat['unique_slot_hashes'] == 128
           assert compat['runtime_import_proof'] is False
           assert [compat['provider_calls'], compat['gpu_calls'], compat['generation_calls']] == [0, 0, 0]
-          print('REGIONAL_A5_SYNTHETIC_COMPILER_REHEARSAL=PASS_ZERO_GPU')
+          print(f'REGIONAL_A5_SYNTHETIC_COMPILER_REHEARSAL={region}=PASS_ZERO_GPU')
+          print(f'COMPILED_SHA256={comp["sheet_sha256"]}')
           PY
       - name: Upload rehearsal evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: plushbound-a5-compiler-rehearsal-${{ github.run_id }}
+          name: plushbound-a5-compiler-rehearsal-${{ matrix.region }}-${{ github.run_id }}
           path: |
             synthetic-compile.log
             synthetic-engine-v1.json
