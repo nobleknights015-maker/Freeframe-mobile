@@ -65,6 +65,7 @@ jobs:
             modal_worker/world_asset_pipeline_v2_controller.py \
             modal_worker/world_asset_pipeline_v2_planner.py \
             modal_worker/world_asset_pipeline_v2_runner.py \
+            modal_worker/world_asset_pipeline_v2_acceptance.py \
             modal_worker/tileset_source_normalizer.py \
             modal_worker/tileset_regional_a5_compiler.py \
             modal_worker/engine_v1_a5_compatibility_validator.py
@@ -127,6 +128,10 @@ jobs:
           print(json.dumps(result, indent=2, sort_keys=True))
           PY
 
+      - name: Validate unified per-asset acceptance and exact-eight rollup contract
+        run: |
+          PYTHONPATH=. python modal_worker/world_asset_pipeline_v2_acceptance.py --self-test | tee v2-acceptance-self-test.json
+
       - name: Run deterministic normalizer self-test
         run: |
           PYTHONPATH=. python modal_worker/tileset_source_normalizer.py --self-test | tee normalizer-self-test.json
@@ -164,11 +169,13 @@ jobs:
           from pathlib import Path
           summary = {
             'schema': 'plushbound.world_asset_pipeline_v2_preflight_report.v1',
-            'status': 'PASS_ZERO_GPU_V2_CONTROL_AND_SHARED_WORKER_READY',
+            'status': 'PASS_ZERO_GPU_V2_CONTROL_SHARED_WORKER_AND_ACCEPTANCE_READY',
             'production_frozen': True,
             'legacy_pipeline_mode': 'READ_ONLY_EVIDENCE',
             'accepted_asset_rerender_refusal': True,
             'individual_asset_acceptance_supported': True,
+            'unified_asset_acceptance_path': True,
+            'regional_rollup_requires_exact_8': True,
             'failure_isolation_by_asset_id': True,
             'one_region_planning': True,
             'one_shared_generation_path': True,
@@ -196,6 +203,7 @@ jobs:
             v2-plan-gloamfen.json
             v2-plan-silkspire.json
             v2-shared-worker-validation.json
+            v2-acceptance-self-test.json
             normalizer-self-test.json
             compiler-self-tests.jsonl
             world-asset-v2-preflight-summary.json
