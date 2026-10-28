@@ -1,0 +1,21 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_asset_acceptance.v1",
+  "status": "ACCEPTED",
+  "asset_id": "tileset.crownweave.a5.source.highland_grass",
+  "region": "crownweave",
+  "material_key": "highland_grass",
+  "machine_gate": "PASS",
+  "manual_visual_gate": "PASS",
+  "raw_sha256": "6ae2c06ded72ba9b75c038bdef0e31ea8d2fda49f48a3bdd9b6f1b911ebe7faf",
+  "normalized_sha256": "b0e1a2d6ec1d4f597ebe8902eb3172f435f46d9323bd93f92a62284af08b7101",
+  "manual_qa_evidence": "modal_worker/world_asset_pipeline_v2_manual_qa_crownweave_highland_grass.json",
+  "source_executor_run_id": 40776314827,
+  "source_trigger_commit": "76ad5b2ae466535bac1621a556eda7dadf155d95",
+  "source_artifact_id": 12853894576,
+  "source_artifact_sha256": "0cc1e6dfc19c0398e8b912ed00fa3dd31a7b82c01a4ee2ac3660ae52034b1502",
+  "immutable": true,
+  "rerender_allowed": false,
+  "compile_authorized": false,
+  "catalog_wide_launch_authorized": false,
+  "runtime_import_proof": false
+}
