@@ -141,8 +141,6 @@ class WorldAssetV2Runner:
                 total_gpu += elapsed
                 raw_b64 = base64.b64encode(raw).decode("ascii")
                 raw_sha = hashlib.sha256(raw).hexdigest()
-                # From this point forward the paid render is durable evidence even if
-                # inspection or normalization fails. Never throw away a rendered PNG.
                 payload = {
                     "image_base64": raw_b64,
                     "width": 384, "height": 384, "seed": int(item["seed"]),
@@ -236,12 +234,13 @@ def _save(report: dict) -> dict:
 
 @app.local_entrypoint()
 def main(region: str, request_ids_json: str = ""):
-    paid_gate_open(region)
     requested = json.loads(request_ids_json) if request_ids_json else None
     if requested is not None and not isinstance(requested, list):
         raise RuntimeError("request_ids_json must decode to a list")
     rows, plan = build_rows(region, requested)
-    if not rows: raise RuntimeError(f"{region}: no generation-eligible IDs selected")
+    if not rows:
+        raise RuntimeError(f"{region}: no generation-eligible IDs selected")
+    paid_gate_open(region, requested_count=len(rows))
     report = WorldAssetV2Runner().run_selected.remote(rows, region, plan["accepted_ids_excluded"])
     clean = _save(report)
     print(json.dumps({
@@ -279,6 +278,7 @@ def declaration_validation() -> dict:
         "failure_isolated_to_asset_id": True,
         "batch_art_rejection_does_not_abort_sibling_assets": True,
         "paid_render_preserved_before_qa": True,
+        "exact_requested_count_gate_required": True,
         "provider_calls": 0,
         "gpu_calls": 0,
         "generation_calls": 0,
