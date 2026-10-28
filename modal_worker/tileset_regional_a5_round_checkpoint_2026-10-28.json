@@ -3,7 +3,7 @@
   "date": "2026-10-28",
   "branch": "freeframe-modal-worker",
   "source_checkpoint": "ee5bd8c8d12f36ecf899079beabd22cbe31facd4",
-  "checkpoint_purpose": "Preserve exact regional A5 state after zero-spend expansion, Gloamfen semantic quarantine, completed all-region deterministic compiler rehearsal, one infrastructure-cancelled prompt probe, one hardened single-source retry, and a disabled Silkspire fallback candidate without authorizing catalog-wide production.",
+  "checkpoint_purpose": "Preserve the exact regional A5 state after resolving the Gloamfen startup stall, repairing scene-composition drift, fixing deterministic 48px readability loss without lowering the quality gate, accepting marsh_mud as immutable 1/8, and authorizing only the seven remaining Gloamfen source IDs.",
   "engine_v1_contract": {
     "profile": "mv_tileset_a5",
     "format": "PNG",
@@ -38,71 +38,139 @@
   "regional_preflight": {
     "run_id": 40702345955,
     "conclusion": "success",
+    "provider_calls": 0,
     "gpu_calls": 0,
-    "regions_green": [
-      "crownweave",
-      "silkspire",
-      "gloamfen",
-      "verdancia",
-      "tideglass-coast",
-      "moonpatch-steppe",
-      "sunspool-desert",
-      "cinderreach",
-      "frostlace"
-    ],
+    "generation_calls": 0,
     "prompt_contract_version": "regional-a5-material-swatch-v2"
   },
   "gloamfen": {
-    "state": "QUARANTINED_PROMPT_REPAIR_REQUIRED",
+    "state": "REPAIR_PARTIAL_1_OF_8_ACCEPTED",
+    "stable_sheet_id": "tileset.gloamfen.a5",
     "initial_paid_source_run_id": 40701121674,
     "initial_machine_gate": "PASS_8_OF_8",
     "initial_manual_visual_gate": "FAIL_0_OF_8",
     "initial_gpu_seconds": 7.9,
-    "failure_class": "semantic_scene_composition_drift",
-    "failure_summary": "Generated outputs were miniature environment scenes rather than continuous A5 material textures.",
+    "initial_failure_class": "semantic_scene_composition_drift",
     "compile_authorized": false,
     "deterministic_finalize_authorized": false,
-    "repair_policy": {
-      "first_step": "one_source_probe_only",
-      "probe_asset_id": "tileset.gloamfen.a5.source.marsh_mud",
-      "if_probe_passes_manual_visual_qa": "bank exact probe source and generate only the seven remaining failed IDs",
-      "if_probe_fails_semantically": "keep Gloamfen quarantined and revise source semantics without spending on other Gloamfen IDs",
-      "if_probe_fails_infrastructure": "retain zero accepted sources and permit only the same single-source probe to retry under hardened timeout caps"
-    },
-    "probe_attempts": [
+    "runtime_import_proof": false,
+    "probe_history": [
       {
         "attempt": 1,
         "run_id": 40702715312,
-        "conclusion": "cancelled",
-        "status": "INFRASTRUCTURE_CANCELLED_NO_SOURCE_ARTIFACT",
-        "preflight_passed": true,
-        "modal_app_initialized": true,
-        "remote_render_returned": false,
-        "generated_png_present": false,
-        "source_report_present": false,
-        "accepted": false,
-        "semantic_failure_inferred": false,
-        "artifact_id": 12825210099,
-        "artifact_sha256": "52d532438a07fafd66ae4b04eaf9d797da216663bc32bf5e37e3a59c0afc7334",
-        "gpu_seconds_known": false,
-        "evidence_path": "modal_worker/tileset_gloamfen_a5_prompt_probe_attempt1_cancelled.json"
+        "result": "INFRASTRUCTURE_CANCELLED_NO_RENDER",
+        "accepted": false
       },
       {
         "attempt": 2,
         "run_id": 40708309669,
-        "last_observed_status": "in_progress",
-        "conclusion": null,
-        "asset_cap": 1,
-        "accepted_before_run": 0,
-        "hardened_timeout_contract_applies": true
+        "result": "INFRASTRUCTURE_CLIENT_TIMEOUT_NO_RENDER",
+        "accepted": false,
+        "artifact_id": 12825637105,
+        "artifact_sha256": "c917ed152a719590edec56d5c3b02da984d9ef88f24054887cca500aad3d5bef"
+      },
+      {
+        "attempt": 3,
+        "run_id": 40712199805,
+        "result": "RENDER_RETURNED_SEMANTIC_PASS_READABILITY_FAIL",
+        "gpu_seconds": 1.608,
+        "rgb_stddev": 1.5782,
+        "minimum_rgb_stddev": 3.0,
+        "accepted": false
+      },
+      {
+        "attempt": 4,
+        "run_id": 40713292000,
+        "result": "RENDER_RETURNED_SEMANTIC_PASS_READABILITY_FAIL_BEFORE_DETERMINISTIC_RESCUE",
+        "gpu_seconds": 1.526,
+        "raw_sha256": "8df77a999da3abfccb1a56b25693cdec10e4f4a658b2ce9fea1aff62e8a12877",
+        "old_normalized_sha256": "497ecba2b8fca5d346e0179ed7c1096783d23b997ad37b67ee9d4fb6c1c2b875",
+        "source_rgb_stddev": 5.279,
+        "pre_rescue_rgb_stddev": 1.6862,
+        "accepted_at_generation_stage": false
       }
-    ]
+    ],
+    "resolved_root_causes": {
+      "gpu_startup_stall": {
+        "fixed": true,
+        "solution": "L4/A10G scheduling fallback, separate startup timeout, cache-only offline model load, explicit startup telemetry"
+      },
+      "scene_composition_drift": {
+        "fixed_for_probe": true,
+        "solution": "regional-a5-material-swatch-v2 anti-scene contract"
+      },
+      "downsampling_microtexture_loss": {
+        "fixed": true,
+        "solution": "bounded deterministic contrast rescue only when source RGB variation proves genuine texture; locked final quality thresholds unchanged",
+        "normalizer_fix_commit": "91c8b3f5a3d1225a136ec5d090109feb1c96d928",
+        "locked_minimum_rgb_stddev": 3.0,
+        "locked_maximum_edge_discontinuity": 0.25,
+        "rescue_minimum_source_rgb_stddev": 4.0,
+        "rescue_maximum_contrast": 2.0
+      }
+    },
+    "accepted_source": {
+      "asset_id": "tileset.gloamfen.a5.source.marsh_mud",
+      "material_key": "marsh_mud",
+      "source_run_id": 40713292000,
+      "source_artifact_id": 12827271245,
+      "raw_sha256": "8df77a999da3abfccb1a56b25693cdec10e4f4a658b2ce9fea1aff62e8a12877",
+      "zero_gpu_renormalization_run_id": 40714038937,
+      "zero_gpu_renormalization_artifact_id": 12826434791,
+      "normalized_sha256": "bb121e2ca2e9b835882dab5ce3c0aee423f3aa7fea42fe65b49bc341e7222401",
+      "final_rgb_stddev": 3.0858,
+      "edge_discontinuity": 0.005882,
+      "machine_gate": "PASS",
+      "manual_visual_gate": "PASS",
+      "immutable": true,
+      "rerender_authorized": false
+    },
+    "accepted_probe_adapter": {
+      "run_id": 40714618651,
+      "artifact_name": "plushbound-a5-gloamfen-accepted-probe-40714618651",
+      "artifact_id": 12828200219,
+      "artifact_sha256": "6a3d68c1b2cc42ad6aea6ea807ddefd1e81f56373dec5160f01bd20ed5ddff31",
+      "zero_gpu": true
+    },
+    "partial_acceptance_path": "modal_worker/tileset_gloamfen_a5_partial_acceptance.json",
+    "accepted_source_count": 1,
+    "remaining_repair_source_count": 7,
+    "remaining_failed_source_ids": [
+      "tileset.gloamfen.a5.source.boardwalk_timber",
+      "tileset.gloamfen.a5.source.damp_moss",
+      "tileset.gloamfen.a5.source.dark_peat",
+      "tileset.gloamfen.a5.source.drowned_stone",
+      "tileset.gloamfen.a5.source.fungal_moss",
+      "tileset.gloamfen.a5.source.reed_matting",
+      "tileset.gloamfen.a5.source.shallow_silt"
+    ],
+    "remaining_repair_preflight": {
+      "run_id": 40715581934,
+      "conclusion": "success",
+      "artifact_id": 12827997195,
+      "artifact_sha256": "a6df0bca787714478fd958d01ca869d9d01baa9faf057357f94d22169a582c11",
+      "provider_calls": 0,
+      "gpu_calls": 0,
+      "generation_calls": 0
+    },
+    "remaining_repair_trigger": {
+      "commit": "1c9eb1a7ef569ee11243ee2694916cb9d22d817d",
+      "asset_cap": 7,
+      "generation_attempts_per_asset_cap": 1,
+      "accepted_marsh_mud_excluded": true,
+      "compile_authorized": false,
+      "catalog_wide_launch_authorized": false
+    }
   },
-  "stalled_probe_hardening": {
-    "remote_timeout_seconds": 420,
-    "github_modal_step_timeout_seconds": 480,
-    "github_job_timeout_minutes": 12,
-    "applies_to_probe_attempt_2_and_future_attempts": true
+  "remaining_repair_infrastructure": {
+    "gpu_candidates": ["L4", "A10G"],
+    "startup_timeout_seconds": 180,
+    "remote_timeout_seconds": 240,
+    "github_modal_step_timeout_seconds": 600,
+    "github_job_timeout_minutes": 20,
+    "offline_cache_only": true,
+    "accepted_probe_hash_verified_before_generation": true,
+    "accepted_source_rerender_count_allowed": 0
   },
   "deterministic_compiler_rehearsal": {
     "run_id": 40705515499,
@@ -111,69 +179,21 @@
     "provider_calls": 0,
     "gpu_calls": 0,
     "generation_calls": 0,
-    "runtime_import_proof": false,
-    "matrix_regions": [
-      "crownweave",
-      "silkspire",
-      "gloamfen",
-      "verdancia",
-      "tideglass-coast",
-      "moonpatch-steppe",
-      "sunspool-desert",
-      "cinderreach",
-      "frostlace"
-    ],
-    "validated_contract": {
-      "sheet_size": [384, 768],
-      "tile_size": 48,
-      "grid": [8, 16],
-      "slot_count": 128,
-      "unique_slot_hashes": 128,
-      "engine_v1_status": "PASS_ENGINE_V1_COMPATIBILITY_CONTRACT"
-    },
-    "artifacts": {
-      "crownweave": {"artifact_id": 12822649440, "artifact_sha256": "1e348f046e48236b5e52ccc152233794b56fcc4f3be30bba504a61adced8e91c"},
-      "silkspire": {"artifact_id": 12823353738, "artifact_sha256": "fe2db19f0aa68cb158fddf793fafb3d6f6f25a3b47d641a7606951e247cc20c7"},
-      "gloamfen": {"artifact_id": 12823966102, "artifact_sha256": "1cdd89e6f93cfd80aa2d76967b90046f9adb0d7d1622fb391b00c50030866a0f"},
-      "verdancia": {"artifact_id": 12822724348, "artifact_sha256": "8425b6c6d1262f5a4b3eb1f276df281156a8bc03ce5faf74e294e916d151c774"},
-      "tideglass-coast": {"artifact_id": 12823232164, "artifact_sha256": "a5c689a1de91a59ded55e14354b98316e3afa78b9aa69bf3be95bed6631faa75"},
-      "moonpatch-steppe": {"artifact_id": 12823776496, "artifact_sha256": "139f2c1a3b9d74dcb55991380ee53ea6ec9cd9caace488aa0639e737d64f6c4d"},
-      "sunspool-desert": {"artifact_id": 12822549735, "artifact_sha256": "74cd8373d122398050865885caa10b546c16868281ee08a16023d12c642f5802"},
-      "cinderreach": {"artifact_id": 12824081176, "artifact_sha256": "7ea2aa66ce7acdab87914a7062fd5a31f2a65d9a9f6a97c5d2472b246ea676c9"},
-      "frostlace": {"artifact_id": 12823277248, "artifact_sha256": "08f70acb6c46dadcf65a5024268a0e51ad47fa24a3612f0903727ee18b3ba07e"}
-    }
+    "runtime_import_proof": false
   },
   "silkspire_fallback_candidate": {
-    "candidate_path": "modal_worker/tileset_silkspire_a5_paid_candidate.json",
     "enabled": false,
-    "semantic_risk_class": "LOWER_SCENE_RISK_MANUFACTURED_PLANAR_MATERIALS",
-    "stable_sheet_id": "tileset.silkspire.a5",
-    "asset_cap": 8,
-    "generation_attempts_per_asset_cap": 1,
-    "manual_visual_qa_required": true,
-    "catalog_wide_launch_authorized": false,
     "candidate_preflight_run_id": 40708479178,
-    "candidate_preflight_last_observed_status": "queued",
-    "activation_blocked_while_gloamfen_probe_active": true
-  },
-  "fresh_eight_source_paid_route_policy": {
-    "allowed_region_state": "PREFLIGHT_PENDING",
-    "quarantined_regions_refused": true,
-    "prompt_contract_version": "regional-a5-material-swatch-v2",
-    "asset_cap": 8,
-    "generation_attempts_per_asset_cap": 1,
-    "one_region_only": true,
-    "never_stack_paid_runs": true,
-    "manual_visual_qa_required_before_closeout": true
+    "candidate_preflight_conclusion": "success",
+    "manual_visual_qa_required": true,
+    "catalog_wide_launch_authorized": false
   },
   "next_safe_actions": [
-    "Do not poll Gloamfen probe attempt 2 repeatedly while unchanged.",
-    "Inspect the exact attempt-2 artifact directly if run 40708309669 completes with a report and PNG.",
-    "Bank or quarantine the single marsh_mud probe based on semantic visual QA, never machine acceptance alone.",
-    "If the single probe is visually green, protect it from rerender and generate only the seven remaining failed Gloamfen source IDs.",
-    "If attempt 2 is infrastructure-cancelled again, do not infer a semantic failure and do not expand Gloamfen spend.",
-    "Keep Silkspire candidate disabled until the shared paid lane is clear and its zero-spend candidate preflight succeeds.",
-    "Do not rerun any accepted source ID.",
-    "Keep catalog_wide_launch_authorized false."
+    "Observe the seven-source Gloamfen repair workflow once after GitHub registers the trigger commit.",
+    "Never rerender tileset.gloamfen.a5.source.marsh_mud.",
+    "If the seven remaining sources pass the machine gate, inspect all seven manually before any A5 compile.",
+    "If any of the seven fail machine or semantic visual QA, quarantine only the failed IDs and do not compile.",
+    "If all seven pass, bank combined Gloamfen 8/8 and only then authorize deterministic A5 compilation.",
+    "Keep catalog_wide_launch_authorized false and runtime_import_proof false."
   ]
 }
