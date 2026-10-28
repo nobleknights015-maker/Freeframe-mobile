@@ -1,10 +1,10 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_run_trigger.v1",
-  "enabled": true,
+  "enabled": false,
   "mode": "selected_ids_one_region",
   "guard_validation_revision": 19,
-  "region": "cinderreach",
-  "requested_source_ids": ["tileset.cinderreach.a5.source.ash_soil"],
+  "region": null,
+  "requested_source_ids": [],
   "generation_attempts_per_requested_id_cap": 1,
   "one_region_only": true,
   "accepted_ids_must_be_excluded": true,
@@ -21,5 +21,7 @@
   "last_authorized_frostlace_repair_executor_run_id": 40758764663,
   "last_authorized_cinderreach_canary_commit": "03867c6e9bbce04961047094eedb5d2ce04edad9",
   "last_authorized_cinderreach_canary_executor_run_id": 40765470020,
-  "note": "Exact one-source Cinderreach ash_soil canary authorized after basalt acceptance and revision 22 preflight."
+  "last_authorized_cinderreach_ash_soil_commit": "0aeb1fb881daeef15f175ac062e742cbc9fa2987",
+  "last_authorized_cinderreach_ash_soil_executor_run_id": 40767242073,
+  "note": "Trigger disabled immediately after exact Cinderreach ash_soil executor was pinned."
 }
