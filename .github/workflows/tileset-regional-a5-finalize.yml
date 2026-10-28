@@ -1,0 +1,182 @@
+name: Plushbound Regional A5 Deterministic Finalize
+
+on:
+  push:
+    branches:
+      - freeframe-modal-worker
+    paths:
+      - 'modal_worker/tileset_regional_a5_finalize_trigger.json'
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: plushbound-regional-a5-finalize
+  cancel-in-progress: false
+
+jobs:
+  deterministic-finalize:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PLUSHBOUND_PRODUCTION_ENABLED: '0'
+      PLUSHBOUND_PAID_REMOTE_ENABLED: '0'
+    steps:
+      - name: Checkout production branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install deterministic dependencies only
+        run: python -m pip install --disable-pip-version-check 'pillow>=10.4,<12'
+
+      - name: Validate finalize trigger and source closeout
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          t = json.loads(Path('modal_worker/tileset_regional_a5_finalize_trigger.json').read_text(encoding='utf-8'))
+          assert t['schema'] == 'plushbound.tileset_regional_a5_finalize_trigger.v1'
+          assert t['enabled'] is True
+          assert t['mode'] == 'deterministic_a5_finalize'
+          assert isinstance(t['region'], str) and t['region'] and t['region'] != 'elyndor'
+          assert isinstance(t['source_run_id'], int) and t['source_run_id'] > 0
+          assert isinstance(t['source_artifact_name'], str) and t['source_artifact_name']
+          assert isinstance(t['source_closeout_path'], str) and t['source_closeout_path'].startswith('modal_worker/')
+          assert t['source_machine_gate'] == 'PASS_8_OF_8'
+          assert t['source_manual_visual_gate'] == 'PASS_8_OF_8'
+          assert t['accepted_source_ids_protected_from_rerender'] is True
+          assert t['provider_calls_authorized'] == 0
+          assert t['gpu_calls_authorized'] == 0
+          assert t['generation_jobs_authorized'] == 0
+          assert t['catalog_wide_launch_authorized'] is False
+          assert t['runtime_import_proof'] is False
+          p = Path(t['source_closeout_path'])
+          assert p.is_file(), f'missing source closeout: {p}'
+          c = json.loads(p.read_text(encoding='utf-8'))
+          assert c['schema'] == 'plushbound.tileset_regional_a5_source_closeout.v1'
+          assert c['status'] == 'CLOSED_GREEN_8_OF_8'
+          assert c['region'] == t['region'] and c['target_sheet_type'] == 'A5'
+          assert c['source_run_id'] == t['source_run_id']
+          assert c['source_artifact_name'] == t['source_artifact_name']
+          assert c['machine_gate'] == 'PASS_8_OF_8'
+          assert c['manual_visual_gate'] == 'PASS_8_OF_8'
+          assert c['accepted_source_ids_protected_from_rerender'] is True
+          assert c['catalog_wide_launch_authorized'] is False
+          assert len(c['sources']) == 8 and len({r['asset_id'] for r in c['sources']}) == 8
+          with Path('finalize-env.txt').open('w', encoding='utf-8') as f:
+              f.write(f"REGION={t['region']}\n")
+              f.write(f"SOURCE_RUN_ID={t['source_run_id']}\n")
+              f.write(f"SOURCE_ARTIFACT_NAME={t['source_artifact_name']}\n")
+              f.write(f"SOURCE_CLOSEOUT_PATH={t['source_closeout_path']}\n")
+          print(f"FINALIZE_TRIGGER={t['region']}=VALID_NO_SPEND")
+          PY
+          cat finalize-env.txt >> "$GITHUB_ENV"
+
+      - name: Download exact banked regional source artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.SOURCE_ARTIFACT_NAME }}
+          path: source-artifact
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ env.SOURCE_RUN_ID }}
+
+      - name: Verify downloaded source report identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          region = os.environ['REGION']
+          p = Path('source-artifact/tileset-regional-a5') / region / 'report.json'
+          assert p.is_file(), f'missing source report: {p}'
+          r = json.loads(p.read_text(encoding='utf-8'))
+          assert r['schema'] == 'plushbound.tileset_regional_a5_source_report.v1'
+          assert r['region'] == region and r['target_sheet_type'] == 'A5'
+          assert r['requested_count'] == 8 and r['generation_count'] == 8
+          assert r['generation_retry_count'] == 0
+          assert r['accepted_count'] == 8 and r['quarantined_count'] == 0
+          assert r['cross_region_generation_count'] == 0
+          assert r['final_a5_generation_count'] == 0
+          assert r['catalog_wide_launch_authorized'] is False
+          assert len(r['assets']) == 8
+          print(f'DOWNLOADED_SOURCE_REPORT={region}=PASS_8_OF_8')
+          PY
+
+      - name: Compile locked Engine v1 A5 deterministically
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p regional-a5-final
+          PYTHONPATH=. python modal_worker/tileset_regional_a5_compiler.py \
+            --region "$REGION" \
+            --source-root "source-artifact/tileset-regional-a5/$REGION/raw" \
+            --source-closeout "$SOURCE_CLOSEOUT_PATH" \
+            --output-dir "regional-a5-final/$REGION" \
+            | tee regional-a5-compile.log
+
+      - name: Run Engine v1 compatibility-contract validator
+        shell: bash
+        run: |
+          set -euo pipefail
+          SHEET="$(python - <<'PY'
+          import json, os
+          from pathlib import Path
+          region = os.environ['REGION']
+          r = json.loads((Path('regional-a5-final') / region / 'report.json').read_text(encoding='utf-8'))
+          print(r['sheet_path'])
+          PY
+          )"
+          PYTHONPATH=. python modal_worker/engine_v1_a5_compatibility_validator.py --sheet "$SHEET" > "regional-a5-final/$REGION/engine-v1-compatibility.json"
+          cat "regional-a5-final/$REGION/engine-v1-compatibility.json"
+
+      - name: Assert geometry, uniqueness and zero-spend finalization
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          region = os.environ['REGION']
+          root = Path('regional-a5-final') / region
+          comp = json.loads((root / 'report.json').read_text(encoding='utf-8'))
+          compat = json.loads((root / 'engine-v1-compatibility.json').read_text(encoding='utf-8'))
+          assert comp['status'] == 'PASS_NO_SPEND_DETERMINISTIC_COMPILE_ENGINE_PROFILE'
+          assert comp['region'] == region
+          assert comp['stable_sheet_id'] == f'tileset.{region}.a5'
+          assert [comp['sheet_width'], comp['sheet_height']] == [384, 768]
+          assert comp['tile_size'] == 48 and [comp['columns'], comp['rows']] == [8, 16]
+          assert comp['slot_count'] == 128 and comp['unique_slot_hashes'] == 128
+          assert [comp['provider_calls'], comp['gpu_calls'], comp['generation_calls']] == [0, 0, 0]
+          assert comp['runtime_import_proof'] is False
+          assert comp['catalog_wide_launch_authorized'] is False
+          assert compat['status'] == 'PASS_ENGINE_V1_COMPATIBILITY_CONTRACT'
+          assert compat['profile'] == 'mv_tileset_a5'
+          assert [compat['sheet_width'], compat['sheet_height']] == [384, 768]
+          assert compat['tile_size'] == 48 and [compat['columns'], compat['rows']] == [8, 16]
+          assert compat['slot_count'] == 128 and compat['unique_slot_hashes'] == 128
+          assert compat['runtime_import_proof'] is False
+          assert [compat['provider_calls'], compat['gpu_calls'], compat['generation_calls']] == [0, 0, 0]
+          print(f'REGIONAL_A5_FINALIZE={region}=PASS_ENGINE_V1_COMPATIBILITY_CONTRACT')
+          print(f"COMPILED_SHA256={comp['sheet_sha256']}")
+          print('RUNTIME_IMPORT_PROOF=false')
+          PY
+
+      - name: Upload compiled A5 and deterministic evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: plushbound-a5-final-${{ env.REGION }}-${{ github.run_id }}
+          path: |
+            regional-a5-compile.log
+            regional-a5-final/${{ env.REGION }}/
+          if-no-files-found: warn
+          retention-days: 14
