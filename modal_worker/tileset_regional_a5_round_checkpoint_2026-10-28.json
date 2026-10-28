@@ -3,7 +3,7 @@
   "date": "2026-10-28",
   "branch": "freeframe-modal-worker",
   "source_checkpoint": "ee5bd8c8d12f36ecf899079beabd22cbe31facd4",
-  "checkpoint_purpose": "Preserve exact regional A5 state after zero-spend expansion, Gloamfen semantic quarantine, completed all-region deterministic compiler rehearsal, and stalled one-source prompt-repair probe without authorizing catalog-wide production.",
+  "checkpoint_purpose": "Preserve exact regional A5 state after zero-spend expansion, Gloamfen semantic quarantine, completed all-region deterministic compiler rehearsal, one infrastructure-cancelled prompt probe, one hardened single-source retry, and a disabled Silkspire fallback candidate without authorizing catalog-wide production.",
   "engine_v1_contract": {
     "profile": "mv_tileset_a5",
     "format": "PNG",
@@ -65,20 +65,44 @@
     "repair_policy": {
       "first_step": "one_source_probe_only",
       "probe_asset_id": "tileset.gloamfen.a5.source.marsh_mud",
-      "probe_run_id": 40702715312,
-      "last_observed_probe_status": "in_progress",
-      "last_observed_active_step": "Run exactly one repaired source probe",
-      "do_not_poll_repeatedly": true,
       "if_probe_passes_manual_visual_qa": "bank exact probe source and generate only the seven remaining failed IDs",
-      "if_probe_fails": "keep Gloamfen quarantined and revise source semantics without spending on other Gloamfen IDs"
-    }
+      "if_probe_fails_semantically": "keep Gloamfen quarantined and revise source semantics without spending on other Gloamfen IDs",
+      "if_probe_fails_infrastructure": "retain zero accepted sources and permit only the same single-source probe to retry under hardened timeout caps"
+    },
+    "probe_attempts": [
+      {
+        "attempt": 1,
+        "run_id": 40702715312,
+        "conclusion": "cancelled",
+        "status": "INFRASTRUCTURE_CANCELLED_NO_SOURCE_ARTIFACT",
+        "preflight_passed": true,
+        "modal_app_initialized": true,
+        "remote_render_returned": false,
+        "generated_png_present": false,
+        "source_report_present": false,
+        "accepted": false,
+        "semantic_failure_inferred": false,
+        "artifact_id": 12825210099,
+        "artifact_sha256": "52d532438a07fafd66ae4b04eaf9d797da216663bc32bf5e37e3a59c0afc7334",
+        "gpu_seconds_known": false,
+        "evidence_path": "modal_worker/tileset_gloamfen_a5_prompt_probe_attempt1_cancelled.json"
+      },
+      {
+        "attempt": 2,
+        "run_id": 40708309669,
+        "last_observed_status": "in_progress",
+        "conclusion": null,
+        "asset_cap": 1,
+        "accepted_before_run": 0,
+        "hardened_timeout_contract_applies": true
+      }
+    ]
   },
   "stalled_probe_hardening": {
     "remote_timeout_seconds": 420,
     "github_modal_step_timeout_seconds": 480,
     "github_job_timeout_minutes": 12,
-    "applies_to_future_probe_attempts": true,
-    "does_not_mutate_current_in_flight_run": true
+    "applies_to_probe_attempt_2_and_future_attempts": true
   },
   "deterministic_compiler_rehearsal": {
     "run_id": 40705515499,
@@ -119,6 +143,19 @@
       "frostlace": {"artifact_id": 12823277248, "artifact_sha256": "08f70acb6c46dadcf65a5024268a0e51ad47fa24a3612f0903727ee18b3ba07e"}
     }
   },
+  "silkspire_fallback_candidate": {
+    "candidate_path": "modal_worker/tileset_silkspire_a5_paid_candidate.json",
+    "enabled": false,
+    "semantic_risk_class": "LOWER_SCENE_RISK_MANUFACTURED_PLANAR_MATERIALS",
+    "stable_sheet_id": "tileset.silkspire.a5",
+    "asset_cap": 8,
+    "generation_attempts_per_asset_cap": 1,
+    "manual_visual_qa_required": true,
+    "catalog_wide_launch_authorized": false,
+    "candidate_preflight_run_id": 40708479178,
+    "candidate_preflight_last_observed_status": "queued",
+    "activation_blocked_while_gloamfen_probe_active": true
+  },
   "fresh_eight_source_paid_route_policy": {
     "allowed_region_state": "PREFLIGHT_PENDING",
     "quarantined_regions_refused": true,
@@ -130,11 +167,13 @@
     "manual_visual_qa_required_before_closeout": true
   },
   "next_safe_actions": [
-    "Do not poll Gloamfen probe repeatedly while unchanged.",
-    "Inspect probe artifact directly once run 40702715312 completes.",
-    "Bank or quarantine the probe based on semantic visual QA, not machine acceptance alone.",
+    "Do not poll Gloamfen probe attempt 2 repeatedly while unchanged.",
+    "Inspect the exact attempt-2 artifact directly if run 40708309669 completes with a report and PNG.",
+    "Bank or quarantine the single marsh_mud probe based on semantic visual QA, never machine acceptance alone.",
+    "If the single probe is visually green, protect it from rerender and generate only the seven remaining failed Gloamfen source IDs.",
+    "If attempt 2 is infrastructure-cancelled again, do not infer a semantic failure and do not expand Gloamfen spend.",
+    "Keep Silkspire candidate disabled until the shared paid lane is clear and its zero-spend candidate preflight succeeds.",
     "Do not rerun any accepted source ID.",
-    "Do not launch another paid regional source run while the Gloamfen prompt probe remains in the shared paid concurrency group.",
     "Keep catalog_wide_launch_authorized false."
   ]
 }
