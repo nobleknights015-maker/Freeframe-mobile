@@ -1,0 +1,98 @@
+{
+  "schema": "plushbound.tileset_regional_a5_semantic_readiness.v1",
+  "date": "2026-10-28",
+  "prompt_contract_version": "regional-a5-material-swatch-v2",
+  "purpose": "Rank untouched regional A5 scopes by residual source-semantic scene-composition risk after the repaired material-swatch prompt contract, without authorizing paid execution.",
+  "rules": {
+    "catalog_wide_launch_authorized": false,
+    "paid_execution_authorized_by_this_file": false,
+    "one_region_only": true,
+    "never_stack_paid_runs": true,
+    "manual_visual_qa_required": true,
+    "accepted_assets_immutable": true,
+    "quarantined_region_requires_its_own_repair_path": true
+  },
+  "evidence": {
+    "regional_preflight_run_id": 40702345955,
+    "regional_preflight_result": "PASS_9_OF_9_ZERO_GPU",
+    "deterministic_compiler_rehearsal_run_id": 40705515499,
+    "deterministic_compiler_rehearsal_result": "PASS_9_OF_9_ZERO_GPU",
+    "gloamfen_initial_source_run_id": 40701121674,
+    "gloamfen_initial_manual_visual_result": "FAIL_0_OF_8_SCENE_COMPOSITION_DRIFT"
+  },
+  "risk_method": {
+    "low": "Mostly planar mineral, masonry, timber, metal, ice or aggregate labels with explicit texture/seam language and low incentive for the model to invent a landscape.",
+    "medium": "Contains sand, grass, moss, organic fibers, roof/ceramic associations, or other concepts that can become scene elements but are strongly constrained by the v2 label.",
+    "higher": "Contains multiple organic ground-cover concepts likely to form clumps, plants, paths or environmental composition even under texture constraints.",
+    "ranking_is_not_completion_status": true
+  },
+  "quarantined": {
+    "gloamfen": {
+      "state": "QUARANTINED_PROMPT_REPAIR_REQUIRED",
+      "fresh_eight_source_route_allowed": false,
+      "current_repair_probe_asset_id": "tileset.gloamfen.a5.source.marsh_mud",
+      "current_repair_probe_run_id": 40702715312,
+      "next_paid_action": "NONE_WHILE_PROBE_IN_FLIGHT"
+    }
+  },
+  "fresh_region_priority": [
+    {
+      "priority": 1,
+      "region": "silkspire",
+      "risk": "low",
+      "reason": "All eight repaired labels are planar stone, masonry, timber, ceramic or metal surfaces; no organic ground-cover label remains in the rendered prompt.",
+      "watch_items": ["roof_tile", "workshop_metal_plate"]
+    },
+    {
+      "priority": 2,
+      "region": "frostlace",
+      "risk": "low",
+      "reason": "Labels are packed snow, ice, stone, soil, timber and gravel at close uniform scale; explicit constraints suppress large cracks and object-like crystal forms.",
+      "watch_items": ["blue_ice", "crystal_stone"]
+    },
+    {
+      "priority": 3,
+      "region": "cinderreach",
+      "risk": "low",
+      "reason": "Predominantly stone, ash, timber, masonry and metal; risky volcanic concepts are rewritten as close mineral textures with no glow, fissure scene or molten areas.",
+      "watch_items": ["ember_veined_rock", "cooled_lava"]
+    },
+    {
+      "priority": 4,
+      "region": "crownweave",
+      "risk": "medium",
+      "reason": "Seven labels are straightforward earth/stone/timber/plate textures; one clipped ground-cover source can still drift toward visible vegetation clumps.",
+      "watch_items": ["highland_grass", "slate_roof_tile"]
+    },
+    {
+      "priority": 5,
+      "region": "tideglass-coast",
+      "risk": "medium",
+      "reason": "Strong material labels, but damp sand and silty concepts can invite shoreline/water composition; labels explicitly prohibit standing liquid.",
+      "watch_items": ["wet_sand", "tidal_silt", "sea_glass_pebbles"]
+    },
+    {
+      "priority": 6,
+      "region": "sunspool-desert",
+      "risk": "medium",
+      "reason": "Mostly sand, stone, timber and matting; the former ruin concept is rewritten as a ceramic plate texture with no structural forms.",
+      "watch_items": ["oasis_damp_sand", "buried_ruin_tile"]
+    },
+    {
+      "priority": 7,
+      "region": "moonpatch-steppe",
+      "risk": "medium",
+      "reason": "Several safe stone/soil/timber/aggregate labels, but two grass-fiber sources can still become field composition or visible grass clumps.",
+      "watch_items": ["silver_grass", "pressed_grass"]
+    },
+    {
+      "priority": 8,
+      "region": "verdancia",
+      "risk": "higher",
+      "reason": "The repaired labels are texture-specific, but this scope contains moss, leaf fiber, organic loam and living-wood concepts with the highest residual tendency to form plants, routes or forest-like scenes.",
+      "watch_items": ["mossy_ground", "root_path", "orchard_ground", "leaf_litter"]
+    }
+  ],
+  "next_fresh_paid_candidate_after_shared_paid_lane_is_clear": "silkspire",
+  "required_gate_before_any_fresh_paid_candidate": "current-head regional no-spend preflight must still pass with region_state PREFLIGHT_PENDING and no paid regional job may already occupy the shared concurrency lane"
+}
