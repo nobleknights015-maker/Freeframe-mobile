@@ -1,0 +1,38 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_freeze.v1",
+  "status": "PAID_WORLD_ASSET_PRODUCTION_FROZEN_FOR_PIPELINE_REBUILD",
+  "branch": "freeframe-modal-worker",
+  "freeze_source_head": "7f9f3fbe0910bd6fa04b32ef3e94d313a8aa85f6",
+  "production_frozen": true,
+  "paid_remote_execution_allowed": false,
+  "provider_calls_allowed": 0,
+  "gpu_calls_allowed": 0,
+  "generation_calls_allowed": 0,
+  "catalog_wide_launch_authorized": false,
+  "legacy_pipeline_mode": "READ_ONLY_EVIDENCE_AND_ACCEPTED_HASH_SOURCE",
+  "legacy_paid_triggers_must_not_be_modified_or_replayed": true,
+  "accepted_assets_immutable": true,
+  "missing_local_artifact_is_not_rerender_authority": true,
+  "preserve_existing_accepted_work": true,
+  "runtime_import_proof": false,
+  "rebuild_scope": "remaining regional/world asset production and deterministic packaging only",
+  "rebuild_goal": "replace special-case probe/repair workflows with one state-driven asset pipeline where failures isolate to one stable asset ID",
+  "v2_required_asset_states": [
+    "PENDING",
+    "ACCEPTED",
+    "REJECTED_SEMANTIC",
+    "REJECTED_TECHNICAL"
+  ],
+  "v2_invariants": {
+    "one_generation_path": true,
+    "accepted_id_may_never_be_generated": true,
+    "accepted_hash_may_never_change": true,
+    "failure_isolated_to_asset_id": true,
+    "one_region_paid_execution_at_a_time": true,
+    "generation_attempt_cap_per_requested_asset": 1,
+    "manual_visual_qa_required": true,
+    "deterministic_finishing_is_zero_gpu": true,
+    "compile_requires_all_region_sources_accepted": true,
+    "engine_v1_contract_is_not_live_runtime_import": true
+  }
+}
