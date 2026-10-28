@@ -16,11 +16,20 @@
   "allow_duplicate_style_artifacts": false,
   "require_exact_triggering_sha": true,
   "require_locked_body_visual_qc": true,
-  "locked_body_visual_qc_passed": false,
+  "locked_body_visual_qc_passed": true,
   "require_no_unresolved_exceptions": true,
   "unresolved_exception_files": [],
-  "canary_verified": false,
-  "ready_for_bulk": false,
-  "bulk_authorized": false,
-  "notes": "Bound to bounded Full Outfits canary workflow run 40604049354 at exact launch head fb812d0daf048d3fd15b5a6152ba8dc9d492691e. Expected styles are 001/049/095 with 5 paid renders each and zero paid extraction. All three jobs, evidence steps, artifacts, exact-SHA provenance, and locked-body visual QC must pass before canary_verified may become true. Bulk remains separately gated by bulk_authorized. Modular Creator Tops exceptions are independent of this primary Full Outfits contract."
+  "canary_verified": true,
+  "ready_for_bulk": true,
+  "bulk_authorized": true,
+  "visual_qc": {
+    "reviewed_style_indices": [1, 49, 95],
+    "locked_geometry_readable": true,
+    "distinct_walk_phases": true,
+    "background_leakage_observed": false,
+    "malformed_body_geometry_observed": false,
+    "source_reference_families_distinct": true,
+    "decision": "pass"
+  },
+  "notes": "Canary run 40604049354 completed successfully for 001/049/095 at exact head fb812d0daf048d3fd15b5a6152ba8dc9d492691e. All three jobs passed production, deterministic evidence verification, and artifact upload; all three artifacts are present, nonempty, and unexpired. Locked-body visual QC inspected the compiled 144x192 sheets and source references: silhouettes are readable, movement phases remain distinct, no background leakage or malformed geometry was observed, and the three source outfit families are visually distinct. Canary is verified and the previously planned bounded Full Outfits bulk expansion is authorized. Modular Tops exceptions remain independent optional-track debt."
 }
