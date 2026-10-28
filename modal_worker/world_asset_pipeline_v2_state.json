@@ -1,10 +1,10 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_state.v1",
-  "status": "REFROZEN_AWAITING_FINAL_SILKSPIRE_CANARY_RESULT",
+  "status": "LIVE_CANARY_SILKSPIRE_ONE_ASSET_AUTHORIZED_QA_HANDOFF_GREEN",
   "pipeline_version": 2,
-  "production_frozen": true,
-  "paid_execution_enabled": false,
-  "active_paid_region": null,
+  "production_frozen": false,
+  "paid_execution_enabled": true,
+  "active_paid_region": "silkspire",
   "catalog_wide_launch_authorized": false,
   "runtime_import_proof": true,
   "runtime_import_proof_scope": "game-side A5 runtime importer smoke plus Android APK packaging proof",
@@ -25,7 +25,7 @@
   "region_overrides": {
     "gloamfen": "SOURCES_ACCEPTED_8_OF_8_PENDING_DETERMINISTIC_COMPILE",
     "crownweave": "PENDING",
-    "silkspire": "LIVE_CANARY_IN_FLIGHT_OR_AWAITING_RESULT",
+    "silkspire": "LIVE_CANARY_ONE_ASSET",
     "verdancia": "PENDING",
     "tideglass-coast": "PENDING",
     "moonpatch-steppe": "PENDING",
@@ -44,7 +44,9 @@
     "failure_isolated_to_asset_id": true,
     "manual_visual_qa_required": true,
     "individual_asset_acceptance_is_hash_bound": true,
-    "region_closeout_only_after_all_8_assets_accepted": true
+    "region_closeout_only_after_all_8_assets_accepted": true,
+    "paid_render_preserved_before_post_render_qa": true,
+    "tileset_inspection_preset": "plushbound_tileset_source"
   },
   "deterministic_policy": {
     "normalization_zero_gpu": true,
@@ -54,8 +56,7 @@
     "engine_v1_receiver_runtime_importer_present": true,
     "state_resolution_mode_independent": true
   },
-  "last_authorized_live_canary": {
-    "commit": "78c6a517e03d11240351c0701a05bd3d35bf1928",
+  "live_canary": {
     "region": "silkspire",
     "requested_source_ids": ["tileset.silkspire.a5.source.city_stone_paving"],
     "max_provider_calls": 1,
