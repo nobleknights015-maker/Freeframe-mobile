@@ -6,6 +6,9 @@ on:
       - freeframe-modal-worker
     paths:
       - 'modal_worker/world_asset_pipeline_v2_run_trigger.json'
+      - 'modal_worker/world_asset_pipeline_v2_reference_runner.py'
+      - 'modal_worker/world_asset_pipeline_v2_reference_conditioning.json'
+      - 'modal_worker/project_references/**'
       - '.github/workflows/world-asset-pipeline-v2-executor.yml'
 
 permissions:
@@ -33,7 +36,7 @@ jobs:
       - name: Install zero-spend validation dependencies
         run: python -m pip install --disable-pip-version-check 'pillow>=10.4,<12' 'modal>=1.5,<2'
 
-      - name: Validate exact V2 execution gate before credentials
+      - name: Validate exact reference-aware V2 execution gate before credentials
         id: gate
         shell: bash
         run: |
@@ -44,7 +47,7 @@ jobs:
           from pathlib import Path
 
           from modal_worker.world_asset_pipeline_v2_planner import build_rows, paid_gate_open, validate_receiver_contract
-          from modal_worker.world_asset_pipeline_v2_runner import declaration_validation
+          from modal_worker.world_asset_pipeline_v2_reference_runner import declaration_validation
 
           trigger = json.loads(Path('modal_worker/world_asset_pipeline_v2_run_trigger.json').read_text())
           freeze = json.loads(Path('modal_worker/world_asset_pipeline_v2_freeze.json').read_text())
@@ -69,10 +72,12 @@ jobs:
           assert receiver['status'] == 'PASS_ENGINE_V1_RECEIVER_RUNTIME_CONTRACT'
 
           declaration = declaration_validation()
-          assert declaration['status'] == 'PASS_ZERO_GPU_SINGLE_RUNNER_DECLARATION'
+          assert declaration['status'] == 'PASS_ZERO_GPU_REFERENCE_AWARE_RUNNER_DECLARATION'
           assert declaration['failure_isolated_to_asset_id'] is True
           assert declaration['batch_art_rejection_does_not_abort_sibling_assets'] is True
           assert declaration['exact_requested_count_gate_required'] is True
+          assert declaration['reference_sheet_pixels_used_as_runtime_art'] is False
+          assert declaration['required_source_art_provenance'] == 'vera-modal-generated'
 
           execute = False
           if trigger['enabled']:
@@ -108,9 +113,11 @@ jobs:
           import json
           from pathlib import Path
           from modal_worker.world_asset_pipeline_v2_planner import validate_receiver_contract
+          from modal_worker.world_asset_pipeline_v2_reference_runner import declaration_validation
           receiver = validate_receiver_contract()
+          declaration = declaration_validation()
           report = {
-            'schema': 'plushbound.world_asset_pipeline_v2_executor_preflight.v1',
+            'schema': 'plushbound.world_asset_pipeline_v2_executor_preflight.v2',
             'status': 'PASS',
             'credentials_exposed': False,
             'provider_calls': 0,
@@ -120,6 +127,9 @@ jobs:
             'catalog_wide_launch_authorized': False,
             'runtime_import_proof': True,
             'receiver_contract_status': receiver['status'],
+            'reference_runner_status': declaration['status'],
+            'reference_sheet_pixels_used_as_runtime_art': False,
+            'required_source_art_provenance': 'vera-modal-generated',
           }
           Path('world-asset-v2-executor-preflight.json').write_text(json.dumps(report, sort_keys=True))
           PY
@@ -136,7 +146,7 @@ jobs:
     needs: preflight
     if: needs.preflight.outputs.execute == 'true'
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Checkout exact authorized commit
         uses: actions/checkout@v4
@@ -159,11 +169,14 @@ jobs:
           import os
           from pathlib import Path
           from modal_worker.world_asset_pipeline_v2_planner import build_rows, paid_gate_open, validate_receiver_contract
+          from modal_worker.world_asset_pipeline_v2_reference_runner import declaration_validation
 
           trigger = json.loads(Path('modal_worker/world_asset_pipeline_v2_run_trigger.json').read_text())
           assert trigger['enabled'] is True
           assert trigger['runtime_import_proof'] is True
           validate_receiver_contract()
+          declaration = declaration_validation()
+          assert declaration['status'] == 'PASS_ZERO_GPU_REFERENCE_AWARE_RUNNER_DECLARATION'
           region = trigger['region']
           ids = trigger['requested_source_ids']
           rows, plan = build_rows(region, ids)
@@ -178,7 +191,17 @@ jobs:
           print(f'WORLD_ASSET_V2_PAID_SCOPE=PASS:{region}:{len(ids)}')
           PY
 
-      - name: Run one bounded V2 generation request
+      - name: Deploy current Vera production worker
+        env:
+          MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+          MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+        run: |
+          set -euo pipefail
+          test -n "${MODAL_TOKEN_ID:-}"
+          test -n "${MODAL_TOKEN_SECRET:-}"
+          modal deploy --strategy recreate modal_worker/freeframe_worker.py
+
+      - name: Run one bounded reference-aware V2 generation request
         shell: bash
         env:
           MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
@@ -189,8 +212,8 @@ jobs:
           set -euo pipefail
           test -n "${MODAL_TOKEN_ID:-}"
           test -n "${MODAL_TOKEN_SECRET:-}"
-          timeout --signal=TERM --kill-after=30s 600s \
-            modal run modal_worker/world_asset_pipeline_v2_runner.py \
+          timeout --signal=TERM --kill-after=30s 900s \
+            env PYTHONPATH=. python -u modal_worker/world_asset_pipeline_v2_reference_runner.py \
               --region "$REGION" \
               --request-ids-json "$IDS_JSON"
 
