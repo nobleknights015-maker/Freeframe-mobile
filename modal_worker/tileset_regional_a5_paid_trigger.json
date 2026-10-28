@@ -5,12 +5,16 @@
   "region": "gloamfen",
   "preflight_run_id": 40700162944,
   "preflight_conclusion": "success",
-  "source_scope_head": "eb5b82decd77230d5e0be117e83313f95ab71137",
+  "source_scope_head": "b9be401129eb9a9dcae6aabbef9692aa85bb81b3",
   "asset_cap": 8,
   "generation_attempts_per_asset_cap": 1,
   "one_region_only": true,
   "never_stack_paid_runs": true,
   "catalog_wide_launch_authorized": false,
   "accepted_assets_immutable": true,
-  "creator_full_outfits_remain_closed_at": 24
+  "creator_full_outfits_remain_closed_at": 24,
+  "trigger_attempt": 2,
+  "previous_run_id": 40700651500,
+  "previous_run_gpu_generation_count": 0,
+  "retry_reason": "preflight dependency order corrected before any Modal/GPU step"
 }
