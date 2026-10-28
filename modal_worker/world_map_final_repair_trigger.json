@@ -1,0 +1,27 @@
+{
+  "schema": "plushbound.world_map_final_repair_trigger.v1",
+  "enabled": true,
+  "mode": "targeted_repair_v2",
+  "asset_cap": 6,
+  "source_canary_run_id": 40619802387,
+  "source_canary_artifact_id": 12786892825,
+  "manual_qa_commit_sha": "068bfcad82ea70dbc1673bfc10e550686109afef",
+  "producer_commit_sha": "0d92f4c66ea3c70a01a40765c5fcb10da7ff4053",
+  "asset_ids": [
+    "world.crownweave.environment_master",
+    "world.elyndor.environment_master",
+    "world.silkspire.environment_master",
+    "world.moonpatch-steppe.environment_master",
+    "world.tideglass-coast.environment_master",
+    "world.verdancia.environment_master"
+  ],
+  "preserve_accepted_asset_ids": true,
+  "accepted_asset_ids_not_to_regenerate": [
+    "world.gloamfen.environment_master",
+    "world.sunspool-desert.environment_master"
+  ],
+  "never_stack_paid_runs": true,
+  "stop_on_validation_failure": true,
+  "catalog_wide_launch_authorized": false,
+  "creator_full_outfits_remain_closed_at": 24
+}
