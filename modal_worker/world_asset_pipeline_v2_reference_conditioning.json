@@ -1,0 +1,29 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_reference_conditioning.v1",
+  "default_reference_scale": 0.35,
+  "regions": {
+    "tideglass-coast": {
+      "status": "REFERENCE_AUTHORITY_ACCEPTED",
+      "area_id": "glasswake-harbor",
+      "production_batch": "TG-01-harbor-and-capital",
+      "anchor_path": "modal_worker/project_references/tideglass_tg01_reference_anchor_256.jpg",
+      "anchor_sha256": "193e86f5e9fe66ed620495044223ebf3416486b2376f41ce771db0d672013615",
+      "reference_mode": "style",
+      "reference_scale": 0.35,
+      "reference_role": "regional_visual_material_authority_only",
+      "reference_sheet_pixels_may_be_runtime_art": false,
+      "required_producer": "vera-modal",
+      "source_reference_hashes": {
+        "sea_glass": "21ffa55a24e77e0fa164cbabfc9a5334da85f29e0e54d7c0ad38a4d28480bf66",
+        "saltwood": "7e95f7d5457e5c4f4c74ba379ced3967b369d2db4833f5b0b1d2e68f61d402be",
+        "shell_lacquer": "dcbda42b8ccc55e13750d2048e8c26ece7ac0933db1ed4f3dff66bb8dd0e7a7f",
+        "blue_ceramic": "69d5de86d3301c9b5b7c87d4505c84f824efee847d21a2f33cc33946a1c04018",
+        "harbor_brass": "51ed36ba5089d09686757cc80723a0f38e511b1e746f2c28e0947e8d79243cfb",
+        "rope_canvas": "37132091c85c8b30674cc8383f23a6c3d7898cc98118182b8a87e5cffa16b4bd",
+        "pearl_thread": "e3fa21d1c88afce7d8d520c591075f649475f58dc6eef6356dff9406a16bf2ea",
+        "weathered_stone": "14d3a6674f068f25b3d3c43f5f4402fed9ec4fc334ca4d20824ee4bf128820e0"
+      },
+      "conditioning_prompt_prefix": "Use the supplied image only as Tideglass Coast regional visual and material-language authority. Generate a NEW seamless-looking continuous material swatch that follows the written material target exactly. Preserve the handcrafted Plushbound JRPG material language, palette relationships, surface finish, and stylized grain. Do not reproduce the reference sheet layout, labels, text, borders, panels, props, buildings, symbols, or any individual source object. The output must be newly generated artwork, not a crop, copy, collage, or resized portion of the reference."
+    }
+  }
+}
