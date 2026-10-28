@@ -1,3 +1,19 @@
 {
-  "schema":"plushbound.world_asset_pipeline_v2_run_trigger.v1","enabled":false,"mode":"selected_ids_one_region","guard_validation_revision":10,"region":null,"requested_source_ids":[],"generation_attempts_per_requested_id_cap":1,"one_region_only":true,"accepted_ids_must_be_excluded":true,"manual_visual_qa_required":true,"compile_authorized":false,"catalog_wide_launch_authorized":false,"runtime_import_proof":true,"validated_zero_gpu_preflight_run_id":40744871552,"last_authorized_live_canary_commit":"53654a09e9439795f4c094b0555d46e30670111e","last_authorized_region_batch_commit":"d117139d3d9cb83ffbcefad142cb6f826dbefe7c","last_authorized_repair_commit":"d02905f52451a72660b9c162e624a85a88b21960","last_authorized_final_metal_commit":"873f1db88c76cdbf2e51ef592854f86b179ad7ed","note":"Trigger disabled immediately after final one-source Silkspire metal authorization."
+  "schema": "plushbound.world_asset_pipeline_v2_run_trigger.v1",
+  "enabled": true,
+  "mode": "selected_ids_one_region",
+  "guard_validation_revision": 11,
+  "region": "frostlace",
+  "requested_source_ids": ["tileset.frostlace.a5.source.packed_snow"],
+  "generation_attempts_per_requested_id_cap": 1,
+  "one_region_only": true,
+  "accepted_ids_must_be_excluded": true,
+  "manual_visual_qa_required": true,
+  "compile_authorized": false,
+  "catalog_wide_launch_authorized": false,
+  "runtime_import_proof": true,
+  "validated_zero_gpu_preflight_run_id": 40753858590,
+  "automatic_acceptance": false,
+  "automatic_compile": false,
+  "note": "One-source Frostlace packed-snow canary only."
 }
