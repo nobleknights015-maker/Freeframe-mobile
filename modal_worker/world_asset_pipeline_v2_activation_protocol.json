@@ -1,7 +1,14 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_activation_protocol.v1",
   "status": "LOCKED_MANAGER_SEQUENCE",
-  "purpose": "Prevent paid execution during partially updated repository state.",
+  "purpose": "Prevent paid execution during partially updated repository state and ensure every live canary returns to a frozen state before QA or follow-on work.",
+  "pre_activation_requirements": [
+    "master_v2_preflight_green",
+    "shadow_activation_proof_green_for_exact_region_and_ids",
+    "run_guard_green_while_disabled",
+    "executor_preflight_green_while_disabled_and_paid_job_skipped",
+    "no_other_paid_region_active"
+  ],
   "activation_order": [
     "1_keep_run_trigger_disabled",
     "2_update_freeze_gate_to_allow_one_bounded_paid_execution",
@@ -13,14 +20,25 @@
     "2_update_state_to_production_frozen_paid_execution_disabled_and_active_paid_region_null",
     "3_update_run_trigger_last_to_enabled_false_region_null_requested_source_ids_empty"
   ],
+  "post_run_order": [
+    "1_confirm_repository_is_refrozen_before_artifact_review",
+    "2_inspect_per_asset machine results",
+    "3_run_manual_visual_qa_only_for machine-pass assets",
+    "4_create immutable per-asset acceptance records only for machine_plus_manual_pass",
+    "5_do_not_expand_generation automatically",
+    "6_compile only after exact_8_of_8 regional acceptance rollup"
+  ],
   "invariants": {
     "one_region_only": true,
     "accepted_ids_never_eligible": true,
     "attempts_per_requested_id_cap": 1,
     "manual_visual_qa_required": true,
+    "automatic_acceptance": false,
+    "automatic_batch_expansion": false,
     "compile_never_authorized_by_generation_trigger": true,
     "catalog_wide_launch_authorized": false,
     "runtime_import_proof": false,
-    "executor_credentials_not_exposed_before_zero_spend_preflight": true
+    "executor_credentials_not_exposed_before_zero_spend_preflight": true,
+    "live_canary_must_be_refrozen_before_qa": true
   }
 }
