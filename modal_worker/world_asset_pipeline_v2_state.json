@@ -1,6 +1,6 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_state.v1",
-  "status": "CINDERREACH_0_OF_8_BASALT_REJECTED_SEMANTIC",
+  "status": "CINDERREACH_1_OF_8_BASALT_ACCEPTED",
   "pipeline_version": 2,
   "production_frozen": true,
   "paid_execution_enabled": false,
@@ -32,7 +32,8 @@
     "tileset.frostlace.a5.source.archive_stone": "modal_worker/world_asset_pipeline_v2_acceptance_frostlace_archive_stone.json",
     "tileset.frostlace.a5.source.pale_timber": "modal_worker/world_asset_pipeline_v2_acceptance_frostlace_pale_timber.json",
     "tileset.frostlace.a5.source.crystal_stone": "modal_worker/world_asset_pipeline_v2_acceptance_frostlace_crystal_stone.json",
-    "tileset.frostlace.a5.source.cold_gravel": "modal_worker/world_asset_pipeline_v2_acceptance_frostlace_cold_gravel.json"
+    "tileset.frostlace.a5.source.cold_gravel": "modal_worker/world_asset_pipeline_v2_acceptance_frostlace_cold_gravel.json",
+    "tileset.cinderreach.a5.source.basalt": "modal_worker/world_asset_pipeline_v2_acceptance_cinderreach_basalt.json"
   },
   "closed_region_sheets": {
     "elyndor": {
@@ -68,17 +69,10 @@
     "tideglass-coast": "PENDING",
     "moonpatch-steppe": "PENDING",
     "sunspool-desert": "PENDING",
-    "cinderreach": "PARTIAL_0_OF_8_BASALT_REJECTED_SEMANTIC",
+    "cinderreach": "PARTIAL_1_OF_8_ACCEPTED",
     "frostlace": "CLOSED_GREEN_A5_RECEIVER_BINARY_TRANSFER_PENDING_NON_BLOCKING"
   },
-  "asset_state_overrides": {
-    "tileset.cinderreach.a5.source.basalt": {
-      "state": "REJECTED_SEMANTIC",
-      "reason": "Manual QA rejection: visible stitched/inset rectangular perimeter violates edge-to-edge material swatch contract.",
-      "manual_qa_evidence": "modal_worker/world_asset_pipeline_v2_manual_qa_cinderreach_basalt.json",
-      "prompt_suffix": "ABSOLUTE EDGE-TO-EDGE MATERIAL RULE: fill the entire frame with continuous charcoal basalt substrate. NO border, stitched perimeter, inset panel, frame, outline, tile edge, rectangular boundary, vignette or decorative enclosure."
-    }
-  },
+  "asset_state_overrides": {},
   "allowed_asset_states": ["PENDING", "ACCEPTED", "REJECTED_SEMANTIC", "REJECTED_TECHNICAL"],
   "generation_policy": {
     "one_shared_worker": true,
@@ -143,13 +137,12 @@
     "executor_run_id": 40765470020,
     "source_artifact_id": 12849542886,
     "source_artifact_sha256": "3a0735e889ec90c6ae30c2f15e0f3387e28030bf52f9f9c69a3374bb466b30c8",
-    "raw_sha256": "cc0d4751655ec2e9a75653963424cccfc7e6953827acf5f2bf30634021fffb1a",
-    "normalized_sha256": "da428bcf1cb979952e30496f02027a98e233af4e6c5c4bed513f5d28dc5614eb",
-    "machine_gate": "PASS",
-    "manual_visual_gate": "REJECTED_SEMANTIC",
+    "original_paid_raw_sha256": "cc0d4751655ec2e9a75653963424cccfc7e6953827acf5f2bf30634021fffb1a",
+    "raw_sha256": "f1eaefd6abd82bbb7dc2db99bf7aa06ece9cfd22a057df8d79d75cd30ddb8718",
+    "normalized_sha256": "d681dd052a949c4cbbfdb869e45101eb7721ab7b0195b8aa464767be48107ef8",
+    "deterministic_repair": "modal_worker/world_asset_pipeline_v2_cinderreach_basalt_perimeter_cleanup.json",
+    "manual_visual_gate": "PASS",
     "gpu_seconds": 1.65,
-    "automatic_acceptance": false,
-    "automatic_compile": false,
-    "status": "REJECTED_SEMANTIC_MANUAL_QA"
+    "status": "ACCEPTED_MANUAL_QA_PASS_AFTER_ZERO_GPU_CLEANUP"
   }
 }
