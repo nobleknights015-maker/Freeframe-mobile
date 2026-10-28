@@ -20,6 +20,7 @@ from modal_worker.world_asset_pipeline_v2_planner import (
 
 APP_NAME = "freeframe-world-asset-pipeline-v2"
 MODEL_ID = "black-forest-labs/FLUX.2-klein-4B"
+SOURCE_PRESET = "plushbound_tileset_source"
 CACHE_DIR = "/cache"
 MODEL_VOLUME = "freeframe-model-cache"
 OUTPUT_ROOT = Path("world-asset-pipeline-v2-output")
@@ -81,7 +82,7 @@ class WorldAssetV2Runner:
 
     @modal.method()
     def run_selected(self, rows: list[dict], region: str, accepted_ids: list[str]) -> dict:
-        from modal_worker.production_inspector import inspect_generation
+        from modal_worker.production_inspector import asset_class_for_item, inspect_generation
         from modal_worker.production_request_builder import build_production_request
         from modal_worker.tileset_source_normalizer import (
             MAX_EDGE_DISCONTINUITY, MIN_RGB_STDDEV,
@@ -99,8 +100,11 @@ class WorldAssetV2Runner:
 
         prepared = []
         for item in rows:
+            inspection_item = {**item, "preset": SOURCE_PRESET}
+            if asset_class_for_item(inspection_item) != "tileset_master":
+                raise RuntimeError(f"{item['asset_id']}: tileset inspection identity drifted")
             request = build_production_request(
-                "plushbound_tileset_source", item["prompt"], seed=int(item["seed"])
+                SOURCE_PRESET, item["prompt"], seed=int(item["seed"])
             )
             expected = {
                 "model_id": MODEL_ID, "renderer_route": "flux2_klein",
@@ -109,31 +113,41 @@ class WorldAssetV2Runner:
                 "automatic_full_production_authorized": False,
                 "catalog_wide_launch_authorized": False,
                 "production_style_validated": True,
-                "production_style_profile": "plushbound_tileset_source",
+                "production_style_profile": SOURCE_PRESET,
             }
             for key, value in expected.items():
                 if request.get(key) != value:
                     raise RuntimeError(f"{item['asset_id']}: invariant {key} drifted")
-            prepared.append((item, request))
+            prepared.append((item, request, inspection_item))
 
         outputs = []
         total_gpu = 0.0
         wall_started = time.monotonic()
-        for item, request in prepared:
+        for item, request, inspection_item in prepared:
             base = {
                 "asset_id": item["asset_id"], "material_key": item["material_key"],
                 "region": region, "input_state": item["input_state"],
+                "preset": SOURCE_PRESET,
                 "prompt_sha256": item["prompt_sha256"], "seed": int(item["seed"]),
                 "generation_attempts": 1,
             }
+            raw: bytes | None = None
+            raw_b64: str | None = None
+            raw_sha: str | None = None
+            elapsed = 0.0
             try:
                 print(f"WORLD_ASSET_V2_RENDER=BEGIN:{item['asset_id']}", flush=True)
-                raw, elapsed = self._render(request); total_gpu += elapsed
+                raw, elapsed = self._render(request)
+                total_gpu += elapsed
+                raw_b64 = base64.b64encode(raw).decode("ascii")
+                raw_sha = hashlib.sha256(raw).hexdigest()
+                # From this point forward the paid render is durable evidence even if
+                # inspection or normalization fails. Never throw away a rendered PNG.
                 payload = {
-                    "image_base64": base64.b64encode(raw).decode("ascii"),
+                    "image_base64": raw_b64,
                     "width": 384, "height": 384, "seed": int(item["seed"]),
                 }
-                inspection = inspect_generation(item, payload)
+                inspection = inspect_generation(inspection_item, payload)
                 with Image.open(io.BytesIO(raw)) as generated:
                     normalized = normalize_image(generated)
                 edge = edge_discontinuity(normalized); stddev = rgb_stddev(normalized)
@@ -147,22 +161,35 @@ class WorldAssetV2Runner:
                     "normalizer_policy": "WORLD_ASSET_PIPELINE_V2",
                     "raw_inspection": inspection,
                     "edge_discontinuity": round(edge, 6), "rgb_stddev": round(stddev, 4),
-                    "raw_sha256": hashlib.sha256(raw).hexdigest(),
+                    "raw_sha256": raw_sha,
                     "normalized_sha256": hashlib.sha256(norm).hexdigest(),
                     "gpu_seconds": round(elapsed, 3),
-                    "raw_png_base64": payload["image_base64"],
+                    "raw_png_base64": raw_b64,
                     "normalized_png_base64": base64.b64encode(norm).decode("ascii"),
                 })
                 print(f"WORLD_ASSET_V2_RENDER=DONE:{item['asset_id']}:{elapsed:.3f}s", flush=True)
             except Exception as exc:
-                outputs.append({
-                    **base, "execution_outcome": "REJECTED_TECHNICAL",
+                rendered = raw is not None and raw_b64 is not None and raw_sha is not None
+                error_row = {
+                    **base,
+                    "execution_outcome": "REJECTED_TECHNICAL",
                     "machine_gate": "ERROR", "manual_visual_gate": "NOT_RUN",
                     "normalizer_policy": "WORLD_ASSET_PIPELINE_V2",
+                    "failure_stage": "POST_RENDER_QA" if rendered else "RENDER",
                     "error_type": type(exc).__name__, "error_message": str(exc)[:1000],
-                    "gpu_seconds": 0.0,
-                })
-                print(f"WORLD_ASSET_V2_RENDER=ASSET_ERROR:{item['asset_id']}:{type(exc).__name__}", flush=True)
+                    "gpu_seconds": round(elapsed, 3),
+                    "paid_render_preserved": bool(rendered),
+                }
+                if rendered:
+                    error_row.update({
+                        "raw_sha256": raw_sha,
+                        "raw_png_base64": raw_b64,
+                    })
+                outputs.append(error_row)
+                print(
+                    f"WORLD_ASSET_V2_RENDER=ASSET_ERROR:{item['asset_id']}:{error_row['failure_stage']}:{type(exc).__name__}",
+                    flush=True,
+                )
 
         passes = sum(row["machine_gate"] == "PASS" for row in outputs)
         return {
@@ -173,6 +200,7 @@ class WorldAssetV2Runner:
             "machine_rejected_or_error_count": len(rows) - passes,
             "accepted_ids_excluded": sorted(accepted_ids),
             "failure_isolated_to_asset_id": True,
+            "paid_render_preserved_before_qa": True,
             "manual_visual_qa_required": True,
             "normalizer_policy": "WORLD_ASSET_PIPELINE_V2",
             "compile_authorized": False, "catalog_wide_launch_authorized": False,
@@ -226,16 +254,23 @@ def main(region: str, request_ids_json: str = ""):
 
 
 def declaration_validation() -> dict:
+    from modal_worker.production_inspector import asset_class_for_item
+
     if GPU_CANDIDATES != ["L4", "A10G"]:
         raise RuntimeError("V2 GPU fallback declaration drift")
     if not 1 <= MAX_BATCH_SIZE <= 8:
         raise RuntimeError("V2 batch cap drift")
     if STARTUP_TIMEOUT_SECONDS <= 0 or REMOTE_TIMEOUT_SECONDS <= 0:
         raise RuntimeError("V2 timeout declaration invalid")
+    inspection_asset_class = asset_class_for_item({"preset": SOURCE_PRESET})
+    if inspection_asset_class != "tileset_master":
+        raise RuntimeError("V2 tileset inspection preset is not recognized")
     return {
         "schema": "plushbound.world_asset_pipeline_v2_runner_validation.v1",
         "status": "PASS_ZERO_GPU_SINGLE_RUNNER_DECLARATION",
         "model_id": MODEL_ID,
+        "source_preset": SOURCE_PRESET,
+        "inspection_asset_class": inspection_asset_class,
         "gpu_candidates": GPU_CANDIDATES,
         "startup_timeout_seconds": STARTUP_TIMEOUT_SECONDS,
         "remote_timeout_seconds": REMOTE_TIMEOUT_SECONDS,
@@ -243,6 +278,7 @@ def declaration_validation() -> dict:
         "normalizer_policy": "WORLD_ASSET_PIPELINE_V2",
         "failure_isolated_to_asset_id": True,
         "batch_art_rejection_does_not_abort_sibling_assets": True,
+        "paid_render_preserved_before_qa": True,
         "provider_calls": 0,
         "gpu_calls": 0,
         "generation_calls": 0,
