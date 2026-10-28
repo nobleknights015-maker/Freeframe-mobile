@@ -1,0 +1,42 @@
+{
+  "schema": "plushbound.world_map_final_repair_manual_qa.v1",
+  "repair_version": "v5",
+  "source_run_id": 40622299468,
+  "source_artifact_id": 12787388785,
+  "source_artifact_name": "plushbound-world-map-final-repair-v5-40622299468",
+  "machine_gate": "PASS_1_OF_1",
+  "manual_visual_gate": "PASS_1_OF_1",
+  "scaling_authorized": true,
+  "catalog_wide_launch_authorized": false,
+  "creator_full_outfits_remain_closed_at": 24,
+  "accepted_and_banked": [
+    {
+      "asset_id": "world.silkspire.environment_master",
+      "sha256": "3283b6021416fcb8db22c2f9fad337f1b55436c9fa107b3f38e4621233f4f7fa",
+      "decision": "ACCEPT",
+      "reason": "distant structure-first composition is visually clean; no banners, flags, pseudo-text, glyph signage, heraldry, or modern landmark reading"
+    }
+  ],
+  "logical_canary_state_after_v5": {
+    "accepted_count": 8,
+    "quarantined_count": 0,
+    "manual_visual_gate": "PASS_8_OF_8",
+    "accepted_asset_ids": [
+      "world.gloamfen.environment_master",
+      "world.sunspool-desert.environment_master",
+      "world.crownweave.environment_master",
+      "world.tideglass-coast.environment_master",
+      "world.verdancia.environment_master",
+      "world.elyndor.environment_master",
+      "world.moonpatch-steppe.environment_master",
+      "world.silkspire.environment_master"
+    ]
+  },
+  "policy": {
+    "rerender_accepted_ids": false,
+    "preserve_accepted_asset_ids": true,
+    "never_stack_paid_runs": true,
+    "catalog_wide_launch_authorized": false,
+    "next_bounded_scope": "remaining two canonical regional environment masters only: Cinderreach and Frostlace"
+  }
+}
