@@ -24,6 +24,14 @@ REMAINING = {
     "crownweave", "silkspire", "gloamfen", "verdancia", "tideglass-coast",
     "moonpatch-steppe", "sunspool-desert", "cinderreach", "frostlace",
 }
+ALLOWED_REGION_STATES = {"PREFLIGHT_PENDING", "QUARANTINED_PROMPT_REPAIR_REQUIRED"}
+FORBIDDEN_MATERIAL_LABEL_SCENE_TERMS = {
+    "bridge", "building", "ruin", "tree", "bush", "pond", "river", "path",
+    "road", "character", "creature", "furniture", "tool", "prop", "debris",
+    "boardwalk", "marsh", "forest", "harbor", "caravan", "shelter", "desert",
+    "volcanic", "archive", "workshop", "city", "settlement", "diorama",
+    "landscape", "game level",
+}
 
 
 def load(path: Path) -> dict:
@@ -92,24 +100,52 @@ def run(region: str) -> dict:
     checks["zero_spend_gate"] = "PASS"
 
     rs = scope["regions"][region]
-    require(rs["status"] == "PREFLIGHT_PENDING" and rs["sheet_type"] == "A5", "regional state drift")
+    require(rs["status"] in ALLOWED_REGION_STATES and rs["sheet_type"] == "A5", "regional state drift")
     require(rs["stable_sheet_id"] == f"tileset.{region}.a5", "sheet stable ID mismatch")
     materials = rs["materials"]
     require(len(materials) == 8 and len(set(materials)) == 8, "must have exactly eight unique materials")
     require(all(isinstance(m, str) and m and m.replace("_", "").replace("-", "").isalnum() for m in materials), "invalid material key")
-    require(str(rs["region_prompt"]).strip() != "", "blank region prompt")
+    region_hint = str(rs.get("region_material_hint", "")).strip()
+    require(region_hint != "", "blank region material hint")
+    labels = rs.get("material_prompt_labels")
+    require(isinstance(labels, dict) and set(labels) == set(materials), "material prompt labels must exactly match stable material keys")
+    require(all(isinstance(labels[m], str) and labels[m].strip() for m in materials), "blank material prompt label")
     checks["exact_eight_material_scope"] = "PASS"
+
+    if rs["status"] == "QUARANTINED_PROMPT_REPAIR_REQUIRED":
+        quarantine_path = ROOT / str(rs.get("quarantine_evidence", ""))
+        quarantine = load(quarantine_path)
+        require(quarantine["schema"] == "plushbound.tileset_regional_a5_source_quarantine.v1", "quarantine schema drift")
+        require(quarantine["region"] == region and quarantine["target_sheet_type"] == "A5", "quarantine target mismatch")
+        require(quarantine["status"] == "QUARANTINED_MANUAL_VISUAL_FAIL_0_OF_8_ACCEPTED", "quarantine status drift")
+        require(quarantine["accepted_source_count"] == 0 and quarantine["quarantined_source_count"] == 8, "quarantine accounting drift")
+        require(quarantine["compile_authorized"] is False and quarantine["deterministic_finalize_authorized"] is False, "quarantine unexpectedly authorizes compile")
+        require(quarantine["catalog_wide_launch_authorized"] is False, "quarantine unexpectedly authorizes catalog launch")
+        checks["quarantine_evidence_bound"] = "PASS"
 
     sc = scope["source_contract"]
     require(sc["preset"] == "plushbound_tileset_source", "source preset drift")
     require(sc["source_master_size"] == [384, 384] and sc["normalized_tile_size"] == [48, 48], "source geometry drift")
     require([sc["materials_per_region"], sc["variants_per_material"], sc["generation_attempts_per_material_cap"]] == [8, 16, 1], "source count/retry cap drift")
+    require(sc.get("prompt_contract_version") == "regional-a5-material-swatch-v2", "source prompt contract version drift")
+    template = str(sc.get("prompt_template", ""))
+    required_phrases = [str(x).lower() for x in sc.get("required_prompt_phrases", [])]
+    require(len(required_phrases) >= 30, "anti-scene prompt phrase contract is incomplete")
+    forbidden_hint_terms = [str(x).lower() for x in sc.get("forbidden_region_hint_terms", [])]
+    hint_lower = region_hint.lower()
+    require(not any(term in hint_lower for term in forbidden_hint_terms), "region material hint contains scene-inducing noun")
+    for material in materials:
+        label_lower = labels[material].lower()
+        require(not any(term in label_lower for term in FORBIDDEN_MATERIAL_LABEL_SCENE_TERMS), f"{material}: prompt label contains scene-inducing noun")
+    checks["material_swatch_prompt_static_lint"] = "PASS"
     checks["source_geometry_and_retry_cap"] = "PASS"
 
     routes = []
     for i, material in enumerate(materials):
         asset_id = f"tileset.{region}.a5.source.{material}"
-        prompt = sc["prompt_template"].format(region_prompt=rs["region_prompt"], material_name=material.replace("_", " ").replace("-", " "))
+        prompt = template.format(region_material_hint=region_hint, material_name=labels[material])
+        prompt_lower = prompt.lower()
+        require(all(phrase in prompt_lower for phrase in required_phrases), f"{asset_id}: anti-scene prompt contract incomplete")
         request = build_production_request("plushbound_tileset_source", prompt, seed=28001 + i)
         expected = {
             "width": 384, "height": 384, "steps": 4, "guidance_scale": 1.0,
@@ -122,8 +158,20 @@ def run(region: str) -> dict:
         require(asset_class_for_item({"preset": "plushbound_tileset_source"}) == "tileset_master", "asset class drift")
         negative = str(request.get("negative_prompt", "")).lower()
         require(all(x in negative for x in ("tile grid", "checkerboard", "contact sheet", "signage", "typography")), f"{asset_id}: negative prompt drift")
-        routes.append({"asset_id": asset_id, "seed_probe": request["seed"], "width": 384, "height": 384, "steps": 4, "guidance_scale": 1.0, "model_id": request["model_id"], "renderer_route": request["renderer_route"]})
+        routes.append({
+            "asset_id": asset_id,
+            "seed_probe": request["seed"],
+            "width": 384,
+            "height": 384,
+            "steps": 4,
+            "guidance_scale": 1.0,
+            "model_id": request["model_id"],
+            "renderer_route": request["renderer_route"],
+            "prompt_contract_version": sc["prompt_contract_version"],
+            "prompt_sha256": __import__("hashlib").sha256(prompt.encode("utf-8")).hexdigest(),
+        })
     checks["bounded_request_route"] = "PASS"
+    checks["rendered_prompt_anti_scene_contract"] = "PASS"
 
     norm = normalizer_self_test()
     require(norm["status"] == "PASS" and norm["output_size"] == [48, 48] and norm["output_mode"] == "RGBA", "normalizer self-test failed")
@@ -136,16 +184,32 @@ def run(region: str) -> dict:
     return {
         "schema": "plushbound.tileset_regional_a5_preflight_report.v1",
         "status": "PASS_NO_SPEND_REGION_A5_READY_FOR_EXPLICIT_BOUNDED_TRIGGER",
-        "region": region, "sheet_type": "A5", "stable_sheet_id": rs["stable_sheet_id"],
-        "production_skipped": True, "paid_remote_execution_skipped": True,
-        "provider_calls": 0, "gpu_calls": 0, "generation_calls": 0,
-        "source_count": 8, "source_master_size": [384, 384],
-        "sheet_geometry": [384, 768], "tile_geometry": [48, 48], "grid": [8, 16], "slot_count": 128,
+        "region": region,
+        "region_state": rs["status"],
+        "sheet_type": "A5",
+        "stable_sheet_id": rs["stable_sheet_id"],
+        "prompt_contract_version": sc["prompt_contract_version"],
+        "production_skipped": True,
+        "paid_remote_execution_skipped": True,
+        "provider_calls": 0,
+        "gpu_calls": 0,
+        "generation_calls": 0,
+        "source_count": 8,
+        "source_master_size": [384, 384],
+        "sheet_geometry": [384, 768],
+        "tile_geometry": [48, 48],
+        "grid": [8, 16],
+        "slot_count": 128,
         "preflight_authorizes_one_explicit_bounded_region_trigger": True,
-        "automatic_paid_execution_authorized": False, "catalog_wide_launch_authorized": False,
-        "accepted_assets_immutable": True, "runtime_import_proof": False,
-        "normalizer_self_test": norm, "compiler_self_test": comp, "request_routes": routes, "checks": checks,
-        "next_action": "BANK_THIS_GREEN_PREFLIGHT_RUN_ID_THEN_TRIGGER_ONLY_THIS_REGION_IF_GPU_BUDGET_ALLOWS",
+        "automatic_paid_execution_authorized": False,
+        "catalog_wide_launch_authorized": False,
+        "accepted_assets_immutable": True,
+        "runtime_import_proof": False,
+        "normalizer_self_test": norm,
+        "compiler_self_test": comp,
+        "request_routes": routes,
+        "checks": checks,
+        "next_action": "BANK_THIS_GREEN_PREFLIGHT_RUN_ID_THEN_TRIGGER_ONLY_AN_EXPLICIT_BOUNDED_REGION_OR_REPAIR_PROBE_IF_GPU_BUDGET_ALLOWS",
     }
 
 
