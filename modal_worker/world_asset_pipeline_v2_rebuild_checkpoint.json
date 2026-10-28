@@ -1,8 +1,9 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_rebuild_checkpoint.v1",
-  "status": "V2_REBUILT_ZERO_GPU_VALIDATED_PRODUCTION_STILL_FROZEN",
+  "status": "V2_REBUILT_REAL_DATA_QUALIFIED_PRODUCTION_STILL_FROZEN",
   "production_frozen": true,
   "paid_execution_enabled": false,
+  "production_executor_installed": false,
   "legacy_pipeline_mode": "READ_ONLY_EVIDENCE",
   "control_plane": "GREEN",
   "single_shared_generation_path": "GREEN_DECLARATION_ONLY",
@@ -27,7 +28,19 @@
     "artifact_sha256": "791b1b2bc68694a9fcfdca19abef93870e943dca6b9f55553266485967d15d25",
     "regional_compiler_contracts_green": 9
   },
-  "real_data_gloamfen_qualification": "PENDING_TERMINAL_RESULT",
+  "real_data_gloamfen_qualification": {
+    "status": "PASS_REAL_DATA_V2_COMPILE_AND_ENGINE_V1_CONTRACT",
+    "workflow_run_id": 40723804195,
+    "workflow_head_sha": "fd8675623aded18d6faf7e42b9fc5bc05fde6a68",
+    "artifact_id": 12832535564,
+    "artifact_sha256": "2b449efcdf59c521cec5ac620708d54dbe25d6404206bfc294e7eb90323c798a",
+    "sheet_sha256": "03f0f49fd8539b48c68b2a27e830e5daca4e67b4d2d2bab97cfea864490ea85e",
+    "sheet_size": [384, 768],
+    "slot_count": 128,
+    "unique_slot_hashes": 128,
+    "engine_v1_compatibility_status": "PASS_ENGINE_V1_COMPATIBILITY_CONTRACT",
+    "runtime_import_proof": false
+  },
   "provider_calls_during_rebuild_validation": 0,
   "gpu_calls_during_rebuild_validation": 0,
   "generation_calls_during_rebuild_validation": 0,
