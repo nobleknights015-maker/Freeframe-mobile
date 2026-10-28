@@ -1,0 +1,75 @@
+{
+  "schema": "plushbound.tileset_source_canary_closeout.v1",
+  "status": "CLOSED_GREEN_8_OF_8",
+  "region": "elyndor",
+  "target_sheet_type": "A5",
+  "source_master_size": [384, 384],
+  "normalized_tile_size": [48, 48],
+  "original_canary_run_id": 40625079420,
+  "original_canary_artifact_id": 12788983716,
+  "original_canary_artifact_digest": "sha256:9e9b97c38d656fc9a0aeb9e20e4b2c81ea021ee74536a1d0702c249c55e5a228",
+  "targeted_repair_run_id": 40685533603,
+  "targeted_repair_artifact_id": 12815045820,
+  "targeted_repair_artifact_digest": "sha256:23907a247b32708752ab455a0cf1ffd4cb77418c06060c2f14d2e2d974aac473",
+  "machine_gate": "PASS_8_OF_8",
+  "manual_visual_gate": "PASS_8_OF_8",
+  "source_language_locked": true,
+  "accepted_source_ids_protected_from_rerender": true,
+  "full_A5_expansion_authorized": false,
+  "cross_region_expansion_authorized": false,
+  "catalog_wide_launch_authorized": false,
+  "creator_full_outfits_remain_closed_at": 24,
+  "sources": [
+    {
+      "asset_id": "tileset.elyndor.a5.source.lush_grass",
+      "source": "original_canary",
+      "raw_sha256": "45dd1c5af2314f49039697c350ff8673d80ac01cd4a8b466d304ec732349c7b2",
+      "normalized_sha256": "cbf7ac6457353743ee2b483d7c167ca0bcde8c2a2809e4cbdc28d4a23ff7a0ab"
+    },
+    {
+      "asset_id": "tileset.elyndor.a5.source.wildflower_grass",
+      "source": "original_canary",
+      "raw_sha256": "09b7d2448c26c239cba0032bf8f9c119450852edc01d134436145ff473c54b4b",
+      "normalized_sha256": "922a91c1a1e97ee7e0266ee660ba8caf7fbec9e5a91e92cea418db04a2684f1a"
+    },
+    {
+      "asset_id": "tileset.elyndor.a5.source.warm_soil",
+      "source": "original_canary",
+      "raw_sha256": "46595a642e4b165b52af20ec50e19cba0e2c0ea6edad4daafc8bd8a4fcad858e",
+      "normalized_sha256": "0c4adf31a2202f195047b57e17711238cd5b749a396530c21b17bd7890c741b3"
+    },
+    {
+      "asset_id": "tileset.elyndor.a5.source.dirt_path",
+      "source": "original_canary",
+      "raw_sha256": "a20b268ffef365dd05d7c738a2d532eab765e74b88f1a77892ca33be42aa5b2c",
+      "normalized_sha256": "63041edaa430e7b2f5a6878632752045719b305a6e459482f384968f986c4221"
+    },
+    {
+      "asset_id": "tileset.elyndor.a5.source.tilled_farm_soil",
+      "source": "original_canary",
+      "raw_sha256": "93da361aca42a773c6f291715bc75cdd01e9a830fb7a7fd0a41056c2dd6b1db5",
+      "normalized_sha256": "8a95276e2eacab65cd05ea37c140739df746acd769e49458e6010394ff24f563"
+    },
+    {
+      "asset_id": "tileset.elyndor.a5.source.pale_field_stone",
+      "source": "original_canary",
+      "raw_sha256": "e20b1c7ee91e5fd58b94a41e237b9e57c8774816f64ea9ed915676c4f9dd5e32",
+      "normalized_sha256": "681dba3b9abe5f17d8b47f0a11fd618ac7c0c2a5dbfbcc6f9f5776243548db10"
+    },
+    {
+      "asset_id": "tileset.elyndor.a5.source.village_timber",
+      "source": "original_canary",
+      "raw_sha256": "b1360f7c2476027dfc748e788b34ab115930a148635fb7ea0ad3066c0af89ae5",
+      "normalized_sha256": "6154203bfb3b4e6faa2ffcdb606ae564c951be8c93a4724c1c65fe081764c483"
+    },
+    {
+      "asset_id": "tileset.elyndor.a5.source.straw_thatch",
+      "source": "targeted_repair",
+      "raw_sha256": "4c5d2f7d271a20c56023107c783fb1748dd9ddd99e502f8c6d08058f302d91a0",
+      "normalized_sha256": "3fd0f7aae6d1a703215b1cee7b7db87ae258088b82ff1c73badc4591417e2107",
+      "edge_discontinuity": 0.109559,
+      "rgb_stddev": 33.4212
+    }
+  ],
+  "next_action": "DESIGN_ELYNDOR_A5_EXPANSION_FROM_ACCEPTED_MATERIAL_LANGUAGE"
+}
