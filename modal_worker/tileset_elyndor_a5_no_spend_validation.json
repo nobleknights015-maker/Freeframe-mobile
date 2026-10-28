@@ -1,0 +1,38 @@
+{
+  "schema": "plushbound.tileset_elyndor_a5_no_spend_validation.v1",
+  "status": "PASS_NO_SPEND_DETERMINISTIC_COMPILE",
+  "validation_basis": "exact eight banked 384x384 source masters from locked canary and targeted repair artifacts",
+  "source_canary_artifact_id": 12788983716,
+  "straw_repair_artifact_id": 12815045820,
+  "provider_calls": 0,
+  "gpu_calls": 0,
+  "generation_calls": 0,
+  "sheet_geometry": [768, 768],
+  "tile_geometry": [48, 48],
+  "columns": 16,
+  "rows": 16,
+  "slot_count": 256,
+  "unique_slot_hashes": 256,
+  "material_family_count": 8,
+  "compiled_sheet_sha256": "7f9c3abd403d2e62a7c53832622f275715d47ecce89e313b48fdc05ce7f9ca74",
+  "visual_compile_review": "PASS_MATERIAL_LANGUAGE_AND_SEAM_SAFE_VARIANT_LAYOUT",
+  "family_metrics": [
+    {"material_key": "lush_grass", "maximum_edge_discontinuity": 0.045112, "minimum_rgb_stddev": 10.1242},
+    {"material_key": "wildflower_grass", "maximum_edge_discontinuity": 0.076062, "minimum_rgb_stddev": 17.0908},
+    {"material_key": "warm_soil", "maximum_edge_discontinuity": 0.020833, "minimum_rgb_stddev": 4.5409},
+    {"material_key": "dirt_path", "maximum_edge_discontinuity": 0.043423, "minimum_rgb_stddev": 9.2759},
+    {"material_key": "tilled_farm_soil", "maximum_edge_discontinuity": 0.012309, "minimum_rgb_stddev": 3.4565},
+    {"material_key": "pale_field_stone", "maximum_edge_discontinuity": 0.207993, "minimum_rgb_stddev": 40.1038},
+    {"material_key": "village_timber", "maximum_edge_discontinuity": 0.024551, "minimum_rgb_stddev": 4.898},
+    {"material_key": "straw_thatch", "maximum_edge_discontinuity": 0.160594, "minimum_rgb_stddev": 33.0586}
+  ],
+  "thresholds": {
+    "maximum_edge_discontinuity": 0.25,
+    "minimum_rgb_stddev": 3.0
+  },
+  "engine_v1_import_check": "PENDING_DEDICATED_IMPORT_VALIDATION",
+  "full_A5_paid_generation_authorized": false,
+  "cross_region_expansion_authorized": false,
+  "catalog_wide_launch_authorized": false,
+  "next_action": "RUN_ENGINE_V1_IMPORT_VALIDATION_ON_DETERMINISTIC_ELYNDOR_A5_OUTPUT"
+}
