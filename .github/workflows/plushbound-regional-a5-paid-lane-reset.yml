@@ -1,0 +1,61 @@
+name: Plushbound Regional A5 Paid Lane Reset
+
+on:
+  push:
+    branches:
+      - freeframe-modal-worker
+    paths:
+      - '.github/workflows/plushbound-regional-a5-paid-lane-reset.yml'
+      - 'modal_worker/tileset_regional_a5_paid_lane_reset_trigger.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plushbound-regional-a5-paid
+  cancel-in-progress: true
+
+jobs:
+  zero-spend-paid-lane-reset:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    env:
+      PLUSHBOUND_PRODUCTION_ENABLED: '0'
+      PLUSHBOUND_PAID_REMOTE_ENABLED: '0'
+    steps:
+      - name: Checkout production branch
+        uses: actions/checkout@v4
+
+      - name: Assert zero-spend reset contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$PLUSHBOUND_PRODUCTION_ENABLED" = '0'
+          test "$PLUSHBOUND_PAID_REMOTE_ENABLED" = '0'
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          evidence = {
+              'schema': 'plushbound.tileset_regional_a5_paid_lane_reset.v1',
+              'status': 'PASS_ZERO_SPEND_CONCURRENCY_RESET',
+              'production_enabled': False,
+              'paid_remote_execution_enabled': False,
+              'provider_calls': 0,
+              'gpu_calls': 0,
+              'generation_calls': 0,
+              'compile_authorized': False,
+              'deterministic_finalize_authorized': False,
+              'catalog_wide_launch_authorized': False,
+              'purpose': 'Cancel stale/orphaned regional A5 paid-lane GitHub execution without starting production.'
+          }
+          Path('paid-lane-reset-evidence.json').write_text(json.dumps(evidence, indent=2, sort_keys=True), encoding='utf-8')
+          print('PAID_LANE_RESET=PASS_ZERO_SPEND')
+          PY
+
+      - name: Upload reset evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: plushbound-a5-paid-lane-reset-${{ github.run_id }}
+          path: paid-lane-reset-evidence.json
+          if-no-files-found: error
+          retention-days: 14
