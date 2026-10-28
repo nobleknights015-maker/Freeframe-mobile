@@ -25,6 +25,7 @@ _PRESET_TO_ASSET_CLASS = {
     "plushbound_guardian": "guardian_master",
     "plushbound_enemy": "enemy_master",
     "plushbound_environment": "environment_master",
+    "plushbound_tileset_source": "tileset_master",
 }
 
 
