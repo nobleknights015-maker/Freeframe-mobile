@@ -1,14 +1,15 @@
 {
   "schema": "plushbound.world_map_final_repair_trigger.v1",
   "enabled": true,
-  "mode": "targeted_repair_v5",
-  "asset_cap": 1,
-  "source_repair_v4_run_id": 40621975556,
-  "source_repair_v4_artifact_id": 12787423689,
-  "manual_qa_commit_sha": "607328214dbb93152d086e3ba31e59b60ee3b44d",
-  "producer_commit_sha": "bc478061283c023797fa8e2511aca537bf107bda",
+  "mode": "baseline_completion_two_regions",
+  "asset_cap": 2,
+  "preflight_run_id": 40622878364,
+  "preflight_conclusion": "success",
+  "canary_closeout_contract": "modal_worker/world_map_final_canary_closeout.json",
+  "producer_commit_sha": "e6bac101125446442144521670260698bd238ac6",
   "asset_ids": [
-    "world.silkspire.environment_master"
+    "world.cinderreach.environment_master",
+    "world.frostlace.environment_master"
   ],
   "preserve_accepted_asset_ids": true,
   "accepted_asset_ids_not_to_regenerate": [
@@ -18,11 +19,9 @@
     "world.tideglass-coast.environment_master",
     "world.verdancia.environment_master",
     "world.elyndor.environment_master",
-    "world.moonpatch-steppe.environment_master"
+    "world.moonpatch-steppe.environment_master",
+    "world.silkspire.environment_master"
   ],
-  "repair_constraints": {
-    "silkspire": "distant establishing cityscape only; plain structural stone/timber architecture; no close storefronts, cloth objects, signs, banners, flags, emblems, glyphs, symbols, lettering, clocks or heraldry"
-  },
   "never_stack_paid_runs": true,
   "stop_on_validation_failure": true,
   "catalog_wide_launch_authorized": false,
