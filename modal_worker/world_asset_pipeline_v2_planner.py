@@ -146,6 +146,7 @@ def build_rows(region: str, requested_ids: list[str] | None = None) -> tuple[lis
 def validate_paid_gate(
     region: str,
     *,
+    requested_count: int | None = None,
     state_data: dict | None = None,
     freeze_data: dict | None = None,
     receiver_data: dict | None = None,
@@ -172,18 +173,37 @@ def validate_paid_gate(
         raise RuntimeError("accepted-asset immutability gate is not asserted")
     if freeze.get("missing_local_artifact_is_not_rerender_authority") is not True:
         raise RuntimeError("missing local artifact protection is not asserted")
+
+    limits = [
+        freeze.get("provider_calls_allowed"),
+        freeze.get("gpu_calls_allowed"),
+        freeze.get("generation_calls_allowed"),
+    ]
+    if not all(isinstance(v, int) and not isinstance(v, bool) and 1 <= v <= MAX_BATCH_SIZE for v in limits):
+        raise RuntimeError("V2 paid gate call caps must each be between 1 and 8")
+    if len(set(limits)) != 1:
+        raise RuntimeError("V2 paid gate provider/GPU/generation caps must match")
+    authorized_count = limits[0]
+    if requested_count is not None:
+        if not isinstance(requested_count, int) or isinstance(requested_count, bool) or not 1 <= requested_count <= MAX_BATCH_SIZE:
+            raise RuntimeError("V2 requested_count must be between 1 and 8")
+        if authorized_count != requested_count:
+            raise RuntimeError("V2 paid gate call cap does not equal requested asset count")
+
     return {
         "status": "PASS_PAID_GATE",
         "region": region,
         "one_region_only": True,
+        "authorized_call_cap": authorized_count,
+        "requested_count": requested_count,
         "catalog_wide_launch_authorized": False,
         "runtime_import_proof": True,
         "receiver_contract_status": receiver["status"],
     }
 
 
-def paid_gate_open(region: str) -> None:
-    validate_paid_gate(region)
+def paid_gate_open(region: str, requested_count: int | None = None) -> None:
+    validate_paid_gate(region, requested_count=requested_count)
 
 
 def validate_rebuild_contract() -> dict:
@@ -200,8 +220,14 @@ def validate_rebuild_contract() -> dict:
     silkspire_rows, sp = build_rows("silkspire")
     if gloamfen_rows or gp["selected_generation_count"] != 0:
         raise RuntimeError("accepted Gloamfen IDs were not protected")
-    if len(silkspire_rows) != 8 or sp["selected_generation_count"] != 8:
-        raise RuntimeError("fresh Silkspire scope did not resolve to eight IDs")
+    if sp["accepted_source_count"] + sp["selected_generation_count"] != 8:
+        raise RuntimeError("Silkspire accepted+eligible accounting no longer resolves to eight sources")
+    if len(silkspire_rows) != sp["selected_generation_count"]:
+        raise RuntimeError("Silkspire planner row count disagrees with selected generation count")
+    if set(sp["accepted_ids_excluded"]).intersection(sp["selected_generation_ids"]):
+        raise RuntimeError("Silkspire accepted IDs overlap generation-eligible IDs")
+    if sp["compile_eligible"] != (sp["accepted_source_count"] == 8):
+        raise RuntimeError("Silkspire compile eligibility disagrees with accepted-source count")
 
     tileset_grid = inspect_master(
         asset_class="tileset_master",
@@ -231,7 +257,9 @@ def validate_rebuild_contract() -> dict:
         "schema": "plushbound.world_asset_pipeline_v2_planner_validation.v1",
         "status": "PASS_ZERO_GPU_SHARED_GENERATOR_PLANNER",
         "gloamfen_selected": 0,
-        "silkspire_selected": 8,
+        "silkspire_accepted": sp["accepted_source_count"],
+        "silkspire_selected": sp["selected_generation_count"],
+        "silkspire_exact_eight_accounting": True,
         "max_batch_size": MAX_BATCH_SIZE,
         "accepted_id_refusal": "PASS",
         "receiver_contract_status": receiver["status"],
