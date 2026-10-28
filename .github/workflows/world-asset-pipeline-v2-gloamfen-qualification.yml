@@ -1,0 +1,126 @@
+name: Plushbound World Asset Pipeline V2 Gloamfen Qualification
+
+on:
+  push:
+    branches:
+      - freeframe-modal-worker
+    paths:
+      - 'modal_worker/world_asset_pipeline_v2_gloamfen_qualification_trigger.json'
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: plushbound-world-asset-pipeline-v2-gloamfen-qualification
+  cancel-in-progress: false
+
+jobs:
+  qualify-real-data:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout production branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install deterministic image dependency
+        run: python -m pip install --disable-pip-version-check 'pillow>=10.4,<12'
+
+      - name: Validate qualification trigger and freeze
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          t = json.loads(Path('modal_worker/world_asset_pipeline_v2_gloamfen_qualification_trigger.json').read_text())
+          f = json.loads(Path('modal_worker/world_asset_pipeline_v2_freeze.json').read_text())
+          assert t['schema'] == 'plushbound.world_asset_pipeline_v2_gloamfen_qualification_trigger.v1'
+          assert t['enabled'] is True and t['region'] == 'gloamfen'
+          assert [t['provider_calls_allowed'], t['gpu_calls_allowed'], t['generation_calls_allowed']] == [0, 0, 0]
+          assert t['production_must_remain_frozen'] is True
+          assert t['catalog_wide_launch_authorized'] is False
+          assert t['runtime_import_proof'] is False
+          assert f['production_frozen'] is True and f['paid_remote_execution_allowed'] is False
+          with open(os.environ['GITHUB_ENV'], 'a', encoding='utf-8') as fh:
+              fh.write(f"SOURCE_RUN_ID={t['source_artifact_run_id']}\n")
+              fh.write(f"SOURCE_ARTIFACT_NAME={t['source_artifact_name']}\n")
+          print('WORLD_ASSET_V2_REAL_DATA_TRIGGER=PASS_ZERO_GPU')
+          PY
+
+      - name: Download exact closed Gloamfen source artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.SOURCE_ARTIFACT_NAME }}
+          path: source-artifact
+          github-token: ${{ github.token }}
+          repository: nobleknights015-maker/Freeframe-mobile
+          run-id: ${{ env.SOURCE_RUN_ID }}
+
+      - name: Verify exact eight raw source hashes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          closeout = json.loads(Path('modal_worker/tileset_gloamfen_a5_source_closeout.json').read_text())
+          root = Path('source-artifact/accepted-eight-candidate/gloamfen/raw')
+          assert closeout['status'] == 'CLOSED_GREEN_8_OF_8'
+          assert closeout['machine_gate'] == 'PASS_8_OF_8'
+          assert closeout['manual_visual_gate'] == 'PASS_8_OF_8'
+          assert len(closeout['sources']) == 8
+          for row in closeout['sources']:
+              path = root / f"{row['material_key']}-384.png"
+              assert path.is_file()
+              assert hashlib.sha256(path.read_bytes()).hexdigest() == row['raw_sha256']
+          print('WORLD_ASSET_V2_REAL_DATA_HASHES=PASS_8_OF_8')
+          PY
+
+      - name: Compile real Gloamfen through V2 deterministic policy
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p qualified/gloamfen
+          PYTHONPATH=. python modal_worker/world_asset_pipeline_v2_compiler.py \
+            --region gloamfen \
+            --source-root source-artifact/accepted-eight-candidate/gloamfen/raw \
+            --source-closeout modal_worker/tileset_gloamfen_a5_source_closeout.json \
+            --output-dir qualified/gloamfen \
+            | tee qualified/gloamfen/compiler-stdout.json
+
+      - name: Validate Engine v1 compatibility contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python modal_worker/engine_v1_a5_compatibility_validator.py \
+            --sheet qualified/gloamfen/gloamfen_A5.png \
+            | tee qualified/gloamfen/engine-v1-compatibility.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          c = json.loads(Path('qualified/gloamfen/report.json').read_text())
+          e = json.loads(Path('qualified/gloamfen/engine-v1-compatibility.json').read_text())
+          assert c['status'] == 'PASS_ZERO_GPU_V2_DETERMINISTIC_COMPILE_ENGINE_PROFILE'
+          assert c['normalizer_policy'] == 'WORLD_ASSET_PIPELINE_V2'
+          assert [c['sheet_width'], c['sheet_height']] == [384, 768]
+          assert c['slot_count'] == 128 and c['unique_slot_hashes'] == 128
+          assert e['status'] == 'PASS_ENGINE_V1_COMPATIBILITY_CONTRACT'
+          assert e['slot_count'] == 128 and e['unique_slot_hashes'] == 128
+          assert e['runtime_import_proof'] is False
+          assert [c['provider_calls'], c['gpu_calls'], c['generation_calls']] == [0, 0, 0]
+          print('WORLD_ASSET_V2_REAL_DATA_QUALIFICATION=PASS')
+          PY
+
+      - name: Upload qualification evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: plushbound-world-asset-v2-gloamfen-qualified-${{ github.run_id }}
+          path: qualified/gloamfen/
+          if-no-files-found: error
+          retention-days: 14
