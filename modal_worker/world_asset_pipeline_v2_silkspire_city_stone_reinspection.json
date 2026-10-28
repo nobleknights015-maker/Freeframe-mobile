@@ -1,0 +1,62 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_machine_reinspection.v1",
+  "status": "PASS_MACHINE_GATE_AFTER_POLICY_CORRECTION",
+  "asset_id": "tileset.silkspire.a5.source.city_stone_paving",
+  "region": "silkspire",
+  "material_key": "city_stone_paving",
+  "preset": "plushbound_tileset_source",
+  "asset_class": "tileset_master",
+  "original_executor_run_id": 40735013050,
+  "original_trigger_commit": "53654a09e9439795f4c094b0555d46e30670111e",
+  "source_artifact_id": 12835729347,
+  "source_artifact_sha256": "cd5902b70c45e1b2c7a5101730fb9a7013e4982a237f32f0deb9dfc96ff19b3a",
+  "policy_commit": "0195f3a28394dbed107000fab74ccbbd1e85c678",
+  "policy_preflight_revision": 12,
+  "policy_preflight_run_id": 40736069707,
+  "raw_sha256": "ade00323a341fa1ec1bafed21f6a3e1760048eaf09e5f492437d4ecc32039a47",
+  "normalized_sha256": "740a5212ef8b9e16920e891e6b3ee23380c2f22b9ec156647e512b915db592cc",
+  "raw_format": "PNG",
+  "raw_size": [384, 384],
+  "raw_mode": "RGB",
+  "normalized_format": "PNG",
+  "normalized_size": [48, 48],
+  "normalized_mode": "RGBA",
+  "edge_discontinuity": 0.032707,
+  "rgb_stddev": 9.2219,
+  "normalizer_policy": "WORLD_ASSET_PIPELINE_V2",
+  "composition_detector": {
+    "detector_version": "panel-grid-v1",
+    "panel_grid_detected": true,
+    "row": {
+      "median": 4.1875,
+      "peak": 42.21875,
+      "ratio": 10.082089552238806
+    },
+    "column": {
+      "median": 4.11328125,
+      "peak": 21.9453125,
+      "ratio": 5.335232668566002
+    },
+    "thresholds": {
+      "minimum_separator_delta": 24.0,
+      "minimum_separator_ratio": 8.0
+    }
+  },
+  "original_machine_gate": "FAIL",
+  "original_error": "multi-panel or model-sheet composition detected",
+  "corrected_policy": "tileset_master permits grid-like periodicity as an advisory warning because paving, masonry, floorboards, roof plates, and woven materials legitimately contain periodic seams; manual semantic QA remains required",
+  "corrected_machine_gate": "PASS",
+  "execution_outcome": "PENDING_MANUAL_QA",
+  "warnings": [
+    "grid-like periodicity permitted for tileset material; manual semantic QA required",
+    "raw RGB source receives alpha during deterministic normalization"
+  ],
+  "original_render_gpu_seconds": 1.466,
+  "provider_calls_for_reinspection": 0,
+  "gpu_calls_for_reinspection": 0,
+  "generation_calls_for_reinspection": 0,
+  "rerender_performed": false,
+  "compile_authorized": false,
+  "catalog_wide_launch_authorized": false,
+  "runtime_import_proof": true
+}
