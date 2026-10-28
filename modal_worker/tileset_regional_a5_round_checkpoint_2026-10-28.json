@@ -1,0 +1,128 @@
+{
+  "schema": "plushbound.tileset_regional_a5_round_checkpoint.v1",
+  "date": "2026-10-28",
+  "branch": "freeframe-modal-worker",
+  "source_checkpoint": "ee5bd8c8d12f36ecf899079beabd22cbe31facd4",
+  "checkpoint_purpose": "Preserve exact regional A5 state after zero-spend expansion, Gloamfen semantic quarantine, and stalled one-source prompt-repair probe without authorizing catalog-wide production.",
+  "engine_v1_contract": {
+    "profile": "mv_tileset_a5",
+    "format": "PNG",
+    "mode": "RGBA",
+    "sheet_size": [384, 768],
+    "tile_size": [48, 48],
+    "grid": [8, 16],
+    "slot_count": 128,
+    "runtime_import_proof": false,
+    "proof_scope": "repository asset-profile and deterministic geometry compatibility only"
+  },
+  "global_locks": {
+    "character_creator_full_outfits_closed_at": 24,
+    "guardians_locked_runtime_assets": 960,
+    "npcs_locked_assets": 320,
+    "enemies_banked": 617,
+    "enemies_source_quarantined": 23,
+    "enemies_accounted_total": 640,
+    "accepted_assets_immutable": true,
+    "missing_local_artifact_is_not_rerender_authority": true,
+    "catalog_wide_launch_authorized": false
+  },
+  "closed_regions": {
+    "elyndor": {
+      "status": "CLOSED_BANKED",
+      "stable_sheet_id": "tileset.elyndor.a5",
+      "sheet_sha256": "d26595d093676bfd0bdfc44259a7795674d96dc4925f6db5773efa06e044a1bb",
+      "geometry": [384, 768],
+      "runtime_import_proof": false
+    }
+  },
+  "regional_preflight": {
+    "run_id": 40702345955,
+    "conclusion": "success",
+    "gpu_calls": 0,
+    "regions_green": [
+      "crownweave",
+      "silkspire",
+      "gloamfen",
+      "verdancia",
+      "tideglass-coast",
+      "moonpatch-steppe",
+      "sunspool-desert",
+      "cinderreach",
+      "frostlace"
+    ],
+    "prompt_contract_version": "regional-a5-material-swatch-v2"
+  },
+  "gloamfen": {
+    "state": "QUARANTINED_PROMPT_REPAIR_REQUIRED",
+    "initial_paid_source_run_id": 40701121674,
+    "initial_machine_gate": "PASS_8_OF_8",
+    "initial_manual_visual_gate": "FAIL_0_OF_8",
+    "initial_gpu_seconds": 7.9,
+    "failure_class": "semantic_scene_composition_drift",
+    "failure_summary": "Generated outputs were miniature environment scenes rather than continuous A5 material textures.",
+    "compile_authorized": false,
+    "deterministic_finalize_authorized": false,
+    "repair_policy": {
+      "first_step": "one_source_probe_only",
+      "probe_asset_id": "tileset.gloamfen.a5.source.marsh_mud",
+      "probe_run_id": 40702715312,
+      "last_observed_probe_status": "in_progress",
+      "last_observed_active_step": "Run exactly one repaired source probe",
+      "do_not_poll_repeatedly": true,
+      "if_probe_passes_manual_visual_qa": "bank exact probe source and generate only the seven remaining failed IDs",
+      "if_probe_fails": "keep Gloamfen quarantined and revise source semantics without spending on other Gloamfen IDs"
+    }
+  },
+  "stalled_probe_hardening": {
+    "remote_timeout_seconds": 420,
+    "github_modal_step_timeout_seconds": 480,
+    "github_job_timeout_minutes": 12,
+    "applies_to_future_probe_attempts": true,
+    "does_not_mutate_current_in_flight_run": true
+  },
+  "deterministic_compiler_rehearsal": {
+    "run_id": 40705515499,
+    "last_observed_status": "queued",
+    "gpu_calls_expected": 0,
+    "matrix_regions": [
+      "crownweave",
+      "silkspire",
+      "gloamfen",
+      "verdancia",
+      "tideglass-coast",
+      "moonpatch-steppe",
+      "sunspool-desert",
+      "cinderreach",
+      "frostlace"
+    ],
+    "expected_contract": {
+      "sheet_size": [384, 768],
+      "tile_size": 48,
+      "grid": [8, 16],
+      "slot_count": 128,
+      "unique_slot_hashes": 128,
+      "provider_calls": 0,
+      "gpu_calls": 0,
+      "generation_calls": 0,
+      "runtime_import_proof": false
+    }
+  },
+  "fresh_eight_source_paid_route_policy": {
+    "allowed_region_state": "PREFLIGHT_PENDING",
+    "quarantined_regions_refused": true,
+    "prompt_contract_version": "regional-a5-material-swatch-v2",
+    "asset_cap": 8,
+    "generation_attempts_per_asset_cap": 1,
+    "one_region_only": true,
+    "never_stack_paid_runs": true,
+    "manual_visual_qa_required_before_closeout": true
+  },
+  "next_safe_actions": [
+    "Do not poll Gloamfen probe repeatedly while unchanged.",
+    "Inspect probe artifact directly once run 40702715312 completes.",
+    "Bank or quarantine the probe based on semantic visual QA, not machine acceptance alone.",
+    "Inspect compiler rehearsal matrix run 40705515499 once after a meaningful interval; quarantine any deterministic failure independently.",
+    "Do not launch another paid regional source run while the Gloamfen prompt probe remains in the shared paid concurrency group.",
+    "Keep catalog_wide_launch_authorized false."
+  ]
+}
