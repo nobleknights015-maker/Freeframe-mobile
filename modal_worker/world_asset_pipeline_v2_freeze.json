@@ -1,12 +1,12 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_freeze.v1",
-  "status": "PAID_WORLD_ASSET_PRODUCTION_LIVE_CROWNWEAVE_HIGHLAND_GRASS_CANARY",
+  "status": "PAID_WORLD_ASSET_PRODUCTION_REFROZEN_AFTER_CROWNWEAVE_HIGHLAND_GRASS_CANARY_AUTHORIZATION",
   "branch": "freeframe-modal-worker",
-  "production_frozen": false,
-  "paid_remote_execution_allowed": true,
-  "provider_calls_allowed": 1,
-  "gpu_calls_allowed": 1,
-  "generation_calls_allowed": 1,
+  "production_frozen": true,
+  "paid_remote_execution_allowed": false,
+  "provider_calls_allowed": 0,
+  "gpu_calls_allowed": 0,
+  "generation_calls_allowed": 0,
   "catalog_wide_launch_authorized": false,
   "legacy_pipeline_mode": "READ_ONLY_EVIDENCE_AND_ACCEPTED_HASH_SOURCE",
   "legacy_paid_triggers_must_not_be_modified_or_replayed": true,
@@ -51,5 +51,7 @@
   "last_authorized_cinderreach_charred_timber_commit": "1f295ad6274fbfc5a4119d02bfdae723fbe19aac",
   "last_authorized_cinderreach_charred_timber_executor_run_id": 40771566618,
   "last_authorized_cinderreach_ember_veined_rock_commit": "fadde0af0ab98529356d169d8832691a54036222",
-  "last_authorized_cinderreach_ember_veined_rock_executor_run_id": 40774167698
+  "last_authorized_cinderreach_ember_veined_rock_executor_run_id": 40774167698,
+  "last_authorized_crownweave_highland_grass_commit": "76ad5b2ae466535bac1621a556eda7dadf155d95",
+  "last_authorized_crownweave_highland_grass_executor_run_id": 40776314827
 }
