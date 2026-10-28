@@ -1,0 +1,154 @@
+name: Vera FLUX2 Reference Canary
+
+on:
+  push:
+    branches:
+      - freeframe-modal-worker
+    paths:
+      - '.github/workflows/vera-flux2-reference-canary.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plushbound-vera-flux2-reference-canary
+  cancel-in-progress: false
+
+jobs:
+  canary:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install canary dependencies
+        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
+      - name: Validate one-shot canary authorization before credentials are used
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python - <<'PY'
+          import json
+          from pathlib import Path
+          auth = json.loads(Path('modal_worker/flux2_reference_canary_authorization.json').read_text())
+          assert auth['schema'] == 'plushbound.flux2_reference_canary_authorization.v1'
+          assert auth['enabled'] is True
+          assert auth['region'] == 'tideglass-coast'
+          assert auth['asset_id'] == 'tileset.tideglass-coast.a5.source.wet_sand'
+          assert auth['generation_calls_allowed'] == 1
+          assert auth['retry_calls_allowed'] == 0
+          assert auth['required_app'] == 'freeframe-flux2-reference-worker'
+          assert auth['required_class'] == 'VeraFlux2ReferenceGenerator'
+          assert auth['required_model'] == 'black-forest-labs/FLUX.2-klein-4B'
+          assert auth['required_renderer_route'] == 'flux2_klein_reference_v2'
+          assert auth['required_reference_anchor_sha256'] == 'a339ef7407986382d96697364b9ffff1dcd363924fefe301e7f5906006d43f52'
+          assert auth['required_source_art_provenance'] == 'vera-modal-generated'
+          assert auth['reference_sheet_pixels_used_as_runtime_art'] is False
+          assert auth['manual_visual_qa_required'] is True
+          assert auth['compile_authorized'] is False
+          assert auth['catalog_wide_launch_authorized'] is False
+          assert auth['preflight_run_id'] == 40789252831
+          print('VERA_FLUX2_CANARY_AUTH=PASS')
+          PY
+      - name: Generate one reference-conditioned wet_sand source asset
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${MODAL_TOKEN_ID:-}"
+          test -n "${MODAL_TOKEN_SECRET:-}"
+          timeout --signal=TERM --kill-after=30s 1800s env PYTHONPATH=. python -u - <<'PY'
+          import base64
+          import hashlib
+          import json
+          from pathlib import Path
+          import modal
+
+          ASSET_ID = 'tileset.tideglass-coast.a5.source.wet_sand'
+          REGION = 'tideglass-coast'
+          MODEL = 'black-forest-labs/FLUX.2-klein-4B'
+          ROUTE = 'flux2_klein_reference_v2'
+          EXPECTED_REF = 'a339ef7407986382d96697364b9ffff1dcd363924fefe301e7f5906006d43f52'
+
+          from modal_worker.world_asset_pipeline_v2_planner import build_rows
+          rows, plan = build_rows(REGION, [ASSET_ID])
+          assert [row['asset_id'] for row in rows] == [ASSET_ID]
+          assert ASSET_ID not in set(plan['accepted_ids_excluded'])
+          row = rows[0]
+
+          cfg = json.loads(Path('modal_worker/world_asset_pipeline_v2_reference_conditioning.json').read_text())['regions'][REGION]
+          anchor_path = Path(cfg['anchor_path'])
+          anchor_raw = anchor_path.read_bytes()
+          anchor_sha = hashlib.sha256(anchor_raw).hexdigest()
+          assert anchor_sha == EXPECTED_REF == cfg['anchor_sha256']
+
+          # Idempotently ensure the exact conditioning anchor is in the shared Modal reference volume.
+          store = modal.Function.from_name('freeframe-worker', 'store_reference_internal')
+          stored = store.remote({'image_base64': base64.b64encode(anchor_raw).decode('ascii')})
+          assert stored.get('stored') is True
+          assert stored.get('reference_id') == EXPECTED_REF
+
+          prompt = str(cfg['conditioning_prompt_prefix']).strip() + ' ' + str(row['prompt']).strip()
+          request = {
+              'prompt': prompt,
+              'width': 384,
+              'height': 384,
+              'steps': 4,
+              'guidance_scale': 1.0,
+              'seed': int(row['seed']),
+              'model_id': MODEL,
+              'renderer_route': ROUTE,
+              'reference_id': EXPECTED_REF,
+              'reference_sheet_pixels_used_as_runtime_art': False,
+          }
+
+          generator = modal.Cls.from_name('freeframe-flux2-reference-worker', 'VeraFlux2ReferenceGenerator')()
+          print('VERA_FLUX2_CANARY=REMOTE_BEGIN', flush=True)
+          result = generator.generate.remote(request)
+          print('VERA_FLUX2_CANARY=REMOTE_DONE', flush=True)
+
+          assert result['model'] == MODEL
+          assert result['renderer_route'] == ROUTE
+          assert result['source_art_provenance'] == 'vera-modal-generated'
+          assert result['reference_sheet_pixels_used_as_runtime_art'] is False
+          assert result['reference_conditioning']['reference_id'] == EXPECTED_REF
+          raw = base64.b64decode(result['image_base64'], validate=True)
+          assert hashlib.sha256(raw).hexdigest() == result['sha256']
+
+          out = Path('vera-flux2-canary-output')
+          out.mkdir(parents=True, exist_ok=True)
+          png = out / 'wet_sand-384.png'
+          png.write_bytes(raw)
+          receipt = {
+              'schema': 'plushbound.vera_flux2_reference_canary_receipt.v1',
+              'status': 'GENERATED_PENDING_MANUAL_VISUAL_QA',
+              'region': REGION,
+              'asset_id': ASSET_ID,
+              'model': MODEL,
+              'renderer_route': ROUTE,
+              'source_art_provenance': result['source_art_provenance'],
+              'reference_sheet_pixels_used_as_runtime_art': False,
+              'reference_anchor_sha256': EXPECTED_REF,
+              'generated_output_sha256': result['sha256'],
+              'seed': result['seed'],
+              'elapsed_seconds': result['elapsed_seconds'],
+              'width': result['width'],
+              'height': result['height'],
+              'manual_visual_qa_required': True,
+              'compile_authorized': False,
+          }
+          (out / 'receipt.json').write_text(json.dumps(receipt, indent=2, sort_keys=True) + '\n')
+          print(json.dumps(receipt, sort_keys=True), flush=True)
+          PY
+      - name: Upload generated canary for manual QA
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vera-flux2-reference-canary-${{ github.run_id }}
+          path: vera-flux2-canary-output/
+          if-no-files-found: warn
+          retention-days: 14
