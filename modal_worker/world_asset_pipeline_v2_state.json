@@ -1,10 +1,10 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_state.v1",
-  "status": "CINDERREACH_BASALT_CANARY_AUTHORIZED",
+  "status": "CINDERREACH_BASALT_CANARY_EXECUTOR_PINNED_REVIEW_PENDING",
   "pipeline_version": 2,
-  "production_frozen": false,
-  "paid_execution_enabled": true,
-  "active_paid_region": "cinderreach",
+  "production_frozen": true,
+  "paid_execution_enabled": false,
+  "active_paid_region": null,
   "catalog_wide_launch_authorized": false,
   "runtime_import_proof": true,
   "runtime_import_proof_scope": "generic game-side A5 runtime importer smoke plus Android APK packaging proof; exact Frostlace sheet runtime import remains pending",
@@ -68,7 +68,7 @@
     "tideglass-coast": "PENDING",
     "moonpatch-steppe": "PENDING",
     "sunspool-desert": "PENDING",
-    "cinderreach": "CANARY_AUTHORIZED_BASALT",
+    "cinderreach": "CANARY_EXECUTOR_PINNED_BASALT_REVIEW_PENDING",
     "frostlace": "CLOSED_GREEN_A5_RECEIVER_BINARY_TRANSFER_PENDING_NON_BLOCKING"
   },
   "asset_state_overrides": {},
@@ -128,5 +128,14 @@
     "repair3_executor_run_id": 40758764663,
     "final_resolution": "ZERO_GPU_REFERENCE_DERIVED_MICROTEXTURE_THREE_OF_THREE_ACCEPTED",
     "reference_sha256": "532ee641c6c899e0dce716ff05bbff70039982fce7e4cc4d238870de13bbd15b"
+  },
+  "current_cinderreach_canary": {
+    "asset_id": "tileset.cinderreach.a5.source.basalt",
+    "validated_zero_gpu_preflight_run_id": 40765274899,
+    "authorized_commit": "03867c6e9bbce04961047094eedb5d2ce04edad9",
+    "executor_run_id": 40765470020,
+    "automatic_acceptance": false,
+    "automatic_compile": false,
+    "status": "EXECUTOR_PINNED_REVIEW_PENDING"
   }
 }
