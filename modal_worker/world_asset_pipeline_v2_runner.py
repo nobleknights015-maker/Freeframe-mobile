@@ -86,8 +86,9 @@ class WorldAssetV2Runner:
         from modal_worker.production_request_builder import build_production_request
         from modal_worker.tileset_source_normalizer import (
             MAX_EDGE_DISCONTINUITY, MIN_RGB_STDDEV,
-            edge_discontinuity, normalize_image, rgb_stddev,
+            edge_discontinuity, rgb_stddev,
         )
+        from modal_worker.world_asset_pipeline_v2_normalizer import normalize_image
 
         if not 1 <= len(rows) <= MAX_BATCH_SIZE:
             raise RuntimeError("V2 runner requires 1..8 rows")
@@ -144,6 +145,7 @@ class WorldAssetV2Runner:
                     "execution_outcome": "PENDING_MANUAL_QA" if passed else "REJECTED_TECHNICAL",
                     "machine_gate": "PASS" if passed else "FAIL",
                     "manual_visual_gate": "PENDING" if passed else "NOT_RUN",
+                    "normalizer_policy": "WORLD_ASSET_PIPELINE_V2",
                     "raw_inspection": inspection,
                     "edge_discontinuity": round(edge, 6), "rgb_stddev": round(stddev, 4),
                     "raw_sha256": hashlib.sha256(raw).hexdigest(),
@@ -157,6 +159,7 @@ class WorldAssetV2Runner:
                 outputs.append({
                     **base, "execution_outcome": "REJECTED_TECHNICAL",
                     "machine_gate": "ERROR", "manual_visual_gate": "NOT_RUN",
+                    "normalizer_policy": "WORLD_ASSET_PIPELINE_V2",
                     "error_type": type(exc).__name__, "error_message": str(exc)[:1000],
                     "gpu_seconds": 0.0,
                 })
@@ -172,6 +175,7 @@ class WorldAssetV2Runner:
             "accepted_ids_excluded": sorted(accepted_ids),
             "failure_isolated_to_asset_id": True,
             "manual_visual_qa_required": True,
+            "normalizer_policy": "WORLD_ASSET_PIPELINE_V2",
             "compile_authorized": False, "catalog_wide_launch_authorized": False,
             "runtime_import_proof": False,
             "gpu_candidates": GPU_CANDIDATES,
@@ -231,6 +235,7 @@ def declaration_validation() -> dict:
         "gpu_candidates": GPU_CANDIDATES,
         "startup_timeout_seconds": STARTUP_TIMEOUT_SECONDS,
         "remote_timeout_seconds": REMOTE_TIMEOUT_SECONDS,
+        "normalizer_policy": "WORLD_ASSET_PIPELINE_V2",
         "failure_isolated_to_asset_id": True,
         "batch_art_rejection_does_not_abort_sibling_assets": True,
     }
