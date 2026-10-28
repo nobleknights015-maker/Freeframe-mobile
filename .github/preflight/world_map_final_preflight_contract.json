@@ -73,6 +73,19 @@
     {"asset_id": "world.cinderreach.environment_master", "region": "cinderreach", "role": "environment_master"},
     {"asset_id": "world.frostlace.environment_master", "region": "frostlace", "role": "environment_master"}
   ],
+  "current_baseline_completion": {
+    "initial_canary_closeout_contract": "modal_worker/world_map_final_canary_closeout.json",
+    "accepted_and_protected_count": 8,
+    "canonical_region_baseline_total": 10,
+    "remaining_count": 2,
+    "remaining_asset_ids": [
+      "world.cinderreach.environment_master",
+      "world.frostlace.environment_master"
+    ],
+    "next_paid_wave_cap_after_green_preflight": 2,
+    "arbitrary_16_asset_scale_forbidden": true,
+    "accepted_assets_may_not_be_regenerated": true
+  },
   "post_preflight_bounded_strategy": {
     "requires_green_preflight": true,
     "first_real_wave_asset_cap": 8,
@@ -83,7 +96,8 @@
     "stop_on_validation_failure": true,
     "quarantine_anomalies": true,
     "recheck_branch_head_before_each_wave": true,
-    "resume_without_regenerating_completed_asset_ids": true
+    "resume_without_regenerating_completed_asset_ids": true,
+    "current_override": "finish the ten-region baseline with exactly the two remaining canonical masters before defining any larger catalog wave"
   },
   "policy": {
     "fail_closed": true,
