@@ -10,14 +10,14 @@
   "compile_authorized": true,
   "catalog_wide_launch_authorized": false,
   "sources": [
-    {"asset_id":"tileset.frostlace.a5.source.packed_snow","raw_sha256":"b11afb8a81f045dff6031893df26c1f530b2f2a11624f73966a9fd4a05676ff4","source_kind":"paid_render_accepted"},
-    {"asset_id":"tileset.frostlace.a5.source.blue_ice","raw_sha256":"0bddbcaabff727b6f8d95f6f1f4616a1066dee357ab76a32775acc3f09b7d79a","source_kind":"paid_render_accepted"},
-    {"asset_id":"tileset.frostlace.a5.source.frosted_stone","raw_sha256":"af0d9afeccf67f9d7a7dc95daa6c0838440d10229389a4d715430f9dc3decd19","source_kind":"zero_gpu_reference_derived"},
-    {"asset_id":"tileset.frostlace.a5.source.frozen_soil","raw_sha256":"eae0d661695db03930194f6d6c34a2a2913f27c00535967eb841f8d04ed5bed5","source_kind":"paid_render_accepted"},
-    {"asset_id":"tileset.frostlace.a5.source.archive_stone","raw_sha256":"ac8a2e2f4b4f4fd02f5d17a0fc20faaaaf106266301e80c66343f3e151d31240","source_kind":"zero_gpu_reference_derived"},
-    {"asset_id":"tileset.frostlace.a5.source.pale_timber","raw_sha256":"2938194d95d73512553ebddec78f2e820a4522a257d73b6e9618a4cefb5936dc","source_kind":"paid_render_accepted"},
-    {"asset_id":"tileset.frostlace.a5.source.crystal_stone","raw_sha256":"5bbfd76f1be967d6703965f93dd856c5ebf13f0b8fa7fa5d31e6b20827ec5b2a","source_kind":"zero_gpu_reference_derived"},
-    {"asset_id":"tileset.frostlace.a5.source.cold_gravel","raw_sha256":"0eb0280e6a88d2df60b22033d8bf1d43fc3db3806b425d1432d5a8027843f85f","source_kind":"paid_render_accepted"}
+    {"asset_id":"tileset.frostlace.a5.source.packed_snow","raw_sha256":"b11afb8a81f045dff6031893df26c1f530b2f2a11624f73966a9fd4a05676ff4","normalized_sha256":"cde474bfd77f91e35e8d94b773ba6e2cada7e605866b091740020aef64b5929a","source_kind":"paid_render_accepted"},
+    {"asset_id":"tileset.frostlace.a5.source.blue_ice","raw_sha256":"0bddbcaabff727b6f8d95f6f1f4616a1066dee357ab76a32775acc3f09b7d79a","normalized_sha256":"44018eebaa387843fafe04e63dd5279459d4ed273ca96feb494f689908f33fc0","source_kind":"paid_render_accepted"},
+    {"asset_id":"tileset.frostlace.a5.source.frosted_stone","raw_sha256":"af0d9afeccf67f9d7a7dc95daa6c0838440d10229389a4d715430f9dc3decd19","normalized_sha256":"688a5a6101c61aa35b433f5400a0bb389a46e2e03309acaa2319262ceb6bd3d9","source_kind":"zero_gpu_reference_derived"},
+    {"asset_id":"tileset.frostlace.a5.source.frozen_soil","raw_sha256":"eae0d661695db03930194f6d6c34a2a2913f27c00535967eb841f8d04ed5bed5","normalized_sha256":"22288197f577bcbacc1e69ae51e20f9a093991ef45ad31decfc0f409179cd58b","source_kind":"paid_render_accepted"},
+    {"asset_id":"tileset.frostlace.a5.source.archive_stone","raw_sha256":"ac8a2e2f4b4f4fd02f5d17a0fc20faaaaf106266301e80c66343f3e151d31240","normalized_sha256":"aca78911278a7f71f6c2a639bf253b09b75b06d3869c41bfbe018b1e3a5517c3","source_kind":"zero_gpu_reference_derived"},
+    {"asset_id":"tileset.frostlace.a5.source.pale_timber","raw_sha256":"2938194d95d73512553ebddec78f2e820a4522a257d73b6e9618a4cefb5936dc","normalized_sha256":"4d78bf81c4d561312c81588e2f91604e0e0e59d76ef407cc315beb56b0f13b73","source_kind":"paid_render_accepted"},
+    {"asset_id":"tileset.frostlace.a5.source.crystal_stone","raw_sha256":"5bbfd76f1be967d6703965f93dd856c5ebf13f0b8fa7fa5d31e6b20827ec5b2a","normalized_sha256":"1c3f1b3a9ea6f7b4af62b2475f10bd72d07ad0b52237c70e6e9c86aec309c493","source_kind":"zero_gpu_reference_derived"},
+    {"asset_id":"tileset.frostlace.a5.source.cold_gravel","raw_sha256":"0eb0280e6a88d2df60b22033d8bf1d43fc3db3806b425d1432d5a8027843f85f","normalized_sha256":"c27fc86b74228ca39e08dfd880ae671ca223c98e23034be9f29eea58fb4fe205","source_kind":"paid_render_accepted"}
   ],
   "reference_derived_evidence": "modal_worker/world_asset_pipeline_v2_frostlace_reference_derived_closeout.json",
   "provider_calls_for_closeout": 0,
