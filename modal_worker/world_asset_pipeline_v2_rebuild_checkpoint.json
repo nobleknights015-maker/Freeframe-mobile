@@ -1,6 +1,6 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_rebuild_checkpoint.v1",
-  "status": "V2_STRUCTURALLY_READY_LIVE_TRIGGER_BLOCKED_PRODUCTION_REFROZEN",
+  "status": "V2_STRUCTURALLY_READY_SHADOW_LIVE_CANARY_GREEN_PRODUCTION_FROZEN",
   "production_frozen": true,
   "paid_execution_enabled": false,
   "production_executor_installed": true,
@@ -20,13 +20,19 @@
     "workflow_run_id": 40726337123,
     "guard_run_id": 40726337027
   },
-  "master_preflight_revision_6": {
-    "status": "PASS_ZERO_GPU_V2_END_TO_END_CONTRACT_READY_WITH_EXECUTOR_INSTALLED",
-    "workflow_run_id": 40726110592,
-    "workflow_head_sha": "7722a2f49265237eb5c368a1ee8ba8115095e52a",
-    "artifact_id": 12832497031,
-    "artifact_sha256": "da7bc185f7908019b2b112f95fd4ae8f71c8b7112868590f90496ce2dfd13568",
-    "regional_compiler_contracts_green": 9
+  "master_preflight_revision_7": {
+    "status": "PASS_ZERO_GPU_V2_END_TO_END_PLUS_SHADOW_LIVE_CANARY",
+    "workflow_run_id": 40727252906,
+    "workflow_head_sha": "244886757dd4bf1f34fc8f4a2a51ea705feb3ec7",
+    "artifact_id": 12832404285,
+    "artifact_sha256": "613efc635dc207ab8322f5abdadacbbad5216619e7c13d820a90729bf45f1e37",
+    "regional_compiler_contracts_green": 9,
+    "shadow_live_canary_authorization": "PASS",
+    "shadow_live_canary_asset_id": "tileset.silkspire.a5.source.city_stone_paving",
+    "real_production_remained_frozen": true,
+    "provider_calls": 0,
+    "gpu_calls": 0,
+    "generation_calls": 0
   },
   "real_data_gloamfen_qualification": {
     "status": "PASS_REAL_DATA_V2_COMPILE_AND_ENGINE_V1_CONTRACT",
@@ -39,14 +45,17 @@
   },
   "silkspire_live_canary": {
     "asset_id": "tileset.silkspire.a5.source.city_stone_paving",
-    "trigger_write_result": "BLOCKED_BEFORE_ENABLE",
+    "previous_trigger_write_result": "BLOCKED_BEFORE_ENABLE",
+    "shadow_activation_status": "PASS_ZERO_SPEND_SHADOW_LIVE_CANARY_AUTHORIZATION",
+    "live_execution_status": "UNRUN",
     "provider_calls": 0,
     "gpu_calls": 0,
     "generation_calls": 0,
     "production_refrozen": true
   },
+  "activation_protocol": "LOCKED_WITH_PRE_ACTIVATION_AND_POST_RUN_SEQUENCE",
   "catalog_wide_launch_authorized": false,
   "runtime_import_proof": false,
   "next_fresh_region_after_qualification": "silkspire",
-  "next_manager_action": "KEEP_PRODUCTION_FROZEN; LIVE_CANARY_REMAINS READY BUT UNRUN"
+  "next_manager_action": "KEEP_PRODUCTION_FROZEN; LIVE_CANARY LOGIC IS PROVEN IN SHADOW MODE AND AWAITS A PERMITTED LIVE_TRIGGER_PATH"
 }
