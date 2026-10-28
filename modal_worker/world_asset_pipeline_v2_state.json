@@ -1,6 +1,6 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_state.v1",
-  "status": "CROWNWEAVE_HIGHLAND_GRASS_EXECUTOR_PINNED",
+  "status": "CROWNWEAVE_1_OF_8_HIGHLAND_GRASS_ACCEPTED",
   "pipeline_version": 2,
   "production_frozen": true,
   "paid_execution_enabled": false,
@@ -37,7 +37,8 @@
     "tileset.cinderreach.a5.source.basalt": "modal_worker/world_asset_pipeline_v2_acceptance_cinderreach_basalt.json",
     "tileset.cinderreach.a5.source.ash_soil": "modal_worker/world_asset_pipeline_v2_acceptance_cinderreach_ash_soil.json",
     "tileset.cinderreach.a5.source.forge_stone": "modal_worker/world_asset_pipeline_v2_acceptance_cinderreach_forge_stone.json",
-    "tileset.cinderreach.a5.source.charred_timber": "modal_worker/world_asset_pipeline_v2_acceptance_cinderreach_charred_timber.json"
+    "tileset.cinderreach.a5.source.charred_timber": "modal_worker/world_asset_pipeline_v2_acceptance_cinderreach_charred_timber.json",
+    "tileset.crownweave.a5.source.highland_grass": "modal_worker/world_asset_pipeline_v2_acceptance_crownweave_highland_grass.json"
   },
   "closed_region_sheets": {
     "elyndor": {"stable_sheet_id": "tileset.elyndor.a5", "sheet_sha256": "d26595d093676bfd0bdfc44259a7795674d96dc4925f6db5773efa06e044a1bb", "runtime_import_proof": false},
@@ -47,7 +48,7 @@
   },
   "region_overrides": {
     "gloamfen": "SOURCES_ACCEPTED_8_OF_8_PENDING_DETERMINISTIC_COMPILE",
-    "crownweave": "PENDING",
+    "crownweave": "PARTIAL_1_OF_8_ACCEPTED",
     "silkspire": "CLOSED_GREEN_A5_RECEIVER_BINARY_TRANSFER_PENDING_NON_BLOCKING",
     "verdancia": "PENDING",
     "tideglass-coast": "PENDING",
@@ -70,5 +71,5 @@
   "current_cinderreach_forge_stone": {"asset_id": "tileset.cinderreach.a5.source.forge_stone", "validated_zero_gpu_preflight_run_id": 40769049601, "authorized_commit": "1df682cc7fb6fb8a2bd1d351735348f1d87dd9b0", "executor_run_id": 40769256248, "source_artifact_id": 12850229778, "source_artifact_sha256": "0eedf1566859e5b4177d3adfb9877204697d2fd5094c5546f9cd04ba8ea02605", "original_paid_raw_sha256": "c7c5c02827d0a61f4ea05a99a00ddea3b44c6c7e1912c6b9ecf70c8fdfb12aaa", "raw_sha256": "5d612fcc6d669df7844a04d1641b3c65f998f539621f30682134b0d73acf245a", "normalized_sha256": "d86e59124a41805b0a54bd84496e5ca6e0cac412554117108cb3cbce0196881c", "deterministic_repair": "modal_worker/world_asset_pipeline_v2_cinderreach_forge_stone_reference_derivation.json", "manual_visual_gate": "PASS", "gpu_seconds": 2.004, "status": "ACCEPTED_MANUAL_QA_PASS_AFTER_ZERO_GPU_REFERENCE_DERIVATION"},
   "current_cinderreach_charred_timber": {"asset_id": "tileset.cinderreach.a5.source.charred_timber", "validated_zero_gpu_preflight_run_id": 40771334036, "authorized_commit": "1f295ad6274fbfc5a4119d02bfdae723fbe19aac", "executor_run_id": 40771566618, "source_artifact_id": 12852498510, "source_artifact_sha256": "64319e436e347d09b7ad7cb8a2225d0592a5a4816563079d46b87f4ec21cd37c", "raw_sha256": "d39000c89bdfc74a6ed85747550c5f14d54cf63c634b7aba31a1d936f53f5c97", "normalized_sha256": "8f13f44fda8792ce7f30055ac4ae231855c3ba4af6c5c69a3ebd20cf1e73b4d5", "manual_visual_gate": "PASS", "gpu_seconds": 1.986, "status": "ACCEPTED_MANUAL_QA_PASS"},
   "current_cinderreach_ember_veined_rock": {"asset_id": "tileset.cinderreach.a5.source.ember_veined_rock", "validated_zero_gpu_preflight_run_id": 40773933179, "authorized_commit": "fadde0af0ab98529356d169d8832691a54036222", "executor_run_id": 40774167698, "source_artifact_id": 12853746998, "source_artifact_sha256": "d826265b1b1bc78e0bae45572f67c456c6ab228f16645574a1230607af6790b8", "raw_sha256": "828a741025ffd5339007720f3062841b7bd780052b05534ed663e2731ee3d31e", "normalized_sha256": "44735db266a55f11794c529f63d0d4441995e6200cb50040592c4f65821be3ac", "manual_visual_gate": "PASS", "gpu_seconds": 2.059, "status": "ACCEPTED_MANUAL_QA_PASS"},
-  "current_crownweave_highland_grass": {"asset_id": "tileset.crownweave.a5.source.highland_grass", "validated_zero_gpu_preflight_run_id": 40775286553, "authorized_commit": "76ad5b2ae466535bac1621a556eda7dadf155d95", "executor_run_id": 40776314827, "status": "EXECUTOR_PINNED_PENDING_RESULT"}
+  "current_crownweave_highland_grass": {"asset_id": "tileset.crownweave.a5.source.highland_grass", "validated_zero_gpu_preflight_run_id": 40775286553, "authorized_commit": "76ad5b2ae466535bac1621a556eda7dadf155d95", "executor_run_id": 40776314827, "source_artifact_id": 12853894576, "source_artifact_sha256": "0cc1e6dfc19c0398e8b912ed00fa3dd31a7b82c01a4ee2ac3660ae52034b1502", "raw_sha256": "6ae2c06ded72ba9b75c038bdef0e31ea8d2fda49f48a3bdd9b6f1b911ebe7faf", "normalized_sha256": "b0e1a2d6ec1d4f597ebe8902eb3172f435f46d9323bd93f92a62284af08b7101", "manual_visual_gate": "PASS", "gpu_seconds": 1.555, "status": "ACCEPTED_MANUAL_QA_PASS"}
 }
