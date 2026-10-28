@@ -1,0 +1,95 @@
+{
+  "schema": "plushbound.tileset_region_sheet_occupancy.v1",
+  "tile_size": [48, 48],
+  "canonical_regions": [
+    "elyndor",
+    "crownweave",
+    "silkspire",
+    "gloamfen",
+    "verdancia",
+    "tideglass-coast",
+    "moonpatch-steppe",
+    "sunspool-desert",
+    "cinderreach",
+    "frostlace"
+  ],
+  "sheet_geometry": {
+    "A1": [768, 576],
+    "A2": [768, 576],
+    "A3": [768, 384],
+    "A4": [768, 720],
+    "A5": [384, 768],
+    "B": [768, 768],
+    "C": [768, 768],
+    "D": [768, 768],
+    "E": [768, 768]
+  },
+  "phase_policy": {
+    "phase1": "core region construction sheets; must validate before expansion sheets are produced",
+    "phase2": "safety-volume upper-layer expansion; D and E only after phase1 is proven",
+    "never_generate_inactive_sheet_types": true,
+    "accepted_sheet_ids_are_protected_from_rerender": true
+  },
+  "regions": {
+    "elyndor": {
+      "phase1": ["A1","A2","A3","A4","A5","B","C"],
+      "phase2": ["D","E"],
+      "reason": "pastoral region with streams/water, village structures, roads, vegetation and broad prop coverage"
+    },
+    "crownweave": {
+      "phase1": ["A2","A3","A4","A5","B","C"],
+      "phase2": ["D","E"],
+      "reason": "dense civic highland architecture and gardens; animated water sheet not required for baseline"
+    },
+    "silkspire": {
+      "phase1": ["A2","A3","A4","A5","B","C"],
+      "phase2": ["D","E"],
+      "reason": "vertical urban architecture, bridges, workshops and structural props; no baseline animated water requirement"
+    },
+    "gloamfen": {
+      "phase1": ["A1","A2","A3","A4","A5","B","C"],
+      "phase2": ["D","E"],
+      "reason": "wetland requires animated water plus boardwalk/shelter architecture and marsh props"
+    },
+    "verdancia": {
+      "phase1": ["A1","A2","A3","A4","A5","B","C"],
+      "phase2": ["D","E"],
+      "reason": "living forest infrastructure, streams, bridges, root paths, vegetation and settlement props"
+    },
+    "tideglass-coast": {
+      "phase1": ["A1","A2","A3","A4","A5","B","C"],
+      "phase2": ["D","E"],
+      "reason": "coastal region requires animated sea/waterfall capacity, cliffs, docks, buildings and maritime props"
+    },
+    "moonpatch-steppe": {
+      "phase1": ["A2","A3","A4","A5","B","C"],
+      "phase2": ["D","E"],
+      "reason": "open steppe, trails, camp structures and caravan props; animated water not required for baseline"
+    },
+    "sunspool-desert": {
+      "phase1": ["A1","A2","A3","A4","A5","B","C"],
+      "phase2": ["D","E"],
+      "reason": "desert terrain, oasis water, salvage ruins, shelters and heat-region props"
+    },
+    "cinderreach": {
+      "phase1": ["A1","A2","A3","A4","A5","B","C"],
+      "phase2": ["D","E"],
+      "reason": "volcanic terrain uses A1 animated liquid capacity for lava plus forge structures and industrial-fantasy props"
+    },
+    "frostlace": {
+      "phase1": ["A1","A2","A3","A4","A5","B","C"],
+      "phase2": ["D","E"],
+      "reason": "ice/water animation capacity, frozen terrain, archive structures and cold-region props"
+    }
+  },
+  "counts": {
+    "phase1_expected_sheet_count": 67,
+    "phase2_expected_sheet_count": 20,
+    "final_expected_sheet_count": 87,
+    "full_blind_capacity_would_be": 90,
+    "intentionally_inactive_A1_regions": ["crownweave","silkspire","moonpatch-steppe"]
+  },
+  "stable_id_format": "tileset.<region>.<sheet_type_lower>",
+  "paid_generation_authorized": false,
+  "next_action": "VALIDATE_DETERMINISTIC_COMPILER_THEN_DEFINE_SMALL_SOURCE_ART_CANARY"
+}
