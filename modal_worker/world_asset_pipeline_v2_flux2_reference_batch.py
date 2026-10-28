@@ -28,10 +28,11 @@ from modal_worker.tileset_source_normalizer import (
 from modal_worker.world_asset_pipeline_v2_controller import resolve_state
 from modal_worker.world_asset_pipeline_v2_normalizer import normalize_image
 from modal_worker.world_asset_pipeline_v2_planner import (
+    MAX_BATCH_SIZE,
     PROMPT_CONTRACT_VERSION,
-    SOURCE_PRESET if False else MAX_BATCH_SIZE,
+    _seed,
+    validate_receiver_contract,
 )
-from modal_worker.world_asset_pipeline_v2_planner import _seed, validate_receiver_contract
 
 # Keep these duplicated here so the repaired lane cannot silently drift with a legacy renderer.
 MODEL_ID = "black-forest-labs/FLUX.2-klein-4B"
