@@ -1,20 +1,21 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_state.v1",
-  "status": "CINDERREACH_4_OF_8_EMBER_VEINED_ROCK_EXECUTOR_PINNED",
+  "status": "CINDERREACH_CLOSED_GREEN_A5_BINARY_TRANSFER_PENDING",
   "pipeline_version": 2,
   "production_frozen": true,
   "paid_execution_enabled": false,
   "active_paid_region": null,
   "catalog_wide_launch_authorized": false,
   "runtime_import_proof": true,
-  "runtime_import_proof_scope": "generic game-side A5 runtime importer smoke plus Android APK packaging proof; exact Frostlace sheet runtime import remains pending",
+  "runtime_import_proof_scope": "generic game-side A5 runtime importer smoke plus Android APK packaging proof; exact Frostlace and Cinderreach sheet runtime imports remain pending",
   "scope_manifest": "modal_worker/tileset_regional_a5_scope_manifest.json",
   "freeze_manifest": "modal_worker/world_asset_pipeline_v2_freeze.json",
   "receiver_contract": "modal_worker/world_asset_pipeline_v2_receiver_contract.json",
   "accepted_region_source_closeouts": {
     "gloamfen": "modal_worker/tileset_gloamfen_a5_source_closeout.json",
     "silkspire": "modal_worker/tileset_silkspire_a5_source_closeout.json",
-    "frostlace": "modal_worker/tileset_frostlace_a5_source_closeout.json"
+    "frostlace": "modal_worker/tileset_frostlace_a5_source_closeout.json",
+    "cinderreach": "modal_worker/tileset_cinderreach_a5_source_closeout.json"
   },
   "accepted_asset_records": {
     "tileset.silkspire.a5.source.city_stone_paving": "modal_worker/world_asset_pipeline_v2_acceptance_silkspire_city_stone_paving.json",
@@ -41,20 +42,32 @@
   "closed_region_sheets": {
     "elyndor": {"stable_sheet_id": "tileset.elyndor.a5", "sheet_sha256": "d26595d093676bfd0bdfc44259a7795674d96dc4925f6db5773efa06e044a1bb", "runtime_import_proof": false},
     "silkspire": {"stable_sheet_id": "tileset.silkspire.a5", "sheet_sha256": "261e8b9c6784bd39f465bc3f310091ff874f733301a1301b3dc64c514f916216", "compile_closeout": "modal_worker/tileset_silkspire_a5_compile_closeout.json", "receiver_manifest": "overrides/a5_runtime_silkspire_manifest.json", "runtime_import_proof": false, "receiver_binary_transfer_pending": true, "receiver_binary_transfer_is_not_rerender_authority": true},
-    "frostlace": {"stable_sheet_id": "tileset.frostlace.a5", "sheet_sha256": "3e14c6712886d10294232c34fabc97f28a52e1b2c5cdc9c02a066b1ceac2f6af", "source_closeout": "modal_worker/tileset_frostlace_a5_source_closeout.json", "compile_closeout": "modal_worker/tileset_frostlace_a5_compile_closeout.json", "banked_sheet": "modal_worker/banked_sheets/frostlace_A5.png", "runtime_import_proof": false, "receiver_binary_transfer_pending": true, "receiver_binary_transfer_is_not_rerender_authority": true}
+    "frostlace": {"stable_sheet_id": "tileset.frostlace.a5", "sheet_sha256": "3e14c6712886d10294232c34fabc97f28a52e1b2c5cdc9c02a066b1ceac2f6af", "source_closeout": "modal_worker/tileset_frostlace_a5_source_closeout.json", "compile_closeout": "modal_worker/tileset_frostlace_a5_compile_closeout.json", "banked_sheet": "modal_worker/banked_sheets/frostlace_A5.png", "runtime_import_proof": false, "receiver_binary_transfer_pending": true, "receiver_binary_transfer_is_not_rerender_authority": true},
+    "cinderreach": {"stable_sheet_id": "tileset.cinderreach.a5", "sheet_sha256": "d012bec74d94afac5493b188167744489521e37f70bb405a654212750dcc39ea", "source_closeout": "modal_worker/tileset_cinderreach_a5_source_closeout.json", "compile_closeout": "modal_worker/tileset_cinderreach_a5_compile_closeout.json", "compiled_sheet_size_bytes": 272963, "compiled_binary_repo_transfer_pending": true, "runtime_import_proof": false, "receiver_binary_transfer_pending": true, "receiver_binary_transfer_is_not_rerender_authority": true}
   },
-  "region_overrides": {"gloamfen": "SOURCES_ACCEPTED_8_OF_8_PENDING_DETERMINISTIC_COMPILE", "crownweave": "PENDING", "silkspire": "CLOSED_GREEN_A5_RECEIVER_BINARY_TRANSFER_PENDING_NON_BLOCKING", "verdancia": "PENDING", "tideglass-coast": "PENDING", "moonpatch-steppe": "PENDING", "sunspool-desert": "PENDING", "cinderreach": "PARTIAL_4_OF_8_ACCEPTED", "frostlace": "CLOSED_GREEN_A5_RECEIVER_BINARY_TRANSFER_PENDING_NON_BLOCKING"},
+  "region_overrides": {
+    "gloamfen": "SOURCES_ACCEPTED_8_OF_8_PENDING_DETERMINISTIC_COMPILE",
+    "crownweave": "PENDING",
+    "silkspire": "CLOSED_GREEN_A5_RECEIVER_BINARY_TRANSFER_PENDING_NON_BLOCKING",
+    "verdancia": "PENDING",
+    "tideglass-coast": "PENDING",
+    "moonpatch-steppe": "PENDING",
+    "sunspool-desert": "PENDING",
+    "cinderreach": "CLOSED_GREEN_A5_BINARY_TRANSFER_PENDING_NON_BLOCKING",
+    "frostlace": "CLOSED_GREEN_A5_RECEIVER_BINARY_TRANSFER_PENDING_NON_BLOCKING"
+  },
   "asset_state_overrides": {},
   "allowed_asset_states": ["PENDING", "ACCEPTED", "REJECTED_SEMANTIC", "REJECTED_TECHNICAL"],
   "generation_policy": {"one_shared_worker": true, "one_region_at_a_time": true, "accepted_ids_never_eligible": true, "requested_ids_only": true, "attempts_per_requested_id_cap": 1, "failure_isolated_to_asset_id": true, "manual_visual_qa_required": true, "individual_asset_acceptance_is_hash_bound": true, "region_closeout_only_after_all_8_assets_accepted": true, "paid_render_preserved_before_post_render_qa": true, "tileset_inspection_preset": "plushbound_tileset_source", "bounded_live_batch_cap_1_to_8": true, "exact_requested_count_gate_required": true, "repeat_prompt_only_repair_after_three_semantic_failures": false},
   "deterministic_policy": {"normalization_zero_gpu": true, "finishing_zero_gpu": true, "compile_zero_gpu": true, "reference_derived_microtexture_zero_gpu": true, "compile_requires_8_of_8_accepted": true, "engine_v1_receiver_runtime_importer_present": true, "state_resolution_mode_independent": true},
   "silkspire_compile_closeout": {"status": "CLOSED_GREEN_DETERMINISTIC_A5", "sheet_sha256": "261e8b9c6784bd39f465bc3f310091ff874f733301a1301b3dc64c514f916216", "slot_count": 128, "unique_slot_hashes": 128, "provider_calls": 0, "gpu_calls": 0, "generation_calls": 0},
   "frostlace_compile_closeout": {"status": "CLOSED_GREEN_DETERMINISTIC_A5", "sheet_sha256": "3e14c6712886d10294232c34fabc97f28a52e1b2c5cdc9c02a066b1ceac2f6af", "sheet_size": [384, 768], "slot_count": 128, "unique_slot_hashes": 128, "reference_derived_source_count": 3, "reference_derived_evidence": "modal_worker/world_asset_pipeline_v2_frostlace_reference_derived_closeout.json", "provider_calls": 0, "gpu_calls": 0, "generation_calls": 0, "runtime_import_proof": false},
-  "next_fresh_region_after_v2_validation": "cinderreach",
+  "cinderreach_compile_closeout": {"status": "CLOSED_GREEN_DETERMINISTIC_A5", "sheet_sha256": "d012bec74d94afac5493b188167744489521e37f70bb405a654212750dcc39ea", "sheet_size": [384, 768], "slot_count": 128, "unique_slot_hashes": 128, "reference_derived_source_count": 3, "reference_derived_evidence": "modal_worker/world_asset_pipeline_v2_cinderreach_reference_derived_closeout.json", "provider_calls": 0, "gpu_calls": 0, "generation_calls": 0, "runtime_import_proof": false},
+  "next_fresh_region_after_v2_validation": "crownweave",
   "frostlace_history": {"canary_executor_run_id": 40754030630, "remaining_seven_executor_run_id": 40755360893, "repair4_executor_run_id": 40757599963, "repair3_executor_run_id": 40758764663, "final_resolution": "ZERO_GPU_REFERENCE_DERIVED_MICROTEXTURE_THREE_OF_THREE_ACCEPTED", "reference_sha256": "532ee641c6c899e0dce716ff05bbff70039982fce7e4cc4d238870de13bbd15b"},
   "current_cinderreach_canary": {"asset_id": "tileset.cinderreach.a5.source.basalt", "validated_zero_gpu_preflight_run_id": 40765274899, "authorized_commit": "03867c6e9bbce04961047094eedb5d2ce04edad9", "executor_run_id": 40765470020, "source_artifact_id": 12849542886, "source_artifact_sha256": "3a0735e889ec90c6ae30c2f15e0f3387e28030bf52f9f9c69a3374bb466b30c8", "original_paid_raw_sha256": "cc0d4751655ec2e9a75653963424cccfc7e6953827acf5f2bf30634021fffb1a", "raw_sha256": "f1eaefd6abd82bbb7dc2db99bf7aa06ece9cfd22a057df8d79d75cd30ddb8718", "normalized_sha256": "d681dd052a949c4cbbfdb869e45101eb7721ab7b0195b8aa464767be48107ef8", "deterministic_repair": "modal_worker/world_asset_pipeline_v2_cinderreach_basalt_perimeter_cleanup.json", "manual_visual_gate": "PASS", "gpu_seconds": 1.65, "status": "ACCEPTED_MANUAL_QA_PASS_AFTER_ZERO_GPU_CLEANUP"},
   "current_cinderreach_ash_soil": {"asset_id": "tileset.cinderreach.a5.source.ash_soil", "validated_zero_gpu_preflight_run_id": 40767046153, "authorized_commit": "0aeb1fb881daeef15f175ac062e742cbc9fa2987", "executor_run_id": 40767242073, "source_artifact_id": 12849264942, "source_artifact_sha256": "0a576e6aaae8debf19777035d9a5471352f824b0ae55b5ecca187ebe35fc6ea1", "original_paid_raw_sha256": "8c01d54369d3cd5b0bad36a62907ebb24cae4316892e5b9575c8bbb71336732c", "raw_sha256": "e5382737d9e51168f477e229a3365f33989216ae76c8976681cbacf05a66000f", "normalized_sha256": "8e14bc85cbe1979ae858b402d1bbe042c2e1264d9c81f3df7c62a97218efd284", "deterministic_repair": "modal_worker/world_asset_pipeline_v2_cinderreach_ash_soil_reference_derivation.json", "manual_visual_gate": "PASS", "gpu_seconds": 2.029, "status": "ACCEPTED_MANUAL_QA_PASS_AFTER_ZERO_GPU_REFERENCE_DERIVATION"},
   "current_cinderreach_forge_stone": {"asset_id": "tileset.cinderreach.a5.source.forge_stone", "validated_zero_gpu_preflight_run_id": 40769049601, "authorized_commit": "1df682cc7fb6fb8a2bd1d351735348f1d87dd9b0", "executor_run_id": 40769256248, "source_artifact_id": 12850229778, "source_artifact_sha256": "0eedf1566859e5b4177d3adfb9877204697d2fd5094c5546f9cd04ba8ea02605", "original_paid_raw_sha256": "c7c5c02827d0a61f4ea05a99a00ddea3b44c6c7e1912c6b9ecf70c8fdfb12aaa", "raw_sha256": "5d612fcc6d669df7844a04d1641b3c65f998f539621f30682134b0d73acf245a", "normalized_sha256": "d86e59124a41805b0a54bd84496e5ca6e0cac412554117108cb3cbce0196881c", "deterministic_repair": "modal_worker/world_asset_pipeline_v2_cinderreach_forge_stone_reference_derivation.json", "manual_visual_gate": "PASS", "gpu_seconds": 2.004, "status": "ACCEPTED_MANUAL_QA_PASS_AFTER_ZERO_GPU_REFERENCE_DERIVATION"},
   "current_cinderreach_charred_timber": {"asset_id": "tileset.cinderreach.a5.source.charred_timber", "validated_zero_gpu_preflight_run_id": 40771334036, "authorized_commit": "1f295ad6274fbfc5a4119d02bfdae723fbe19aac", "executor_run_id": 40771566618, "source_artifact_id": 12852498510, "source_artifact_sha256": "64319e436e347d09b7ad7cb8a2225d0592a5a4816563079d46b87f4ec21cd37c", "raw_sha256": "d39000c89bdfc74a6ed85747550c5f14d54cf63c634b7aba31a1d936f53f5c97", "normalized_sha256": "8f13f44fda8792ce7f30055ac4ae231855c3ba4af6c5c69a3ebd20cf1e73b4d5", "manual_visual_gate": "PASS", "gpu_seconds": 1.986, "status": "ACCEPTED_MANUAL_QA_PASS"},
-  "current_cinderreach_ember_veined_rock": {"asset_id": "tileset.cinderreach.a5.source.ember_veined_rock", "validated_zero_gpu_preflight_run_id": 40773933179, "authorized_commit": "fadde0af0ab98529356d169d8832691a54036222", "executor_run_id": 40774167698, "status": "EXECUTOR_PINNED_PENDING_RESULT"}
+  "current_cinderreach_ember_veined_rock": {"asset_id": "tileset.cinderreach.a5.source.ember_veined_rock", "validated_zero_gpu_preflight_run_id": 40773933179, "authorized_commit": "fadde0af0ab98529356d169d8832691a54036222", "executor_run_id": 40774167698, "source_artifact_id": 12853746998, "source_artifact_sha256": "d826265b1b1bc78e0bae45572f67c456c6ab228f16645574a1230607af6790b8", "raw_sha256": "828a741025ffd5339007720f3062841b7bd780052b05534ed663e2731ee3d31e", "normalized_sha256": "44735db266a55f11794c529f63d0d4441995e6200cb50040592c4f65821be3ac", "manual_visual_gate": "PASS", "gpu_seconds": 2.059, "status": "ACCEPTED_MANUAL_QA_PASS"}
 }
