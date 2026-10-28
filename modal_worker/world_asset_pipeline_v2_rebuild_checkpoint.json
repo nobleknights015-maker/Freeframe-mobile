@@ -1,6 +1,6 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_rebuild_checkpoint.v1",
-  "status": "V2_CINDERREACH_CLOSED_NEXT_CROWNWEAVE",
+  "status": "V2_CROWNWEAVE_1_OF_8_HIGHLAND_GRASS_ACCEPTED",
   "production_frozen": true,
   "paid_execution_enabled": false,
   "production_executor_installed": true,
@@ -94,13 +94,24 @@
     "receiver_binary_transfer_is_not_rerender_authority": true,
     "receiver_binary_transfer_blocks_asset_production": false
   },
+  "crownweave": {
+    "status": "PARTIAL_1_OF_8_ACCEPTED",
+    "accepted_sources": 1,
+    "accepted_source_ids": ["tileset.crownweave.a5.source.highland_grass"],
+    "remaining_sources": 7,
+    "last_paid_canary_asset": "tileset.crownweave.a5.source.highland_grass",
+    "last_paid_canary_executor_run_id": 40776314827,
+    "last_paid_canary_gpu_seconds": 1.555,
+    "manual_visual_gate": "PASS",
+    "production_frozen": true
+  },
   "zero_spend_preflight": {
-    "latest_revision": 25,
-    "workflow_run_id": 40773933179,
+    "latest_revision": 28,
+    "workflow_run_id": 40776706055,
     "status": "PASS_EXACT_REMAINING_BATCH_SHADOW",
-    "region": "cinderreach",
-    "accepted_count_at_validation": 4,
-    "remaining_count_at_validation": 4,
+    "region": "crownweave",
+    "accepted_count_at_validation": 1,
+    "remaining_count_at_validation": 7,
     "provider_calls": 0,
     "gpu_calls": 0,
     "generation_calls": 0
@@ -109,5 +120,5 @@
   "runtime_import_proof": true,
   "pipeline_resume_blocker": false,
   "next_fresh_region_after_qualification": "crownweave",
-  "next_manager_action": "KEEP PRODUCTION FROZEN; NEXT ROUND USE REVISION-26 ZERO-SPEND CROWNWEAVE TRANSITION PREFLIGHT, THEN AT MOST ONE CROWNWEAVE CANARY; DO NOT REOPEN CINDERREACH OR RERENDER ITS EIGHT ACCEPTED SOURCES"
+  "next_manager_action": "KEEP PRODUCTION FROZEN; NEXT ROUND CONTINUE CROWNWEAVE FROM 1 OF 8 WITH ONE FRESH SOURCE CANARY; DO NOT RERENDER HIGHLAND_GRASS"
 }
