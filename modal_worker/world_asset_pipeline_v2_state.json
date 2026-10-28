@@ -1,10 +1,10 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_state.v1",
-  "status": "FROSTLACE_PACKED_SNOW_CANARY_AUTHORIZED",
+  "status": "FROSTLACE_PACKED_SNOW_CANARY_AUTHORIZED_PRODUCTION_REFROZEN",
   "pipeline_version": 2,
-  "production_frozen": false,
-  "paid_execution_enabled": true,
-  "active_paid_region": "frostlace",
+  "production_frozen": true,
+  "paid_execution_enabled": false,
+  "active_paid_region": null,
   "catalog_wide_launch_authorized": false,
   "runtime_import_proof": true,
   "runtime_import_proof_scope": "game-side A5 runtime importer smoke plus Android APK packaging proof",
@@ -50,7 +50,7 @@
     "moonpatch-steppe": "PENDING",
     "sunspool-desert": "PENDING",
     "cinderreach": "PENDING",
-    "frostlace": "CANARY_PACKED_SNOW_AUTHORIZED"
+    "frostlace": "CANARY_PACKED_SNOW_AUTHORIZED_PENDING_RESULT_REVIEW"
   },
   "asset_state_overrides": {},
   "allowed_asset_states": ["PENDING", "ACCEPTED", "REJECTED_SEMANTIC", "REJECTED_TECHNICAL"],
@@ -120,7 +120,10 @@
     "region": "frostlace",
     "asset_id": "tileset.frostlace.a5.source.packed_snow",
     "validated_zero_gpu_preflight_run_id": 40753858590,
+    "executor_run_id": 40754030630,
+    "authorized_commit": "13ade52de71c534f568764870965cd49fef687a5",
     "automatic_acceptance": false,
-    "automatic_compile": false
+    "automatic_compile": false,
+    "status": "IN_PROGRESS_OR_PENDING_RESULT_REVIEW"
   }
 }
