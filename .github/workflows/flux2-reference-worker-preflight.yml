@@ -1,0 +1,54 @@
+name: Vera FLUX2 Reference Worker Preflight
+
+on:
+  push:
+    branches:
+      - freeframe-modal-worker
+    paths:
+      - 'modal_worker/freeframe_flux2_reference_worker.py'
+      - '.github/workflows/flux2-reference-worker-preflight.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install local preflight dependencies
+        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2'
+      - name: Compile dedicated worker
+        run: python -m py_compile modal_worker/freeframe_flux2_reference_worker.py
+      - name: Deploy dedicated worker without generation
+        run: |
+          set -euo pipefail
+          test -n "${MODAL_TOKEN_ID:-}"
+          test -n "${MODAL_TOKEN_SECRET:-}"
+          modal deploy --strategy recreate modal_worker/freeframe_flux2_reference_worker.py
+      - name: Inspect shared FLUX2 cache without GPU generation
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -u - <<'PY'
+          import json
+          import modal
+          from pathlib import Path
+          inspect = modal.Function.from_name('freeframe-flux2-reference-worker', 'inspect_model_cache')
+          result = inspect.remote()
+          Path('flux2-reference-worker-preflight.json').write_text(json.dumps(result, indent=2, sort_keys=True) + '\n')
+          print(json.dumps(result, sort_keys=True), flush=True)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vera-flux2-reference-worker-preflight-${{ github.run_id }}
+          path: flux2-reference-worker-preflight.json
+          if-no-files-found: error
+          retention-days: 7
