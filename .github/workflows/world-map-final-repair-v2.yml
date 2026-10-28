@@ -1,4 +1,4 @@
-name: Plushbound World Maps Two-Region Baseline Repair V2
+name: Plushbound Tileset Source Paid Canary
 
 on:
   push:
@@ -11,11 +11,11 @@ permissions:
   contents: read
 
 concurrency:
-  group: plushbound-world-map-final-paid-canary
+  group: plushbound-tileset-source-paid-canary
   cancel-in-progress: false
 
 jobs:
-  baseline-repair-v2:
+  tileset-source-canary:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
@@ -30,61 +30,61 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Re-run no-spend gate at current HEAD
+      - name: Install deterministic preflight dependency
+        run: python -m pip install --disable-pip-version-check 'pillow>=10.4,<12'
+
+      - name: Re-run source canary no-spend gate at current HEAD
         env:
           PLUSHBOUND_PRODUCTION_ENABLED: '0'
           PLUSHBOUND_PAID_REMOTE_ENABLED: '0'
         shell: bash
         run: |
           set -euo pipefail
-          PYTHONPATH=. python .github/preflight/world_map_final_preflight.py > world-map-baseline-repair-v2-preflight.json
+          PYTHONPATH=. python .github/preflight/tileset_source_canary_preflight.py > tileset-source-paid-preflight.json
           python - <<'PY'
           import json
           from pathlib import Path
-          r = json.loads(Path('world-map-baseline-repair-v2-preflight.json').read_text(encoding='utf-8'))
-          assert r['status'] == 'PASS_NO_SPEND'
+          r = json.loads(Path('tileset-source-paid-preflight.json').read_text(encoding='utf-8'))
+          assert r['status'] == 'PASS_NO_SPEND_SOURCE_CANARY_NOT_TRIGGERED'
           assert r['production_skipped'] is True
           assert r['paid_remote_execution_skipped'] is True
-          assert r['generation_calls'] == 0
-          assert r['gpu_calls'] == 0
           assert r['provider_calls'] == 0
+          assert r['gpu_calls'] == 0
+          assert r['generation_calls'] == 0
+          assert r['source_count'] == 8
+          assert r['paid_tileset_source_canary_authorized'] is False
           assert all(v == 'PASS' for v in r['checks'].values())
-          print('CURRENT_HEAD_PREFLIGHT=PASS_NO_SPEND')
+          print('CURRENT_HEAD_TILESET_SOURCE_PREFLIGHT=PASS_NO_SPEND')
           PY
 
-      - name: Validate baseline manual QA and exact repair trigger
+      - name: Validate exact eight-source paid trigger
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
           import json
           from pathlib import Path
-          qa = json.loads(Path('modal_worker/world_map_baseline_completion_manual_qa.json').read_text(encoding='utf-8'))
-          closeout = json.loads(Path('modal_worker/world_map_final_canary_closeout.json').read_text(encoding='utf-8'))
           trigger = json.loads(Path('modal_worker/world_map_final_repair_trigger.json').read_text(encoding='utf-8'))
-          assert qa['source_run_id'] == 40622999487
-          assert qa['source_artifact_id'] == 12787978247
-          assert qa['machine_gate'] == 'PASS_2_OF_2'
-          assert qa['manual_visual_gate'] == 'QUARANTINE_2_OF_2'
-          assert qa['accepted_count'] == 0
-          quarantine = {a['asset_id'] for a in qa['quarantined_for_targeted_repair']}
-          assert quarantine == {
-              'world.cinderreach.environment_master',
-              'world.frostlace.environment_master',
-          }
-          protected = {a['asset_id'] for a in closeout['accepted_assets']}
-          assert len(protected) == 8
-          assert protected.isdisjoint(quarantine)
-          assert trigger['schema'] == 'plushbound.world_map_final_repair_trigger.v1'
+          canary = json.loads(Path('modal_worker/tileset_source_canary_manifest.json').read_text(encoding='utf-8'))
+          expected = {row['asset_id'] for row in canary['materials']}
+          assert trigger['schema'] == 'plushbound.tileset_source_canary_trigger.v1'
           assert trigger['enabled'] is True
-          assert trigger['mode'] == 'baseline_repair_v2'
-          assert trigger['asset_cap'] == 2
-          assert set(trigger['asset_ids']) == quarantine
-          assert set(trigger['accepted_asset_ids_not_to_regenerate']) == protected
+          assert trigger['mode'] == 'elyndor_a5_source_canary'
+          assert trigger['asset_cap'] == 8
+          assert trigger['generation_cap'] == 8
+          assert trigger['retry_generation_cap'] == 0
+          assert trigger['preflight_run_id'] == 40624927471
+          assert trigger['preflight_conclusion'] == 'success'
+          assert set(trigger['asset_ids']) == expected
+          assert len(expected) == 8
+          assert trigger['target_region'] == 'elyndor'
+          assert trigger['target_sheet_type'] == 'A5'
+          assert trigger['full_A5_expansion_authorized'] is False
+          assert trigger['cross_region_expansion_authorized'] is False
           assert trigger['never_stack_paid_runs'] is True
           assert trigger['catalog_wide_launch_authorized'] is False
           assert trigger['creator_full_outfits_remain_closed_at'] == 24
-          print('WORLD_BASELINE_REPAIR_V2_TRIGGER=VALID_EXACT_2')
+          print('TILESET_SOURCE_PAID_TRIGGER=VALID_EXACT_8')
           PY
 
       - name: Require Modal credentials
@@ -96,51 +96,58 @@ jobs:
       - name: Install Modal CLI
         run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2'
 
-      - name: Compile two-region repair producer
-        run: python -m compileall -q modal_worker/world_map_final_baseline_repair_v2.py
+      - name: Compile exact eight-source producer
+        run: python -m compileall -q modal_worker/tileset_source_canary_production.py
 
-      - name: Run only Cinderreach and Frostlace repair V2
+      - name: Run exactly eight Elyndor A5 material masters
         shell: bash
         run: |
           set -euo pipefail
-          modal run modal_worker/world_map_final_baseline_repair_v2.py | tee world-map-baseline-repair-v2.log
+          modal run modal_worker/tileset_source_canary_production.py | tee tileset-source-canary.log
 
-      - name: Verify baseline repair V2 report
+      - name: Verify source canary deterministic report
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
           import json
           from pathlib import Path
-          p = Path('world-map-baseline-repair-v2/report.json')
-          assert p.is_file(), 'missing baseline repair V2 report'
+          p = Path('tileset-source-canary/report.json')
+          assert p.is_file(), 'missing tileset source canary report'
           r = json.loads(p.read_text(encoding='utf-8'))
-          assert r['schema'] == 'plushbound.world_map_baseline_repair_v2_report.v1'
-          assert r['version'] == 'plushbound-world-map-baseline-repair-v2-distant-composition'
-          assert r['wave_mode'] == 'baseline-repair-v2'
-          assert r['requested_count'] == 2
-          assert r['accepted_count'] == 2
+          assert r['schema'] == 'plushbound.tileset_source_canary_report.v1'
+          assert r['version'] == 'plushbound-tileset-source-canary-v1-elyndor-a5'
+          assert r['requested_count'] == 8
+          assert r['generation_count'] == 8
+          assert r['generation_retry_count'] == 0
+          assert r['accepted_count'] == 8
           assert r['quarantined_count'] == 0
+          assert r['full_A5_expansion_authorized'] is False
+          assert r['manual_visual_qa_required'] is True
           assert r['catalog_wide_launch_authorized'] is False
           assets = r['assets']
-          assert {a['asset_id'] for a in assets} == {
-              'world.cinderreach.environment_master',
-              'world.frostlace.environment_master',
-          }
-          assert len({a['sha256'] for a in assets}) == 2
-          assert all(a['width'] == 1024 and a['height'] == 768 for a in assets)
-          assert all(a['inspection']['accepted'] is True for a in assets)
-          print('WORLD_BASELINE_REPAIR_V2=PASS_2_OF_2_DETERMINISTIC')
+          assert len(assets) == 8
+          assert len({a['asset_id'] for a in assets}) == 8
+          assert len({a['raw_sha256'] for a in assets}) == 8
+          assert len({a['normalized_sha256'] for a in assets}) == 8
+          assert all(a['generation_attempts'] == 1 for a in assets)
+          assert all(a['source_width'] == 384 and a['source_height'] == 384 for a in assets)
+          assert all(a['normalized_width'] == 48 and a['normalized_height'] == 48 for a in assets)
+          assert all(a['raw_inspection']['accepted'] is True for a in assets)
+          assert all(a['normalizer_accepted'] is True for a in assets)
+          assert all(a['accepted'] is True for a in assets)
+          print('TILESET_SOURCE_CANARY=PASS_8_OF_8_DETERMINISTIC')
+          print('GENERATION_COUNT=8 RETRIES=0')
           PY
 
-      - name: Upload baseline repair V2 products and evidence
+      - name: Upload raw, normalized and report evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: plushbound-world-map-baseline-repair-v2-${{ github.run_id }}
+          name: plushbound-tileset-source-canary-${{ github.run_id }}
           path: |
-            world-map-baseline-repair-v2-preflight.json
-            world-map-baseline-repair-v2.log
-            world-map-baseline-repair-v2/
+            tileset-source-paid-preflight.json
+            tileset-source-canary.log
+            tileset-source-canary/
           if-no-files-found: warn
           retention-days: 14
