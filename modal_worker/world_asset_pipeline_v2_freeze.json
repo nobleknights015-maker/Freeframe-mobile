@@ -1,12 +1,12 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_freeze.v1",
-  "status": "PAID_WORLD_ASSET_PRODUCTION_REFROZEN_AFTER_SILKSPIRE_TWO_REPAIR_AUTHORIZATION",
+  "status": "PAID_WORLD_ASSET_PRODUCTION_OPEN_SILKSPIRE_FINAL_METAL_SUBSTRATE",
   "branch": "freeframe-modal-worker",
-  "production_frozen": true,
-  "paid_remote_execution_allowed": false,
-  "provider_calls_allowed": 0,
-  "gpu_calls_allowed": 0,
-  "generation_calls_allowed": 0,
+  "production_frozen": false,
+  "paid_remote_execution_allowed": true,
+  "provider_calls_allowed": 1,
+  "gpu_calls_allowed": 1,
+  "generation_calls_allowed": 1,
   "catalog_wide_launch_authorized": false,
   "legacy_pipeline_mode": "READ_ONLY_EVIDENCE_AND_ACCEPTED_HASH_SOURCE",
   "legacy_paid_triggers_must_not_be_modified_or_replayed": true,
@@ -36,8 +36,9 @@
     "provider_gpu_generation_caps_must_match": true
   },
   "last_authorized_live_canary_commit": "53654a09e9439795f4c094b0555d46e30670111e",
-  "last_failed_zero_spend_batch_authorization_commit": "113b5a9d83462bb3cad859e05eae51021f1f9702",
-  "validated_batch_preflight_run_id": 40743938012,
-  "last_authorized_region_batch_commit": "d117139d3d9cb83ffbcefad142cb6f826dbefe7c",
-  "last_authorized_repair_commit": "d02905f52451a72660b9c162e624a85a88b21960"
+  "validated_batch_preflight_run_id": 40744871552,
+  "authorized_region": "silkspire",
+  "authorized_requested_source_count": 1,
+  "automatic_acceptance": false,
+  "automatic_compile": false
 }
