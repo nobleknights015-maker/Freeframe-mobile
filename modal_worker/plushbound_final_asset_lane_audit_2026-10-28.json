@@ -43,48 +43,41 @@
       "next_action": "MOVE_ON_NO_REDUNDANT_REGENERATION"
     },
     "maps_world_environment_masters": {
-      "status": "CANARY_CLOSED_BASELINE_COMPLETION_PENDING",
+      "status": "COMPLETE_10_OF_10_VISUAL_AND_DETERMINISTIC",
       "selected_as_first_unfinished_final_lane": true,
-      "selection_reason": "Existing environment renderer canaries proved the route, but no final world environment-master closeout existed at audit start.",
-      "no_spend_preflight_run_id": 40619587708,
-      "no_spend_preflight_conclusion": "success",
-      "initial_paid_canary_run_id": 40619802387,
-      "initial_paid_canary_deterministic_result": "PASS_8_OF_8",
-      "initial_paid_canary_manual_visual_result": "QUARANTINE_6_OF_8",
-      "repair_runs": [
-        {"version": "v2", "run_id": 40620527152, "manual_result": "ACCEPT_3_QUARANTINE_3"},
-        {"version": "v3", "run_id": 40621601567, "manual_result": "ACCEPT_1_QUARANTINE_2"},
-        {"version": "v4", "run_id": 40621975556, "manual_result": "ACCEPT_1_QUARANTINE_1"},
-        {"version": "v5", "run_id": 40622299468, "manual_result": "PASS_1_OF_1"}
-      ],
-      "initial_canary_closeout": "PASS_8_OF_8_MANUAL_VISUAL",
-      "accepted_and_protected_count": 8,
       "canonical_region_baseline_total": 10,
-      "canonical_region_baseline_remaining": 2,
-      "remaining_asset_ids": [
-        "world.cinderreach.environment_master",
-        "world.frostlace.environment_master"
+      "accepted_and_protected_count": 10,
+      "quarantined_count": 0,
+      "initial_no_spend_preflight_run_id": 40619587708,
+      "baseline_completion_no_spend_preflight_run_id": 40622878364,
+      "initial_paid_canary_run_id": 40619802387,
+      "repair_runs": [
+        {"version": "v2", "run_id": 40620527152},
+        {"version": "v3", "run_id": 40621601567},
+        {"version": "v4", "run_id": 40621975556},
+        {"version": "v5", "run_id": 40622299468}
       ],
-      "scaling_authorized": true,
-      "scaling_scope": "ENVIRONMENT_MASTER_LANE_ONLY",
+      "baseline_first_attempt_run_id": 40622999487,
+      "baseline_first_attempt_manual_result": "QUARANTINE_2_OF_2",
+      "baseline_repair_v2_run_id": 40623431974,
+      "baseline_repair_v2_manual_result": "PASS_2_OF_2",
+      "final_manual_visual_gate": "PASS_10_OF_10",
+      "protected_from_rerender": true,
       "catalog_wide_launch_authorized": false,
       "evidence": [
-        ".github/preflight/world_map_final_preflight_contract.json",
-        ".github/preflight/world_map_final_preflight.py",
-        "modal_worker/world_map_final_canary_manual_qa.json",
-        "modal_worker/world_map_final_repair_v2_manual_qa.json",
-        "modal_worker/world_map_final_repair_v3_manual_qa.json",
-        "modal_worker/world_map_final_repair_v4_manual_qa.json",
-        "modal_worker/world_map_final_repair_v5_manual_qa.json",
-        "modal_worker/world_map_final_canary_closeout.json"
+        "modal_worker/world_map_final_canary_closeout.json",
+        "modal_worker/world_map_baseline_completion_manual_qa.json",
+        "modal_worker/world_map_baseline_repair_v2_manual_qa.json",
+        "modal_worker/world_map_environment_master_baseline_closeout.json"
       ],
-      "next_action": "NO_SPEND_PREFLIGHT_AND_BOUNDED_TWO_ASSET_COMPLETION_FOR_CINDERREACH_AND_FROSTLACE"
+      "scope_boundary": "Environment master baseline only; playable map geometry and 48px tilesets are separate lanes.",
+      "next_action": "READ_ONLY_BASELINE; MOVE_TO_TILESETS"
     },
     "tilesets_48px_region_assets": {
-      "status": "UNFINISHED_SPECIALIZED_LANE",
+      "status": "NEXT_UNFINISHED_SPECIALIZED_LANE",
       "final_contract_present": false,
       "final_paid_run_authorized": false,
-      "next_action": "OWN_NO_SPEND_PREFLIGHT_AFTER_TEN_REGION_ENVIRONMENT_MASTER_BASELINE"
+      "next_action": "AUDIT_EXISTING_EVIDENCE_AND_RUN_OWN_NO_SPEND_PREFLIGHT"
     },
     "animations_vfx": {
       "status": "UNFINISHED_OR_UNCLOSED_SPECIALIZED_LANE",
@@ -113,9 +106,8 @@
     }
   },
   "ordering": {
-    "current_lane": "maps_world_environment_masters",
-    "current_lane_next_step": "complete Cinderreach and Frostlace baseline masters",
-    "next_specialized_lane_after_environment_master_baseline": "tilesets_48px_region_assets"
+    "completed_current_lane": "maps_world_environment_masters",
+    "next_specialized_lane": "tilesets_48px_region_assets"
   },
   "catalog_wide_launch_authorized": false
 }
