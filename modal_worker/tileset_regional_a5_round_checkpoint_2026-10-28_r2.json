@@ -1,0 +1,73 @@
+{
+  "schema": "plushbound.tileset_regional_a5_round_checkpoint.v2",
+  "date": "2026-10-28",
+  "branch": "freeframe-modal-worker",
+  "purpose": "Bank the stale-paid-lane recovery and one-source fresh-canary readiness without expanding paid production.",
+  "global_locks": {
+    "character_creator_full_outfits_closed_at": 24,
+    "accepted_assets_immutable": true,
+    "missing_local_artifact_is_not_rerender_authority": true,
+    "catalog_wide_launch_authorized": false,
+    "runtime_import_proof": false
+  },
+  "gloamfen": {
+    "state": "QUARANTINED_PROMPT_REPAIR_REQUIRED",
+    "initial_source_run_id": 40701121674,
+    "initial_manual_visual_gate": "FAIL_0_OF_8_SCENE_COMPOSITION_DRIFT",
+    "stale_one_source_probe_run_id": 40702715312,
+    "stale_probe_terminal_status": "completed",
+    "stale_probe_terminal_conclusion": "cancelled",
+    "accepted_source_count_from_cancelled_probe": 0,
+    "compile_authorized": false,
+    "deterministic_finalize_authorized": false
+  },
+  "paid_lane_reset": {
+    "workflow_run_id": 40707208055,
+    "status": "completed",
+    "conclusion": "success",
+    "expected_provider_calls": 0,
+    "expected_gpu_calls": 0,
+    "expected_generation_calls": 0,
+    "catalog_wide_launch_authorized": false
+  },
+  "fresh_canary_preflight": {
+    "workflow_run_id": 40707482622,
+    "status": "completed",
+    "conclusion": "success",
+    "region": "silkspire",
+    "asset_id": "tileset.silkspire.a5.source.pale_masonry",
+    "semantic_priority": 1,
+    "semantic_risk": "low",
+    "prompt_contract_version": "regional-a5-material-swatch-v2",
+    "asset_cap": 1,
+    "generation_attempts_per_asset_cap": 1,
+    "provider_calls": 0,
+    "gpu_calls": 0,
+    "generation_calls": 0,
+    "manual_visual_qa_required_before_continuation": true,
+    "automatic_remaining_seven_authorized": false,
+    "compile_authorized": false,
+    "deterministic_finalize_authorized": false,
+    "catalog_wide_launch_authorized": false
+  },
+  "fresh_canary_paid_route": {
+    "runner_path": "modal_worker/tileset_regional_a5_fresh_canary.py",
+    "workflow_path": ".github/workflows/tileset-regional-a5-fresh-canary-paid.yml",
+    "trigger_path": "modal_worker/tileset_regional_a5_fresh_canary_trigger.json",
+    "trigger_state": "STAGED_DISABLED_NO_SPEND",
+    "region": "silkspire",
+    "asset_id": "tileset.silkspire.a5.source.pale_masonry",
+    "gpu": "L4",
+    "remote_timeout_seconds": 420,
+    "job_timeout_minutes": 12,
+    "render_step_timeout_minutes": 8,
+    "asset_cap": 1,
+    "generation_attempts_per_asset_cap": 1,
+    "automatic_remaining_seven_authorized": false,
+    "manual_visual_qa_required": true,
+    "compile_authorized": false,
+    "deterministic_finalize_authorized": false,
+    "catalog_wide_launch_authorized": false
+  },
+  "next_safe_action": "Activate only the exact staged Silkspire one-source canary when an explicit paid-trigger write is accepted; then inspect the resulting 384x384 image semantically before authorizing any of the remaining seven sources."
+}
