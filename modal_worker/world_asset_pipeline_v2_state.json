@@ -1,6 +1,6 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_state.v1",
-  "status": "SILKSPIRE_TWO_SEMANTIC_REPAIRS_AUTHORIZED_PRODUCTION_REFROZEN",
+  "status": "SILKSPIRE_PARTIAL_7_OF_8_ACCEPTED_FINAL_METAL_SUBSTRATE_REPAIR_PENDING",
   "pipeline_version": 2,
   "production_frozen": true,
   "paid_execution_enabled": false,
@@ -20,7 +20,8 @@
     "tileset.silkspire.a5.source.pale_masonry": "modal_worker/world_asset_pipeline_v2_acceptance_silkspire_pale_masonry.json",
     "tileset.silkspire.a5.source.dark_masonry": "modal_worker/world_asset_pipeline_v2_acceptance_silkspire_dark_masonry.json",
     "tileset.silkspire.a5.source.bridge_timber": "modal_worker/world_asset_pipeline_v2_acceptance_silkspire_bridge_timber.json",
-    "tileset.silkspire.a5.source.guild_floorboards": "modal_worker/world_asset_pipeline_v2_acceptance_silkspire_guild_floorboards.json"
+    "tileset.silkspire.a5.source.guild_floorboards": "modal_worker/world_asset_pipeline_v2_acceptance_silkspire_guild_floorboards.json",
+    "tileset.silkspire.a5.source.roof_tile": "modal_worker/world_asset_pipeline_v2_acceptance_silkspire_roof_tile.json"
   },
   "closed_region_sheets": {
     "elyndor": {
@@ -32,7 +33,7 @@
   "region_overrides": {
     "gloamfen": "SOURCES_ACCEPTED_8_OF_8_PENDING_DETERMINISTIC_COMPILE",
     "crownweave": "PENDING",
-    "silkspire": "PARTIAL_6_OF_8_ACCEPTED_TWO_SEMANTIC_REPAIRS_IN_FLIGHT",
+    "silkspire": "PARTIAL_7_OF_8_ACCEPTED_FINAL_METAL_SUBSTRATE_REPAIR_PENDING",
     "verdancia": "PENDING",
     "tideglass-coast": "PENDING",
     "moonpatch-steppe": "PENDING",
@@ -41,17 +42,11 @@
     "frostlace": "PENDING"
   },
   "asset_state_overrides": {
-    "tileset.silkspire.a5.source.roof_tile": {
-      "state": "REJECTED_SEMANTIC",
-      "reason": "Manual QA rejected the source because it reads as one large rounded-square/inset blue panel with a visible perimeter rather than a continuous roof-tile substrate.",
-      "manual_qa_evidence": "modal_worker/world_asset_pipeline_v2_manual_qa_silkspire_roof_tile.json",
-      "prompt_suffix": "The material MUST continue beyond all four image edges as a repeating roof-tile substrate. Show multiple shallow ceramic tile joints that are visibly cut off by the frame edges. Absolutely no single tile, rounded-square slab, framed panel, border, perimeter, inset plate, beveled outer edge, or vignette."
-    },
     "tileset.silkspire.a5.source.workshop_metal_plate": {
       "state": "REJECTED_SEMANTIC",
-      "reason": "Manual QA rejected the source because it reads as a framed rectangular metal plate with a strong perimeter and corner wear rather than continuous sheet metal.",
-      "manual_qa_evidence": "modal_worker/world_asset_pipeline_v2_manual_qa_silkspire_workshop_metal_plate.json",
-      "prompt_suffix": "The material MUST be continuous brushed gunmetal extending beyond all four image edges. Any subtle seams must cross and be cut by the image boundaries. Absolutely no rectangular plate object, framed panel, perimeter line, riveted border, inset slab, corner frame, beveled outer edge, or decorative border; distribute restrained brass wear across the substrate instead of around edges."
+      "reason": "Second manual QA rejection: generator still interprets the material label as one framed metal plate object with a strong perimeter/corner frame.",
+      "manual_qa_evidence": "modal_worker/world_asset_pipeline_v2_manual_qa_silkspire_workshop_metal_plate_retry2.json",
+      "prompt_suffix": "IMPORTANT INTERPRETATION OVERRIDE: ignore the noun plate as an object. Render a FULL-FRAME SEAMLESS INDUSTRIAL BRUSHED GUNMETAL SHEET-METAL SUBSTRATE, like an endless metal floor/wall material sampled from the middle of a much larger surface. The texture must continue beyond every image edge. Use fine horizontal brushing, subtle distributed wear, and sparse restrained brass-toned scuffs INSIDE the field. Do NOT show an individual plate, panel, rectangle, frame, outline, perimeter, rim, bevel, border, corners, rivets around edges, inset slab, object silhouette, or any visible outer boundary. No complete rectangular shape may appear anywhere."
     }
   },
   "allowed_asset_states": ["PENDING", "ACCEPTED", "REJECTED_SEMANTIC", "REJECTED_TECHNICAL"],
@@ -100,21 +95,6 @@
   "last_authorized_region_batch": {
     "commit": "d117139d3d9cb83ffbcefad142cb6f826dbefe7c",
     "region": "silkspire",
-    "requested_source_ids": [
-      "tileset.silkspire.a5.source.workshop_timber",
-      "tileset.silkspire.a5.source.pale_masonry",
-      "tileset.silkspire.a5.source.dark_masonry",
-      "tileset.silkspire.a5.source.bridge_timber",
-      "tileset.silkspire.a5.source.guild_floorboards",
-      "tileset.silkspire.a5.source.roof_tile",
-      "tileset.silkspire.a5.source.workshop_metal_plate"
-    ],
-    "max_provider_calls": 7,
-    "max_gpu_calls": 7,
-    "max_generation_calls": 7,
-    "automatic_acceptance": false,
-    "automatic_compile": false,
-    "validated_zero_gpu_preflight_run_id": 40742687799,
     "executor_run_id": 40742860868,
     "source_artifact_id": 12840027078,
     "source_artifact_sha256": "9f32ba6b6def3f47063017073016a1fa0e08b8bdcc151fe6ff66f63632d4c27c",
@@ -138,7 +118,13 @@
     "automatic_compile": false,
     "validated_zero_gpu_preflight_run_id": 40743938012,
     "executor_run_id": 40744207970,
-    "execution_status": "IN_PROGRESS_OR_PENDING_RESULT_REVIEW"
+    "source_artifact_id": 12841406302,
+    "source_artifact_sha256": "2a70a3e196a4fa4219a1ba822e088927d3aa6bb3d734bef4133b51878c869353",
+    "machine_pass_count": 2,
+    "manual_pass_count": 1,
+    "manual_rejected_semantic_count": 1,
+    "total_gpu_seconds": 2.309,
+    "execution_status": "REVIEWED_ROOF_ACCEPTED_METAL_REJECTED_SEMANTIC"
   },
   "next_fresh_region_after_v2_validation": "silkspire"
 }
