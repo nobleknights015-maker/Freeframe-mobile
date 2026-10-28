@@ -1,0 +1,145 @@
+name: Plushbound Regional A5 Remaining Repair No-Spend Preflight
+
+on:
+  push:
+    branches:
+      - freeframe-modal-worker
+    paths:
+      - 'modal_worker/tileset_regional_a5_remaining_repair_preflight_trigger.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plushbound-regional-a5-repair-preflight
+  cancel-in-progress: false
+
+jobs:
+  remaining-repair-preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    env:
+      PLUSHBOUND_PRODUCTION_ENABLED: '0'
+      PLUSHBOUND_PAID_REMOTE_ENABLED: '0'
+    steps:
+      - name: Checkout production branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install deterministic dependency only
+        run: python -m pip install --disable-pip-version-check 'pillow>=10.4,<12'
+
+      - name: Validate no-spend preflight trigger
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          t = json.loads(Path('modal_worker/tileset_regional_a5_remaining_repair_preflight_trigger.json').read_text(encoding='utf-8'))
+          assert t['schema'] == 'plushbound.tileset_regional_a5_remaining_repair_preflight_trigger.v1'
+          assert t['enabled'] is True
+          assert t['mode'] == 'remaining_failed_sources_no_spend_preflight'
+          assert isinstance(t['region'], str) and t['region'] and t['region'] != 'elyndor'
+          assert t['prompt_contract_version'] == 'regional-a5-material-swatch-v2'
+          assert t['accepted_source_count'] == 1
+          assert t['remaining_source_count'] == 7
+          assert t['provider_calls_allowed'] == 0
+          assert t['gpu_calls_allowed'] == 0
+          assert t['generation_jobs_allowed'] == 0
+          assert t['catalog_wide_launch_authorized'] is False
+          assert t['compile_authorized'] is False
+          assert t['deterministic_finalize_authorized'] is False
+          assert t['accepted_source_ids_immutable'] is True
+          p = Path(t['partial_acceptance_path'])
+          assert p.is_file(), f'missing partial acceptance evidence: {p}'
+          partial = json.loads(p.read_text(encoding='utf-8'))
+          assert partial['schema'] == 'plushbound.tileset_regional_a5_partial_acceptance.v1'
+          assert partial['status'] == 'PARTIAL_ACCEPTANCE_PROBE_GREEN_1_OF_8'
+          assert partial['region'] == t['region']
+          assert partial['accepted_source_count'] == 1
+          assert len(partial['remaining_failed_source_ids']) == 7
+          Path('repair-preflight-region.txt').write_text(t['region'], encoding='utf-8')
+          print(f"REMAINING_REPAIR_PREFLIGHT_TRIGGER={t['region']}=VALID_NO_SPEND")
+          PY
+          echo "REGION=$(cat repair-preflight-region.txt)" >> "$GITHUB_ENV"
+
+      - name: Validate partial acceptance
+        shell: bash
+        run: |
+          set -euo pipefail
+          PARTIAL="$(python - <<'PY'
+          import json
+          from pathlib import Path
+          t = json.loads(Path('modal_worker/tileset_regional_a5_remaining_repair_preflight_trigger.json').read_text(encoding='utf-8'))
+          print(t['partial_acceptance_path'])
+          PY
+          )"
+          PYTHONPATH=. python modal_worker/tileset_regional_a5_partial_acceptance_validator.py \
+            --partial-acceptance "$PARTIAL" \
+            --region "$REGION" \
+            > partial-acceptance-validation.json
+          cat partial-acceptance-validation.json
+
+      - name: Run seven-source zero-spend repair preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python .github/preflight/tileset_regional_a5_remaining_repair_preflight.py \
+            --region "$REGION" \
+            > remaining-repair-preflight.json
+          cat remaining-repair-preflight.json
+
+      - name: Assert green zero-spend result
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          region = os.environ['REGION']
+          p = json.loads(Path('partial-acceptance-validation.json').read_text(encoding='utf-8'))
+          assert p['status'] == 'PASS_PARTIAL_ACCEPTANCE_PROBE_GREEN_1_OF_8'
+          assert p['region'] == region
+          assert p['accepted_source_count'] == 1
+          assert p['remaining_repair_source_count'] == 7
+          assert p['accepted_source_ids_protected_from_rerender'] is True
+          assert p['compile_authorized'] is False
+          assert p['deterministic_finalize_authorized'] is False
+          assert p['catalog_wide_launch_authorized'] is False
+
+          r = json.loads(Path('remaining-repair-preflight.json').read_text(encoding='utf-8'))
+          assert r['status'] == 'PASS_NO_SPEND_REMAINING_REPAIR_7_READY_FOR_EXPLICIT_TRIGGER'
+          assert r['region'] == region
+          assert r['accepted_source_count'] == 1
+          assert r['remaining_repair_source_count'] == 7
+          assert len(r['accepted_source_ids']) == 1
+          assert len(r['remaining_source_ids']) == 7
+          assert not set(r['accepted_source_ids']).intersection(r['remaining_source_ids'])
+          assert r['generation_attempts_per_remaining_asset_cap'] == 1
+          assert r['production_skipped'] is True
+          assert r['paid_remote_execution_skipped'] is True
+          assert [r['provider_calls'], r['gpu_calls'], r['generation_calls']] == [0, 0, 0]
+          assert r['compile_authorized'] is False
+          assert r['deterministic_finalize_authorized'] is False
+          assert r['catalog_wide_launch_authorized'] is False
+          assert r['runtime_import_proof'] is False
+          assert len(r['request_routes']) == 7
+          assert all(v == 'PASS' for v in r['checks'].values())
+          print(f'REMAINING_REPAIR_PREFLIGHT={region}=PASS_NO_SPEND_7')
+          print('GENERATION_CALLS=0')
+          PY
+
+      - name: Upload bankable preflight evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: plushbound-a5-remaining-repair-preflight-${{ env.REGION }}-${{ github.run_id }}
+          path: |
+            partial-acceptance-validation.json
+            remaining-repair-preflight.json
+          if-no-files-found: error
+          retention-days: 14
