@@ -1,9 +1,18 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_reference_run_trigger.v1",
-  "enabled": false,
+  "enabled": true,
   "mode": "selected_ids_one_region_reference_aware",
-  "region": null,
-  "requested_source_ids": [],
+  "region": "tideglass-coast",
+  "requested_source_ids": [
+    "tileset.tideglass-coast.a5.source.wet_sand",
+    "tileset.tideglass-coast.a5.source.dry_sand",
+    "tileset.tideglass-coast.a5.source.sea_glass_pebbles",
+    "tileset.tideglass-coast.a5.source.coastal_stone",
+    "tileset.tideglass-coast.a5.source.cliff_stone",
+    "tileset.tideglass-coast.a5.source.dock_timber",
+    "tileset.tideglass-coast.a5.source.saltworn_board",
+    "tileset.tideglass-coast.a5.source.tidal_silt"
+  ],
   "generation_attempts_per_requested_id_cap": 1,
   "one_region_only": true,
   "accepted_ids_must_be_excluded": true,
