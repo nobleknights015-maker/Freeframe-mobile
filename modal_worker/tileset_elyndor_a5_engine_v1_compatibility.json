@@ -1,0 +1,65 @@
+{
+  "schema": "plushbound.tileset_elyndor_a5_engine_v1_compatibility.v1",
+  "status": "PASS_ENGINE_V1_COMPATIBILITY_CONTRACT",
+  "proof_scope": "Repository asset-profile and deterministic geometry compatibility. Live World Editor/runtime import is not claimed because no game-runtime A5 importer is present in this repository.",
+  "runtime_import_proof": false,
+  "region": "elyndor",
+  "sheet_type": "A5",
+  "engine_profile": "mv_tileset_a5",
+  "engine_profile_source": "modal_worker/asset_profiles.py",
+  "engine_profile_source_blob_sha": "13483d435eb003c431cd8d606adc56a1bbb57a42",
+  "profile_validation": {
+    "valid": true,
+    "profile": "mv_tileset_a5",
+    "errors": []
+  },
+  "format": "PNG",
+  "has_alpha": true,
+  "sheet_geometry": [384, 768],
+  "tile_geometry": [48, 48],
+  "columns": 8,
+  "rows": 16,
+  "slot_count": 128,
+  "unique_slot_hashes": 128,
+  "compiled_sheet_sha256": "d26595d093676bfd0bdfc44259a7795674d96dc4925f6db5773efa06e044a1bb",
+  "source_language_closeout": "modal_worker/tileset_source_canary_closeout.json",
+  "source_count": 8,
+  "source_hashes_reverified": true,
+  "manual_visual_review": "PASS_CLEAN_MATERIAL_BLOCKS_NO_BAD_CROP_SEAMS",
+  "family_metrics": [
+    {"material_key": "lush_grass", "maximum_edge_discontinuity": 0.041939, "minimum_rgb_stddev": 10.1242},
+    {"material_key": "wildflower_grass", "maximum_edge_discontinuity": 0.060635, "minimum_rgb_stddev": 17.5244},
+    {"material_key": "warm_soil", "maximum_edge_discontinuity": 0.018396, "minimum_rgb_stddev": 4.5577},
+    {"material_key": "dirt_path", "maximum_edge_discontinuity": 0.043423, "minimum_rgb_stddev": 9.2759},
+    {"material_key": "tilled_farm_soil", "maximum_edge_discontinuity": 0.0122, "minimum_rgb_stddev": 3.4602},
+    {"material_key": "pale_field_stone", "maximum_edge_discontinuity": 0.200436, "minimum_rgb_stddev": 40.1038},
+    {"material_key": "village_timber", "maximum_edge_discontinuity": 0.01924, "minimum_rgb_stddev": 4.9555},
+    {"material_key": "straw_thatch", "maximum_edge_discontinuity": 0.160594, "minimum_rgb_stddev": 33.0586}
+  ],
+  "thresholds": {
+    "maximum_edge_discontinuity": 0.25,
+    "minimum_rgb_stddev": 3.0
+  },
+  "superseded_compile": {
+    "historical_sheet_sha256": "7f9c3abd403d2e62a7c53832622f275715d47ecce89e313b48fdc05ce7f9ca74",
+    "historical_geometry": [768, 768],
+    "profile_valid": false,
+    "profile_errors": ["width must be 384"],
+    "historical_validation_commit": "5b5690eff1b0914f1ffcb693eed68ca4735ca39e"
+  },
+  "correction_commits": {
+    "contract": "c2b5e96453db8434574c51eee45846ae03b5a044",
+    "compiler": "dd57861af6bf8a533e8eea2eab0d81202d2e204a",
+    "validator": "be9458e150f63818437b3c097fcda70a5b26f28b",
+    "superseded_checkpoint_marking": "883d8bb8ff2ede2b333cc65b4ddb6234a12a90ce"
+  },
+  "provider_calls": 0,
+  "gpu_calls": 0,
+  "generation_calls": 0,
+  "accepted_source_ids_protected_from_rerender": true,
+  "full_A5_paid_generation_authorized": false,
+  "cross_region_expansion_authorized": false,
+  "catalog_wide_launch_authorized": false,
+  "creator_full_outfits_remain_closed_at": 24,
+  "next_action": "CLOSE_ELYNDOR_A5_COMPATIBILITY_CONTRACT_AND_STAGE_NEXT_TILESET_SCOPE_NO_SPEND_FIRST"
+}
