@@ -1,0 +1,171 @@
+name: Plushbound World Asset Pipeline V2 Zero-GPU Preflight
+
+on:
+  push:
+    branches:
+      - freeframe-modal-worker
+    paths:
+      - 'modal_worker/world_asset_pipeline_v2_preflight_trigger.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plushbound-world-asset-pipeline-v2-preflight
+  cancel-in-progress: false
+
+jobs:
+  v2-preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      PLUSHBOUND_PRODUCTION_ENABLED: '0'
+      PLUSHBOUND_PAID_REMOTE_ENABLED: '0'
+    steps:
+      - name: Checkout production branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install deterministic dependency only
+        run: python -m pip install --disable-pip-version-check 'pillow>=10.4,<12'
+
+      - name: Validate V2 trigger and hard freeze
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          t = json.loads(Path('modal_worker/world_asset_pipeline_v2_preflight_trigger.json').read_text())
+          f = json.loads(Path('modal_worker/world_asset_pipeline_v2_freeze.json').read_text())
+          s = json.loads(Path('modal_worker/world_asset_pipeline_v2_state.json').read_text())
+          assert t['schema'] == 'plushbound.world_asset_pipeline_v2_preflight_trigger.v1'
+          assert t['enabled'] is True
+          assert t['provider_calls_allowed'] == 0
+          assert t['gpu_calls_allowed'] == 0
+          assert t['generation_calls_allowed'] == 0
+          assert t['catalog_wide_launch_authorized'] is False
+          assert f['production_frozen'] is True
+          assert f['paid_remote_execution_allowed'] is False
+          assert [f['provider_calls_allowed'], f['gpu_calls_allowed'], f['generation_calls_allowed']] == [0, 0, 0]
+          assert s['production_frozen'] is True
+          assert s['paid_execution_enabled'] is False
+          assert s['active_paid_region'] is None
+          print('WORLD_ASSET_V2_FREEZE=PASS')
+          PY
+
+      - name: Compile V2 and deterministic modules
+        run: |
+          python -m compileall -q \
+            modal_worker/world_asset_pipeline_v2_controller.py \
+            modal_worker/tileset_source_normalizer.py \
+            modal_worker/tileset_regional_a5_compiler.py \
+            modal_worker/engine_v1_a5_compatibility_validator.py
+
+      - name: Run V2 controller self-test
+        run: |
+          PYTHONPATH=. python modal_worker/world_asset_pipeline_v2_controller.py --self-test | tee v2-self-test.json
+
+      - name: Resolve authoritative V2 state
+        run: |
+          PYTHONPATH=. python modal_worker/world_asset_pipeline_v2_controller.py --resolve | tee v2-resolved-state.json
+
+      - name: Prove Gloamfen is protected and Silkspire is cleanly selectable
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python modal_worker/world_asset_pipeline_v2_controller.py --plan-region gloamfen | tee v2-plan-gloamfen.json
+          PYTHONPATH=. python modal_worker/world_asset_pipeline_v2_controller.py --plan-region silkspire | tee v2-plan-silkspire.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          g = json.loads(Path('v2-plan-gloamfen.json').read_text())
+          s = json.loads(Path('v2-plan-silkspire.json').read_text())
+          assert g['accepted_source_count'] == 8
+          assert g['selected_generation_count'] == 0
+          assert g['compile_eligible'] is True
+          assert len(g['accepted_ids_excluded']) == 8
+          assert s['accepted_source_count'] == 0
+          assert s['selected_generation_count'] == 8
+          assert s['compile_eligible'] is False
+          assert len(s['selected_generation_ids']) == 8
+          assert [g['provider_calls'], g['gpu_calls'], g['generation_calls']] == [0, 0, 0]
+          assert [s['provider_calls'], s['gpu_calls'], s['generation_calls']] == [0, 0, 0]
+          print('WORLD_ASSET_V2_PLANNING=PASS')
+          PY
+
+      - name: Run deterministic normalizer self-test
+        run: |
+          PYTHONPATH=. python modal_worker/tileset_source_normalizer.py --self-test | tee normalizer-self-test.json
+
+      - name: Rehearse compiler contracts for every unfinished region
+        shell: bash
+        run: |
+          set -euo pipefail
+          : > compiler-self-tests.jsonl
+          for region in crownweave silkspire gloamfen verdancia tideglass-coast moonpatch-steppe sunspool-desert cinderreach frostlace; do
+            PYTHONPATH=. python modal_worker/tileset_regional_a5_compiler.py --region "$region" --self-test >> compiler-self-tests.jsonl
+          done
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          text = Path('compiler-self-tests.jsonl').read_text()
+          decoder = json.JSONDecoder(); idx = 0; rows = []
+          while idx < len(text):
+              while idx < len(text) and text[idx].isspace(): idx += 1
+              if idx >= len(text): break
+              obj, idx = decoder.raw_decode(text, idx); rows.append(obj)
+          assert len(rows) == 9
+          assert all(r['status'] == 'PASS' for r in rows)
+          assert all([r['provider_calls'], r['gpu_calls'], r['generation_calls']] == [0, 0, 0] for r in rows)
+          assert all(r['sheet_size'] == [384, 768] for r in rows)
+          assert all(r['slot_count'] == 128 for r in rows)
+          print('WORLD_ASSET_V2_COMPILER_REHEARSAL=PASS_9_OF_9')
+          PY
+
+      - name: Write bankable V2 preflight summary
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          summary = {
+            'schema': 'plushbound.world_asset_pipeline_v2_preflight_report.v1',
+            'status': 'PASS_ZERO_GPU_V2_CONTROL_PLANE_READY',
+            'production_frozen': True,
+            'legacy_pipeline_mode': 'READ_ONLY_EVIDENCE',
+            'accepted_asset_rerender_refusal': True,
+            'individual_asset_acceptance_supported': True,
+            'failure_isolation_by_asset_id': True,
+            'one_region_planning': True,
+            'deterministic_normalization': True,
+            'deterministic_compiler_regions_green': 9,
+            'provider_calls': 0,
+            'gpu_calls': 0,
+            'generation_calls': 0,
+            'catalog_wide_launch_authorized': False,
+            'runtime_import_proof': False,
+            'paid_generation_worker_authorized': False,
+          }
+          Path('world-asset-v2-preflight-summary.json').write_text(json.dumps(summary, indent=2, sort_keys=True))
+          print(json.dumps(summary, sort_keys=True))
+          PY
+
+      - name: Upload V2 zero-GPU evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: plushbound-world-asset-pipeline-v2-preflight-${{ github.run_id }}
+          path: |
+            v2-self-test.json
+            v2-resolved-state.json
+            v2-plan-gloamfen.json
+            v2-plan-silkspire.json
+            normalizer-self-test.json
+            compiler-self-tests.jsonl
+            world-asset-v2-preflight-summary.json
+          if-no-files-found: error
+          retention-days: 14
