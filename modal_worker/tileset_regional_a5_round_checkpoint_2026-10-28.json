@@ -3,7 +3,7 @@
   "date": "2026-10-28",
   "branch": "freeframe-modal-worker",
   "source_checkpoint": "ee5bd8c8d12f36ecf899079beabd22cbe31facd4",
-  "checkpoint_purpose": "Preserve exact regional A5 state after zero-spend expansion, Gloamfen semantic quarantine, and stalled one-source prompt-repair probe without authorizing catalog-wide production.",
+  "checkpoint_purpose": "Preserve exact regional A5 state after zero-spend expansion, Gloamfen semantic quarantine, completed all-region deterministic compiler rehearsal, and stalled one-source prompt-repair probe without authorizing catalog-wide production.",
   "engine_v1_contract": {
     "profile": "mv_tileset_a5",
     "format": "PNG",
@@ -82,8 +82,12 @@
   },
   "deterministic_compiler_rehearsal": {
     "run_id": 40705515499,
-    "last_observed_status": "queued",
-    "gpu_calls_expected": 0,
+    "status": "COMPLETED_GREEN_9_OF_9_ZERO_GPU",
+    "conclusion": "success",
+    "provider_calls": 0,
+    "gpu_calls": 0,
+    "generation_calls": 0,
+    "runtime_import_proof": false,
     "matrix_regions": [
       "crownweave",
       "silkspire",
@@ -95,16 +99,24 @@
       "cinderreach",
       "frostlace"
     ],
-    "expected_contract": {
+    "validated_contract": {
       "sheet_size": [384, 768],
       "tile_size": 48,
       "grid": [8, 16],
       "slot_count": 128,
       "unique_slot_hashes": 128,
-      "provider_calls": 0,
-      "gpu_calls": 0,
-      "generation_calls": 0,
-      "runtime_import_proof": false
+      "engine_v1_status": "PASS_ENGINE_V1_COMPATIBILITY_CONTRACT"
+    },
+    "artifacts": {
+      "crownweave": {"artifact_id": 12822649440, "artifact_sha256": "1e348f046e48236b5e52ccc152233794b56fcc4f3be30bba504a61adced8e91c"},
+      "silkspire": {"artifact_id": 12823353738, "artifact_sha256": "fe2db19f0aa68cb158fddf793fafb3d6f6f25a3b47d641a7606951e247cc20c7"},
+      "gloamfen": {"artifact_id": 12823966102, "artifact_sha256": "1cdd89e6f93cfd80aa2d76967b90046f9adb0d7d1622fb391b00c50030866a0f"},
+      "verdancia": {"artifact_id": 12822724348, "artifact_sha256": "8425b6c6d1262f5a4b3eb1f276df281156a8bc03ce5faf74e294e916d151c774"},
+      "tideglass-coast": {"artifact_id": 12823232164, "artifact_sha256": "a5c689a1de91a59ded55e14354b98316e3afa78b9aa69bf3be95bed6631faa75"},
+      "moonpatch-steppe": {"artifact_id": 12823776496, "artifact_sha256": "139f2c1a3b9d74dcb55991380ee53ea6ec9cd9caace488aa0639e737d64f6c4d"},
+      "sunspool-desert": {"artifact_id": 12822549735, "artifact_sha256": "74cd8373d122398050865885caa10b546c16868281ee08a16023d12c642f5802"},
+      "cinderreach": {"artifact_id": 12824081176, "artifact_sha256": "7ea2aa66ce7acdab87914a7062fd5a31f2a65d9a9f6a97c5d2472b246ea676c9"},
+      "frostlace": {"artifact_id": 12823277248, "artifact_sha256": "08f70acb6c46dadcf65a5024268a0e51ad47fa24a3612f0903727ee18b3ba07e"}
     }
   },
   "fresh_eight_source_paid_route_policy": {
@@ -121,7 +133,7 @@
     "Do not poll Gloamfen probe repeatedly while unchanged.",
     "Inspect probe artifact directly once run 40702715312 completes.",
     "Bank or quarantine the probe based on semantic visual QA, not machine acceptance alone.",
-    "Inspect compiler rehearsal matrix run 40705515499 once after a meaningful interval; quarantine any deterministic failure independently.",
+    "Do not rerun any accepted source ID.",
     "Do not launch another paid regional source run while the Gloamfen prompt probe remains in the shared paid concurrency group.",
     "Keep catalog_wide_launch_authorized false."
   ]
