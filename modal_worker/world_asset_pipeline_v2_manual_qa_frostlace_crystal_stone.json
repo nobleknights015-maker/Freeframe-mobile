@@ -1,0 +1,20 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_manual_qa.v1",
+  "status": "FAIL",
+  "asset_id": "tileset.frostlace.a5.source.crystal_stone",
+  "region": "frostlace",
+  "material_key": "crystal_stone",
+  "semantic_material_surface": false,
+  "no_scene_or_object_composition": false,
+  "edge_to_edge_substrate": true,
+  "no_border_or_inset_panel": true,
+  "no_horizon_or_perspective": true,
+  "no_character_creature_prop_or_structure": true,
+  "readable_at_48px": true,
+  "region_material_identity_matches": false,
+  "notes": "Reject: large paving-like polygon facets and strong joints dominate. Retry as pale lavender-gray crystalline stone with dense small-scale mineral facets distributed through one continuous substrate; no paving slabs, large polygons or joint network.",
+  "source_executor_run_id": 40755360893,
+  "source_artifact_id": 12844814359,
+  "raw_sha256": "858f74b40edb9e9a7d8eab7b6d3e4d24bb713ff7bc9a0286b2bef06ad87cdb52",
+  "normalized_sha256": "f04d8cb6cf25014d0ff97622bdef3d3d80d15973cef203641cef7e6127a45ca5"
+}
