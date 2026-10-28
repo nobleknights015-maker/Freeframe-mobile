@@ -172,7 +172,7 @@
       }
     },
     "gloamfen": {
-      "status": "QUARANTINED_PROMPT_REPAIR_REQUIRED",
+      "status": "REPAIR_PARTIAL_1_OF_8_ACCEPTED",
       "sheet_type": "A5",
       "stable_sheet_id": "tileset.gloamfen.a5",
       "region_material_hint": "muted bog olive, peat brown, algae green and wet charcoal; damp aged finish; subtle handcrafted fiber grain",
@@ -187,7 +187,11 @@
         "fungal_moss": "muted olive and pale fungal-green moss-fiber texture at close uniform scale",
         "dark_peat": "near-black peat soil texture with soft brown organic grain"
       },
-      "quarantine_evidence": "modal_worker/tileset_gloamfen_a5_source_quarantine.json"
+      "quarantine_evidence": "modal_worker/tileset_gloamfen_a5_source_quarantine.json",
+      "partial_acceptance_evidence": "modal_worker/tileset_gloamfen_a5_partial_acceptance.json",
+      "accepted_source_count": 1,
+      "accepted_source_ids": ["tileset.gloamfen.a5.source.marsh_mud"],
+      "remaining_repair_source_count": 7
     },
     "verdancia": {
       "status": "PREFLIGHT_PENDING",
