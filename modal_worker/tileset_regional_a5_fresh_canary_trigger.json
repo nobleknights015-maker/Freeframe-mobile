@@ -1,0 +1,23 @@
+{
+  "schema": "plushbound.tileset_regional_a5_fresh_canary_trigger.v1",
+  "enabled": false,
+  "mode": "one_source_fresh_region_canary",
+  "region": "silkspire",
+  "asset_id": "tileset.silkspire.a5.source.pale_masonry",
+  "preflight_run_id": 40707482622,
+  "preflight_conclusion": "success",
+  "prompt_contract_version": "regional-a5-material-swatch-v2",
+  "asset_cap": 1,
+  "generation_attempts_per_asset_cap": 1,
+  "one_region_only": true,
+  "one_source_only": true,
+  "never_stack_paid_runs": true,
+  "manual_visual_qa_required_before_continuation": true,
+  "automatic_remaining_seven_authorized": false,
+  "compile_authorized": false,
+  "deterministic_finalize_authorized": false,
+  "catalog_wide_launch_authorized": false,
+  "creator_full_outfits_remain_closed_at": 24,
+  "activation_state": "STAGED_DISABLED_NO_SPEND",
+  "reason": "Lowest-risk fresh regional A5 source canary after Gloamfen semantic scene-drift failure; exactly one source may be activated after explicit paid-run activation is accepted."
+}
