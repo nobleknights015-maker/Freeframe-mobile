@@ -1,15 +1,14 @@
 {
   "schema": "plushbound.world_map_final_repair_trigger.v1",
   "enabled": true,
-  "mode": "targeted_repair_v4",
-  "asset_cap": 2,
-  "source_repair_v3_run_id": 40621601567,
-  "source_repair_v3_artifact_id": 12786654486,
-  "manual_qa_commit_sha": "11938f1c35c51f27b2dd1ad2da6354b7f3e7fb8d",
-  "producer_commit_sha": "7b7e076d484a2d262998fd38451ff9af14d4f521",
+  "mode": "targeted_repair_v5",
+  "asset_cap": 1,
+  "source_repair_v4_run_id": 40621975556,
+  "source_repair_v4_artifact_id": 12787423689,
+  "manual_qa_commit_sha": "607328214dbb93152d086e3ba31e59b60ee3b44d",
+  "producer_commit_sha": "bc478061283c023797fa8e2511aca537bf107bda",
   "asset_ids": [
-    "world.silkspire.environment_master",
-    "world.moonpatch-steppe.environment_master"
+    "world.silkspire.environment_master"
   ],
   "preserve_accepted_asset_ids": true,
   "accepted_asset_ids_not_to_regenerate": [
@@ -18,11 +17,11 @@
     "world.crownweave.environment_master",
     "world.tideglass-coast.environment_master",
     "world.verdancia.environment_master",
-    "world.elyndor.environment_master"
+    "world.elyndor.environment_master",
+    "world.moonpatch-steppe.environment_master"
   ],
   "repair_constraints": {
-    "silkspire": "quiet structure-only timber/stone district; no shops, stalls, cloth, signs, banners, flags, emblems, lettering, symbols or glyph ornament",
-    "moonpatch-steppe": "empty moonlit grassland with dirt/trampled-grass trail only; no camp, tents, shelters, ropes, cloth, banners, flags, markers, symbols or modern road surface"
+    "silkspire": "distant establishing cityscape only; plain structural stone/timber architecture; no close storefronts, cloth objects, signs, banners, flags, emblems, glyphs, symbols, lettering, clocks or heraldry"
   },
   "never_stack_paid_runs": true,
   "stop_on_validation_failure": true,
