@@ -1,12 +1,12 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_freeze.v1",
-  "status": "PAID_WORLD_ASSET_PRODUCTION_REFROZEN_AFTER_SILKSPIRE_REMAINING_7_AUTHORIZATION",
+  "status": "PAID_WORLD_ASSET_PRODUCTION_OPEN_SILKSPIRE_REMAINING_7_VALIDATED_BATCH",
   "branch": "freeframe-modal-worker",
-  "production_frozen": true,
-  "paid_remote_execution_allowed": false,
-  "provider_calls_allowed": 0,
-  "gpu_calls_allowed": 0,
-  "generation_calls_allowed": 0,
+  "production_frozen": false,
+  "paid_remote_execution_allowed": true,
+  "provider_calls_allowed": 7,
+  "gpu_calls_allowed": 7,
+  "generation_calls_allowed": 7,
   "catalog_wide_launch_authorized": false,
   "legacy_pipeline_mode": "READ_ONLY_EVIDENCE_AND_ACCEPTED_HASH_SOURCE",
   "legacy_paid_triggers_must_not_be_modified_or_replayed": true,
@@ -31,8 +31,15 @@
     "engine_v1_receiver_runtime_importer_present": true,
     "state_resolution_mode_independent": true,
     "paid_render_preserved_before_post_render_qa": true,
-    "tileset_inspection_identity_locked": true
+    "tileset_inspection_identity_locked": true,
+    "bounded_live_batch_cap_1_to_8": true,
+    "provider_gpu_generation_caps_must_match": true
   },
   "last_authorized_live_canary_commit": "53654a09e9439795f4c094b0555d46e30670111e",
-  "last_authorized_region_batch_commit": "113b5a9d83462bb3cad859e05eae51021f1f9702"
+  "last_failed_zero_spend_batch_authorization_commit": "113b5a9d83462bb3cad859e05eae51021f1f9702",
+  "validated_batch_preflight_run_id": 40742687799,
+  "authorized_region": "silkspire",
+  "authorized_requested_source_count": 7,
+  "automatic_acceptance": false,
+  "automatic_compile": false
 }
