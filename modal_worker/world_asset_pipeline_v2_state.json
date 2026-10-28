@@ -1,10 +1,10 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_state.v1",
-  "status": "SILKSPIRE_REMAINING_7_PAID_WINDOW_OPEN",
+  "status": "SILKSPIRE_REMAINING_7_AUTHORIZED_PRODUCTION_REFROZEN",
   "pipeline_version": 2,
-  "production_frozen": false,
-  "paid_execution_enabled": true,
-  "active_paid_region": "silkspire",
+  "production_frozen": true,
+  "paid_execution_enabled": false,
+  "active_paid_region": null,
   "catalog_wide_launch_authorized": false,
   "runtime_import_proof": true,
   "runtime_import_proof_scope": "game-side A5 runtime importer smoke plus Android APK packaging proof",
@@ -69,7 +69,8 @@
     "automatic_compile": false,
     "accepted_after_policy_correction_without_rerender": true
   },
-  "current_paid_window": {
+  "last_authorized_region_batch": {
+    "commit": "113b5a9d83462bb3cad859e05eae51021f1f9702",
     "region": "silkspire",
     "requested_source_ids": [
       "tileset.silkspire.a5.source.workshop_timber",
@@ -84,7 +85,8 @@
     "max_gpu_calls": 7,
     "max_generation_calls": 7,
     "automatic_acceptance": false,
-    "automatic_compile": false
+    "automatic_compile": false,
+    "execution_status": "IN_PROGRESS_OR_PENDING_RESULT_REVIEW"
   },
   "next_fresh_region_after_v2_validation": "silkspire"
 }
