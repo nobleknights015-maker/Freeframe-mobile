@@ -1,0 +1,14 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_manual_qa.v1",
+  "asset_id": "REPLACE_WITH_STABLE_ASSET_ID",
+  "status": "PENDING",
+  "semantic_material_surface": false,
+  "no_scene_or_object_composition": false,
+  "edge_to_edge_substrate": false,
+  "no_border_or_inset_panel": false,
+  "no_horizon_or_perspective": false,
+  "no_character_creature_prop_or_structure": false,
+  "readable_at_48px": false,
+  "region_material_identity_matches": false,
+  "notes": "Manual reviewer must set status PASS only when all required semantic checks are true. Machine QA alone never authorizes acceptance."
+}
