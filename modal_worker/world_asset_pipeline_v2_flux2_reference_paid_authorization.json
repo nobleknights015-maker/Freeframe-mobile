@@ -6,6 +6,7 @@
   "gpu_calls_allowed": 0,
   "generation_calls_allowed": 0,
   "one_region_only": true,
+  "reference_aware_runner_required": true,
   "manual_visual_qa_required": true,
   "compile_authorized": false,
   "catalog_wide_launch_authorized": false,
