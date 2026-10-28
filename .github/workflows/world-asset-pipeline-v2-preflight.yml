@@ -30,8 +30,9 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install deterministic dependency only
-        run: python -m pip install --disable-pip-version-check 'pillow>=10.4,<12'
+      - name: Install zero-spend validation dependencies
+        run: |
+          python -m pip install --disable-pip-version-check 'pillow>=10.4,<12' 'modal>=1.5,<2'
 
       - name: Validate V2 trigger and hard freeze
         shell: bash
@@ -62,6 +63,8 @@ jobs:
         run: |
           python -m compileall -q \
             modal_worker/world_asset_pipeline_v2_controller.py \
+            modal_worker/world_asset_pipeline_v2_planner.py \
+            modal_worker/world_asset_pipeline_v2_runner.py \
             modal_worker/tileset_source_normalizer.py \
             modal_worker/tileset_regional_a5_compiler.py \
             modal_worker/engine_v1_a5_compatibility_validator.py
@@ -96,6 +99,32 @@ jobs:
           assert [g['provider_calls'], g['gpu_calls'], g['generation_calls']] == [0, 0, 0]
           assert [s['provider_calls'], s['gpu_calls'], s['generation_calls']] == [0, 0, 0]
           print('WORLD_ASSET_V2_PLANNING=PASS')
+          PY
+
+      - name: Validate single shared generator planner and runner declaration
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python - <<'PY' | tee v2-shared-worker-validation.json
+          import json
+          from modal_worker.world_asset_pipeline_v2_planner import validate_rebuild_contract, paid_gate_open
+          from modal_worker.world_asset_pipeline_v2_runner import declaration_validation
+          p = validate_rebuild_contract()
+          r = declaration_validation()
+          assert p['status'] == 'PASS_ZERO_GPU_SHARED_GENERATOR_PLANNER'
+          assert r['status'] == 'PASS_ZERO_GPU_SINGLE_RUNNER_DECLARATION'
+          assert r['gpu_candidates'] == ['L4', 'A10G']
+          assert r['failure_isolated_to_asset_id'] is True
+          assert r['batch_art_rejection_does_not_abort_sibling_assets'] is True
+          assert [r['provider_calls'], r['gpu_calls'], r['generation_calls']] == [0, 0, 0]
+          try:
+              paid_gate_open('silkspire')
+          except RuntimeError:
+              paid_gate_refusal = 'PASS'
+          else:
+              raise RuntimeError('frozen V2 paid gate did not refuse execution')
+          result = {**r, 'paid_gate_refusal_while_frozen': paid_gate_refusal}
+          print(json.dumps(result, indent=2, sort_keys=True))
           PY
 
       - name: Run deterministic normalizer self-test
@@ -135,13 +164,15 @@ jobs:
           from pathlib import Path
           summary = {
             'schema': 'plushbound.world_asset_pipeline_v2_preflight_report.v1',
-            'status': 'PASS_ZERO_GPU_V2_CONTROL_PLANE_READY',
+            'status': 'PASS_ZERO_GPU_V2_CONTROL_AND_SHARED_WORKER_READY',
             'production_frozen': True,
             'legacy_pipeline_mode': 'READ_ONLY_EVIDENCE',
             'accepted_asset_rerender_refusal': True,
             'individual_asset_acceptance_supported': True,
             'failure_isolation_by_asset_id': True,
             'one_region_planning': True,
+            'one_shared_generation_path': True,
+            'shared_worker_paid_gate_refusal_while_frozen': True,
             'deterministic_normalization': True,
             'deterministic_compiler_regions_green': 9,
             'provider_calls': 0,
@@ -164,6 +195,7 @@ jobs:
             v2-resolved-state.json
             v2-plan-gloamfen.json
             v2-plan-silkspire.json
+            v2-shared-worker-validation.json
             normalizer-self-test.json
             compiler-self-tests.jsonl
             world-asset-v2-preflight-summary.json
