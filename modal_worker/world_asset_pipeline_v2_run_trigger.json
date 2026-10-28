@@ -1,10 +1,10 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_run_trigger.v1",
-  "enabled": true,
+  "enabled": false,
   "mode": "selected_ids_one_region",
   "guard_validation_revision": 20,
-  "region": "cinderreach",
-  "requested_source_ids": ["tileset.cinderreach.a5.source.forge_stone"],
+  "region": null,
+  "requested_source_ids": [],
   "generation_attempts_per_requested_id_cap": 1,
   "one_region_only": true,
   "accepted_ids_must_be_excluded": true,
@@ -23,5 +23,7 @@
   "last_authorized_cinderreach_canary_executor_run_id": 40765470020,
   "last_authorized_cinderreach_ash_soil_commit": "0aeb1fb881daeef15f175ac062e742cbc9fa2987",
   "last_authorized_cinderreach_ash_soil_executor_run_id": 40767242073,
-  "note": "Exact one-source Cinderreach forge_stone canary authorized after revision 23 proved 2 accepted + 6 remaining."
+  "last_authorized_cinderreach_forge_stone_commit": "1df682cc7fb6fb8a2bd1d351735348f1d87dd9b0",
+  "last_authorized_cinderreach_forge_stone_executor_run_id": 40769256248,
+  "note": "Trigger disabled immediately after exact Cinderreach forge_stone executor was pinned."
 }
