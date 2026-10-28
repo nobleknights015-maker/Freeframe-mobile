@@ -1,10 +1,10 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_run_trigger.v1",
-  "enabled": true,
+  "enabled": false,
   "mode": "selected_ids_one_region",
   "guard_validation_revision": 18,
-  "region": "cinderreach",
-  "requested_source_ids": ["tileset.cinderreach.a5.source.basalt"],
+  "region": null,
+  "requested_source_ids": [],
   "generation_attempts_per_requested_id_cap": 1,
   "one_region_only": true,
   "accepted_ids_must_be_excluded": true,
@@ -19,5 +19,7 @@
   "last_authorized_frostlace_batch_executor_run_id": 40755360893,
   "last_authorized_frostlace_repair_commit": "6499cc0299cb26d3360153e9289dd5d2f66ea45b",
   "last_authorized_frostlace_repair_executor_run_id": 40758764663,
-  "note": "Exact one-source Cinderreach basalt canary authorization; manual QA required; no automatic acceptance or compile."
+  "last_authorized_cinderreach_canary_commit": "03867c6e9bbce04961047094eedb5d2ce04edad9",
+  "last_authorized_cinderreach_canary_executor_run_id": 40765470020,
+  "note": "Trigger disabled immediately after exact Cinderreach basalt canary executor was pinned."
 }
