@@ -1,0 +1,22 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_asset_acceptance.v1",
+  "status": "ACCEPTED",
+  "asset_id": "tileset.silkspire.a5.source.roof_tile",
+  "region": "silkspire",
+  "material_key": "roof_tile",
+  "machine_gate": "PASS",
+  "manual_visual_gate": "PASS",
+  "raw_sha256": "240b0be400b6a38dee501fa04d694bc166e67f52563ad415eade81dd00cf4236",
+  "normalized_sha256": "bdd43ba38692276562a8a3f0c59861b9a191fd8e71edf2e6a136b8c81412b0af",
+  "source_report": "modal_worker/world_asset_pipeline_v2_silkspire_repair_40744207970_review.json",
+  "manual_qa_evidence": "modal_worker/world_asset_pipeline_v2_manual_qa_silkspire_roof_tile_retry2.json",
+  "source_executor_run_id": 40744207970,
+  "source_trigger_commit": "d02905f52451a72660b9c162e624a85a88b21960",
+  "source_artifact_id": 12841406302,
+  "source_artifact_sha256": "2a70a3e196a4fa4219a1ba822e088927d3aa6bb3d734bef4133b51878c869353",
+  "immutable": true,
+  "rerender_allowed": false,
+  "compile_authorized": false,
+  "catalog_wide_launch_authorized": false,
+  "runtime_import_proof": true
+}
