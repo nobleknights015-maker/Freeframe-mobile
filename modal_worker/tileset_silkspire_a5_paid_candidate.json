@@ -1,0 +1,51 @@
+{
+  "schema": "plushbound.tileset_regional_a5_paid_candidate.v1",
+  "enabled": false,
+  "mode": "one_region_a5_source_canary_candidate",
+  "region": "silkspire",
+  "stable_sheet_id": "tileset.silkspire.a5",
+  "prompt_contract_version": "regional-a5-material-swatch-v2",
+  "semantic_risk_class": "LOWER_SCENE_RISK_MANUFACTURED_PLANAR_MATERIALS",
+  "selection_reason": "Safest untouched region after prompt-v2 semantic risk review; material set is dominated by stone, masonry, timber, floorboard, roof-tile and metal-plate surfaces rather than scene-prone organic terrain.",
+  "evidence": {
+    "regional_preflight_run_id": 40702345955,
+    "regional_preflight_conclusion": "success",
+    "deterministic_compiler_rehearsal_run_id": 40705515499,
+    "deterministic_compiler_rehearsal_conclusion": "success",
+    "engine_v1_contract": {
+      "sheet_size": [384, 768],
+      "tile_size": 48,
+      "grid": [8, 16],
+      "slot_count": 128,
+      "runtime_import_proof": false
+    }
+  },
+  "source_asset_ids": [
+    "tileset.silkspire.a5.source.city_stone_paving",
+    "tileset.silkspire.a5.source.workshop_timber",
+    "tileset.silkspire.a5.source.pale_masonry",
+    "tileset.silkspire.a5.source.dark_masonry",
+    "tileset.silkspire.a5.source.bridge_timber",
+    "tileset.silkspire.a5.source.guild_floorboards",
+    "tileset.silkspire.a5.source.roof_tile",
+    "tileset.silkspire.a5.source.workshop_metal_plate"
+  ],
+  "asset_cap": 8,
+  "generation_attempts_per_asset_cap": 1,
+  "one_region_only": true,
+  "never_stack_paid_runs": true,
+  "accepted_assets_immutable": true,
+  "manual_visual_qa_required": true,
+  "compile_authorized": false,
+  "deterministic_finalize_authorized": false,
+  "catalog_wide_launch_authorized": false,
+  "activation_conditions": [
+    "No other plushbound-regional-a5-paid workflow may be running or queued.",
+    "Current-head regional no-spend preflight must pass for silkspire.",
+    "Region state must remain PREFLIGHT_PENDING.",
+    "Prompt contract must remain regional-a5-material-swatch-v2.",
+    "All eight stable source IDs must still match the locked scope manifest.",
+    "Paid execution remains one region, eight sources maximum, one attempt per source.",
+    "Machine acceptance alone never authorizes final A5 compile; manual semantic visual QA is mandatory."
+  ]
+}
