@@ -1,0 +1,54 @@
+{
+  "schema": "plushbound.tileset_gloamfen_a5_repair_status.v1",
+  "region": "gloamfen",
+  "stable_sheet_id": "tileset.gloamfen.a5",
+  "state": "QUARANTINED_PROMPT_REPAIR_REQUIRED",
+  "accepted_source_count": 0,
+  "compile_authorized": false,
+  "deterministic_finalize_authorized": false,
+  "catalog_wide_launch_authorized": false,
+  "accepted_assets_immutable": true,
+  "probe_asset_id": "tileset.gloamfen.a5.source.marsh_mud",
+  "attempts": [
+    {
+      "attempt": 1,
+      "run_id": 40702715312,
+      "result": "INFRASTRUCTURE_CANCELLED_NO_RENDER",
+      "source_accepted": false
+    },
+    {
+      "attempt": 2,
+      "run_id": 40708309669,
+      "result": "INFRASTRUCTURE_CLIENT_TIMEOUT_NO_RENDER",
+      "source_accepted": false,
+      "evidence": "modal_worker/tileset_gloamfen_a5_prompt_probe_attempt2_timeout.json"
+    },
+    {
+      "attempt": 3,
+      "run_id": 40712199805,
+      "result": "RENDER_RETURNED_SEMANTIC_PASS_READABILITY_FAIL",
+      "source_accepted": false,
+      "gpu_seconds": 1.608,
+      "raw_sha256": "3cbe8aeb48a8ffd8bdb582be0fa90d364d7844b5f8cf52efdfa929a786cf1434",
+      "normalized_sha256": "942611d17f719ed57e836af233ba54f17eb42f21c60d32dab43040b9a320260e",
+      "edge_discontinuity": 0.003091,
+      "rgb_stddev": 1.5782,
+      "minimum_rgb_stddev": 3.0,
+      "manual_semantic_visual_qa": "PASS_CONTINUOUS_MUD_SWATCH_NO_SCENE",
+      "manual_48px_readability_qa": "FAIL_TOO_UNIFORM",
+      "evidence": "modal_worker/tileset_gloamfen_a5_prompt_probe_attempt3_quality_fail.json"
+    }
+  ],
+  "resolved_failures": {
+    "l4_only_startup_stall": true,
+    "remote_hub_dependency_during_paid_startup": true,
+    "scene_composition_drift_for_probe": true
+  },
+  "remaining_failure": "fine material contrast collapses below locked RGB stddev readability threshold after normalization",
+  "current_repair": {
+    "code_commit": "46989cb9172af0720e70f077d1cdb40e3fbbe717",
+    "strategy": "preserve anti-scene prompt contract and require visible fine-scale tonal mottling/micrograin with moderate local contrast; do not lower normalizer threshold",
+    "paid_retry_authorized": "ONE_SOURCE_ONLY_AFTER_CODE_VALIDATION",
+    "remaining_seven_authorized": false
+  }
+}
