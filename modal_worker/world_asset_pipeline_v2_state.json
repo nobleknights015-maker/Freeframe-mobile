@@ -1,6 +1,6 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_state.v1",
-  "status": "CINDERREACH_1_OF_8_ASH_SOIL_REJECTED_SEMANTIC",
+  "status": "CINDERREACH_2_OF_8_ACCEPTED",
   "pipeline_version": 2,
   "production_frozen": true,
   "paid_execution_enabled": false,
@@ -33,7 +33,8 @@
     "tileset.frostlace.a5.source.pale_timber": "modal_worker/world_asset_pipeline_v2_acceptance_frostlace_pale_timber.json",
     "tileset.frostlace.a5.source.crystal_stone": "modal_worker/world_asset_pipeline_v2_acceptance_frostlace_crystal_stone.json",
     "tileset.frostlace.a5.source.cold_gravel": "modal_worker/world_asset_pipeline_v2_acceptance_frostlace_cold_gravel.json",
-    "tileset.cinderreach.a5.source.basalt": "modal_worker/world_asset_pipeline_v2_acceptance_cinderreach_basalt.json"
+    "tileset.cinderreach.a5.source.basalt": "modal_worker/world_asset_pipeline_v2_acceptance_cinderreach_basalt.json",
+    "tileset.cinderreach.a5.source.ash_soil": "modal_worker/world_asset_pipeline_v2_acceptance_cinderreach_ash_soil.json"
   },
   "closed_region_sheets": {
     "elyndor": {
@@ -69,17 +70,10 @@
     "tideglass-coast": "PENDING",
     "moonpatch-steppe": "PENDING",
     "sunspool-desert": "PENDING",
-    "cinderreach": "PARTIAL_1_OF_8_ASH_SOIL_REJECTED_SEMANTIC",
+    "cinderreach": "PARTIAL_2_OF_8_ACCEPTED",
     "frostlace": "CLOSED_GREEN_A5_RECEIVER_BINARY_TRANSFER_PENDING_NON_BLOCKING"
   },
-  "asset_state_overrides": {
-    "tileset.cinderreach.a5.source.ash_soil": {
-      "state": "REJECTED_SEMANTIC",
-      "reason": "Manual QA rejection: visible stitched/inset rectangular perimeter violates edge-to-edge material swatch contract.",
-      "manual_qa_evidence": "modal_worker/world_asset_pipeline_v2_manual_qa_cinderreach_ash_soil.json",
-      "prompt_suffix": "ABSOLUTE EDGE-TO-EDGE MATERIAL RULE: fill the entire frame with continuous fine ash-gray soil substrate. NO border, stitched perimeter, inset panel, frame, outline, tile edge, rectangular boundary, vignette or decorative enclosure."
-    }
-  },
+  "asset_state_overrides": {},
   "allowed_asset_states": ["PENDING", "ACCEPTED", "REJECTED_SEMANTIC", "REJECTED_TECHNICAL"],
   "generation_policy": {
     "one_shared_worker": true,
@@ -159,13 +153,12 @@
     "executor_run_id": 40767242073,
     "source_artifact_id": 12849264942,
     "source_artifact_sha256": "0a576e6aaae8debf19777035d9a5471352f824b0ae55b5ecca187ebe35fc6ea1",
-    "raw_sha256": "8c01d54369d3cd5b0bad36a62907ebb24cae4316892e5b9575c8bbb71336732c",
-    "normalized_sha256": "4e7030050c70a05afacf487a6be5c6fdc4094a0bf8fe4136ff2d0c0f81fd854c",
-    "machine_gate": "PASS",
-    "manual_visual_gate": "REJECTED_SEMANTIC",
+    "original_paid_raw_sha256": "8c01d54369d3cd5b0bad36a62907ebb24cae4316892e5b9575c8bbb71336732c",
+    "raw_sha256": "e5382737d9e51168f477e229a3365f33989216ae76c8976681cbacf05a66000f",
+    "normalized_sha256": "8e14bc85cbe1979ae858b402d1bbe042c2e1264d9c81f3df7c62a97218efd284",
+    "deterministic_repair": "modal_worker/world_asset_pipeline_v2_cinderreach_ash_soil_reference_derivation.json",
+    "manual_visual_gate": "PASS",
     "gpu_seconds": 2.029,
-    "automatic_acceptance": false,
-    "automatic_compile": false,
-    "status": "REJECTED_SEMANTIC_MANUAL_QA"
+    "status": "ACCEPTED_MANUAL_QA_PASS_AFTER_ZERO_GPU_REFERENCE_DERIVATION"
   }
 }
