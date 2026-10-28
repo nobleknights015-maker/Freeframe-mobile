@@ -1,0 +1,20 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_manual_qa.v1",
+  "status": "PASS",
+  "asset_id": "tileset.frostlace.a5.source.cold_gravel",
+  "region": "frostlace",
+  "material_key": "cold_gravel",
+  "semantic_material_surface": true,
+  "no_scene_or_object_composition": true,
+  "edge_to_edge_substrate": true,
+  "no_border_or_inset_panel": true,
+  "no_horizon_or_perspective": true,
+  "no_character_creature_prop_or_structure": true,
+  "readable_at_48px": true,
+  "region_material_identity_matches": true,
+  "notes": "Continuous dense small-scale frost-gray and pale-blue gravel aggregate. No focal stones, scene framing, border, horizon or structure; 48px tile retains subtle aggregate variation.",
+  "source_executor_run_id": 40755360893,
+  "source_artifact_id": 12844814359,
+  "raw_sha256": "0eb0280e6a88d2df60b22033d8bf1d43fc3db3806b425d1432d5a8027843f85f",
+  "normalized_sha256": "c27fc86b74228ca39e08dfd880ae671ca223c98e23034be9f29eea58fb4fe205"
+}
