@@ -1,0 +1,70 @@
+{
+  "schema": "plushbound.world_map_final_canary_manual_qa.v1",
+  "source_run_id": 40619802387,
+  "source_artifact_id": 12786892825,
+  "source_artifact_digest": "sha256:b8bf4e55904dbfb0dcc32a792a0dd2dab03bbcf790d6d3b02b09e2bed35e54e9",
+  "source_head_sha": "f57461b72816bdc07003153c390904670294f32e",
+  "deterministic_gate": "PASS_8_OF_8",
+  "manual_visual_gate": "QUARANTINE_6_OF_8",
+  "scaling_authorized": false,
+  "accepted_and_banked": [
+    {
+      "asset_id": "world.gloamfen.environment_master",
+      "sha256": "ff8b7a80694ff1f943f17d8125b0beba14d983061ff296bb1d7004683dacc758",
+      "decision": "ACCEPT",
+      "reason": "Region identity, traversable composition and 1024x768 environment geometry are coherent; no visible pseudo-text/sign glyph violation in manual QA."
+    },
+    {
+      "asset_id": "world.sunspool-desert.environment_master",
+      "sha256": "08b19b1799c5d280025509ff7735ae90e73d4f02b4d7b34c3f73b36292793c71",
+      "decision": "ACCEPT",
+      "reason": "Region identity, traversable composition and 1024x768 environment geometry are coherent; no visible pseudo-text/sign glyph violation in manual QA."
+    }
+  ],
+  "quarantined_for_targeted_repair": [
+    {
+      "asset_id": "world.crownweave.environment_master",
+      "sha256": "30ab86f0e8c530565229ec4fb02dfc3c8ff9e49ccf6b930f158b525f1aa02148",
+      "decision": "QUARANTINE",
+      "reason": "Visible heraldic/banner glyph-like markings violate the no-signs/no-logos/no-pseudo-text environment contract."
+    },
+    {
+      "asset_id": "world.elyndor.environment_master",
+      "sha256": "6b6fd93d5a121db3e04c466f4dd1346e2feaf4e41caea38d2014326e692264fa",
+      "decision": "QUARANTINE",
+      "reason": "Visible sign/banner emblem-like markings violate the no-signs/no-logos/no-pseudo-text environment contract."
+    },
+    {
+      "asset_id": "world.silkspire.environment_master",
+      "sha256": "ea315bfc0d0b1d94b09cc472051c0ee4bc0d62153c35f8813edebabb7c6e28b0",
+      "decision": "QUARANTINE",
+      "reason": "Multiple banner/emblem glyph-like markings violate the no-signs/no-logos/no-pseudo-text environment contract."
+    },
+    {
+      "asset_id": "world.moonpatch-steppe.environment_master",
+      "sha256": "030f0742e908121e86f0bee058aa2d38439583c71f341e90c00f6f5e1bd2b49d",
+      "decision": "QUARANTINE",
+      "reason": "Visible banner/sign pseudo-symbol or number-like marking violates the no-signs/no-logos/no-pseudo-text environment contract."
+    },
+    {
+      "asset_id": "world.tideglass-coast.environment_master",
+      "sha256": "df814f71bbe92750cab356b752d87a86ce69ba311402b009620065c269307e6c",
+      "decision": "QUARANTINE",
+      "reason": "Visible flag/rune-like iconography violates the no-signs/no-logos/no-pseudo-text environment contract."
+    },
+    {
+      "asset_id": "world.verdancia.environment_master",
+      "sha256": "23bef81adc79793c6b66207488221131a9f0b701c3b2dd615ff5b6e07d235387",
+      "decision": "QUARANTINE",
+      "reason": "Visible cloth/banner glyph-like markings violate the no-signs/no-logos/no-pseudo-text environment contract."
+    }
+  ],
+  "repair_policy": {
+    "rerender_only_quarantined_asset_ids": true,
+    "preserve_accepted_asset_ids_and_hashes": true,
+    "max_repair_assets": 6,
+    "strengthen_prompt_against_banners_flags_signs_emblems_icons_glyphs_and_pseudo_text": true,
+    "do_not_scale_until_all_eight_logical_canary_assets_are_visual_approved": true
+  },
+  "status": "TARGETED_REPAIR_REQUIRED"
+}
