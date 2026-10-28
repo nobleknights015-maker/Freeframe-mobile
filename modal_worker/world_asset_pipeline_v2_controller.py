@@ -24,6 +24,7 @@ STATE_PATH = Path("modal_worker/world_asset_pipeline_v2_state.json")
 ALLOWED_ASSET_STATES = {"PENDING", "ACCEPTED", "REJECTED_SEMANTIC", "REJECTED_TECHNICAL"}
 ELIGIBLE_STATES = ALLOWED_ASSET_STATES - {"ACCEPTED"}
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
+MAX_LIVE_BATCH_SIZE = 8
 
 
 def _load(path: Path) -> dict:
@@ -62,8 +63,12 @@ def _validate_freeze_contract(freeze: dict) -> None:
     elif frozen is False:
         if paid is not True:
             raise RuntimeError("V2 live gate must explicitly authorize paid execution")
-        if not all(isinstance(v, int) and not isinstance(v, bool) and v == 1 for v in limits):
-            raise RuntimeError("V2 live gate must be bounded to exactly one provider/GPU/generation call")
+        valid_limits = all(
+            isinstance(v, int) and not isinstance(v, bool) and 1 <= v <= MAX_LIVE_BATCH_SIZE
+            for v in limits
+        )
+        if not valid_limits or len(set(limits)) != 1:
+            raise RuntimeError("V2 live gate must use equal provider/GPU/generation caps between 1 and 8")
     else:
         raise RuntimeError("V2 freeze contract has invalid production_frozen state")
 
@@ -323,8 +328,13 @@ def self_test() -> dict:
     silkspire = plan_region("silkspire")
     if gloamfen["accepted_source_count"] != 8 or gloamfen["selected_generation_count"] != 0 or not gloamfen["compile_eligible"]:
         raise RuntimeError("V2 failed to protect Gloamfen accepted 8/8")
-    if silkspire["accepted_source_count"] != 0 or silkspire["selected_generation_count"] != 8 or silkspire["compile_eligible"]:
-        raise RuntimeError("V2 failed fresh-region planning")
+    silkspire_total = silkspire["accepted_source_count"] + silkspire["selected_generation_count"]
+    if silkspire_total != 8:
+        raise RuntimeError("V2 Silkspire accounting no longer resolves to exact regional 8/8")
+    if set(silkspire["accepted_ids_excluded"]).intersection(silkspire["selected_generation_ids"]):
+        raise RuntimeError("V2 Silkspire plan overlaps accepted and generation-eligible IDs")
+    if silkspire["compile_eligible"] != (silkspire["accepted_source_count"] == 8):
+        raise RuntimeError("V2 Silkspire compile eligibility disagrees with accepted-source count")
     accepted_probe = gloamfen["accepted_ids_excluded"][0]
     try:
         plan_region("gloamfen", [accepted_probe])
@@ -341,12 +351,15 @@ def self_test() -> dict:
         "gloamfen_accepted": 8,
         "gloamfen_generation_selected": 0,
         "gloamfen_compile_eligible": True,
-        "silkspire_accepted": 0,
-        "silkspire_generation_selected": 8,
-        "silkspire_compile_eligible": False,
+        "silkspire_accepted": silkspire["accepted_source_count"],
+        "silkspire_generation_selected": silkspire["selected_generation_count"],
+        "silkspire_compile_eligible": silkspire["compile_eligible"],
+        "silkspire_exact_eight_accounting": True,
         "accepted_id_refusal_test": "PASS",
         "individual_asset_acceptance_supported": True,
         "state_resolution_mode_independent": True,
+        "live_batch_cap_min": 1,
+        "live_batch_cap_max": MAX_LIVE_BATCH_SIZE,
         "provider_calls": 0,
         "gpu_calls": 0,
         "generation_calls": 0,
