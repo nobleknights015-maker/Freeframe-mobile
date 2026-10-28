@@ -1,0 +1,17 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_manual_qa.v1",
+  "status": "PASS",
+  "asset_id": "tileset.cinderreach.a5.source.forge_stone",
+  "region": "cinderreach",
+  "material_key": "forge_stone",
+  "semantic_material_surface": true,
+  "no_scene_or_object_composition": true,
+  "manual_visual_gate": "PASS",
+  "review_notes": "Continuous dark heat-aged gray forge stone with restrained warm mineral/rust flecks. No framed slab, dominant crack, grate, rune, prop, wall geometry, lava pool or object silhouette. Matches the supplied World Editor / V1 Engine forge_stone reference material language.",
+  "source_reference_sha256": "3523ae0d7890ca9cd61a5bbc7c1611f7e9c8f18dc55bb609fd9a858c9b6b3bdd",
+  "derived_master_sha256": "5d612fcc6d669df7844a04d1641b3c65f998f539621f30682134b0d73acf245a",
+  "normalized_sha256": "d86e59124a41805b0a54bd84496e5ca6e0cac412554117108cb3cbce0196881c",
+  "provider_calls": 0,
+  "gpu_calls": 0,
+  "generation_calls": 0
+}
