@@ -82,27 +82,34 @@ jobs:
           cp "$RAW" rescued/marsh_mud-384.png
           cp "$OLD_REPORT" rescued/attempt4-original-report.json
 
-      - name: Assert rescued tile preserves locked quality gates
+      - name: Assert rescued tile and build accepted-probe adapter
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
-          import hashlib, json
+          import hashlib, json, shutil
           from pathlib import Path
-          p = Path('rescued/normalizer-report.json')
-          r = json.loads(p.read_text(encoding='utf-8'))
-          assert r['accepted'] is True
-          assert r['input_size'] == [384, 384]
-          assert r['output_size'] == [48, 48]
-          assert r['output_mode'] == 'RGBA'
-          assert r['source_rgb_stddev'] >= r['readability_rescue_min_source_rgb_stddev']
-          assert r['readability_rescue_applied'] is True
-          assert 1.0 < r['readability_contrast_factor'] <= r['readability_rescue_max_contrast'] <= 2.0
-          assert r['rgb_stddev'] >= r['minimum_rgb_stddev'] == 3.0
-          assert r['edge_discontinuity'] <= r['maximum_edge_discontinuity'] == 0.25
-          raw = Path('rescued/marsh_mud-384.png').read_bytes()
-          tile = Path('rescued/marsh_mud-48.png').read_bytes()
-          assert hashlib.sha256(raw).hexdigest() == '8df77a999da3abfccb1a56b25693cdec10e4f4a658b2ce9fea1aff62e8a12877'
+
+          norm = json.loads(Path('rescued/normalizer-report.json').read_text(encoding='utf-8'))
+          assert norm['accepted'] is True
+          assert norm['input_size'] == [384, 384]
+          assert norm['output_size'] == [48, 48]
+          assert norm['output_mode'] == 'RGBA'
+          assert norm['source_rgb_stddev'] >= norm['readability_rescue_min_source_rgb_stddev']
+          assert norm['readability_rescue_applied'] is True
+          assert 1.0 < norm['readability_contrast_factor'] <= norm['readability_rescue_max_contrast'] <= 2.0
+          assert norm['rgb_stddev'] >= norm['minimum_rgb_stddev'] == 3.0
+          assert norm['edge_discontinuity'] <= norm['maximum_edge_discontinuity'] == 0.25
+
+          raw_path = Path('rescued/marsh_mud-384.png')
+          tile_path = Path('rescued/marsh_mud-48.png')
+          raw = raw_path.read_bytes()
+          tile = tile_path.read_bytes()
+          raw_sha = hashlib.sha256(raw).hexdigest()
+          tile_sha = hashlib.sha256(tile).hexdigest()
+          assert raw_sha == '8df77a999da3abfccb1a56b25693cdec10e4f4a658b2ce9fea1aff62e8a12877'
+          assert tile_sha == 'bb121e2ca2e9b835882dab5ce3c0aee423f3aa7fea42fe65b49bc341e7222401'
+
           evidence = {
               'schema': 'plushbound.tileset_gloamfen_a5_attempt4_renormalization_report.v1',
               'status': 'PASS_ZERO_GPU_MACHINE_GATE_MANUAL_VISUAL_REQUIRED',
@@ -110,8 +117,8 @@ jobs:
               'asset_id': 'tileset.gloamfen.a5.source.marsh_mud',
               'source_run_id': 40713292000,
               'source_artifact_id': 12827271245,
-              'raw_sha256': hashlib.sha256(raw).hexdigest(),
-              'rescued_normalized_sha256': hashlib.sha256(tile).hexdigest(),
+              'raw_sha256': raw_sha,
+              'rescued_normalized_sha256': tile_sha,
               'provider_calls': 0,
               'gpu_calls': 0,
               'generation_calls': 0,
@@ -120,19 +127,56 @@ jobs:
               'remaining_seven_generation_authorized': False,
               'catalog_wide_launch_authorized': False,
               'manual_visual_qa_required': True,
-              'normalizer': r,
+              'normalizer': norm,
           }
           Path('rescued/renormalization-report.json').write_text(json.dumps(evidence, indent=2, sort_keys=True), encoding='utf-8')
-          print('GLOAMFEN_ATTEMPT4_RENORMALIZATION=PASS_ZERO_GPU_MACHINE_GATE')
-          print(f"RESCUED_NORMALIZED_SHA256={evidence['rescued_normalized_sha256']}")
+
+          root = Path('accepted-probe/tileset-regional-a5-prompt-probe/gloamfen/marsh_mud')
+          root.mkdir(parents=True, exist_ok=True)
+          shutil.copy2(raw_path, root / 'marsh_mud-384.png')
+          shutil.copy2(tile_path, root / 'marsh_mud-48.png')
+          adapter = {
+              'schema': 'plushbound.tileset_regional_a5_accepted_probe_adapter.v1',
+              'status': 'MACHINE_PASS_MANUAL_VISUAL_REQUIRED_AFTER_ZERO_GPU_RENORMALIZATION',
+              'asset_id': 'tileset.gloamfen.a5.source.marsh_mud',
+              'region': 'gloamfen',
+              'material_key': 'marsh_mud',
+              'target_sheet_type': 'A5',
+              'stable_sheet_id': 'tileset.gloamfen.a5',
+              'prompt_contract_version': 'regional-a5-material-swatch-v2',
+              'generation_attempts': 1,
+              'source_size': [384, 384],
+              'normalized_size': [48, 48],
+              'raw_sha256': raw_sha,
+              'normalized_sha256': tile_sha,
+              'machine_accepted': True,
+              'source_generation_machine_accepted': False,
+              'deterministic_renormalization_machine_accepted': True,
+              'manual_visual_qa_required': True,
+              'source_generation_run_id': 40713292000,
+              'source_generation_artifact_id': 12827271245,
+              'renormalization_is_zero_gpu': True,
+              'normalizer_metrics': norm,
+              'compile_authorized': False,
+              'deterministic_finalize_authorized': False,
+              'catalog_wide_launch_authorized': False,
+              'runtime_import_proof': False,
+          }
+          (root / 'report.json').write_text(json.dumps(adapter, indent=2, sort_keys=True), encoding='utf-8')
+          evidence_root = Path('accepted-probe/evidence')
+          evidence_root.mkdir(parents=True, exist_ok=True)
+          shutil.copy2('rescued/normalizer-report.json', evidence_root / 'normalizer-report.json')
+          shutil.copy2('rescued/renormalization-report.json', evidence_root / 'renormalization-report.json')
+          shutil.copy2('rescued/attempt4-original-report.json', evidence_root / 'attempt4-original-report.json')
+          print('GLOAMFEN_ACCEPTED_PROBE_ADAPTER=PASS_ZERO_GPU')
+          print(f'ACCEPTED_RAW_SHA256={raw_sha}')
+          print(f'ACCEPTED_NORMALIZED_SHA256={tile_sha}')
           PY
 
-      - name: Upload exact zero-GPU rescued evidence
+      - name: Upload strict accepted-probe adapter
         uses: actions/upload-artifact@v4
         with:
-          name: plushbound-a5-gloamfen-attempt4-renormalized-${{ github.run_id }}
-          path: |
-            modal_worker/tileset_gloamfen_a5_attempt4_renormalize_trigger.json
-            rescued/
+          name: plushbound-a5-gloamfen-accepted-probe-${{ github.run_id }}
+          path: accepted-probe/
           if-no-files-found: error
           retention-days: 14
