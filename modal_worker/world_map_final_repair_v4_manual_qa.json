@@ -1,0 +1,51 @@
+{
+  "schema": "plushbound.world_map_final_repair_manual_qa.v1",
+  "repair_version": "v4",
+  "source_run_id": 40621975556,
+  "source_artifact_id": 12787423689,
+  "source_artifact_name": "plushbound-world-map-final-repair-v4-40621975556",
+  "machine_gate": "PASS_2_OF_2",
+  "manual_visual_gate": "QUARANTINE_1_OF_2",
+  "scaling_authorized": false,
+  "catalog_wide_launch_authorized": false,
+  "creator_full_outfits_remain_closed_at": 24,
+  "accepted_and_banked": [
+    {
+      "asset_id": "world.moonpatch-steppe.environment_master",
+      "sha256": "8576ae09c46e2193b9d304f1bb0dafd2f2453894813bbcf0d758ab84c9a34b53",
+      "decision": "ACCEPT",
+      "reason": "natural moonlit dirt/trampled-grass trail is clean; prior camp heraldry and modern-road failure removed"
+    }
+  ],
+  "quarantined_for_targeted_repair": [
+    {
+      "asset_id": "world.silkspire.environment_master",
+      "sha256": "e6fdadb7a06b499b4f6675b885f80dde3ce91268cc14bec7e98f74567593b852",
+      "decision": "QUARANTINE",
+      "reason": "street-level render still contains two hanging banners with visible glyph/emblem markings despite zero-decoration constraint"
+    }
+  ],
+  "logical_canary_state_after_v4": {
+    "accepted_count": 7,
+    "quarantined_count": 1,
+    "accepted_asset_ids": [
+      "world.gloamfen.environment_master",
+      "world.sunspool-desert.environment_master",
+      "world.crownweave.environment_master",
+      "world.tideglass-coast.environment_master",
+      "world.verdancia.environment_master",
+      "world.elyndor.environment_master",
+      "world.moonpatch-steppe.environment_master"
+    ],
+    "repair_v5_asset_ids": [
+      "world.silkspire.environment_master"
+    ]
+  },
+  "policy": {
+    "rerender_only_quarantined_ids": true,
+    "preserve_accepted_asset_ids": true,
+    "never_stack_paid_runs": true,
+    "scale_only_after_manual_visual_pass": true,
+    "change_composition_strategy_for_v5": true
+  }
+}
