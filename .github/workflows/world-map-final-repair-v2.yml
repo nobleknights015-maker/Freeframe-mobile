@@ -1,4 +1,4 @@
-name: Plushbound World Maps Two-Region Baseline Completion
+name: Plushbound World Maps Two-Region Baseline Repair V2
 
 on:
   push:
@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  baseline-completion:
+  baseline-repair-v2:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
@@ -37,11 +37,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          PYTHONPATH=. python .github/preflight/world_map_final_preflight.py > world-map-baseline-preflight.json
+          PYTHONPATH=. python .github/preflight/world_map_final_preflight.py > world-map-baseline-repair-v2-preflight.json
           python - <<'PY'
           import json
           from pathlib import Path
-          r = json.loads(Path('world-map-baseline-preflight.json').read_text(encoding='utf-8'))
+          r = json.loads(Path('world-map-baseline-repair-v2-preflight.json').read_text(encoding='utf-8'))
           assert r['status'] == 'PASS_NO_SPEND'
           assert r['production_skipped'] is True
           assert r['paid_remote_execution_skipped'] is True
@@ -52,40 +52,39 @@ jobs:
           print('CURRENT_HEAD_PREFLIGHT=PASS_NO_SPEND')
           PY
 
-      - name: Validate 8-of-8 closeout and exact two-region trigger
+      - name: Validate baseline manual QA and exact repair trigger
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
           import json
           from pathlib import Path
+          qa = json.loads(Path('modal_worker/world_map_baseline_completion_manual_qa.json').read_text(encoding='utf-8'))
           closeout = json.loads(Path('modal_worker/world_map_final_canary_closeout.json').read_text(encoding='utf-8'))
           trigger = json.loads(Path('modal_worker/world_map_final_repair_trigger.json').read_text(encoding='utf-8'))
-          assert closeout['status'] == 'CANARY_CLOSED_PASS_8_OF_8'
-          assert closeout['manual_visual_gate'] == 'PASS_8_OF_8'
-          assert closeout['accepted_count'] == 8
-          assert closeout['quarantined_count'] == 0
-          assert closeout['protected_from_rerender'] is True
-          protected = {a['asset_id'] for a in closeout['accepted_assets']}
-          remaining = set(closeout['remaining_canonical_region_baseline'])
-          assert len(protected) == 8
-          assert remaining == {
+          assert qa['source_run_id'] == 40622999487
+          assert qa['source_artifact_id'] == 12787978247
+          assert qa['machine_gate'] == 'PASS_2_OF_2'
+          assert qa['manual_visual_gate'] == 'QUARANTINE_2_OF_2'
+          assert qa['accepted_count'] == 0
+          quarantine = {a['asset_id'] for a in qa['quarantined_for_targeted_repair']}
+          assert quarantine == {
               'world.cinderreach.environment_master',
               'world.frostlace.environment_master',
           }
-          assert protected.isdisjoint(remaining)
+          protected = {a['asset_id'] for a in closeout['accepted_assets']}
+          assert len(protected) == 8
+          assert protected.isdisjoint(quarantine)
           assert trigger['schema'] == 'plushbound.world_map_final_repair_trigger.v1'
           assert trigger['enabled'] is True
-          assert trigger['mode'] == 'baseline_completion_two_regions'
+          assert trigger['mode'] == 'baseline_repair_v2'
           assert trigger['asset_cap'] == 2
-          assert set(trigger['asset_ids']) == remaining
+          assert set(trigger['asset_ids']) == quarantine
           assert set(trigger['accepted_asset_ids_not_to_regenerate']) == protected
-          assert trigger['preflight_run_id'] == 40622878364
-          assert trigger['preflight_conclusion'] == 'success'
           assert trigger['never_stack_paid_runs'] is True
           assert trigger['catalog_wide_launch_authorized'] is False
           assert trigger['creator_full_outfits_remain_closed_at'] == 24
-          print('WORLD_BASELINE_TRIGGER=VALID_EXACT_2')
+          print('WORLD_BASELINE_REPAIR_V2_TRIGGER=VALID_EXACT_2')
           PY
 
       - name: Require Modal credentials
@@ -97,28 +96,28 @@ jobs:
       - name: Install Modal CLI
         run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2'
 
-      - name: Compile exact two-region producer
-        run: python -m compileall -q modal_worker/world_map_final_baseline_completion.py
+      - name: Compile two-region repair producer
+        run: python -m compileall -q modal_worker/world_map_final_baseline_repair_v2.py
 
-      - name: Run only Cinderreach and Frostlace baseline masters
+      - name: Run only Cinderreach and Frostlace repair V2
         shell: bash
         run: |
           set -euo pipefail
-          modal run modal_worker/world_map_final_baseline_completion.py | tee world-map-baseline-completion.log
+          modal run modal_worker/world_map_final_baseline_repair_v2.py | tee world-map-baseline-repair-v2.log
 
-      - name: Verify baseline completion report
+      - name: Verify baseline repair V2 report
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
           import json
           from pathlib import Path
-          p = Path('world-map-baseline-completion/report.json')
-          assert p.is_file(), 'missing baseline completion report'
+          p = Path('world-map-baseline-repair-v2/report.json')
+          assert p.is_file(), 'missing baseline repair V2 report'
           r = json.loads(p.read_text(encoding='utf-8'))
-          assert r['schema'] == 'plushbound.world_map_baseline_completion_report.v1'
-          assert r['version'] == 'plushbound-world-map-baseline-completion-v1'
-          assert r['wave_mode'] == 'baseline-completion'
+          assert r['schema'] == 'plushbound.world_map_baseline_repair_v2_report.v1'
+          assert r['version'] == 'plushbound-world-map-baseline-repair-v2-distant-composition'
+          assert r['wave_mode'] == 'baseline-repair-v2'
           assert r['requested_count'] == 2
           assert r['accepted_count'] == 2
           assert r['quarantined_count'] == 0
@@ -131,17 +130,17 @@ jobs:
           assert len({a['sha256'] for a in assets}) == 2
           assert all(a['width'] == 1024 and a['height'] == 768 for a in assets)
           assert all(a['inspection']['accepted'] is True for a in assets)
-          print('WORLD_BASELINE_COMPLETION=PASS_2_OF_2_DETERMINISTIC')
+          print('WORLD_BASELINE_REPAIR_V2=PASS_2_OF_2_DETERMINISTIC')
           PY
 
-      - name: Upload baseline completion products and evidence
+      - name: Upload baseline repair V2 products and evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: plushbound-world-map-baseline-completion-${{ github.run_id }}
+          name: plushbound-world-map-baseline-repair-v2-${{ github.run_id }}
           path: |
-            world-map-baseline-preflight.json
-            world-map-baseline-completion.log
-            world-map-baseline-completion/
+            world-map-baseline-repair-v2-preflight.json
+            world-map-baseline-repair-v2.log
+            world-map-baseline-repair-v2/
           if-no-files-found: warn
           retention-days: 14
