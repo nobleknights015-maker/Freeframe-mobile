@@ -1,4 +1,4 @@
-name: Plushbound Tileset Source Paid Canary
+name: Plushbound Tileset Source Straw Repair
 
 on:
   push:
@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  tileset-source-canary:
+  tileset-straw-repair:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
@@ -33,58 +33,57 @@ jobs:
       - name: Install deterministic preflight dependency
         run: python -m pip install --disable-pip-version-check 'pillow>=10.4,<12'
 
-      - name: Re-run source canary no-spend gate at current HEAD
+      - name: Re-run tileset source no-spend gate at current HEAD
         env:
           PLUSHBOUND_PRODUCTION_ENABLED: '0'
           PLUSHBOUND_PAID_REMOTE_ENABLED: '0'
         shell: bash
         run: |
           set -euo pipefail
-          PYTHONPATH=. python .github/preflight/tileset_source_canary_preflight.py > tileset-source-paid-preflight.json
+          PYTHONPATH=. python .github/preflight/tileset_source_canary_preflight.py > tileset-straw-repair-preflight.json
           python - <<'PY'
           import json
           from pathlib import Path
-          r = json.loads(Path('tileset-source-paid-preflight.json').read_text(encoding='utf-8'))
+          r = json.loads(Path('tileset-straw-repair-preflight.json').read_text(encoding='utf-8'))
           assert r['status'] == 'PASS_NO_SPEND_SOURCE_CANARY_NOT_TRIGGERED'
           assert r['production_skipped'] is True
           assert r['paid_remote_execution_skipped'] is True
-          assert r['provider_calls'] == 0
-          assert r['gpu_calls'] == 0
-          assert r['generation_calls'] == 0
+          assert r['provider_calls'] == 0 and r['gpu_calls'] == 0 and r['generation_calls'] == 0
           assert r['source_count'] == 8
-          assert r['paid_tileset_source_canary_authorized'] is False
           assert all(v == 'PASS' for v in r['checks'].values())
-          print('CURRENT_HEAD_TILESET_SOURCE_PREFLIGHT=PASS_NO_SPEND')
+          print('CURRENT_HEAD_TILESET_PREFLIGHT=PASS_NO_SPEND')
           PY
 
-      - name: Validate exact eight-source paid trigger
+      - name: Validate seven-source bank and exact straw repair trigger
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
           import json
           from pathlib import Path
-          trigger = json.loads(Path('modal_worker/world_map_final_repair_trigger.json').read_text(encoding='utf-8'))
-          canary = json.loads(Path('modal_worker/tileset_source_canary_manifest.json').read_text(encoding='utf-8'))
-          expected = {row['asset_id'] for row in canary['materials']}
-          assert trigger['schema'] == 'plushbound.tileset_source_canary_trigger.v1'
-          assert trigger['enabled'] is True
-          assert trigger['mode'] == 'elyndor_a5_source_canary'
-          assert trigger['asset_cap'] == 8
-          assert trigger['generation_cap'] == 8
-          assert trigger['retry_generation_cap'] == 0
-          assert trigger['preflight_run_id'] == 40624927471
-          assert trigger['preflight_conclusion'] == 'success'
-          assert set(trigger['asset_ids']) == expected
-          assert len(expected) == 8
-          assert trigger['target_region'] == 'elyndor'
-          assert trigger['target_sheet_type'] == 'A5'
-          assert trigger['full_A5_expansion_authorized'] is False
-          assert trigger['cross_region_expansion_authorized'] is False
-          assert trigger['never_stack_paid_runs'] is True
-          assert trigger['catalog_wide_launch_authorized'] is False
-          assert trigger['creator_full_outfits_remain_closed_at'] == 24
-          print('TILESET_SOURCE_PAID_TRIGGER=VALID_EXACT_8')
+          qa = json.loads(Path('modal_worker/tileset_source_canary_manual_qa.json').read_text(encoding='utf-8'))
+          t = json.loads(Path('modal_worker/world_map_final_repair_trigger.json').read_text(encoding='utf-8'))
+          assert qa['source_run_id'] == 40625079420
+          assert qa['source_artifact_id'] == 12788983716
+          assert qa['machine_gate'] == 'PASS_7_OF_8_ONE_NORMALIZATION_QUARANTINE'
+          assert qa['manual_visual_gate'] == 'PASS_7_OF_8_ONE_TARGETED_REPAIR'
+          assert len(qa['accepted_and_banked']) == 7
+          failed = qa['quarantined_for_targeted_repair']['asset_id']
+          assert failed == 'tileset.elyndor.a5.source.straw_thatch'
+          assert t['schema'] == 'plushbound.tileset_source_repair_trigger.v1'
+          assert t['enabled'] is True
+          assert t['mode'] == 'elyndor_a5_straw_thatch_repair'
+          assert t['asset_cap'] == 1 and t['generation_cap'] == 1 and t['retry_generation_cap'] == 0
+          assert t['asset_ids'] == [failed]
+          assert t['preserve_accepted_source_ids'] is True
+          assert t['source_canary_run_id'] == 40625079420
+          assert t['source_canary_artifact_id'] == 12788983716
+          assert t['full_A5_expansion_authorized'] is False
+          assert t['cross_region_expansion_authorized'] is False
+          assert t['never_stack_paid_runs'] is True
+          assert t['catalog_wide_launch_authorized'] is False
+          assert t['creator_full_outfits_remain_closed_at'] == 24
+          print('TILESET_STRAW_REPAIR_TRIGGER=VALID_EXACT_1')
           PY
 
       - name: Require Modal credentials
@@ -96,58 +95,47 @@ jobs:
       - name: Install Modal CLI
         run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2'
 
-      - name: Compile exact eight-source producer
-        run: python -m compileall -q modal_worker/tileset_source_canary_production.py
+      - name: Compile one-asset repair producer
+        run: python -m compileall -q modal_worker/tileset_source_straw_repair.py
 
-      - name: Run exactly eight Elyndor A5 material masters
+      - name: Run only quarantined straw-thatch source
         shell: bash
         run: |
           set -euo pipefail
-          modal run modal_worker/tileset_source_canary_production.py | tee tileset-source-canary.log
+          modal run modal_worker/tileset_source_straw_repair.py | tee tileset-source-straw-repair.log
 
-      - name: Verify source canary deterministic report
+      - name: Verify targeted repair report
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
           import json
           from pathlib import Path
-          p = Path('tileset-source-canary/report.json')
-          assert p.is_file(), 'missing tileset source canary report'
+          p = Path('tileset-source-straw-repair/report.json')
+          assert p.is_file(), 'missing targeted straw repair report'
           r = json.loads(p.read_text(encoding='utf-8'))
-          assert r['schema'] == 'plushbound.tileset_source_canary_report.v1'
-          assert r['version'] == 'plushbound-tileset-source-canary-v1-elyndor-a5'
-          assert r['requested_count'] == 8
-          assert r['generation_count'] == 8
-          assert r['generation_retry_count'] == 0
-          assert r['accepted_count'] == 8
-          assert r['quarantined_count'] == 0
+          assert r['schema'] == 'plushbound.tileset_source_targeted_repair_report.v1'
+          assert r['version'] == 'plushbound-tileset-source-straw-repair-v1'
+          assert r['asset_id'] == 'tileset.elyndor.a5.source.straw_thatch'
+          assert r['generation_count'] == 1 and r['generation_retry_count'] == 0
+          assert r['raw_inspection']['accepted'] is True
+          assert r['normalizer_accepted'] is True
+          assert r['accepted'] is True and r['quarantined'] is False
+          assert r['rgb_stddev'] >= r['minimum_rgb_stddev']
+          assert r['edge_discontinuity'] <= r['maximum_edge_discontinuity']
           assert r['full_A5_expansion_authorized'] is False
-          assert r['manual_visual_qa_required'] is True
           assert r['catalog_wide_launch_authorized'] is False
-          assets = r['assets']
-          assert len(assets) == 8
-          assert len({a['asset_id'] for a in assets}) == 8
-          assert len({a['raw_sha256'] for a in assets}) == 8
-          assert len({a['normalized_sha256'] for a in assets}) == 8
-          assert all(a['generation_attempts'] == 1 for a in assets)
-          assert all(a['source_width'] == 384 and a['source_height'] == 384 for a in assets)
-          assert all(a['normalized_width'] == 48 and a['normalized_height'] == 48 for a in assets)
-          assert all(a['raw_inspection']['accepted'] is True for a in assets)
-          assert all(a['normalizer_accepted'] is True for a in assets)
-          assert all(a['accepted'] is True for a in assets)
-          print('TILESET_SOURCE_CANARY=PASS_8_OF_8_DETERMINISTIC')
-          print('GENERATION_COUNT=8 RETRIES=0')
+          print('TILESET_STRAW_REPAIR=PASS_1_OF_1_DETERMINISTIC')
           PY
 
-      - name: Upload raw, normalized and report evidence
+      - name: Upload repair product and evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: plushbound-tileset-source-canary-${{ github.run_id }}
+          name: plushbound-tileset-source-straw-repair-${{ github.run_id }}
           path: |
-            tileset-source-paid-preflight.json
-            tileset-source-canary.log
-            tileset-source-canary/
+            tileset-straw-repair-preflight.json
+            tileset-source-straw-repair.log
+            tileset-source-straw-repair/
           if-no-files-found: warn
           retention-days: 14
