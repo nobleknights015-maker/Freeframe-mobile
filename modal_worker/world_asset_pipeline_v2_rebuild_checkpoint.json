@@ -1,6 +1,6 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_rebuild_checkpoint.v1",
-  "status": "V2_PRODUCTION_ACTIVE_SILKSPIRE_CLOSED_FROSTLACE_NEXT",
+  "status": "V2_PRODUCTION_ACTIVE_FROSTLACE_4_OF_8_ACCEPTED",
   "production_frozen": true,
   "paid_execution_enabled": false,
   "production_executor_installed": true,
@@ -39,32 +39,54 @@
     "sheet_size": [384, 768],
     "slot_count": 128,
     "unique_slot_hashes": 128,
-    "minimum_family_rgb_stddev": 5.3648,
-    "maximum_family_edge_discontinuity": 0.190033,
     "manual_full_sheet_visual_gate": "PASS",
     "engine_v1_compatibility_contract": "PASS",
     "receiver_manifest": "overrides/a5_runtime_silkspire_manifest.json",
-    "receiver_manifest_hash_matches": true,
     "receiver_binary_transfer_pending": true,
     "receiver_binary_transfer_is_not_rerender_authority": true,
     "receiver_binary_transfer_blocks_asset_production": false
   },
-  "silkspire_generation_history": {
-    "canary_executor_run_id": 40735013050,
-    "seven_source_executor_run_id": 40742860868,
-    "two_source_repair_executor_run_id": 40744207970,
-    "final_metal_executor_run_id": 40745117913,
-    "accepted_assets_preserved_between_repairs": true,
-    "final_metal_zero_gpu_perimeter_cleanup": true
+  "frostlace": {
+    "status": "PARTIAL_4_OF_8_ACCEPTED",
+    "accepted_source_count": 4,
+    "accepted_source_ids": [
+      "tileset.frostlace.a5.source.packed_snow",
+      "tileset.frostlace.a5.source.frozen_soil",
+      "tileset.frostlace.a5.source.pale_timber",
+      "tileset.frostlace.a5.source.cold_gravel"
+    ],
+    "remaining_targeted_retry_count": 4,
+    "remaining_targeted_retry_ids": [
+      "tileset.frostlace.a5.source.blue_ice",
+      "tileset.frostlace.a5.source.frosted_stone",
+      "tileset.frostlace.a5.source.archive_stone",
+      "tileset.frostlace.a5.source.crystal_stone"
+    ],
+    "canary_executor_run_id": 40754030630,
+    "remaining_seven_executor_run_id": 40755360893,
+    "remaining_seven_artifact_id": 12844814359,
+    "remaining_seven_artifact_sha256": "42bec66da9fffa0676a273021debb7cc06b6b817505c4092fe39f306a4886a47",
+    "remaining_seven_machine_pass_count": 7,
+    "remaining_seven_manual_pass_count": 3,
+    "remaining_seven_manual_rejected_semantic_count": 4,
+    "remaining_seven_gpu_seconds": 5.849,
+    "manual_review_evidence": "modal_worker/world_asset_pipeline_v2_frostlace_remaining7_manual_review.json",
+    "accepted_assets_protected_from_rerender": true
+  },
+  "zero_spend_preflight": {
+    "latest_revision": 17,
+    "workflow_run_id": 40755189578,
+    "status": "PASS_EXACT_REMAINING_BATCH_SHADOW",
+    "region": "frostlace",
+    "accepted_count_at_validation": 1,
+    "remaining_count_at_validation": 7,
+    "provider_calls": 0,
+    "gpu_calls": 0,
+    "generation_calls": 0
   },
   "catalog_wide_launch_authorized": false,
   "runtime_import_proof": true,
   "pipeline_resume_blocker": false,
   "next_fresh_region_after_qualification": "frostlace",
-  "transition_cleanup": {
-    "status": "NON_BLOCKING",
-    "detail": "legacy V2 master preflight labels/shadow test still name Silkspire as the current region and should be made next-region-driven before the next paid activation",
-    "production_remains_frozen_until_cleanup": true
-  },
-  "next_manager_action": "REFRESH_ZERO_SPEND_PREFLIGHT_TO_FOLLOW_NEXT_REGION_POINTER_THEN_RUN_FROSTLACE_CANARY"
+  "next_manager_action": "RUN ONE BOUNDED FOUR-SOURCE FROSTLACE TARGETED REPAIR BATCH; NEVER RERENDER THE FOUR ACCEPTED SOURCES"
 }
