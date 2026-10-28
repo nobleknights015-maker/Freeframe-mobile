@@ -47,6 +47,7 @@ jobs:
           assert isinstance(t['region'], str) and t['region'] and t['region'] != 'elyndor'
           assert isinstance(t['preflight_run_id'], int) and t['preflight_run_id'] > 0
           assert t['preflight_conclusion'] == 'success'
+          assert t['prompt_contract_version'] == 'regional-a5-material-swatch-v2'
           assert t['asset_cap'] == 8
           assert t['generation_attempts_per_asset_cap'] == 1
           assert t['one_region_only'] is True
@@ -74,13 +75,17 @@ jobs:
           r = json.loads(Path('regional-a5-preflight-current-head.json').read_text(encoding='utf-8'))
           assert r['status'] == 'PASS_NO_SPEND_REGION_A5_READY_FOR_EXPLICIT_BOUNDED_TRIGGER'
           assert r['region'] == os.environ['REGION']
+          assert r['region_state'] == 'PREFLIGHT_PENDING', 'fresh eight-source paid route refuses quarantined/repair states'
+          assert r['prompt_contract_version'] == 'regional-a5-material-swatch-v2'
           assert r['production_skipped'] is True
           assert [r['provider_calls'], r['gpu_calls'], r['generation_calls']] == [0, 0, 0]
           assert r['preflight_authorizes_one_explicit_bounded_region_trigger'] is True
           assert r['automatic_paid_execution_authorized'] is False
           assert r['catalog_wide_launch_authorized'] is False
+          assert r['checks']['material_swatch_prompt_static_lint'] == 'PASS'
+          assert r['checks']['rendered_prompt_anti_scene_contract'] == 'PASS'
           assert all(v == 'PASS' for v in r['checks'].values())
-          print('CURRENT_HEAD_REGIONAL_PREFLIGHT=PASS_NO_SPEND')
+          print('CURRENT_HEAD_REGIONAL_PREFLIGHT=PASS_NO_SPEND_PROMPT_V2')
           PY
 
       - name: Require Modal credentials
@@ -113,6 +118,7 @@ jobs:
           assert p.is_file(), 'missing regional source report'
           r = json.loads(p.read_text(encoding='utf-8'))
           assert r['schema'] == 'plushbound.tileset_regional_a5_source_report.v1'
+          assert r['prompt_contract_version'] == 'regional-a5-material-swatch-v2'
           assert r['region'] == region and r['target_sheet_type'] == 'A5'
           assert r['requested_count'] == 8 and r['generation_count'] == 8
           assert r['generation_retry_count'] == 0
@@ -123,9 +129,11 @@ jobs:
           assert r['catalog_wide_launch_authorized'] is False
           assert len(r['assets']) == 8
           assert len({a['asset_id'] for a in r['assets']}) == 8
+          assert all(a['prompt_contract_version'] == 'regional-a5-material-swatch-v2' for a in r['assets'])
           assert all(a['generation_attempts'] == 1 for a in r['assets'])
           assert all(a['source_width'] == 384 and a['source_height'] == 384 for a in r['assets'])
           print(f'REGIONAL_A5_SOURCE_MACHINE_GATE={region}=PASS_8_OF_8')
+          print('MANUAL_VISUAL_QA_REQUIRED=true')
           PY
 
       - name: Upload regional sources and QA evidence
