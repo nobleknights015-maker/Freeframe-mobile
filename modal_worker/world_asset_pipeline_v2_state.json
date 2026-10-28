@@ -1,6 +1,6 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_state.v1",
-  "status": "FROSTLACE_TARGETED_REPAIR_3_PINNED_PRODUCTION_REFROZEN",
+  "status": "FROSTLACE_PARTIAL_5_OF_8_STRATEGY_CHANGE_PENDING",
   "pipeline_version": 2,
   "production_frozen": true,
   "paid_execution_enabled": false,
@@ -55,26 +55,29 @@
     "moonpatch-steppe": "PENDING",
     "sunspool-desert": "PENDING",
     "cinderreach": "PENDING",
-    "frostlace": "PARTIAL_5_OF_8_ACCEPTED_3_TARGETED_RETRIES_IN_FLIGHT"
+    "frostlace": "PARTIAL_5_OF_8_THREE_SEMANTIC_FAILURES_STRATEGY_CHANGE_REQUIRED"
   },
   "asset_state_overrides": {
     "tileset.frostlace.a5.source.frosted_stone": {
       "state": "REJECTED_SEMANTIC",
-      "reason": "Second manual QA rejection: explicit snowflake motifs and large dark crack/slab boundaries remain.",
-      "manual_qa_evidence": "modal_worker/world_asset_pipeline_v2_manual_qa_frostlace_frosted_stone_retry2.json",
-      "prompt_suffix": "ABSOLUTE CONTINUOUS-SURFACE RULE: render one unbroken cool-gray stone field with frost expressed ONLY as fine irregular granular dust/noise. NO snowflakes, stars, symbols, rosettes, decorative motifs, cracks, seams, slab boundaries, joints, polygons, paving shapes, outlines or complete forms. The entire frame must read as one continuous stone substrate at close material-swatch scale."
+      "reason": "Third manual QA rejection: snowflake motifs plus inset/perimeter framing remain despite explicit continuous-surface prompt constraints.",
+      "manual_qa_evidence": "modal_worker/world_asset_pipeline_v2_manual_qa_frostlace_frosted_stone_retry3.json",
+      "paid_prompt_only_rerender_paused": true,
+      "next_strategy": "ZERO_GPU_OR_REFERENCE_DERIVED_CONTINUOUS_MICROTEXTURE_PROTOTYPE_BEFORE_ANY_FURTHER_PAID_RENDER"
     },
     "tileset.frostlace.a5.source.archive_stone": {
       "state": "REJECTED_SEMANTIC",
-      "reason": "Second manual QA rejection: large irregular slab boundaries and bright joints remain.",
-      "manual_qa_evidence": "modal_worker/world_asset_pipeline_v2_manual_qa_frostlace_archive_stone_retry2.json",
-      "prompt_suffix": "ABSOLUTE SEAMLESS MATERIAL RULE: one smooth pale-gray dressed-stone substrate sampled from the interior of a single enormous stone surface. Use only subtle mineral clouding and fine cool grain. NO cracks, seams, joints, borders, slab edges, polygons, paving blocks, masonry courses, fractures or complete stone pieces anywhere in frame."
+      "reason": "Third manual QA rejection: large fitted-stone slab seams remain despite explicit single-surface prompt constraints.",
+      "manual_qa_evidence": "modal_worker/world_asset_pipeline_v2_manual_qa_frostlace_archive_stone_retry3.json",
+      "paid_prompt_only_rerender_paused": true,
+      "next_strategy": "ZERO_GPU_OR_REFERENCE_DERIVED_CONTINUOUS_MICROTEXTURE_PROTOTYPE_BEFORE_ANY_FURTHER_PAID_RENDER"
     },
     "tileset.frostlace.a5.source.crystal_stone": {
       "state": "REJECTED_SEMANTIC",
-      "reason": "Second manual QA rejection: large paving-like polygon facets and outlined joints remain.",
-      "manual_qa_evidence": "modal_worker/world_asset_pipeline_v2_manual_qa_frostlace_crystal_stone_retry2.json",
-      "prompt_suffix": "MICROTEXTURE ONLY: render pale lavender-gray stone with extremely fine granular crystalline sparkle and cloudy mineral shimmer, like sugar-fine mineral flecks embedded inside one continuous stone field. NO visible polygon facets, paving shapes, joint networks, outlines, cracks, slab edges, crystal objects, shards or complete geometric forms."
+      "reason": "Third manual QA rejection: large outlined polygon/paving facets remain despite microtexture-only prompt constraints.",
+      "manual_qa_evidence": "modal_worker/world_asset_pipeline_v2_manual_qa_frostlace_crystal_stone_retry3.json",
+      "paid_prompt_only_rerender_paused": true,
+      "next_strategy": "ZERO_GPU_OR_REFERENCE_DERIVED_CONTINUOUS_MICROTEXTURE_PROTOTYPE_BEFORE_ANY_FURTHER_PAID_RENDER"
     }
   },
   "allowed_asset_states": ["PENDING", "ACCEPTED", "REJECTED_SEMANTIC", "REJECTED_TECHNICAL"],
@@ -91,7 +94,8 @@
     "paid_render_preserved_before_post_render_qa": true,
     "tileset_inspection_preset": "plushbound_tileset_source",
     "bounded_live_batch_cap_1_to_8": true,
-    "exact_requested_count_gate_required": true
+    "exact_requested_count_gate_required": true,
+    "repeat_prompt_only_repair_after_three_semantic_failures": false
   },
   "deterministic_policy": {
     "normalization_zero_gpu": true,
@@ -148,14 +152,20 @@
     "validated_zero_gpu_preflight_run_id": 40758555067,
     "executor_run_id": 40758764663,
     "authorized_commit": "6499cc0299cb26d3360153e9289dd5d2f66ea45b",
+    "source_artifact_id": 12846427811,
+    "source_artifact_sha256": "8a44181a41798fcf25f34c373bd4f58f5eccd7aaf3246ef18a8a2dbb74aee873",
     "requested_source_ids": [
       "tileset.frostlace.a5.source.frosted_stone",
       "tileset.frostlace.a5.source.archive_stone",
       "tileset.frostlace.a5.source.crystal_stone"
     ],
     "requested_count": 3,
+    "machine_pass_count": 3,
+    "manual_pass_count": 0,
+    "manual_rejected_semantic_count": 3,
+    "total_gpu_seconds": 2.927,
     "automatic_acceptance": false,
     "automatic_compile": false,
-    "status": "PINNED_EXECUTOR_IN_FLIGHT_PRODUCTION_REFROZEN"
+    "status": "REVIEWED_0_ACCEPTED_3_REJECTED_SEMANTIC_PRODUCTION_FROZEN"
   }
 }
