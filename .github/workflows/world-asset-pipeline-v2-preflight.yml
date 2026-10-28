@@ -69,6 +69,7 @@ jobs:
             modal_worker/world_asset_pipeline_v2_acceptance.py \
             modal_worker/world_asset_pipeline_v2_normalizer.py \
             modal_worker/world_asset_pipeline_v2_compiler.py \
+            modal_worker/world_asset_pipeline_v2_shadow_activation.py \
             modal_worker/tileset_source_normalizer.py \
             modal_worker/tileset_regional_a5_compiler.py \
             modal_worker/engine_v1_a5_compatibility_validator.py
@@ -132,6 +133,25 @@ jobs:
           print(json.dumps(result, indent=2, sort_keys=True))
           PY
 
+      - name: Prove exact Silkspire live canary would authorize in shadow mode
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python modal_worker/world_asset_pipeline_v2_shadow_activation.py | tee v2-shadow-activation.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r = json.loads(Path('v2-shadow-activation.json').read_text())
+          assert r['status'] == 'PASS_ZERO_SPEND_SHADOW_LIVE_CANARY_AUTHORIZATION'
+          assert r['region'] == 'silkspire'
+          assert r['requested_source_ids'] == ['tileset.silkspire.a5.source.city_stone_paving']
+          assert r['selected_generation_count'] == 1
+          assert r['paid_gate_would_open'] is True
+          assert r['real_production_remained_frozen'] is True
+          assert [r['provider_calls'], r['gpu_calls'], r['generation_calls']] == [0, 0, 0]
+          print('WORLD_ASSET_V2_SHADOW_ACTIVATION=PASS')
+          PY
+
       - name: Validate unified per-asset acceptance and exact-eight rollup contract
         run: |
           PYTHONPATH=. python modal_worker/world_asset_pipeline_v2_acceptance.py --self-test | tee v2-acceptance-self-test.json
@@ -185,6 +205,8 @@ jobs:
             'one_region_planning': True,
             'one_shared_generation_path': True,
             'shared_worker_paid_gate_refusal_while_frozen': True,
+            'shadow_live_canary_authorization_passed': True,
+            'shadow_live_canary_asset_id': 'tileset.silkspire.a5.source.city_stone_paving',
             'unified_v2_normalizer_policy': True,
             'v2_compiler_uses_same_normalizer_policy': True,
             'deterministic_compiler_regions_green': 9,
@@ -210,6 +232,7 @@ jobs:
             v2-plan-gloamfen.json
             v2-plan-silkspire.json
             v2-shared-worker-validation.json
+            v2-shadow-activation.json
             v2-acceptance-self-test.json
             v2-normalizer-self-test.json
             v2-compiler-self-tests.jsonl
