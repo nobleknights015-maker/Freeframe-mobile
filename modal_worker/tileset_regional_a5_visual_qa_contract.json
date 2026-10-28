@@ -1,0 +1,70 @@
+{
+  "schema": "plushbound.tileset_regional_a5_visual_qa_contract.v1",
+  "scope": "manual semantic and visual review of one region's eight generated A5 source masters before deterministic compile",
+  "review_unit": "one 384x384 source master plus 48x48 normalized preview",
+  "required_source_count": 8,
+  "accepted_source_ids_immutable_after_pass": true,
+  "machine_gate_is_not_manual_acceptance": true,
+  "required_checks_per_source": [
+    {
+      "id": "material_semantics",
+      "requirement": "The image clearly reads as the material named by its stable source ID and does not substitute a different surface family."
+    },
+    {
+      "id": "surface_not_scene",
+      "requirement": "The image is a continuous top-down material surface, not a landscape, room, prop illustration, sprite, icon, object pile, map, UI panel or perspective scene."
+    },
+    {
+      "id": "no_grid_or_contact_sheet",
+      "requirement": "No visible tile grid, checkerboard, atlas layout, contact-sheet framing, cell borders or repeated panel arrangement."
+    },
+    {
+      "id": "no_text_or_symbols",
+      "requirement": "No text, letters, numbers, pseudo-text, glyphs, signs, logos, runes, emblems or symbolic markings."
+    },
+    {
+      "id": "no_isolated_objects",
+      "requirement": "No isolated props, furniture, plants, tools, debris clusters or landmarks that would make deterministic wrapped variants look like duplicated objects."
+    },
+    {
+      "id": "seam_friendly_distribution",
+      "requirement": "Large-scale lighting and feature distribution are reasonably even enough for wrap-offset extraction; no dominant edge-to-edge directional composition or obvious framing."
+    },
+    {
+      "id": "plushbound_material_language",
+      "requirement": "The surface retains subtle handcrafted Plushtopia/Plushbound material character without becoming fuzzy toy fabric or decorative textile print unless that material specifically requires woven matting."
+    },
+    {
+      "id": "region_coherence",
+      "requirement": "The material belongs plausibly to the target region's established environmental language without modern-world contamination."
+    }
+  ],
+  "required_region_checks": [
+    {
+      "id": "eight_distinct_families",
+      "requirement": "All eight accepted sources are visually distinct enough to supply separate material families."
+    },
+    {
+      "id": "no_cross_region_identity_drift",
+      "requirement": "The set reads as one target region and does not import signature identity from another region."
+    },
+    {
+      "id": "no_duplicate_source_master",
+      "requirement": "No two source masters are duplicate or near-duplicate renders masquerading as separate materials."
+    },
+    {
+      "id": "contact_sheet_coherence",
+      "requirement": "The eight-source contact sheet is coherent as a regional A5 palette while preserving material differentiation."
+    }
+  ],
+  "pass_rule": "PASS_8_OF_8 only when every per-source check passes for all eight sources and every region-level check passes.",
+  "failure_rule": "Any failing source quarantines that source/region for targeted review; passing source IDs remain protected from rerender. A failure never authorizes catalog-wide regeneration.",
+  "engine_validation_after_manual_pass": {
+    "sheet_size": [384, 768],
+    "tile_size": [48, 48],
+    "grid": [8, 16],
+    "slot_count": 128,
+    "runtime_import_proof": false
+  },
+  "catalog_wide_launch_authorized": false
+}
