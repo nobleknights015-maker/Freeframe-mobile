@@ -7,7 +7,7 @@
       "area_id": "glasswake-harbor",
       "production_batch": "TG-01-harbor-and-capital",
       "anchor_path": "modal_worker/project_references/tideglass_tg01_reference_anchor_256.jpg",
-      "anchor_sha256": "193e86f5e9fe66ed620495044223ebf3416486b2376f41ce771db0d672013615",
+      "anchor_sha256": "a339ef7407986382d96697364b9ffff1dcd363924fefe301e7f5906006d43f52",
       "reference_mode": "style",
       "reference_scale": 0.35,
       "reference_role": "regional_visual_material_authority_only",
