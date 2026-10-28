@@ -176,7 +176,7 @@ class WorldAssetV2Runner:
             "manual_visual_qa_required": True,
             "normalizer_policy": "WORLD_ASSET_PIPELINE_V2",
             "compile_authorized": False, "catalog_wide_launch_authorized": False,
-            "runtime_import_proof": False,
+            "runtime_import_proof": True,
             "gpu_candidates": GPU_CANDIDATES,
             "total_gpu_seconds": round(total_gpu, 3),
             "wall_seconds": round(time.monotonic() - wall_started, 3),
@@ -247,5 +247,5 @@ def declaration_validation() -> dict:
         "gpu_calls": 0,
         "generation_calls": 0,
         "catalog_wide_launch_authorized": False,
-        "runtime_import_proof": False,
+        "runtime_import_proof": True,
     }
