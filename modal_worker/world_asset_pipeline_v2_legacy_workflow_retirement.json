@@ -1,0 +1,32 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_legacy_workflow_retirement.v1",
+  "status": "RETIRING_SUPERSEDED_EXECUTABLE_A5_ORCHESTRATION",
+  "reason": "World Asset Pipeline V2 replaces probe/repair/paid special-case orchestration with one controller, one planner, one runner declaration, unified acceptance, and one deterministic compiler policy.",
+  "preserve_git_history": true,
+  "preserve_evidence_json": true,
+  "preserve_accepted_assets": true,
+  "preserve_source_closeouts": true,
+  "production_frozen_during_retirement": true,
+  "retire_workflows": [
+    ".github/workflows/plushbound-regional-a5-paid-lane-reset.yml",
+    ".github/workflows/tileset-regional-a5-paid.yml",
+    ".github/workflows/tileset-regional-a5-prompt-probe.yml",
+    ".github/workflows/tileset-regional-a5-remaining-repair-preflight.yml",
+    ".github/workflows/tileset-regional-a5-remaining-repair.yml",
+    ".github/workflows/tileset-regional-a5-single-remaining-repair.yml",
+    ".github/workflows/tileset-regional-a5-fresh-canary-paid.yml",
+    ".github/workflows/tileset-regional-a5-fresh-canary-preflight.yml",
+    ".github/workflows/tileset-silkspire-a5-paid-candidate-preflight.yml",
+    ".github/workflows/tileset-gloamfen-a5-attempt4-renormalize.yml",
+    ".github/workflows/tileset-gloamfen-a5-reed-cleanup.yml",
+    ".github/workflows/tileset-gloamfen-a5-seven-acceptance.yml",
+    ".github/workflows/tileset-gloamfen-a5-final-compile.yml"
+  ],
+  "keep_v2_workflows": [
+    ".github/workflows/world-asset-pipeline-v2-preflight.yml",
+    ".github/workflows/world-asset-pipeline-v2-run-guard.yml"
+  ],
+  "production_executor_installed": false,
+  "catalog_wide_launch_authorized": false,
+  "runtime_import_proof": false
+}
