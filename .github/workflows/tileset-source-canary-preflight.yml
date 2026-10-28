@@ -1,0 +1,86 @@
+name: Plushbound Tileset Source Canary No-Spend Preflight
+
+on:
+  push:
+    branches:
+      - freeframe-modal-worker
+    paths:
+      - 'modal_worker/tileset_source_canary_manifest.json'
+      - 'modal_worker/tileset_source_normalizer.py'
+      - 'modal_worker/tileset_region_sheet_occupancy_manifest.json'
+      - 'modal_worker/tileset_mv_compiler.py'
+      - 'modal_worker/production_presets.py'
+      - 'modal_worker/style_profiles.py'
+      - 'modal_worker/production_style_policy.py'
+      - 'modal_worker/production_model_policy.py'
+      - 'modal_worker/production_inspector.py'
+      - '.github/preflight/tileset_source_canary_preflight.py'
+      - '.github/workflows/tileset-source-canary-preflight.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-canary-preflight-no-spend:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      PLUSHBOUND_PRODUCTION_ENABLED: '0'
+      PLUSHBOUND_PAID_REMOTE_ENABLED: '0'
+    steps:
+      - name: Checkout production branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install deterministic dependencies only
+        run: python -m pip install --disable-pip-version-check 'pillow>=10.4,<12'
+
+      - name: Run zero-spend source canary preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python .github/preflight/tileset_source_canary_preflight.py > tileset-source-canary-preflight.json
+          cat tileset-source-canary-preflight.json
+
+      - name: Assert exact eight-source fail-closed scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r = json.loads(Path('tileset-source-canary-preflight.json').read_text(encoding='utf-8'))
+          assert r['status'] == 'PASS_NO_SPEND_SOURCE_CANARY_NOT_TRIGGERED'
+          assert r['production_skipped'] is True
+          assert r['paid_remote_execution_skipped'] is True
+          assert r['provider_calls'] == 0
+          assert r['gpu_calls'] == 0
+          assert r['generation_calls'] == 0
+          assert r['source_count'] == 8
+          assert r['source_master_size'] == [384,384]
+          assert r['normalized_tile_size'] == [48,48]
+          assert r['target_region'] == 'elyndor'
+          assert r['target_sheet_type'] == 'A5'
+          assert r['paid_tileset_source_canary_authorized'] is False
+          assert len(r['request_routes']) == 8
+          assert all(row['model_id'] == 'black-forest-labs/FLUX.2-klein-4B' for row in r['request_routes'])
+          assert all(row['renderer_route'] == 'flux2_klein' for row in r['request_routes'])
+          assert all(row['width'] == 384 and row['height'] == 384 for row in r['request_routes'])
+          assert all(v == 'PASS' for v in r['checks'].values())
+          assert r['normalizer_self_test']['status'] == 'PASS'
+          print('TILESET_SOURCE_CANARY_PREFLIGHT=PASS_NO_SPEND_EXACT_8')
+          print('GENERATION_CALLS=0')
+          PY
+
+      - name: Upload source canary preflight evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: plushbound-tileset-source-canary-preflight-${{ github.run_id }}
+          path: tileset-source-canary-preflight.json
+          if-no-files-found: error
+          retention-days: 14
