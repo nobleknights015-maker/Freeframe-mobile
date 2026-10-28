@@ -1,0 +1,21 @@
+{
+  "schema": "plushbound.creator_full_outfits_half_scope_contract.v1",
+  "character_creator_full_outfits_target": 24,
+  "hard_cap_for_current_pass": true,
+  "catalog_capacity": 48,
+  "catalog_remainder_deferred": true,
+  "verified_canary_styles": [1, 49, 95],
+  "verified_canary_count": 3,
+  "banked_pre_topup_styles": [3, 5, 7, 9, 11, 13, 15, 17, 19, 21],
+  "banked_pre_topup_count": 10,
+  "manual_boundary_qc_styles": [17],
+  "topup_run_id": 40609613786,
+  "topup_head_sha": "1131b0a95de2e89448c19fc5ea143378d8b240f2",
+  "topup_styles": [23, 25, 27, 33, 35, 41, 51, 57, 65, 73, 81],
+  "topup_style_count": 11,
+  "expected_total_after_topup": 24,
+  "completion_verified": false,
+  "ready_to_move_on": false,
+  "next_phase_rule": "After all 11 top-up styles are verified and banked, close Character Creator Full Outfits for this pass and move to unfinished final-production Plushbound asset categories. Do not expand the deferred Full Outfits catalog during this pass.",
+  "notes": "The 24-outfit cap preserves broad Character Creator wardrobe variety without allowing hair/clothing production to dominate the overall Plushbound asset schedule. Remaining catalog slots are deferred expansion capacity, not current production requirements."
+}
