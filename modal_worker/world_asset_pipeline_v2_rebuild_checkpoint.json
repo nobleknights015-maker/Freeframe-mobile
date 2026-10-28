@@ -1,6 +1,6 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_rebuild_checkpoint.v1",
-  "status": "V2_PRODUCTION_ACTIVE_FROSTLACE_4_OF_8_ACCEPTED",
+  "status": "V2_PRODUCTION_ACTIVE_FROSTLACE_5_OF_8_ACCEPTED",
   "production_frozen": true,
   "paid_execution_enabled": false,
   "production_executor_installed": true,
@@ -47,39 +47,39 @@
     "receiver_binary_transfer_blocks_asset_production": false
   },
   "frostlace": {
-    "status": "PARTIAL_4_OF_8_ACCEPTED",
-    "accepted_source_count": 4,
+    "status": "PARTIAL_5_OF_8_ACCEPTED",
+    "accepted_source_count": 5,
     "accepted_source_ids": [
       "tileset.frostlace.a5.source.packed_snow",
       "tileset.frostlace.a5.source.frozen_soil",
       "tileset.frostlace.a5.source.pale_timber",
-      "tileset.frostlace.a5.source.cold_gravel"
+      "tileset.frostlace.a5.source.cold_gravel",
+      "tileset.frostlace.a5.source.blue_ice"
     ],
-    "remaining_targeted_retry_count": 4,
+    "remaining_targeted_retry_count": 3,
     "remaining_targeted_retry_ids": [
-      "tileset.frostlace.a5.source.blue_ice",
       "tileset.frostlace.a5.source.frosted_stone",
       "tileset.frostlace.a5.source.archive_stone",
       "tileset.frostlace.a5.source.crystal_stone"
     ],
     "canary_executor_run_id": 40754030630,
     "remaining_seven_executor_run_id": 40755360893,
-    "remaining_seven_artifact_id": 12844814359,
-    "remaining_seven_artifact_sha256": "42bec66da9fffa0676a273021debb7cc06b6b817505c4092fe39f306a4886a47",
-    "remaining_seven_machine_pass_count": 7,
-    "remaining_seven_manual_pass_count": 3,
-    "remaining_seven_manual_rejected_semantic_count": 4,
-    "remaining_seven_gpu_seconds": 5.849,
-    "manual_review_evidence": "modal_worker/world_asset_pipeline_v2_frostlace_remaining7_manual_review.json",
+    "repair_executor_run_id": 40757599963,
+    "repair_artifact_id": 12846192023,
+    "repair_artifact_sha256": "f2e3529da3a368edd2a04b9053ead4aa600a0213639445fa90260af9bcb243b0",
+    "repair_machine_pass_count": 4,
+    "repair_manual_pass_count": 1,
+    "repair_manual_rejected_semantic_count": 3,
+    "repair_gpu_seconds": 3.675,
     "accepted_assets_protected_from_rerender": true
   },
   "zero_spend_preflight": {
-    "latest_revision": 17,
-    "workflow_run_id": 40755189578,
+    "latest_revision": 18,
+    "workflow_run_id": 40757374478,
     "status": "PASS_EXACT_REMAINING_BATCH_SHADOW",
     "region": "frostlace",
-    "accepted_count_at_validation": 1,
-    "remaining_count_at_validation": 7,
+    "accepted_count_at_validation": 4,
+    "remaining_count_at_validation": 4,
     "provider_calls": 0,
     "gpu_calls": 0,
     "generation_calls": 0
@@ -88,5 +88,5 @@
   "runtime_import_proof": true,
   "pipeline_resume_blocker": false,
   "next_fresh_region_after_qualification": "frostlace",
-  "next_manager_action": "RUN ONE BOUNDED FOUR-SOURCE FROSTLACE TARGETED REPAIR BATCH; NEVER RERENDER THE FOUR ACCEPTED SOURCES"
+  "next_manager_action": "RUN ONE BOUNDED THREE-SOURCE FROSTLACE TARGETED REPAIR BATCH; NEVER RERENDER THE FIVE ACCEPTED SOURCES"
 }
