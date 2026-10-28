@@ -13,9 +13,13 @@
   "topup_head_sha": "1131b0a95de2e89448c19fc5ea143378d8b240f2",
   "topup_styles": [23, 25, 27, 33, 35, 41, 51, 57, 65, 73, 81],
   "topup_style_count": 11,
+  "topup_verified_styles": [23, 25, 27, 33, 35, 41, 51, 57, 65, 73, 81],
+  "topup_verified_count": 11,
   "expected_total_after_topup": 24,
-  "completion_verified": false,
-  "ready_to_move_on": false,
-  "next_phase_rule": "After all 11 top-up styles are verified and banked, close Character Creator Full Outfits for this pass and move to unfinished final-production Plushbound asset categories. Do not expand the deferred Full Outfits catalog during this pass.",
-  "notes": "The 24-outfit cap preserves broad Character Creator wardrobe variety without allowing hair/clothing production to dominate the overall Plushbound asset schedule. Remaining catalog slots are deferred expansion capacity, not current production requirements."
+  "final_total": 24,
+  "completion_verified": true,
+  "ready_to_move_on": true,
+  "full_outfits_current_pass_closed": true,
+  "next_phase_rule": "Character Creator Full Outfits are closed for this pass at exactly 24 verified outfits. Move to unfinished final-production Plushbound asset categories. Do not expand the deferred Full Outfits catalog during this pass.",
+  "notes": "The 24-outfit hard cap is complete. Canary, pre-top-up banked outfits, and the 11-style top-up are all accounted for. All 11 top-up jobs passed production and evidence verification and produced nonempty, unexpired artifacts. The remaining 24 catalog slots are deferred expansion capacity and are not current production requirements."
 }
