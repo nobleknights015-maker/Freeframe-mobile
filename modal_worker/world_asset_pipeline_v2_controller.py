@@ -4,6 +4,12 @@ One state model replaces probe/repair/final-repair workflow state. Every stable 
 ID is PENDING, ACCEPTED, REJECTED_SEMANTIC, or REJECTED_TECHNICAL. ACCEPTED status
 must be backed by immutable SHA256 evidence, either an individual asset acceptance
 record or a completed regional 8/8 closeout. Accepted IDs are never generation-eligible.
+
+State resolution is deliberately independent from the paid/frozen execution mode. The
+controller must be able to answer "what is accepted/pending?" both while production is
+frozen and while one bounded live region is authorized. Freeze enforcement belongs to
+the execution gate, not to asset truth.
+
 This module is deterministic and makes zero provider/GPU/generation calls.
 """
 from __future__ import annotations
@@ -30,26 +36,80 @@ def _valid_sha(value: object) -> bool:
     return bool(SHA256_RE.match(str(value or "")))
 
 
-def _validate_freeze(freeze: dict) -> None:
+def _validate_freeze_contract(freeze: dict) -> None:
+    """Validate invariant safety fields without requiring a particular execution mode."""
     if freeze.get("schema") != "plushbound.world_asset_pipeline_v2_freeze.v1":
         raise RuntimeError("unexpected V2 freeze schema")
-    if freeze.get("production_frozen") is not True or freeze.get("paid_remote_execution_allowed") is not False:
-        raise RuntimeError("V2 rebuild freeze is not active")
-    if [freeze.get("provider_calls_allowed"), freeze.get("gpu_calls_allowed"), freeze.get("generation_calls_allowed")] != [0, 0, 0]:
-        raise RuntimeError("V2 rebuild must authorize zero provider/GPU/generation calls")
-    if freeze.get("accepted_assets_immutable") is not True or freeze.get("catalog_wide_launch_authorized") is not False:
-        raise RuntimeError("V2 freeze safety locks drifted")
+    if freeze.get("accepted_assets_immutable") is not True:
+        raise RuntimeError("V2 accepted-asset immutability lock drifted")
+    if freeze.get("missing_local_artifact_is_not_rerender_authority") is not True:
+        raise RuntimeError("V2 missing-artifact rerender protection drifted")
+    if freeze.get("catalog_wide_launch_authorized") is not False:
+        raise RuntimeError("V2 catalog-wide generation must remain disabled")
+    if freeze.get("runtime_import_proof") is not True:
+        raise RuntimeError("V2 freeze contract lost the banked receiver proof")
+
+    frozen = freeze.get("production_frozen")
+    paid = freeze.get("paid_remote_execution_allowed")
+    limits = [
+        freeze.get("provider_calls_allowed"),
+        freeze.get("gpu_calls_allowed"),
+        freeze.get("generation_calls_allowed"),
+    ]
+    if frozen is True:
+        if paid is not False or limits != [0, 0, 0]:
+            raise RuntimeError("V2 frozen gate must authorize zero paid execution")
+    elif frozen is False:
+        if paid is not True:
+            raise RuntimeError("V2 live gate must explicitly authorize paid execution")
+        if not all(isinstance(v, int) and not isinstance(v, bool) and v == 1 for v in limits):
+            raise RuntimeError("V2 live gate must be bounded to exactly one provider/GPU/generation call")
+    else:
+        raise RuntimeError("V2 freeze contract has invalid production_frozen state")
 
 
-def _validate_state(state: dict) -> None:
+def _validate_state_contract(state: dict) -> None:
+    """Validate state invariants without assuming frozen or live mode."""
     if state.get("schema") != "plushbound.world_asset_pipeline_v2_state.v1" or state.get("pipeline_version") != 2:
         raise RuntimeError("unexpected V2 state contract")
-    if state.get("production_frozen") is not True or state.get("paid_execution_enabled") is not False:
-        raise RuntimeError("V2 rebuild state is not frozen")
-    if state.get("active_paid_region") is not None or state.get("catalog_wide_launch_authorized") is not False:
-        raise RuntimeError("V2 rebuild state unexpectedly authorizes production")
+    if state.get("catalog_wide_launch_authorized") is not False:
+        raise RuntimeError("V2 state unexpectedly authorizes catalog-wide production")
+    if state.get("runtime_import_proof") is not True:
+        raise RuntimeError("V2 state lost the banked receiver proof")
     if set(state.get("allowed_asset_states", [])) != ALLOWED_ASSET_STATES:
         raise RuntimeError("V2 asset-state vocabulary drifted")
+
+    frozen = state.get("production_frozen")
+    paid = state.get("paid_execution_enabled")
+    active = state.get("active_paid_region")
+    if frozen is True:
+        if paid is not False or active is not None:
+            raise RuntimeError("V2 frozen state unexpectedly authorizes production")
+    elif frozen is False:
+        if paid is not True or not isinstance(active, str) or not active:
+            raise RuntimeError("V2 live state must bind paid execution to exactly one region")
+    else:
+        raise RuntimeError("V2 state has invalid production_frozen value")
+
+
+def _validate_mode_alignment(freeze: dict, state: dict) -> None:
+    if freeze.get("production_frozen") != state.get("production_frozen"):
+        raise RuntimeError("V2 freeze/state production mode mismatch")
+    if freeze.get("production_frozen") is True:
+        if state.get("paid_execution_enabled") is not False:
+            raise RuntimeError("V2 frozen state/gate mismatch")
+    else:
+        if state.get("paid_execution_enabled") is not True:
+            raise RuntimeError("V2 live state/gate mismatch")
+
+
+def _require_frozen_mode(freeze: dict, state: dict) -> None:
+    if freeze.get("production_frozen") is not True or freeze.get("paid_remote_execution_allowed") is not False:
+        raise RuntimeError("V2 frozen-mode validation expected a closed paid gate")
+    if state.get("production_frozen") is not True or state.get("paid_execution_enabled") is not False:
+        raise RuntimeError("V2 frozen-mode validation expected frozen state")
+    if state.get("active_paid_region") is not None:
+        raise RuntimeError("V2 frozen-mode validation expected no active paid region")
 
 
 def _expected(region: str, regional: dict) -> list[tuple[str, str]]:
@@ -109,11 +169,15 @@ def _accepted_from_asset_record(asset_id: str, path: Path) -> dict:
     }
 
 
-def resolve_state() -> dict:
+def resolve_state(*, require_frozen: bool = False) -> dict:
     freeze = _load(FREEZE_PATH)
     state = _load(STATE_PATH)
-    _validate_freeze(freeze)
-    _validate_state(state)
+    _validate_freeze_contract(freeze)
+    _validate_state_contract(state)
+    _validate_mode_alignment(freeze, state)
+    if require_frozen:
+        _require_frozen_mode(freeze, state)
+
     scope = _load(Path(state["scope_manifest"]))
     if scope.get("schema") != "plushbound.tileset_regional_a5_scope_manifest.v1":
         raise RuntimeError("unexpected regional A5 scope schema")
@@ -189,19 +253,24 @@ def resolve_state() -> dict:
 
     closed = dict(state.get("closed_region_sheets", {}))
     for region, row in closed.items():
-        if not _valid_sha(row.get("sheet_sha256")) or row.get("runtime_import_proof") is not False:
-            raise RuntimeError(f"{region}: invalid closed-sheet evidence")
+        if not _valid_sha(row.get("sheet_sha256")):
+            raise RuntimeError(f"{region}: invalid closed-sheet hash evidence")
+        if not isinstance(row.get("runtime_import_proof"), bool):
+            raise RuntimeError(f"{region}: closed-sheet runtime proof must be boolean")
 
+    production_frozen = bool(state["production_frozen"])
+    paid_execution_enabled = bool(state["paid_execution_enabled"])
     return {
         "schema": "plushbound.world_asset_pipeline_v2_resolved_state.v1",
         "status": "PASS_ZERO_GPU_STATE_RESOLUTION",
-        "production_frozen": True,
-        "paid_execution_enabled": False,
+        "production_frozen": production_frozen,
+        "paid_execution_enabled": paid_execution_enabled,
+        "active_paid_region": state.get("active_paid_region"),
         "provider_calls": 0,
         "gpu_calls": 0,
         "generation_calls": 0,
         "catalog_wide_launch_authorized": False,
-        "runtime_import_proof": False,
+        "runtime_import_proof": True,
         "closed_region_sheets": closed,
         "regions": resolved_regions,
     }
@@ -227,6 +296,7 @@ def plan_region(region: str, requested_ids: list[str] | None = None) -> dict:
         selected = [asset_id for asset_id in eligible if asset_id in requested]
     if len(selected) > 8:
         raise RuntimeError("V2 selected more than one region's eight-source cap")
+    live_for_region = resolved["paid_execution_enabled"] and resolved.get("active_paid_region") == region
     return {
         "schema": "plushbound.world_asset_pipeline_v2_region_plan.v1",
         "region": region,
@@ -236,19 +306,19 @@ def plan_region(region: str, requested_ids: list[str] | None = None) -> dict:
         "selected_generation_ids": selected,
         "accepted_ids_excluded": regional["accepted_source_ids"],
         "compile_eligible": regional["compile_eligible"],
-        "production_frozen": True,
-        "paid_execution_authorized": False,
+        "production_frozen": resolved["production_frozen"],
+        "paid_execution_authorized": bool(live_for_region),
         "provider_calls": 0,
         "gpu_calls": 0,
         "generation_calls": 0,
         "manual_visual_qa_required": True,
         "catalog_wide_launch_authorized": False,
-        "runtime_import_proof": False,
+        "runtime_import_proof": True,
     }
 
 
 def self_test() -> dict:
-    resolved = resolve_state()
+    resolved = resolve_state(require_frozen=True)
     gloamfen = plan_region("gloamfen")
     silkspire = plan_region("silkspire")
     if gloamfen["accepted_source_count"] != 8 or gloamfen["selected_generation_count"] != 0 or not gloamfen["compile_eligible"]:
@@ -276,11 +346,12 @@ def self_test() -> dict:
         "silkspire_compile_eligible": False,
         "accepted_id_refusal_test": "PASS",
         "individual_asset_acceptance_supported": True,
+        "state_resolution_mode_independent": True,
         "provider_calls": 0,
         "gpu_calls": 0,
         "generation_calls": 0,
         "production_frozen": True,
-        "runtime_import_proof": False,
+        "runtime_import_proof": True,
     }
 
 
