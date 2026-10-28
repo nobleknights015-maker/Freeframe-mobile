@@ -1,0 +1,40 @@
+{
+  "schema": "plushbound.tileset_regional_a5_prompt_probe_attempt_closeout.v1",
+  "region": "gloamfen",
+  "asset_id": "tileset.gloamfen.a5.source.marsh_mud",
+  "prompt_contract_version": "regional-a5-material-swatch-v2",
+  "run_id": 40702715312,
+  "head_sha": "53578afbd59ccebbcc8406e839c685b6e0d803e3",
+  "status": "INFRASTRUCTURE_CANCELLED_NO_SOURCE_ARTIFACT",
+  "conclusion": "cancelled",
+  "preflight_passed": true,
+  "modal_app_initialized": true,
+  "modal_function_created": true,
+  "remote_render_returned": false,
+  "machine_gate_executed": false,
+  "manual_visual_qa_possible": false,
+  "generated_png_present": false,
+  "source_report_present": false,
+  "accepted": false,
+  "semantic_failure_inferred": false,
+  "compile_authorized": false,
+  "deterministic_finalize_authorized": false,
+  "catalog_wide_launch_authorized": false,
+  "artifact": {
+    "id": 12825210099,
+    "name": "plushbound-a5-prompt-probe-gloamfen-40702715312",
+    "size_bytes": 2118,
+    "sha256": "52d532438a07fafd66ae4b04eaf9d797da216663bc32bf5e37e3a59c0afc7334",
+    "contains_only_preflight_and_log_evidence": true
+  },
+  "gpu_accounting": {
+    "exact_gpu_seconds_known": false,
+    "reason": "remote call never returned a probe report; do not infer zero GPU use from missing output"
+  },
+  "rerun_authority": {
+    "same_asset_id_authorized": true,
+    "reason": "no accepted or reviewable source was produced",
+    "asset_cap": 1,
+    "generation_attempts_per_asset_cap": 1
+  }
+}
