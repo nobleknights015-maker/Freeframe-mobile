@@ -1,0 +1,29 @@
+{
+  "schema": "plushbound.tileset_regional_a5_source_closeout.v1",
+  "status": "CLOSED_GREEN_8_OF_8",
+  "region": "silkspire",
+  "target_sheet_type": "A5",
+  "stable_sheet_id": "tileset.silkspire.a5",
+  "prompt_contract_version": "regional-a5-material-swatch-v2",
+  "machine_gate": "PASS_8_OF_8",
+  "manual_visual_gate": "PASS_8_OF_8",
+  "source_count": 8,
+  "accepted_source_ids_protected_from_rerender": true,
+  "accepted_assets_immutable": true,
+  "missing_local_artifact_is_not_rerender_authority": true,
+  "source_artifact_run_ids": [40735013050, 40742860868, 40744207970, 40745117913],
+  "source_artifact_ids": [12835729347, 12840027078, 12841406302, 12840403827],
+  "deterministic_compile_authorized": true,
+  "catalog_wide_launch_authorized": false,
+  "runtime_import_proof": true,
+  "sources": [
+    {"asset_id":"tileset.silkspire.a5.source.city_stone_paving","material_key":"city_stone_paving","raw_sha256":"ade00323a341fa1ec1bafed21f6a3e1760048eaf09e5f492437d4ecc32039a47","normalized_sha256":"740a5212ef8b9e16920e891e6b3ee23380c2f22b9ec156647e512b915db592cc","machine_status":"PASS","manual_visual_status":"PASS"},
+    {"asset_id":"tileset.silkspire.a5.source.workshop_timber","material_key":"workshop_timber","raw_sha256":"558368ead9d69001d2ae618a942071a037ae51f5e967775ad531f75f00ea081e","normalized_sha256":"fc8323884a66fe98c5f01365a2841ca71607d0bea2977880090bda23ff4bea83","machine_status":"PASS","manual_visual_status":"PASS"},
+    {"asset_id":"tileset.silkspire.a5.source.pale_masonry","material_key":"pale_masonry","raw_sha256":"75636c8a08085458e71bdde9b00bb08e73f9085c5fdbcc29b9fdf9fbd40c713b","normalized_sha256":"b946748873c6b8c165232e1e2c6d59e669ebf64df3027492a39d830b78989fe7","machine_status":"PASS","manual_visual_status":"PASS"},
+    {"asset_id":"tileset.silkspire.a5.source.dark_masonry","material_key":"dark_masonry","raw_sha256":"ec1d1f1c46805bd360730d0be453a4bda2c3aac32557cc2ac717102ab44bdf38","normalized_sha256":"af1ad605aff8f4ecae7e20794e7d6e97fac9583427a714a8d36325026b920840","machine_status":"PASS","manual_visual_status":"PASS"},
+    {"asset_id":"tileset.silkspire.a5.source.bridge_timber","material_key":"bridge_timber","raw_sha256":"28692c32d8a043cae7cbf5bb25fad6881bdc31c3ab200fefd98759ad2d7f4bd2","normalized_sha256":"2221cf2573458ab90696169a06be9ab18022bc198eb600d0b88a8d7d438b67b2","machine_status":"PASS","manual_visual_status":"PASS"},
+    {"asset_id":"tileset.silkspire.a5.source.guild_floorboards","material_key":"guild_floorboards","raw_sha256":"357e6e0bf866fee8f603e1bee4a4d6395560a2492a22f37b8cddd0c96841772e","normalized_sha256":"509d17196728dcc8cc558fc83fdc9c4294185704d5a29a72ed8423efb4b5eda9","machine_status":"PASS","manual_visual_status":"PASS"},
+    {"asset_id":"tileset.silkspire.a5.source.roof_tile","material_key":"roof_tile","raw_sha256":"240b0be400b6a38dee501fa04d694bc166e67f52563ad415eade81dd00cf4236","normalized_sha256":"bdd43ba38692276562a8a3f0c59861b9a191fd8e71edf2e6a136b8c81412b0af","machine_status":"PASS_AFTER_TARGETED_RERENDER","manual_visual_status":"PASS"},
+    {"asset_id":"tileset.silkspire.a5.source.workshop_metal_plate","material_key":"workshop_metal_plate","raw_sha256":"635b61db90c6eea5df74ebb84b02e4df54880f10dbcdfb50afe4d02f6b3b209d","normalized_sha256":"86b9afa72d5874a1793dee30490c7a68c02b42cd4411d9f82b7032c36988f872","machine_status":"PASS_AFTER_ZERO_GPU_PERIMETER_CLEANUP","manual_visual_status":"PASS"}
+  ]
+}
