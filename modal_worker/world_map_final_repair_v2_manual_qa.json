@@ -1,0 +1,75 @@
+{
+  "schema": "plushbound.world_map_final_repair_manual_qa.v1",
+  "repair_version": "v2",
+  "source_run_id": 40620527152,
+  "source_artifact_id": 12786938008,
+  "source_artifact_name": "plushbound-world-map-final-repair-v2-40620527152",
+  "machine_gate": "PASS_6_OF_6",
+  "manual_visual_gate": "QUARANTINE_3_OF_6",
+  "scaling_authorized": false,
+  "catalog_wide_launch_authorized": false,
+  "creator_full_outfits_remain_closed_at": 24,
+  "accepted_and_banked": [
+    {
+      "asset_id": "world.crownweave.environment_master",
+      "sha256": "b53bc62243693383d63da941555fd82194ed55a0c0f1890e541d9ed53f04e422",
+      "decision": "ACCEPT"
+    },
+    {
+      "asset_id": "world.tideglass-coast.environment_master",
+      "sha256": "b610b4a74769f91648231c41c9c2de68c263b5b7819830103846783ff989b653",
+      "decision": "ACCEPT"
+    },
+    {
+      "asset_id": "world.verdancia.environment_master",
+      "sha256": "9a10b281f541ef39a82fa39edb988ab2b66c19e4c7b8ce4a3401da889a752c63",
+      "decision": "ACCEPT"
+    }
+  ],
+  "quarantined_for_targeted_repair": [
+    {
+      "asset_id": "world.elyndor.environment_master",
+      "sha256": "7c237c3135d2bab08385631dcb24e5487b871a42e36886c36958b99e4e62fa7f",
+      "decision": "QUARANTINE",
+      "reason": "route reads as modern paved/asphalt highway instead of handcrafted fantasy grassland footpath or wagon track"
+    },
+    {
+      "asset_id": "world.silkspire.environment_master",
+      "sha256": "eea11ab406a9374585023788dbdc8abb16b2edddaea29c2d04a9ebbb83745bae",
+      "decision": "QUARANTINE",
+      "reason": "visible emblem-like or glyph-like decorative marks remain on hanging architectural decoration"
+    },
+    {
+      "asset_id": "world.moonpatch-steppe.environment_master",
+      "sha256": "9e8d9374f9cd09fb57f34d756cb581d3a7d61df07e6f5f4a9df6a4792cfb6785",
+      "decision": "QUARANTINE",
+      "reason": "route cloths visually read as glossy paved/asphalt modern roads rather than a natural caravan trail"
+    }
+  ],
+  "preserve_previously_accepted_from_canary": [
+    "world.gloamfen.environment_master",
+    "world.sunspool-desert.environment_master"
+  ],
+  "logical_canary_state_after_v2": {
+    "accepted_count": 5,
+    "quarantined_count": 3,
+    "accepted_asset_ids": [
+      "world.gloamfen.environment_master",
+      "world.sunspool-desert.environment_master",
+      "world.crownweave.environment_master",
+      "world.tideglass-coast.environment_master",
+      "world.verdancia.environment_master"
+    ],
+    "repair_v3_asset_ids": [
+      "world.elyndor.environment_master",
+      "world.silkspire.environment_master",
+      "world.moonpatch-steppe.environment_master"
+    ]
+  },
+  "policy": {
+    "rerender_only_quarantined_ids": true,
+    "preserve_accepted_asset_ids": true,
+    "never_stack_paid_runs": true,
+    "scale_only_after_manual_visual_pass": true
+  }
+}
