@@ -1,0 +1,21 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_manual_qa.v1",
+  "status": "FAIL",
+  "asset_id": "tileset.frostlace.a5.source.crystal_stone",
+  "region": "frostlace",
+  "material_key": "crystal_stone",
+  "semantic_material_surface": false,
+  "no_scene_or_object_composition": false,
+  "edge_to_edge_substrate": false,
+  "no_border_or_inset_panel": true,
+  "no_horizon_or_perspective": true,
+  "no_character_creature_prop_or_structure": true,
+  "readable_at_48px": true,
+  "region_material_identity_matches": false,
+  "review_basis": "raw 384x384 repair source plus normalized 48x48 visual review",
+  "executor_run_id": 40757599963,
+  "source_artifact_id": 12846192023,
+  "raw_sha256": "2ee618c3f9b1fce5367ccb4e6eca0826cee9b8f479044179cd2f180cebf9af58",
+  "normalized_sha256": "48176a1bca1ee2fdff4abc324cdfc2432cd11396913535c3a6b95e9891c61493",
+  "notes": "Second semantic rejection: large paving-like polygon facets and outlined joints still dominate. The source does not yet read as dense micro-scale crystalline stone grain."
+}
