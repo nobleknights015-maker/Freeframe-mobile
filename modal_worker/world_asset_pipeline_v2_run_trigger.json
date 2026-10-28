@@ -1,10 +1,10 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_run_trigger.v1",
-  "enabled": false,
+  "enabled": true,
   "mode": "selected_ids_one_region",
   "guard_validation_revision": 6,
-  "region": null,
-  "requested_source_ids": [],
+  "region": "silkspire",
+  "requested_source_ids": ["tileset.silkspire.a5.source.city_stone_paving"],
   "generation_attempts_per_requested_id_cap": 1,
   "one_region_only": true,
   "accepted_ids_must_be_excluded": true,
@@ -12,6 +12,5 @@
   "compile_authorized": false,
   "catalog_wide_launch_authorized": false,
   "runtime_import_proof": true,
-  "last_authorized_live_canary_commit": "78c6a517e03d11240351c0701a05bd3d35bf1928",
-  "note": "Disabled zero-spend validation after fixing V2 tileset inspection identity and raw render preservation."
+  "note": "QA-fixed live V2 canary after tileset inspection identity and paid-render preservation passed revision 11."
 }
