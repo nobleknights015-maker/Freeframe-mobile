@@ -1,0 +1,52 @@
+{
+  "schema": "plushbound.tileset_regional_a5_remaining_repair_launch.v1",
+  "region": "gloamfen",
+  "target_sheet_type": "A5",
+  "stable_sheet_id": "tileset.gloamfen.a5",
+  "state_before_launch": "REPAIR_PARTIAL_1_OF_8_ACCEPTED",
+  "accepted_source": {
+    "asset_id": "tileset.gloamfen.a5.source.marsh_mud",
+    "raw_sha256": "8df77a999da3abfccb1a56b25693cdec10e4f4a658b2ce9fea1aff62e8a12877",
+    "normalized_sha256": "bb121e2ca2e9b835882dab5ce3c0aee423f3aa7fea42fe65b49bc341e7222401",
+    "accepted_probe_run_id": 40714618651,
+    "accepted_probe_artifact_id": 12828200219,
+    "accepted_probe_artifact_sha256": "6a3d68c1b2cc42ad6aea6ea807ddefd1e81f56373dec5160f01bd20ed5ddff31",
+    "immutable": true,
+    "rerender_authorized": false
+  },
+  "remaining_source_ids": [
+    "tileset.gloamfen.a5.source.boardwalk_timber",
+    "tileset.gloamfen.a5.source.damp_moss",
+    "tileset.gloamfen.a5.source.dark_peat",
+    "tileset.gloamfen.a5.source.drowned_stone",
+    "tileset.gloamfen.a5.source.fungal_moss",
+    "tileset.gloamfen.a5.source.reed_matting",
+    "tileset.gloamfen.a5.source.shallow_silt"
+  ],
+  "remaining_source_count": 7,
+  "generation_attempts_per_asset_cap": 1,
+  "preflight": {
+    "run_id": 40715581934,
+    "conclusion": "success",
+    "artifact_id": 12827997195,
+    "artifact_sha256": "a6df0bca787714478fd958d01ca869d9d01baa9faf057357f94d22169a582c11",
+    "provider_calls": 0,
+    "gpu_calls": 0,
+    "generation_calls": 0
+  },
+  "paid_trigger_commit": "1c9eb1a7ef569ee11243ee2694916cb9d22d817d",
+  "paid_workflow_run_id": 40715821580,
+  "paid_workflow_name": "Plushbound Regional A5 Seven-Source Targeted Repair",
+  "gpu_candidates": ["L4", "A10G"],
+  "startup_timeout_seconds": 180,
+  "remote_timeout_seconds": 240,
+  "github_modal_step_timeout_seconds": 600,
+  "offline_cache_only": true,
+  "one_region_only": true,
+  "never_stack_paid_runs": true,
+  "compile_authorized": false,
+  "deterministic_finalize_authorized": false,
+  "catalog_wide_launch_authorized": false,
+  "runtime_import_proof": false,
+  "manual_visual_qa_required_after_machine_gate": true
+}
