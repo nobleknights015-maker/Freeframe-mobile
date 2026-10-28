@@ -1,0 +1,21 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_manual_qa.v1",
+  "asset_id": "tileset.cinderreach.a5.source.ash_soil",
+  "status": "REJECTED_SEMANTIC",
+  "semantic_material_surface": false,
+  "no_scene_or_object_composition": true,
+  "edge_to_edge_substrate": false,
+  "no_border_or_inset_panel": false,
+  "no_horizon_or_perspective": true,
+  "no_character_creature_prop_or_structure": true,
+  "readable_at_48px": true,
+  "region_material_identity_matches": true,
+  "review_basis": "paid 384x384 ash_soil source plus V2-normalized 48x48 tile",
+  "source_executor_run_id": 40767242073,
+  "source_artifact_id": 12849264942,
+  "source_artifact_sha256": "0a576e6aaae8debf19777035d9a5471352f824b0ae55b5ecca187ebe35fc6ea1",
+  "raw_sha256": "8c01d54369d3cd5b0bad36a62907ebb24cae4316892e5b9575c8bbb71336732c",
+  "normalized_sha256": "4e7030050c70a05afacf487a6be5c6fdc4094a0bf8fe4136ff2d0c0f81fd854c",
+  "gpu_seconds": 2.029,
+  "notes": "REJECTED: the material field itself is plausible fine ash-gray soil, but the source contains a clearly visible stitched/inset rectangular perimeter. This violates the locked edge-to-edge substrate contract. Do not auto-accept from machine QA."
+}
