@@ -1,0 +1,19 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_manual_qa.v1",
+  "asset_id": "tileset.frostlace.a5.source.frosted_stone",
+  "status": "FAIL",
+  "semantic_material_surface": false,
+  "no_scene_or_object_composition": false,
+  "edge_to_edge_substrate": false,
+  "no_border_or_inset_panel": false,
+  "no_horizon_or_perspective": true,
+  "no_character_creature_prop_or_structure": true,
+  "readable_at_48px": true,
+  "region_material_identity_matches": false,
+  "review_basis": "raw 384x384 retry3 source plus normalized 48x48 visual review",
+  "executor_run_id": 40758764663,
+  "source_artifact_id": 12846427811,
+  "raw_sha256": "7d282419dda589dd85e91bc4027ec4ad4123b0baccab6725e2edb3d3557fb0ac",
+  "normalized_sha256": "1a8039f64794a348338390313154399c1e54b7716912b7844f3e16e0cb1e94ed",
+  "notes": "Third semantic rejection: explicit snowflake motifs remain and the source reads as an inset frosted panel with a perimeter/frame rather than one continuous frosted-stone substrate. Paid prompt-only retries should pause; change production strategy before another paid attempt."
+}
