@@ -1,0 +1,70 @@
+{
+  "schema": "plushbound.world_map_final_canary_closeout.v1",
+  "lane": "maps_world_environment_masters",
+  "status": "CANARY_CLOSED_PASS_8_OF_8",
+  "machine_gate": "PASS",
+  "manual_visual_gate": "PASS_8_OF_8",
+  "accepted_count": 8,
+  "quarantined_count": 0,
+  "scaling_authorized": true,
+  "scaling_scope": "environment_master_lane_only",
+  "catalog_wide_launch_authorized": false,
+  "creator_full_outfits_remain_closed_at": 24,
+  "accepted_assets": [
+    {
+      "asset_id": "world.gloamfen.environment_master",
+      "source": "initial_canary",
+      "source_run_id": 40619802387,
+      "sha256": "ff8b7a80694ff1f943f17d8125b0beba14d983061ff296bb1d7004683dacc758"
+    },
+    {
+      "asset_id": "world.sunspool-desert.environment_master",
+      "source": "initial_canary",
+      "source_run_id": 40619802387,
+      "sha256": "08b19b1799c5d280025509ff7735ae90e73d4f02b4d7b34c3f73b36292793c71"
+    },
+    {
+      "asset_id": "world.crownweave.environment_master",
+      "source": "repair_v2",
+      "source_run_id": 40620527152,
+      "sha256": "b53bc62243693383d63da941555fd82194ed55a0c0f1890e541d9ed53f04e422"
+    },
+    {
+      "asset_id": "world.tideglass-coast.environment_master",
+      "source": "repair_v2",
+      "source_run_id": 40620527152,
+      "sha256": "b610b4a74769f91648231c41c9c2de68c263b5b7819830103846783ff989b653"
+    },
+    {
+      "asset_id": "world.verdancia.environment_master",
+      "source": "repair_v2",
+      "source_run_id": 40620527152,
+      "sha256": "9a10b281f541ef39a82fa39edb988ab2b66c19e4c7b8ce4a3401da889a752c63"
+    },
+    {
+      "asset_id": "world.elyndor.environment_master",
+      "source": "repair_v3",
+      "source_run_id": 40621601567,
+      "sha256": "528bb9a9a5ad74b6ed26b2252cabb2701cea69339420bbeaad39b0d56f7bdbf1"
+    },
+    {
+      "asset_id": "world.moonpatch-steppe.environment_master",
+      "source": "repair_v4",
+      "source_run_id": 40621975556,
+      "sha256": "8576ae09c46e2193b9d304f1bb0dafd2f2453894813bbcf0d758ab84c9a34b53"
+    },
+    {
+      "asset_id": "world.silkspire.environment_master",
+      "source": "repair_v5",
+      "source_run_id": 40622299468,
+      "sha256": "3283b6021416fcb8db22c2f9fad337f1b55436c9fa107b3f38e4621233f4f7fa"
+    }
+  ],
+  "protected_from_rerender": true,
+  "remaining_canonical_region_baseline": [
+    "world.cinderreach.environment_master",
+    "world.frostlace.environment_master"
+  ],
+  "next_action": "RUN_SEPARATE_TWO_ASSET_NO_SPEND_PREFLIGHT_THEN_BOUNDED_BASELINE_COMPLETION",
+  "notes": "This closes the initial eight-asset environment-master canary only. It does not close 48px tilesets, playable map geometry, or the full world-content catalog."
+}
