@@ -17,7 +17,7 @@ concurrency:
 jobs:
   one-source-prompt-repair-probe:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 12
     env:
       MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
       MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
@@ -118,7 +118,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          modal run modal_worker/tileset_regional_a5_prompt_probe.py --region "$REGION" --asset-id "$ASSET_ID" | tee prompt-probe-paid.log
+          timeout --signal=TERM --kill-after=30s 480s \
+            modal run modal_worker/tileset_regional_a5_prompt_probe.py --region "$REGION" --asset-id "$ASSET_ID" \
+            | tee prompt-probe-paid.log
 
       - name: Assert one-source machine gate and no expansion
         shell: bash
