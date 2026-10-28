@@ -1,0 +1,96 @@
+{
+  "schema": "plushbound.world_map_final_preflight.v1",
+  "lane": "maps_world_final",
+  "status": "PREFLIGHT_ONLY_DISABLED",
+  "source_checkpoint": "75f73ceb8998c0d10e9b07753b23d6ff3080881f",
+  "selection_basis": "First unfinished FINAL-production lane after evidence-based audit; environment master generation has paid canary evidence, but maps/world final production has no verified ready-to-use archive lock or final-lane closeout contract.",
+  "spend_gate": {
+    "production_enabled": false,
+    "paid_remote_execution_allowed": false,
+    "provider_calls_allowed": 0,
+    "gpu_calls_allowed": 0,
+    "generation_jobs_allowed": 0,
+    "automatic_full_production_authorized": false
+  },
+  "creator_lock": {
+    "contract": "modal_worker/creator_full_outfits_half_scope_contract.json",
+    "required_final_total": 24,
+    "must_be_closed": true,
+    "deferred_capacity_must_remain_deferred": true
+  },
+  "completed_lane_locks": {
+    "guardians": {
+      "path": "modal_worker/guardian_runtime_ready_archive_lock.json",
+      "required_status": "VERIFIED_AND_LOCKED",
+      "required_asset_count": 960
+    },
+    "npcs": {
+      "path": "modal_worker/npc_mv_ready_archive_lock.json",
+      "required_status": "VERIFIED_READY_TO_USE_LOCKED",
+      "required_asset_count": 320
+    },
+    "enemies": {
+      "path": "modal_worker/enemy_master_archive_lock.json",
+      "required_asset_count": 640
+    }
+  },
+  "existing_paid_environment_evidence": {
+    "four_lane_gpu_canary_run_id": 39974097252,
+    "balanced_rehearsal_run_id": 39975668399,
+    "evidence_role": "quality_and_pipeline_evidence_only_not_final_lane_completion",
+    "reuse_before_rerender": true
+  },
+  "pipeline_contract": {
+    "preset": "plushbound_environment",
+    "width": 1024,
+    "height": 768,
+    "steps": 28,
+    "guidance_scale": 5.0,
+    "output_format": "PNG",
+    "final_tileset_lane_separate": true
+  },
+  "canonical_regions": [
+    "elyndor",
+    "crownweave",
+    "silkspire",
+    "gloamfen",
+    "verdancia",
+    "tideglass-coast",
+    "moonpatch-steppe",
+    "sunspool-desert",
+    "cinderreach",
+    "frostlace"
+  ],
+  "preflight_manifest": [
+    {"asset_id": "world.elyndor.environment_master", "region": "elyndor", "role": "environment_master"},
+    {"asset_id": "world.crownweave.environment_master", "region": "crownweave", "role": "environment_master"},
+    {"asset_id": "world.silkspire.environment_master", "region": "silkspire", "role": "environment_master"},
+    {"asset_id": "world.gloamfen.environment_master", "region": "gloamfen", "role": "environment_master"},
+    {"asset_id": "world.verdancia.environment_master", "region": "verdancia", "role": "environment_master"},
+    {"asset_id": "world.tideglass-coast.environment_master", "region": "tideglass-coast", "role": "environment_master"},
+    {"asset_id": "world.moonpatch-steppe.environment_master", "region": "moonpatch-steppe", "role": "environment_master"},
+    {"asset_id": "world.sunspool-desert.environment_master", "region": "sunspool-desert", "role": "environment_master"},
+    {"asset_id": "world.cinderreach.environment_master", "region": "cinderreach", "role": "environment_master"},
+    {"asset_id": "world.frostlace.environment_master", "region": "frostlace", "role": "environment_master"}
+  ],
+  "post_preflight_bounded_strategy": {
+    "requires_green_preflight": true,
+    "first_real_wave_asset_cap": 8,
+    "scale_sequence_after_green_validation": [16, 32, 64],
+    "hard_max_assets_per_wave": 384,
+    "never_stack_paid_runs": true,
+    "checkpoint_each_wave": true,
+    "stop_on_validation_failure": true,
+    "quarantine_anomalies": true,
+    "recheck_branch_head_before_each_wave": true,
+    "resume_without_regenerating_completed_asset_ids": true
+  },
+  "policy": {
+    "fail_closed": true,
+    "rerender_because_local_artifact_missing": false,
+    "inspect_remote_paid_execution_evidence_first": true,
+    "completed_lanes_read_only": true,
+    "creator_clothing_read_only_for_current_pass": true,
+    "preflight_may_not_call_network_generation_providers": true
+  }
+}
