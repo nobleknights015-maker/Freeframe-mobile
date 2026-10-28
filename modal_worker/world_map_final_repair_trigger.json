@@ -1,25 +1,27 @@
 {
-  "schema": "plushbound.tileset_source_canary_trigger.v1",
+  "schema": "plushbound.tileset_source_repair_trigger.v1",
   "enabled": true,
-  "mode": "elyndor_a5_source_canary",
-  "asset_cap": 8,
-  "generation_cap": 8,
+  "mode": "elyndor_a5_straw_thatch_repair",
+  "asset_cap": 1,
+  "generation_cap": 1,
   "retry_generation_cap": 0,
-  "preflight_run_id": 40624927471,
-  "preflight_conclusion": "success",
-  "compiler_validation_run_id": 40624496871,
-  "producer_commit_sha": "4ad664566dd57ce7549fc084ead7aecbae8c01a3",
+  "source_canary_run_id": 40625079420,
+  "source_canary_artifact_id": 12788983716,
+  "source_canary_artifact_digest": "sha256:9e9b97c38d656fc9a0aeb9e20e4b2c81ea021ee74536a1d0702c249c55e5a228",
   "target_region": "elyndor",
   "target_sheet_type": "A5",
   "asset_ids": [
+    "tileset.elyndor.a5.source.straw_thatch"
+  ],
+  "preserve_accepted_source_ids": true,
+  "accepted_source_ids_not_to_regenerate": [
     "tileset.elyndor.a5.source.lush_grass",
     "tileset.elyndor.a5.source.wildflower_grass",
     "tileset.elyndor.a5.source.warm_soil",
     "tileset.elyndor.a5.source.dirt_path",
     "tileset.elyndor.a5.source.tilled_farm_soil",
     "tileset.elyndor.a5.source.pale_field_stone",
-    "tileset.elyndor.a5.source.village_timber",
-    "tileset.elyndor.a5.source.straw_thatch"
+    "tileset.elyndor.a5.source.village_timber"
   ],
   "source_master_size": [384, 384],
   "normalized_tile_size": [48, 48],
@@ -30,5 +32,5 @@
   "stop_on_validation_failure": true,
   "catalog_wide_launch_authorized": false,
   "creator_full_outfits_remain_closed_at": 24,
-  "shared_paid_trigger_path_note": "Established approved paid-trigger path reused after world environment master lane closed and locked 10/10; this trigger no longer authorizes world regeneration."
+  "shared_paid_trigger_path_note": "Established approved paid-trigger path reused for exact one-source targeted repair; this trigger does not authorize any accepted source rerender, world regeneration, full A5 expansion, or cross-region production."
 }
