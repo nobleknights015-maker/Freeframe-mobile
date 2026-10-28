@@ -1,12 +1,12 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_freeze.v1",
-  "status": "FROSTLACE_REMAINING_7_PAID_WINDOW_OPEN",
+  "status": "PAID_WORLD_ASSET_PRODUCTION_REFROZEN_AFTER_FROSTLACE_REMAINING_7_AUTHORIZATION",
   "branch": "freeframe-modal-worker",
-  "production_frozen": false,
-  "paid_remote_execution_allowed": true,
-  "provider_calls_allowed": 7,
-  "gpu_calls_allowed": 7,
-  "generation_calls_allowed": 7,
+  "production_frozen": true,
+  "paid_remote_execution_allowed": false,
+  "provider_calls_allowed": 0,
+  "gpu_calls_allowed": 0,
+  "generation_calls_allowed": 0,
   "catalog_wide_launch_authorized": false,
   "legacy_pipeline_mode": "READ_ONLY_EVIDENCE_AND_ACCEPTED_HASH_SOURCE",
   "legacy_paid_triggers_must_not_be_modified_or_replayed": true,
@@ -37,5 +37,7 @@
   },
   "validated_batch_preflight_run_id": 40755189578,
   "last_authorized_frostlace_canary_commit": "13ade52de71c534f568764870965cd49fef687a5",
-  "last_authorized_frostlace_canary_executor_run_id": 40754030630
+  "last_authorized_frostlace_canary_executor_run_id": 40754030630,
+  "last_authorized_frostlace_batch_commit": "93232195ae8098c067d8179dc8352c40cebf0def",
+  "last_authorized_frostlace_batch_executor_run_id": 40755360893
 }
