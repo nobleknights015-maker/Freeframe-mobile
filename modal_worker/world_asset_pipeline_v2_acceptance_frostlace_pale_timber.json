@@ -1,0 +1,20 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_asset_acceptance.v1",
+  "status": "ACCEPTED",
+  "asset_id": "tileset.frostlace.a5.source.pale_timber",
+  "region": "frostlace",
+  "material_key": "pale_timber",
+  "machine_gate": "PASS",
+  "manual_visual_gate": "PASS",
+  "raw_sha256": "2938194d95d73512553ebddec78f2e820a4522a257d73b6e9618a4cefb5936dc",
+  "normalized_sha256": "4d78bf81c4d561312c81588e2f91604e0e0e59d76ef407cc315beb56b0f13b73",
+  "source_executor_run_id": 40755360893,
+  "source_artifact_id": 12844814359,
+  "source_artifact_sha256": "42bec66da9fffa0676a273021debb7cc06b6b817505c4092fe39f306a4886a47",
+  "manual_qa_evidence": "modal_worker/world_asset_pipeline_v2_manual_qa_frostlace_pale_timber.json",
+  "immutable": true,
+  "rerender_allowed": false,
+  "compile_authorized": false,
+  "catalog_wide_launch_authorized": false,
+  "runtime_import_proof": true
+}
