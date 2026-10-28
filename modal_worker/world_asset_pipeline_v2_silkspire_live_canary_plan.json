@@ -1,0 +1,25 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_live_canary_plan.v1",
+  "status": "STAGED_NOT_AUTHORIZED_UNTIL_MASTER_PREFLIGHT_GREEN",
+  "region": "silkspire",
+  "requested_source_ids": [
+    "tileset.silkspire.a5.source.city_stone_paving"
+  ],
+  "why_this_asset": "Lowest-risk manufactured planar material suitable for proving the new paid executor with minimal GPU exposure.",
+  "max_requested_assets": 1,
+  "generation_attempts_per_requested_id_cap": 1,
+  "accepted_ids_must_be_excluded": true,
+  "failure_isolated_to_asset_id": true,
+  "manual_visual_qa_required": true,
+  "automatic_acceptance": false,
+  "automatic_compile": false,
+  "catalog_wide_launch_authorized": false,
+  "runtime_import_proof": false,
+  "launch_requirements": [
+    "master_v2_preflight_revision_6_success",
+    "guarded_executor_disabled_validation_success",
+    "production_activation_protocol_followed_in_order",
+    "silkspire_source_state_still_pending",
+    "no_other_paid_region_active"
+  ]
+}
