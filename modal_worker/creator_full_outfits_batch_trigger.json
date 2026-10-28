@@ -1,6 +1,6 @@
 {
   "schema": "plushbound.creator_full_outfits_batch_trigger.v1",
-  "enabled": true,
+  "enabled": false,
   "phase": "bulk",
   "style_indices": [23, 25, 27, 33, 35, 41, 51, 57, 65, 73, 81],
   "style_count": 11,
@@ -12,8 +12,8 @@
   "requires_locked_body_qc": true,
   "requires_tops_handoff_gate": false,
   "requires_one_shot_launch_commit": true,
-  "authorized_launch_commit_message": "Launch Creator Full Outfits bulk nonce 8",
+  "authorized_launch_commit_message": null,
   "catalog_wide_launch_authorized": false,
   "launch_nonce": 8,
-  "notes": "Exact 11-style half-scope top-up. Character Creator Full Outfits hard cap for this pass is 24 usable outfits: 3 verified canaries plus 10 usable outfits banked from interrupted run 40606361749, plus these 11 breadth-selected styles. Remaining Full Outfits are deferred so production moves to other Plushbound asset categories."
+  "notes": "Bulk nonce 8 has been consumed by workflow run 40609613786 at exact launch head 1131b0a95de2e89448c19fc5ea143378d8b240f2. Trigger is re-closed immediately after registration. This exact 11-style top-up is the final Character Creator Full Outfits production wave for this pass. When these bank, the hard cap is 24 usable outfits and all remaining Full Outfits are deferred so production can move to other Plushbound asset categories."
 }
