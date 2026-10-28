@@ -1,0 +1,16 @@
+{
+  "schema": "plushbound.world_asset_pipeline_v2_flux2_reference_run_trigger.v1",
+  "enabled": false,
+  "mode": "selected_ids_one_region_current_chat_repair",
+  "region": null,
+  "requested_source_ids": [],
+  "generation_attempts_per_requested_id_cap": 1,
+  "one_region_only": true,
+  "manual_visual_qa_required": true,
+  "compile_authorized": false,
+  "catalog_wide_launch_authorized": false,
+  "required_source_art_provenance": "vera-modal-generated",
+  "reference_sheet_pixels_used_as_runtime_art": false,
+  "validated_reference_worker_preflight_run_id": 40789252831,
+  "purpose": "Closed-by-default trigger for the corrected current-chat Crownweave/Tideglass provenance repair lane."
+}
