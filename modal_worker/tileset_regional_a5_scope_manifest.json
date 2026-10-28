@@ -1,0 +1,130 @@
+{
+  "schema": "plushbound.tileset_regional_a5_scope_manifest.v1",
+  "status": "PREFLIGHT_ONLY_NO_SPEND",
+  "source_checkpoint": "ee5bd8c8d12f36ecf899079beabd22cbe31facd4",
+  "closed_regions": {
+    "elyndor": {
+      "status": "CLOSED_BANKED",
+      "stable_sheet_id": "tileset.elyndor.a5",
+      "engine_v1_sha256": "d26595d093676bfd0bdfc44259a7795674d96dc4925f6db5773efa06e044a1bb"
+    }
+  },
+  "remaining_regions": [
+    "crownweave",
+    "silkspire",
+    "gloamfen",
+    "verdancia",
+    "tideglass-coast",
+    "moonpatch-steppe",
+    "sunspool-desert",
+    "cinderreach",
+    "frostlace"
+  ],
+  "engine_contract": {
+    "profile": "mv_tileset_a5",
+    "format": "PNG",
+    "mode": "RGBA",
+    "sheet_size": [384, 768],
+    "tile_size": [48, 48],
+    "grid": [8, 16],
+    "slot_count": 128
+  },
+  "source_contract": {
+    "preset": "plushbound_tileset_source",
+    "source_master_size": [384, 384],
+    "normalized_tile_size": [48, 48],
+    "materials_per_region": 8,
+    "variants_per_material": 16,
+    "generation_attempts_per_material_cap": 1,
+    "prompt_template": "{region_prompt}. Seamless {material_name} material viewed straight down, continuous handcrafted fantasy surface with subtle Plushbound woven-fiber character; no text, letters, numbers, glyphs, symbols, logos, signs, borders, isolated objects, tile grid, checkerboard or contact sheet."
+  },
+  "locks": {
+    "accepted_assets_immutable": true,
+    "missing_local_artifact_is_not_rerender_authority": true,
+    "creator_full_outfits_closed_at": 24,
+    "guardians_locked_at": 960,
+    "npcs_locked_at": 320,
+    "enemies_banked": 617,
+    "enemies_source_quarantined": 23,
+    "enemies_accounted_total": 640
+  },
+  "spend_gate": {
+    "production_enabled": false,
+    "paid_remote_execution_allowed": false,
+    "provider_calls_allowed": 0,
+    "gpu_calls_allowed": 0,
+    "generation_jobs_allowed": 0,
+    "catalog_wide_launch_authorized": false,
+    "never_stack_paid_runs": true,
+    "one_region_per_paid_trigger": true
+  },
+  "stable_ids": {
+    "sheet": "tileset.<region>.a5",
+    "source": "tileset.<region>.a5.source.<material_key>"
+  },
+  "regions": {
+    "crownweave": {
+      "status": "PREFLIGHT_PENDING",
+      "sheet_type": "A5",
+      "stable_sheet_id": "tileset.crownweave.a5",
+      "region_prompt": "Crownweave ceremonial highlands and civic city material language",
+      "materials": ["highland_grass", "civic_earth", "woven_stone_paving", "terrace_stone", "garden_soil", "institutional_stone", "polished_timber", "slate_roof_tile"]
+    },
+    "silkspire": {
+      "status": "PREFLIGHT_PENDING",
+      "sheet_type": "A5",
+      "stable_sheet_id": "tileset.silkspire.a5",
+      "region_prompt": "Silkspire vertical urban workshops and elegant structural city material language",
+      "materials": ["city_stone_paving", "workshop_timber", "pale_masonry", "dark_masonry", "bridge_timber", "guild_floorboards", "roof_tile", "workshop_metal_plate"]
+    },
+    "gloamfen": {
+      "status": "PREFLIGHT_PENDING",
+      "sheet_type": "A5",
+      "stable_sheet_id": "tileset.gloamfen.a5",
+      "region_prompt": "Gloamfen wetland, boardwalk, drowned-ruin and marsh material language",
+      "materials": ["marsh_mud", "damp_moss", "shallow_silt", "reed_matting", "boardwalk_timber", "drowned_stone", "fungal_moss", "dark_peat"]
+    },
+    "verdancia": {
+      "status": "PREFLIGHT_PENDING",
+      "sheet_type": "A5",
+      "stable_sheet_id": "tileset.verdancia.a5",
+      "region_prompt": "Verdancia living forest settlement, garden and root-path material language",
+      "materials": ["forest_loam", "mossy_ground", "root_path", "herb_garden_soil", "orchard_ground", "living_wood", "mossy_stone", "leaf_litter"]
+    },
+    "tideglass-coast": {
+      "status": "PREFLIGHT_PENDING",
+      "sheet_type": "A5",
+      "stable_sheet_id": "tileset.tideglass-coast.a5",
+      "region_prompt": "Tideglass Coast shoreline, cliff, harbor and maritime material language",
+      "materials": ["wet_sand", "dry_sand", "sea_glass_pebbles", "coastal_stone", "cliff_stone", "dock_timber", "saltworn_board", "tidal_silt"]
+    },
+    "moonpatch-steppe": {
+      "status": "PREFLIGHT_PENDING",
+      "sheet_type": "A5",
+      "stable_sheet_id": "tileset.moonpatch-steppe.a5",
+      "region_prompt": "Moonpatch Steppe moonlit grassland, caravan and shelter material language",
+      "materials": ["silver_grass", "pressed_grass", "caravan_dirt", "steppe_soil", "pale_steppe_stone", "shelter_timber", "woven_reed_mat", "moonlit_gravel"]
+    },
+    "sunspool-desert": {
+      "status": "PREFLIGHT_PENDING",
+      "sheet_type": "A5",
+      "stable_sheet_id": "tileset.sunspool-desert.a5",
+      "region_prompt": "Sunspool Desert dune, oasis, shelter and buried-ruin material language",
+      "materials": ["warm_sand", "compacted_desert_soil", "oasis_damp_sand", "salvage_stone", "sunbleached_stone", "shelter_timber", "woven_matting", "buried_ruin_tile"]
+    },
+    "cinderreach": {
+      "status": "PREFLIGHT_PENDING",
+      "sheet_type": "A5",
+      "stable_sheet_id": "tileset.cinderreach.a5",
+      "region_prompt": "Cinderreach volcanic, forge-settlement and foundry material language",
+      "materials": ["basalt", "ash_soil", "ember_veined_rock", "forge_stone", "charred_timber", "foundry_masonry", "metal_floor_plate", "cooled_lava"]
+    },
+    "frostlace": {
+      "status": "PREFLIGHT_PENDING",
+      "sheet_type": "A5",
+      "stable_sheet_id": "tileset.frostlace.a5",
+      "region_prompt": "Frostlace snow, ice, archive and cold-settlement material language",
+      "materials": ["packed_snow", "blue_ice", "frosted_stone", "frozen_soil", "archive_stone", "pale_timber", "crystal_stone", "cold_gravel"]
+    }
+  }
+}
