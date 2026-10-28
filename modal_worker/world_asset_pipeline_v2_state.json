@@ -1,17 +1,101 @@
 {
-  "schema":"plushbound.world_asset_pipeline_v2_state.v1","status":"SILKSPIRE_FINAL_METAL_AUTHORIZED_PRODUCTION_REFROZEN","pipeline_version":2,"production_frozen":true,"paid_execution_enabled":false,"active_paid_region":null,"catalog_wide_launch_authorized":false,"runtime_import_proof":true,"runtime_import_proof_scope":"game-side A5 runtime importer smoke plus Android APK packaging proof","scope_manifest":"modal_worker/tileset_regional_a5_scope_manifest.json","freeze_manifest":"modal_worker/world_asset_pipeline_v2_freeze.json","receiver_contract":"modal_worker/world_asset_pipeline_v2_receiver_contract.json",
-  "accepted_region_source_closeouts":{"gloamfen":"modal_worker/tileset_gloamfen_a5_source_closeout.json"},
-  "accepted_asset_records":{"tileset.silkspire.a5.source.city_stone_paving":"modal_worker/world_asset_pipeline_v2_acceptance_silkspire_city_stone_paving.json","tileset.silkspire.a5.source.workshop_timber":"modal_worker/world_asset_pipeline_v2_acceptance_silkspire_workshop_timber.json","tileset.silkspire.a5.source.pale_masonry":"modal_worker/world_asset_pipeline_v2_acceptance_silkspire_pale_masonry.json","tileset.silkspire.a5.source.dark_masonry":"modal_worker/world_asset_pipeline_v2_acceptance_silkspire_dark_masonry.json","tileset.silkspire.a5.source.bridge_timber":"modal_worker/world_asset_pipeline_v2_acceptance_silkspire_bridge_timber.json","tileset.silkspire.a5.source.guild_floorboards":"modal_worker/world_asset_pipeline_v2_acceptance_silkspire_guild_floorboards.json","tileset.silkspire.a5.source.roof_tile":"modal_worker/world_asset_pipeline_v2_acceptance_silkspire_roof_tile.json"},
-  "closed_region_sheets":{"elyndor":{"stable_sheet_id":"tileset.elyndor.a5","sheet_sha256":"d26595d093676bfd0bdfc44259a7795674d96dc4925f6db5773efa06e044a1bb","runtime_import_proof":false}},
-  "region_overrides":{"gloamfen":"SOURCES_ACCEPTED_8_OF_8_PENDING_DETERMINISTIC_COMPILE","crownweave":"PENDING","silkspire":"PARTIAL_7_OF_8_ACCEPTED_FINAL_METAL_SUBSTRATE_IN_FLIGHT","verdancia":"PENDING","tideglass-coast":"PENDING","moonpatch-steppe":"PENDING","sunspool-desert":"PENDING","cinderreach":"PENDING","frostlace":"PENDING"},
-  "asset_state_overrides":{"tileset.silkspire.a5.source.workshop_metal_plate":{"state":"REJECTED_SEMANTIC","reason":"Second manual QA rejection: generator still interprets the material label as one framed metal plate object with a strong perimeter/corner frame.","manual_qa_evidence":"modal_worker/world_asset_pipeline_v2_manual_qa_silkspire_workshop_metal_plate_retry2.json","prompt_suffix":"IMPORTANT INTERPRETATION OVERRIDE: ignore the noun plate as an object. Render a FULL-FRAME SEAMLESS INDUSTRIAL BRUSHED GUNMETAL SHEET-METAL SUBSTRATE, like an endless metal floor/wall material sampled from the middle of a much larger surface. The texture must continue beyond every image edge. Use fine horizontal brushing, subtle distributed wear, and sparse restrained brass-toned scuffs INSIDE the field. Do NOT show an individual plate, panel, rectangle, frame, outline, perimeter, rim, bevel, border, corners, rivets around edges, inset slab, object silhouette, or any visible outer boundary. No complete rectangular shape may appear anywhere."}},
-  "allowed_asset_states":["PENDING","ACCEPTED","REJECTED_SEMANTIC","REJECTED_TECHNICAL"],
-  "generation_policy":{"one_shared_worker":true,"one_region_at_a_time":true,"accepted_ids_never_eligible":true,"requested_ids_only":true,"attempts_per_requested_id_cap":1,"failure_isolated_to_asset_id":true,"manual_visual_qa_required":true,"individual_asset_acceptance_is_hash_bound":true,"region_closeout_only_after_all_8_assets_accepted":true,"paid_render_preserved_before_post_render_qa":true,"tileset_inspection_preset":"plushbound_tileset_source","bounded_live_batch_cap_1_to_8":true,"exact_requested_count_gate_required":true},
-  "deterministic_policy":{"normalization_zero_gpu":true,"finishing_zero_gpu":true,"compile_zero_gpu":true,"compile_requires_8_of_8_accepted":true,"engine_v1_receiver_runtime_importer_present":true,"state_resolution_mode_independent":true},
-  "last_authorized_live_canary":{"commit":"53654a09e9439795f4c094b0555d46e30670111e","region":"silkspire","requested_source_ids":["tileset.silkspire.a5.source.city_stone_paving"],"max_provider_calls":1,"max_gpu_calls":1,"max_generation_calls":1,"automatic_acceptance":false,"automatic_compile":false,"accepted_after_policy_correction_without_rerender":true},
-  "last_failed_zero_spend_region_batch":{"commit":"113b5a9d83462bb3cad859e05eae51021f1f9702","region":"silkspire","failure_stage":"PREFLIGHT_BEFORE_CREDENTIALS","provider_calls":0,"gpu_calls":0,"generation_calls":0},
-  "last_authorized_region_batch":{"commit":"d117139d3d9cb83ffbcefad142cb6f826dbefe7c","region":"silkspire","executor_run_id":40742860868,"source_artifact_id":12840027078,"source_artifact_sha256":"9f32ba6b6def3f47063017073016a1fa0e08b8bdcc151fe6ff66f63632d4c27c","machine_pass_count":7,"manual_pass_count":5,"manual_rejected_semantic_count":2,"total_gpu_seconds":5.842,"execution_status":"REVIEWED_5_ACCEPTED_2_REJECTED_SEMANTIC"},
-  "last_authorized_repair":{"commit":"d02905f52451a72660b9c162e624a85a88b21960","region":"silkspire","requested_source_ids":["tileset.silkspire.a5.source.roof_tile","tileset.silkspire.a5.source.workshop_metal_plate"],"max_provider_calls":2,"max_gpu_calls":2,"max_generation_calls":2,"automatic_acceptance":false,"automatic_compile":false,"validated_zero_gpu_preflight_run_id":40743938012,"executor_run_id":40744207970,"source_artifact_id":12841406302,"source_artifact_sha256":"2a70a3e196a4fa4219a1ba822e088927d3aa6bb3d734bef4133b51878c869353","machine_pass_count":2,"manual_pass_count":1,"manual_rejected_semantic_count":1,"total_gpu_seconds":2.309,"execution_status":"REVIEWED_ROOF_ACCEPTED_METAL_REJECTED_SEMANTIC"},
-  "last_authorized_final_metal":{"commit":"873f1db88c76cdbf2e51ef592854f86b179ad7ed","region":"silkspire","requested_source_ids":["tileset.silkspire.a5.source.workshop_metal_plate"],"max_provider_calls":1,"max_gpu_calls":1,"max_generation_calls":1,"automatic_acceptance":false,"automatic_compile":false,"validated_zero_gpu_preflight_run_id":40744871552,"executor_run_id":40745117913,"execution_status":"IN_PROGRESS_OR_PENDING_RESULT_REVIEW"},
-  "next_fresh_region_after_v2_validation":"silkspire"
+  "schema": "plushbound.world_asset_pipeline_v2_state.v1",
+  "status": "SILKSPIRE_SOURCES_ACCEPTED_8_OF_8_PENDING_DETERMINISTIC_COMPILE",
+  "pipeline_version": 2,
+  "production_frozen": true,
+  "paid_execution_enabled": false,
+  "active_paid_region": null,
+  "catalog_wide_launch_authorized": false,
+  "runtime_import_proof": true,
+  "runtime_import_proof_scope": "game-side A5 runtime importer smoke plus Android APK packaging proof",
+  "scope_manifest": "modal_worker/tileset_regional_a5_scope_manifest.json",
+  "freeze_manifest": "modal_worker/world_asset_pipeline_v2_freeze.json",
+  "receiver_contract": "modal_worker/world_asset_pipeline_v2_receiver_contract.json",
+  "accepted_region_source_closeouts": {
+    "gloamfen": "modal_worker/tileset_gloamfen_a5_source_closeout.json",
+    "silkspire": "modal_worker/tileset_silkspire_a5_source_closeout.json"
+  },
+  "accepted_asset_records": {
+    "tileset.silkspire.a5.source.city_stone_paving": "modal_worker/world_asset_pipeline_v2_acceptance_silkspire_city_stone_paving.json",
+    "tileset.silkspire.a5.source.workshop_timber": "modal_worker/world_asset_pipeline_v2_acceptance_silkspire_workshop_timber.json",
+    "tileset.silkspire.a5.source.pale_masonry": "modal_worker/world_asset_pipeline_v2_acceptance_silkspire_pale_masonry.json",
+    "tileset.silkspire.a5.source.dark_masonry": "modal_worker/world_asset_pipeline_v2_acceptance_silkspire_dark_masonry.json",
+    "tileset.silkspire.a5.source.bridge_timber": "modal_worker/world_asset_pipeline_v2_acceptance_silkspire_bridge_timber.json",
+    "tileset.silkspire.a5.source.guild_floorboards": "modal_worker/world_asset_pipeline_v2_acceptance_silkspire_guild_floorboards.json",
+    "tileset.silkspire.a5.source.roof_tile": "modal_worker/world_asset_pipeline_v2_acceptance_silkspire_roof_tile.json",
+    "tileset.silkspire.a5.source.workshop_metal_plate": "modal_worker/world_asset_pipeline_v2_acceptance_silkspire_workshop_metal_plate.json"
+  },
+  "closed_region_sheets": {
+    "elyndor": {
+      "stable_sheet_id": "tileset.elyndor.a5",
+      "sheet_sha256": "d26595d093676bfd0bdfc44259a7795674d96dc4925f6db5773efa06e044a1bb",
+      "runtime_import_proof": false
+    }
+  },
+  "region_overrides": {
+    "gloamfen": "SOURCES_ACCEPTED_8_OF_8_PENDING_DETERMINISTIC_COMPILE",
+    "crownweave": "PENDING",
+    "silkspire": "SOURCES_ACCEPTED_8_OF_8_PENDING_DETERMINISTIC_COMPILE",
+    "verdancia": "PENDING",
+    "tideglass-coast": "PENDING",
+    "moonpatch-steppe": "PENDING",
+    "sunspool-desert": "PENDING",
+    "cinderreach": "PENDING",
+    "frostlace": "PENDING"
+  },
+  "asset_state_overrides": {},
+  "allowed_asset_states": ["PENDING", "ACCEPTED", "REJECTED_SEMANTIC", "REJECTED_TECHNICAL"],
+  "generation_policy": {
+    "one_shared_worker": true,
+    "one_region_at_a_time": true,
+    "accepted_ids_never_eligible": true,
+    "requested_ids_only": true,
+    "attempts_per_requested_id_cap": 1,
+    "failure_isolated_to_asset_id": true,
+    "manual_visual_qa_required": true,
+    "individual_asset_acceptance_is_hash_bound": true,
+    "region_closeout_only_after_all_8_assets_accepted": true,
+    "paid_render_preserved_before_post_render_qa": true,
+    "tileset_inspection_preset": "plushbound_tileset_source",
+    "bounded_live_batch_cap_1_to_8": true,
+    "exact_requested_count_gate_required": true
+  },
+  "deterministic_policy": {
+    "normalization_zero_gpu": true,
+    "finishing_zero_gpu": true,
+    "compile_zero_gpu": true,
+    "compile_requires_8_of_8_accepted": true,
+    "engine_v1_receiver_runtime_importer_present": true,
+    "state_resolution_mode_independent": true
+  },
+  "last_authorized_live_canary": {
+    "commit": "53654a09e9439795f4c094b0555d46e30670111e",
+    "region": "silkspire",
+    "executor_run_id": 40735013050,
+    "accepted": true
+  },
+  "last_authorized_region_batch": {
+    "commit": "d117139d3d9cb83ffbcefad142cb6f826dbefe7c",
+    "executor_run_id": 40742860868,
+    "manual_pass_count": 5,
+    "manual_rejected_semantic_count": 2,
+    "total_gpu_seconds": 5.842
+  },
+  "last_authorized_repair": {
+    "commit": "d02905f52451a72660b9c162e624a85a88b21960",
+    "executor_run_id": 40744207970,
+    "manual_pass_count": 1,
+    "manual_rejected_semantic_count": 1,
+    "total_gpu_seconds": 2.309
+  },
+  "last_authorized_final_metal": {
+    "commit": "873f1db88c76cdbf2e51ef592854f86b179ad7ed",
+    "executor_run_id": 40745117913,
+    "source_artifact_id": 12840403827,
+    "original_raw_sha256": "70b8ffab99e2cdf6dd15893cfd2b352f50a1ce62a3df362bc66a930e995c9918",
+    "deterministic_repair": "v2-perimeter-crop-v1",
+    "accepted_repaired_raw_sha256": "635b61db90c6eea5df74ebb84b02e4df54880f10dbcdfb50afe4d02f6b3b209d",
+    "execution_status": "ACCEPTED_AFTER_ZERO_GPU_PERIMETER_CLEANUP"
+  },
+  "next_fresh_region_after_v2_validation": "frostlace"
 }
