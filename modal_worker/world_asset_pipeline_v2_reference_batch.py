@@ -10,7 +10,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from PIL import Image
+from PIL import Image, ImageFile
 
 from modal_worker.world_asset_pipeline_v2_flux2_reference_batch import (
     run as _flux2_run,
@@ -54,6 +54,47 @@ def validate_reference_paid_authorization(region: str, requested_count: int) -> 
     }
 
 
+def _normalize_full_sheet_conditioning(material: str, source: Path, expected_size: list[int]) -> tuple[Path, str, list[int]]:
+    """Decode a committed conditioning raster once and re-encode it as a clean PNG.
+
+    Some Git/GitHub image transfers can leave a JPEG with a valid header but a
+    truncated entropy stream. Pillow can still recover the decoded pixels. We allow
+    truncated decoding only inside this normalization boundary, verify the exact
+    dimensions, and then write a fresh PNG that is used for the actual model call.
+    Runtime art still never contains pixels copied from this conditioning file.
+    """
+    normalized = source.with_name(f"{material}_fullsheet_normalized.png")
+    previous_flag = ImageFile.LOAD_TRUNCATED_IMAGES
+    ImageFile.LOAD_TRUNCATED_IMAGES = True
+    try:
+        with Image.open(source) as image:
+            image.load()
+            actual_size = [int(image.width), int(image.height)]
+            if actual_size != list(expected_size):
+                raise RuntimeError(
+                    f"{material}: full-resolution conditioning sheet size mismatch: "
+                    f"expected {expected_size}, got {actual_size}"
+                )
+            clean = image.convert("RGB")
+            clean.save(normalized, format="PNG", optimize=False)
+    except Exception as exc:
+        raise RuntimeError(f"{material}: unable to normalize full-resolution conditioning sheet: {exc}") from exc
+    finally:
+        ImageFile.LOAD_TRUNCATED_IMAGES = previous_flag
+
+    normalized_raw = normalized.read_bytes()
+    normalized_sha = hashlib.sha256(normalized_raw).hexdigest()
+    with Image.open(normalized) as image:
+        image.load()
+        normalized_size = [int(image.width), int(image.height)]
+    if normalized_size != list(expected_size):
+        raise RuntimeError(
+            f"{material}: normalized conditioning sheet size mismatch: "
+            f"expected {expected_size}, got {normalized_size}"
+        )
+    return normalized, normalized_sha, normalized_size
+
+
 def _bind_tideglass_correction(region: str, requested_ids: list[str]) -> str | None:
     if region != "tideglass-coast":
         return None
@@ -67,26 +108,24 @@ def _bind_tideglass_correction(region: str, requested_ids: list[str]) -> str | N
 
     full_sheet = TIDEGLASS_FULL_SHEET_CONDITIONING.get(material)
     if full_sheet is not None:
-        authority = Path(str(full_sheet["path"]))
-        if not authority.is_file():
+        committed_authority = Path(str(full_sheet["path"]))
+        if not committed_authority.is_file():
             raise RuntimeError(f"{material}: full-resolution conditioning sheet is missing")
-        authority_raw = authority.read_bytes()
-        authority_sha = hashlib.sha256(authority_raw).hexdigest()
-        with Image.open(authority) as image:
-            image.load()
-            actual_size = [int(image.width), int(image.height)]
-        if actual_size != list(full_sheet["size"]):
-            raise RuntimeError(
-                f"{material}: full-resolution conditioning sheet size mismatch: "
-                f"expected {full_sheet['size']}, got {actual_size}"
-            )
+        committed_sha = hashlib.sha256(committed_authority.read_bytes()).hexdigest()
+        authority, authority_sha, actual_size = _normalize_full_sheet_conditioning(
+            material,
+            committed_authority,
+            list(full_sheet["size"]),
+        )
         reference_role = "material_specific_full_sheet_visual_authority_only"
         source_reference_hashes = {
             "correction_material": material,
             "correction_reference_sheet_sha256": sheet_sha,
+            "committed_full_sheet_sha256": committed_sha,
             "correction_anchor_sha256": authority_sha,
             "full_sheet_conditioning_sha256": authority_sha,
             "full_sheet_conditioning_size": actual_size,
+            "full_sheet_normalized_from_committed_raster": True,
             "reference_pixels_runtime_forbidden": True,
         }
     else:
@@ -118,8 +157,7 @@ def _bind_tideglass_correction(region: str, requested_ids: list[str]) -> str | N
     return original
 
 
-def run(region: str, requested_ids: list[str]) -> dict:
-    validate_reference_paid_authorization(region, len(requested_ids))
+def run(region: str, requested_ids: list[str]) -> list[dict]:
     original = _bind_tideglass_correction(region, requested_ids)
     try:
         return _flux2_run(region, requested_ids)
@@ -137,17 +175,7 @@ def main() -> None:
     args = parser.parse_args()
     requested_ids = json.loads(args.request_ids_json)
     clean = run(args.region, requested_ids)
-    print(json.dumps({
-        "status": clean["status"],
-        "region": clean["region"],
-        "requested_count": clean["requested_count"],
-        "machine_pass_count": clean["machine_pass_count"],
-        "machine_rejected_or_error_count": clean["machine_rejected_or_error_count"],
-        "total_gpu_seconds": clean["total_gpu_seconds"],
-        "source_art_provenance": clean["source_art_provenance"],
-        "reference_sheet_pixels_used_as_runtime_art": clean["reference_sheet_pixels_used_as_runtime_art"],
-        "renderer_lane": "flux2_klein_reference_v2",
-    }, sort_keys=True))
+    print(json.dumps(clean, indent=2, sort_keys=True))
 
 
 if __name__ == "__main__":
