@@ -7,6 +7,13 @@ on:
         description: "Path to plushbound.approved_art_round.v1 manifest"
         required: true
         default: "approved_art/rounds/next_round.json"
+      confirm_mode:
+        description: "Safety confirmation"
+        required: true
+        type: choice
+        options:
+          - PROCESS_APPROVED_ART_ONLY
+        default: PROCESS_APPROVED_ART_ONLY
 
 permissions:
   contents: read
@@ -15,11 +22,15 @@ concurrency:
   group: plushbound-approved-art-processing
   cancel-in-progress: false
 
+env:
+  MAX_APPROVED_ASSETS_PER_RUN: "32"
+
 jobs:
   validate:
     runs-on: ubuntu-24.04
     outputs:
       manifest_path: ${{ steps.manifest.outputs.path }}
+      asset_count: ${{ steps.manifest.outputs.count }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -29,34 +40,66 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Safety banner
+        run: |
+          echo "PLUSHBOUND SAFE MODE"
+          echo "Art source: Vera/ChatGPT approved PNGs only"
+          echo "Generation: DISABLED"
+          echo "GPU: DISABLED"
+          echo "Modal role: deterministic CPU processing only"
+          echo "Per-run hard cap: ${MAX_APPROVED_ASSETS_PER_RUN} assets"
+
       - name: Validate approved-art manifest before Modal credentials
         id: manifest
         env:
           MANIFEST_PATH: ${{ inputs.manifest_path }}
+          CONFIRM_MODE: ${{ inputs.confirm_mode }}
         run: |
           set -euo pipefail
           python - <<'PY'
           import json, os
           from pathlib import Path
+
+          if os.environ['CONFIRM_MODE'] != 'PROCESS_APPROVED_ART_ONLY':
+              raise SystemExit('Safety confirmation mismatch; refusing to run.')
+
           p = Path(os.environ['MANIFEST_PATH'])
           if not p.is_file():
               raise SystemExit(f'Manifest not found: {p}')
+
           data = json.loads(p.read_text())
           assert data['schema'] == 'plushbound.approved_art_round.v1'
           assert data['provenance'] == 'vera-chatgpt-approved'
           assert data['generator_calls_allowed'] is False
           assert data['gpu_allowed'] is False
+
           assets = data['assets']
           assert isinstance(assets, list) and assets
+          cap = int(os.environ['MAX_APPROVED_ASSETS_PER_RUN'])
+          if len(assets) > cap:
+              raise SystemExit(f'Round contains {len(assets)} assets; hard cap is {cap}. Split into smaller rounds.')
+
           ids = [a['asset_id'] for a in assets]
-          assert len(ids) == len(set(ids))
+          assert len(ids) == len(set(ids)), 'Duplicate asset IDs are not allowed.'
+
           for a in assets:
               source = (p.parent / a['source_path']).resolve()
               assert source.is_file(), f'Missing source: {source}'
-              assert source.suffix.lower() == '.png'
+              assert source.suffix.lower() == '.png', f'Only PNG source art is accepted: {source}'
+
+          print('--- PRE-FLIGHT SUMMARY ---')
+          print(f'Manifest: {p.as_posix()}')
+          print(f'Approved assets: {len(assets)}')
+          print('Provenance: vera-chatgpt-approved')
+          print('Generator calls: BLOCKED')
+          print('GPU use: BLOCKED')
+          print('Execution class: CPU deterministic processing')
+          print('--------------------------')
           print(f'APPROVED_ART_PREFLIGHT=PASS:{len(assets)}')
+
           with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
               fh.write(f'path={p.as_posix()}\n')
+              fh.write(f'count={len(assets)}\n')
           PY
 
   process:
@@ -74,6 +117,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
+      - name: Confirm validated scope before credentials are used
+        run: |
+          echo "Validated asset count: ${{ needs.validate.outputs.asset_count }}"
+          echo "Mode: CPU-only deterministic processing"
+          test "${{ inputs.confirm_mode }}" = "PROCESS_APPROVED_ART_ONLY"
 
       - name: Install CPU processing dependencies
         run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
