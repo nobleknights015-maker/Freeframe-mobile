@@ -1,0 +1,167 @@
+name: Vera FLUX2 Crownweave Binary Anchor Remaining Seven
+
+on:
+  push:
+    branches:
+      - freeframe-modal-worker
+    paths:
+      - '.github/workflows/vera-flux2-reference-crownweave-binary-round7.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plushbound-vera-flux2-crownweave-binary-round7
+  cancel-in-progress: false
+
+jobs:
+  crownweave-binary-round7:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install bounded production dependencies
+        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
+
+      - name: Revalidate binary Crownweave reference-only anchor before credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          from PIL import Image
+          anchor = Path('modal_worker/project_references/crownweave_reference_anchor_256.rebuilt_v2.jpg')
+          raw = anchor.read_bytes()
+          expected = 'cce661cba1ae5b495e1bcf2330ee2a2237afd47233ebe6743418ccfd22d3c6f7'
+          actual = hashlib.sha256(raw).hexdigest()
+          assert actual == expected, (actual, expected)
+          with Image.open(anchor) as im:
+              im.load()
+              assert im.size == (256, 256)
+              assert im.format == 'JPEG'
+          cfg_path = Path('modal_worker/world_asset_pipeline_v2_reference_conditioning.json')
+          cfg = json.loads(cfg_path.read_text(encoding='utf-8'))
+          cfg['regions']['crownweave']['anchor_path'] = str(anchor)
+          cfg['regions']['crownweave']['anchor_sha256'] = actual
+          cfg_path.write_text(json.dumps(cfg, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          print('CROWNWEAVE_BINARY_ANCHOR=PASS')
+          PY
+
+      - name: Validate exact remaining-seven scope before credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python - <<'PY'
+          from modal_worker.world_asset_pipeline_v2_flux2_reference_batch import build_repair_rows, declaration_validation
+          ids = [
+              'tileset.crownweave.a5.source.civic_earth',
+              'tileset.crownweave.a5.source.woven_stone_paving',
+              'tileset.crownweave.a5.source.terrace_stone',
+              'tileset.crownweave.a5.source.garden_soil',
+              'tileset.crownweave.a5.source.institutional_stone',
+              'tileset.crownweave.a5.source.polished_timber',
+              'tileset.crownweave.a5.source.slate_roof_tile',
+          ]
+          declaration = declaration_validation()
+          assert declaration['status'] == 'PASS_ZERO_GPU_CORRECTED_REFERENCE_REPAIR_DECLARATION'
+          assert declaration['required_source_art_provenance'] == 'vera-modal-generated'
+          assert declaration['reference_sheet_pixels_used_as_runtime_art'] is False
+          assert declaration['compile_authorized'] is False
+          assert declaration['catalog_wide_launch_authorized'] is False
+          rows, superseded = build_repair_rows('crownweave', ids)
+          assert [row['asset_id'] for row in rows] == ids
+          assert len(rows) == 7
+          assert 'tileset.crownweave.a5.source.highland_grass' not in ids
+          print('CROWNWEAVE_BINARY_ROUND7_SCOPE=PASS')
+          print('CROWNWEAVE_SUPERSEDED=' + ','.join(superseded))
+          PY
+
+      - name: Generate exactly seven Crownweave sources through Vera
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${MODAL_TOKEN_ID:-}"
+          test -n "${MODAL_TOKEN_SECRET:-}"
+          cat > modal_worker/world_asset_pipeline_v2_paid_authorization.json <<'JSON'
+          {
+            "schema": "plushbound.world_asset_pipeline_v2_paid_authorization.v1",
+            "enabled": true,
+            "region": "crownweave",
+            "provider_calls_allowed": 7,
+            "gpu_calls_allowed": 7,
+            "generation_calls_allowed": 7,
+            "reference_aware_runner_required": true,
+            "required_source_art_provenance": "vera-modal-generated",
+            "reference_sheet_pixels_used_as_runtime_art": false,
+            "manual_visual_qa_required": true,
+            "compile_authorized": false,
+            "catalog_wide_launch_authorized": false,
+            "validated_reference_preflight_run_id": 40789252831,
+            "purpose": "Bounded exact-seven Crownweave continuation after accepted highland_grass binary-anchor canary."
+          }
+          JSON
+          IDS='["tileset.crownweave.a5.source.civic_earth","tileset.crownweave.a5.source.woven_stone_paving","tileset.crownweave.a5.source.terrace_stone","tileset.crownweave.a5.source.garden_soil","tileset.crownweave.a5.source.institutional_stone","tileset.crownweave.a5.source.polished_timber","tileset.crownweave.a5.source.slate_roof_tile"]'
+          timeout --signal=TERM --kill-after=30s 2400s env PYTHONPATH=. python -u modal_worker/world_asset_pipeline_v2_flux2_reference_batch.py \
+            --region crownweave \
+            --request-ids-json "$IDS"
+
+      - name: Verify seven generated sources provenance and hashes
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          report = json.loads(Path('world-asset-pipeline-v2-output/crownweave/batch-report.json').read_text())
+          expected_ids = [
+              'tileset.crownweave.a5.source.civic_earth',
+              'tileset.crownweave.a5.source.woven_stone_paving',
+              'tileset.crownweave.a5.source.terrace_stone',
+              'tileset.crownweave.a5.source.garden_soil',
+              'tileset.crownweave.a5.source.institutional_stone',
+              'tileset.crownweave.a5.source.polished_timber',
+              'tileset.crownweave.a5.source.slate_roof_tile',
+          ]
+          assert report['requested_count'] == 7
+          assert report['generation_count'] == 7
+          assert report['generation_retry_count'] == 0
+          assert report['source_art_provenance'] == 'vera-modal-generated'
+          assert report['reference_sheet_pixels_used_as_runtime_art'] is False
+          assert report['compile_authorized'] is False
+          assert report['catalog_wide_launch_authorized'] is False
+          assert [row['asset_id'] for row in report['outputs']] == expected_ids
+          for row in report['outputs']:
+              raw = Path(row['raw_path']).read_bytes()
+              actual = hashlib.sha256(raw).hexdigest()
+              assert actual == row['raw_sha256']
+              proof = row['source_generation_proof']
+              assert proof['producer'] == 'vera-modal'
+              assert proof['generated_output_sha256'] == actual
+              assert row['source_art_provenance'] == 'vera-modal-generated'
+              assert row['reference_sheet_pixels_used_as_runtime_art'] is False
+          print(json.dumps({
+              'requested_count': report['requested_count'],
+              'machine_pass_count': report['machine_pass_count'],
+              'machine_rejected_or_error_count': report['machine_rejected_or_error_count'],
+              'generation_retry_count': report['generation_retry_count'],
+              'total_gpu_seconds': report['total_gpu_seconds']
+          }, sort_keys=True))
+          PY
+
+      - name: Upload seven Crownweave generated sources and receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vera-flux2-crownweave-binary-round7-${{ github.run_id }}
+          path: world-asset-pipeline-v2-output/crownweave/
+          if-no-files-found: warn
+          retention-days: 14
