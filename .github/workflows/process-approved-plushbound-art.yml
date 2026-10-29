@@ -1,0 +1,99 @@
+name: Process Approved Plushbound Art (CPU Only)
+
+on:
+  workflow_dispatch:
+    inputs:
+      manifest_path:
+        description: "Path to plushbound.approved_art_round.v1 manifest"
+        required: true
+        default: "approved_art/rounds/next_round.json"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plushbound-approved-art-processing
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    outputs:
+      manifest_path: ${{ steps.manifest.outputs.path }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: freeframe-modal-worker
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Validate approved-art manifest before Modal credentials
+        id: manifest
+        env:
+          MANIFEST_PATH: ${{ inputs.manifest_path }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          p = Path(os.environ['MANIFEST_PATH'])
+          if not p.is_file():
+              raise SystemExit(f'Manifest not found: {p}')
+          data = json.loads(p.read_text())
+          assert data['schema'] == 'plushbound.approved_art_round.v1'
+          assert data['provenance'] == 'vera-chatgpt-approved'
+          assert data['generator_calls_allowed'] is False
+          assert data['gpu_allowed'] is False
+          assets = data['assets']
+          assert isinstance(assets, list) and assets
+          ids = [a['asset_id'] for a in assets]
+          assert len(ids) == len(set(ids))
+          for a in assets:
+              source = (p.parent / a['source_path']).resolve()
+              assert source.is_file(), f'Missing source: {source}'
+              assert source.suffix.lower() == '.png'
+          print(f'APPROVED_ART_PREFLIGHT=PASS:{len(assets)}')
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
+              fh.write(f'path={p.as_posix()}\n')
+          PY
+
+  process:
+    needs: validate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: freeframe-modal-worker
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install CPU processing dependencies
+        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
+
+      - name: Require Modal credentials
+        run: |
+          test -n "${MODAL_TOKEN_ID:-}"
+          test -n "${MODAL_TOKEN_SECRET:-}"
+
+      - name: Process Vera-approved art on Modal CPU
+        run: |
+          set -euo pipefail
+          modal run modal_worker/approved_art_processor.py \
+            --manifest "${{ needs.validate.outputs.manifest_path }}" \
+            --output-dir approved-art-output
+
+      - name: Upload deterministic processed output
+        uses: actions/upload-artifact@v4
+        with:
+          name: plushbound-approved-art-${{ github.run_id }}
+          path: approved-art-output/
+          if-no-files-found: error
+          retention-days: 30
