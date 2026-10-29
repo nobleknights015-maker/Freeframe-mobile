@@ -1,0 +1,138 @@
+name: Vera Tideglass Five Material Correction Round V2
+
+on:
+  push:
+    branches: [freeframe-modal-worker]
+    paths:
+      - '.github/workflows/vera-tideglass-five-material-correction-v2.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plushbound-vera-tideglass-five-material-correction-v2
+  cancel-in-progress: false
+
+jobs:
+  tideglass-five-correction:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install bounded production dependencies
+        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
+
+      - name: Zero-spend exact-five preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          from PIL import Image
+          from modal_worker.world_asset_pipeline_v2_flux2_reference_batch import build_repair_rows,declaration_validation
+          refs={
+            'dry_sand':('modal_worker/project_references/tideglass_correction_round/dry_sand_reference_anchor_256.jpg','ec305b5631fb47bc7c26af7d91d2b24e8a03e9ba399de22fc53b90a6e1c64566'),
+            'coastal_stone':('modal_worker/project_references/tideglass_correction_round/coastal_stone_reference_anchor_256.jpg','d9c6eabf672b139714e62832cc3b8588ac81f304b9f6c3bbd324c36daa11bfed'),
+            'cliff_stone':('modal_worker/project_references/tideglass_correction_round/cliff_stone_reference_anchor_256.jpg','259112611c057ad4b3d63d7035ff25f09fdb855a1a555497d2d1194c38d07fbf'),
+            'saltworn_board':('modal_worker/project_references/tideglass_correction_round/saltworn_board_reference_anchor_256.jpg','dde50ac08e4607337b7912018c9b2bbdf586dbac87db7546b80c1b4d35519f67'),
+            'tidal_silt':('modal_worker/project_references/tideglass_correction_round/tidal_silt_reference_anchor_256.jpg','b27ea85f7eab39840e7ccc2ce9dc5bfa2b77989d391368fb0c1f04a84fbf76e8'),
+          }
+          anchor_hashes={}
+          for material,(path,sheet_sha) in refs.items():
+              raw=Path(path).read_bytes(); anchor_hashes[material]=hashlib.sha256(raw).hexdigest()
+              assert anchor_hashes[material] != sheet_sha
+              with Image.open(path) as im:
+                  im.load(); assert im.size==(256,256); assert im.format=='JPEG'
+          ids=[f'tileset.tideglass-coast.a5.source.{m}' for m in refs]
+          immutable={'tileset.tideglass-coast.a5.source.wet_sand','tileset.tideglass-coast.a5.source.sea_glass_pebbles','tileset.tideglass-coast.a5.source.dock_timber'}
+          assert not immutable.intersection(ids)
+          d=declaration_validation(); assert d['status']=='PASS_ZERO_GPU_CORRECTED_REFERENCE_REPAIR_DECLARATION'
+          assert d['required_source_art_provenance']=='vera-modal-generated'; assert d['reference_sheet_pixels_used_as_runtime_art'] is False
+          assert d['compile_authorized'] is False and d['catalog_wide_launch_authorized'] is False
+          rows,superseded=build_repair_rows('tideglass-coast',ids); assert [r['asset_id'] for r in rows]==ids and superseded==[] and len(rows)==5
+          Path('tideglass-correction-anchor-hashes.json').write_text(json.dumps(anchor_hashes,sort_keys=True),encoding='utf-8')
+          print('TIDEGLASS_EXACT_FIVE_ZERO_SPEND_PREFLIGHT=PASS',json.dumps(anchor_hashes,sort_keys=True))
+          PY
+
+      - name: Deploy dedicated Vera FLUX2 reference worker
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${MODAL_TOKEN_ID:-}"; test -n "${MODAL_TOKEN_SECRET:-}"
+          modal deploy --strategy recreate modal_worker/freeframe_flux2_reference_worker.py
+
+      - name: Generate exact-five corrected sources through Vera
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${MODAL_TOKEN_ID:-}"; test -n "${MODAL_TOKEN_SECRET:-}"
+          PYTHONPATH=. python - <<'PY'
+          import hashlib,json,subprocess
+          from pathlib import Path
+          cfg_path=Path('modal_worker/world_asset_pipeline_v2_reference_conditioning.json'); auth_path=Path('modal_worker/world_asset_pipeline_v2_paid_authorization.json')
+          original=cfg_path.read_text(encoding='utf-8'); root=Path('world-asset-pipeline-v2-output/tideglass-coast'); receipts=root/'correction-reports'; receipts.mkdir(parents=True,exist_ok=True)
+          refs={
+            'dry_sand':('modal_worker/project_references/tideglass_correction_round/dry_sand_reference_anchor_256.jpg','ec305b5631fb47bc7c26af7d91d2b24e8a03e9ba399de22fc53b90a6e1c64566'),
+            'coastal_stone':('modal_worker/project_references/tideglass_correction_round/coastal_stone_reference_anchor_256.jpg','d9c6eabf672b139714e62832cc3b8588ac81f304b9f6c3bbd324c36daa11bfed'),
+            'cliff_stone':('modal_worker/project_references/tideglass_correction_round/cliff_stone_reference_anchor_256.jpg','259112611c057ad4b3d63d7035ff25f09fdb855a1a555497d2d1194c38d07fbf'),
+            'saltworn_board':('modal_worker/project_references/tideglass_correction_round/saltworn_board_reference_anchor_256.jpg','dde50ac08e4607337b7912018c9b2bbdf586dbac87db7546b80c1b4d35519f67'),
+            'tidal_silt':('modal_worker/project_references/tideglass_correction_round/tidal_silt_reference_anchor_256.jpg','b27ea85f7eab39840e7ccc2ce9dc5bfa2b77989d391368fb0c1f04a84fbf76e8'),
+          }
+          try:
+              for material,(anchor_path,sheet_sha) in refs.items():
+                  anchor_sha=hashlib.sha256(Path(anchor_path).read_bytes()).hexdigest()
+                  cfg=json.loads(original); reg=cfg['regions']['tideglass-coast']; reg['anchor_path']=anchor_path; reg['anchor_sha256']=anchor_sha; reg['reference_role']='material_specific_correction_visual_authority_only'; reg['source_reference_hashes']={'correction_material':material,'correction_reference_sheet_sha256':sheet_sha,'correction_anchor_sha256':anchor_sha}
+                  cfg_path.write_text(json.dumps(cfg,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+                  auth={'schema':'plushbound.world_asset_pipeline_v2_paid_authorization.v1','enabled':True,'region':'tideglass-coast','provider_calls_allowed':1,'gpu_calls_allowed':1,'generation_calls_allowed':1,'reference_aware_runner_required':True,'required_source_art_provenance':'vera-modal-generated','reference_sheet_pixels_used_as_runtime_art':False,'manual_visual_qa_required':True,'compile_authorized':False,'catalog_wide_launch_authorized':False,'validated_reference_preflight_run_id':40789252831,'purpose':f'Bounded one-call Tideglass correction for {material} only.'}
+                  auth_path.write_text(json.dumps(auth,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+                  asset=f'tileset.tideglass-coast.a5.source.{material}'
+                  subprocess.run(['python','-u','modal_worker/world_asset_pipeline_v2_flux2_reference_batch.py','--region','tideglass-coast','--request-ids-json',json.dumps([asset])],check=True,timeout=480)
+                  report=json.loads((root/'batch-report.json').read_text()); (receipts/f'{material}.json').write_text(json.dumps(report,indent=2,sort_keys=True),encoding='utf-8')
+          finally:
+              cfg_path.write_text(original,encoding='utf-8')
+          PY
+
+      - name: Verify Vera provenance and five isolated receipts
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          refs={
+            'dry_sand':('modal_worker/project_references/tideglass_correction_round/dry_sand_reference_anchor_256.jpg','ec305b5631fb47bc7c26af7d91d2b24e8a03e9ba399de22fc53b90a6e1c64566'),
+            'coastal_stone':('modal_worker/project_references/tideglass_correction_round/coastal_stone_reference_anchor_256.jpg','d9c6eabf672b139714e62832cc3b8588ac81f304b9f6c3bbd324c36daa11bfed'),
+            'cliff_stone':('modal_worker/project_references/tideglass_correction_round/cliff_stone_reference_anchor_256.jpg','259112611c057ad4b3d63d7035ff25f09fdb855a1a555497d2d1194c38d07fbf'),
+            'saltworn_board':('modal_worker/project_references/tideglass_correction_round/saltworn_board_reference_anchor_256.jpg','dde50ac08e4607337b7912018c9b2bbdf586dbac87db7546b80c1b4d35519f67'),
+            'tidal_silt':('modal_worker/project_references/tideglass_correction_round/tidal_silt_reference_anchor_256.jpg','b27ea85f7eab39840e7ccc2ce9dc5bfa2b77989d391368fb0c1f04a84fbf76e8'),
+          }
+          receipts=Path('world-asset-pipeline-v2-output/tideglass-coast/correction-reports'); summary=[]
+          for material,(anchor_path,sheet_sha) in refs.items():
+              anchor_sha=hashlib.sha256(Path(anchor_path).read_bytes()).hexdigest(); report=json.loads((receipts/f'{material}.json').read_text())
+              assert report['requested_count']==1 and report['generation_count']==1 and report['generation_retry_count']==0
+              assert report['source_art_provenance']=='vera-modal-generated' and report['reference_sheet_pixels_used_as_runtime_art'] is False and report['compile_authorized'] is False and report['catalog_wide_launch_authorized'] is False
+              row=report['outputs'][0]; assert row['asset_id']==f'tileset.tideglass-coast.a5.source.{material}' and row['reference_conditioning_anchor_sha256']==anchor_sha
+              rr=row['source_reference_hashes']; assert rr['correction_reference_sheet_sha256']==sheet_sha and rr['correction_anchor_sha256']==anchor_sha
+              raw=Path(row['raw_path']).read_bytes(); raw_sha=hashlib.sha256(raw).hexdigest(); assert raw_sha==row['raw_sha256'] and raw_sha not in {anchor_sha,sheet_sha}
+              proof=row['source_generation_proof']; assert proof['producer']=='vera-modal' and proof['generated_output_sha256']==raw_sha
+              summary.append({'material':material,'machine_gate':row['machine_gate'],'execution_outcome':row['execution_outcome'],'raw_sha256':raw_sha,'anchor_sha256':anchor_sha,'reference_sheet_sha256':sheet_sha})
+          Path('world-asset-pipeline-v2-output/tideglass-coast/correction-summary.json').write_text(json.dumps({'scope':'exact-five-tideglass-correction','compile_authorized':False,'outputs':summary},indent=2,sort_keys=True),encoding='utf-8')
+          print(json.dumps(summary,sort_keys=True))
+          PY
+
+      - name: Upload Tideglass correction sources and receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vera-tideglass-five-material-correction-v2-${{ github.run_id }}
+          path: world-asset-pipeline-v2-output/tideglass-coast/
+          if-no-files-found: warn
+          retention-days: 14
