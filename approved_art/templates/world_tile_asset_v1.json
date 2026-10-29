@@ -1,0 +1,25 @@
+{
+  "schema": "plushbound.world_tile_sheet.v1",
+  "template_version": "WORLD_TILE_ASSET_V1",
+  "canvas_width": 384,
+  "canvas_height": 768,
+  "tile_size": 48,
+  "columns": 8,
+  "rows": 16,
+  "slot_count": 128,
+  "grid_origin": [0, 0],
+  "margins": 0,
+  "padding": 0,
+  "role_bands": [
+    {"start": 0, "end": 31, "role": "a1_floor"},
+    {"start": 32, "end": 55, "role": "a2_wall"},
+    {"start": 56, "end": 79, "role": "a3_edge_corner"},
+    {"start": 80, "end": 103, "role": "a4_prop"},
+    {"start": 104, "end": 127, "role": "a5_variation"}
+  ],
+  "provenance_required": "vera-chatgpt-approved",
+  "generator_calls_allowed": false,
+  "gpu_allowed": false,
+  "reference_sheet_pixels_allowed": false,
+  "world_editor_must_reject_mismatch": true
+}
