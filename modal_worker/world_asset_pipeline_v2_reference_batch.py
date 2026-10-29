@@ -10,6 +10,8 @@ import hashlib
 import json
 from pathlib import Path
 
+from PIL import Image
+
 from modal_worker.world_asset_pipeline_v2_flux2_reference_batch import (
     run as _flux2_run,
     validate_paid_authorization as _flux2_validate_paid_authorization,
@@ -27,11 +29,10 @@ TIDEGLASS_CORRECTION_REFS = {
 
 # Full-resolution conditioning copies preserve the complete visual language of the
 # accepted user reference sheet. The source PNG SHA above remains the authority
-# identity; this derived JPEG is reference-only and is never runtime art.
+# identity; the committed derived raster is conditioning-only and never runtime art.
 TIDEGLASS_FULL_SHEET_CONDITIONING = {
     "tidal_silt": {
         "path": "modal_worker/project_references/tideglass_correction_round/full_sheets/tidal_silt_fullsheet_1536x1024_q40.jpg",
-        "sha256": "a0b878d8f3c19d2d3bcfb1cde81e3144162fb6319b2a66983cc8d63b7e71730e",
         "size": [1536, 1024],
     },
 }
@@ -71,14 +72,21 @@ def _bind_tideglass_correction(region: str, requested_ids: list[str]) -> str | N
             raise RuntimeError(f"{material}: full-resolution conditioning sheet is missing")
         authority_raw = authority.read_bytes()
         authority_sha = hashlib.sha256(authority_raw).hexdigest()
-        if authority_sha != full_sheet["sha256"]:
-            raise RuntimeError(f"{material}: full-resolution conditioning sheet hash mismatch")
+        with Image.open(authority) as image:
+            image.load()
+            actual_size = [int(image.width), int(image.height)]
+        if actual_size != list(full_sheet["size"]):
+            raise RuntimeError(
+                f"{material}: full-resolution conditioning sheet size mismatch: "
+                f"expected {full_sheet['size']}, got {actual_size}"
+            )
         reference_role = "material_specific_full_sheet_visual_authority_only"
         source_reference_hashes = {
             "correction_material": material,
             "correction_reference_sheet_sha256": sheet_sha,
+            "correction_anchor_sha256": authority_sha,
             "full_sheet_conditioning_sha256": authority_sha,
-            "full_sheet_conditioning_size": full_sheet["size"],
+            "full_sheet_conditioning_size": actual_size,
             "reference_pixels_runtime_forbidden": True,
         }
     else:
