@@ -1,9 +1,9 @@
 {
   "schema": "plushbound.flux2_reference_canary_authorization.v1",
-  "enabled": true,
-  "region": "tideglass-coast",
-  "asset_id": "tileset.tideglass-coast.a5.source.wet_sand",
-  "generation_calls_allowed": 1,
+  "enabled": false,
+  "region": null,
+  "asset_id": null,
+  "generation_calls_allowed": 0,
   "retry_calls_allowed": 0,
   "required_app": "freeframe-flux2-reference-worker",
   "required_class": "VeraFlux2ReferenceGenerator",
@@ -16,5 +16,5 @@
   "compile_authorized": false,
   "catalog_wide_launch_authorized": false,
   "preflight_run_id": 40789252831,
-  "closed_after_run_id": 40789575411
+  "closed_after_run_id": 40798662106
 }
