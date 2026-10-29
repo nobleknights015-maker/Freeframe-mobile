@@ -22,6 +22,9 @@ CACHE_DIR = "/cache"
 REFERENCE_DIR = "/references"
 PRODUCTION_MODEL = "black-forest-labs/FLUX.2-klein-4B"
 PRODUCTION_RENDERER_ROUTE = "flux2_klein_reference_v2"
+GPU_CANDIDATES = ["L4", "A10G"]
+STARTUP_TIMEOUT_SECONDS = 180
+REMOTE_TIMEOUT_SECONDS = 120
 
 image = (
     modal.Image.debian_slim(python_version="3.11")
@@ -96,14 +99,15 @@ def _png_payload(rendered_image) -> dict:
 
 
 @app.cls(
-    gpu="L4",
+    gpu=GPU_CANDIDATES,
     image=image,
     volumes={CACHE_DIR: model_cache, REFERENCE_DIR: reference_cache},
     scaledown_window=120,
-    timeout=1800,
+    startup_timeout=STARTUP_TIMEOUT_SECONDS,
+    timeout=REMOTE_TIMEOUT_SECONDS,
 )
 class VeraFlux2ReferenceGenerator:
-    """Official Flux2KleinPipeline path with CPU offload and reference input."""
+    """Official Flux2KleinPipeline path, GPU-resident, with reference input."""
 
     @modal.enter()
     def load(self):
@@ -111,8 +115,10 @@ class VeraFlux2ReferenceGenerator:
         import torch
         from diffusers import Flux2KleinPipeline
 
-        os.environ.setdefault("HF_HOME", CACHE_DIR)
-        os.environ.setdefault("HF_HUB_CACHE", f"{CACHE_DIR}/hub")
+        os.environ["HF_HOME"] = CACHE_DIR
+        os.environ["HF_HUB_CACHE"] = f"{CACHE_DIR}/hub"
+        os.environ["HF_HUB_OFFLINE"] = "1"
+        os.environ["TRANSFORMERS_OFFLINE"] = "1"
         self.torch = torch
         self.model_name = PRODUCTION_MODEL
         print(
@@ -130,9 +136,13 @@ class VeraFlux2ReferenceGenerator:
             f"VERA_FLUX2_LOAD=MODEL_READY seconds={time.monotonic()-started:.3f}",
             flush=True,
         )
-        self.pipe.enable_model_cpu_offload()
+        cuda_started = time.monotonic()
+        self.pipe.to("cuda")
         self.pipe.set_progress_bar_config(disable=True)
-        print("VERA_FLUX2_LOAD=CPU_OFFLOAD_READY", flush=True)
+        print(
+            f"VERA_FLUX2_LOAD=CUDA_READY seconds={time.monotonic()-cuda_started:.3f}",
+            flush=True,
+        )
 
     def _load_reference(self, reference_id: str):
         from PIL import Image
