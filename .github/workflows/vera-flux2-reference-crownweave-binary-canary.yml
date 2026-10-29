@@ -1,0 +1,159 @@
+name: Vera FLUX2 Crownweave Binary Anchor Canary
+
+on:
+  push:
+    branches:
+      - freeframe-modal-worker
+    paths:
+      - '.github/workflows/vera-flux2-reference-crownweave-binary-canary.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plushbound-vera-flux2-crownweave-binary-canary
+  cancel-in-progress: false
+
+jobs:
+  crownweave-binary-canary:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install bounded production dependencies
+        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
+
+      - name: Fully validate binary Crownweave reference-only anchor before credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          from PIL import Image
+
+          anchor = Path('modal_worker/project_references/crownweave_reference_anchor_256.rebuilt_v2.jpg')
+          assert anchor.is_file(), 'missing binary Crownweave rebuilt v2 anchor'
+          raw = anchor.read_bytes()
+          expected = 'cce661cba1ae5b495e1bcf2330ee2a2237afd47233ebe6743418ccfd22d3c6f7'
+          actual = hashlib.sha256(raw).hexdigest()
+          assert actual == expected, f'anchor SHA mismatch: {actual} != {expected}'
+          with Image.open(anchor) as im:
+              im.load()
+              assert im.size == (256, 256), im.size
+              assert im.format == 'JPEG', im.format
+
+          cfg_path = Path('modal_worker/world_asset_pipeline_v2_reference_conditioning.json')
+          cfg = json.loads(cfg_path.read_text(encoding='utf-8'))
+          region = cfg['regions']['crownweave']
+          region['anchor_path'] = str(anchor)
+          region['anchor_sha256'] = actual
+          cfg_path.write_text(json.dumps(cfg, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          print('CROWNWEAVE_BINARY_ANCHOR=PASS')
+          print('CROWNWEAVE_BINARY_ANCHOR_SHA256=' + actual)
+          PY
+
+      - name: Validate exact highland grass canary scope before credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python - <<'PY'
+          from modal_worker.world_asset_pipeline_v2_flux2_reference_batch import build_repair_rows, declaration_validation
+          ids = ['tileset.crownweave.a5.source.highland_grass']
+          declaration = declaration_validation()
+          assert declaration['status'] == 'PASS_ZERO_GPU_CORRECTED_REFERENCE_REPAIR_DECLARATION'
+          assert declaration['required_source_art_provenance'] == 'vera-modal-generated'
+          assert declaration['reference_sheet_pixels_used_as_runtime_art'] is False
+          assert declaration['compile_authorized'] is False
+          assert declaration['catalog_wide_launch_authorized'] is False
+          rows, superseded = build_repair_rows('crownweave', ids)
+          assert [row['asset_id'] for row in rows] == ids
+          assert superseded == ids
+          print('CROWNWEAVE_BINARY_CANARY_SCOPE=PASS')
+          PY
+
+      - name: Deploy corrected dedicated Vera FLUX2 reference worker
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${MODAL_TOKEN_ID:-}"
+          test -n "${MODAL_TOKEN_SECRET:-}"
+          modal deploy --strategy recreate modal_worker/freeframe_flux2_reference_worker.py
+
+      - name: Open ephemeral exact-one authorization and generate highland grass
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > modal_worker/world_asset_pipeline_v2_paid_authorization.json <<'JSON'
+          {
+            "schema": "plushbound.world_asset_pipeline_v2_paid_authorization.v1",
+            "enabled": true,
+            "region": "crownweave",
+            "provider_calls_allowed": 1,
+            "gpu_calls_allowed": 1,
+            "generation_calls_allowed": 1,
+            "reference_aware_runner_required": true,
+            "required_source_art_provenance": "vera-modal-generated",
+            "reference_sheet_pixels_used_as_runtime_art": false,
+            "manual_visual_qa_required": true,
+            "compile_authorized": false,
+            "catalog_wide_launch_authorized": false,
+            "validated_reference_preflight_run_id": 40789252831,
+            "purpose": "Bounded single-call Crownweave highland_grass canary using checksum-verified binary rebuilt reference-only conditioning anchor."
+          }
+          JSON
+          IDS='["tileset.crownweave.a5.source.highland_grass"]'
+          timeout --signal=TERM --kill-after=30s 2100s env PYTHONPATH=. python -u modal_worker/world_asset_pipeline_v2_flux2_reference_batch.py \
+            --region crownweave \
+            --request-ids-json "$IDS"
+
+      - name: Verify canary provenance and generated hash
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          report = json.loads(Path('world-asset-pipeline-v2-output/crownweave/batch-report.json').read_text())
+          assert report['requested_count'] == 1
+          assert report['generation_count'] == 1
+          assert report['generation_retry_count'] == 0
+          assert report['source_art_provenance'] == 'vera-modal-generated'
+          assert report['reference_sheet_pixels_used_as_runtime_art'] is False
+          assert report['compile_authorized'] is False
+          assert report['catalog_wide_launch_authorized'] is False
+          assert len(report['outputs']) == 1
+          row = report['outputs'][0]
+          raw = Path(row['raw_path']).read_bytes()
+          actual = hashlib.sha256(raw).hexdigest()
+          assert actual == row['raw_sha256']
+          proof = row['source_generation_proof']
+          assert proof['producer'] == 'vera-modal'
+          assert proof['generated_output_sha256'] == actual
+          assert row['source_art_provenance'] == 'vera-modal-generated'
+          assert row['reference_sheet_pixels_used_as_runtime_art'] is False
+          print(json.dumps({
+              'asset_id': row['asset_id'],
+              'raw_sha256': actual,
+              'total_gpu_seconds': report['total_gpu_seconds'],
+              'machine_pass_count': report['machine_pass_count'],
+              'machine_rejected_or_error_count': report['machine_rejected_or_error_count']
+          }, sort_keys=True))
+          PY
+
+      - name: Upload Crownweave binary-anchor canary proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vera-flux2-crownweave-binary-canary-${{ github.run_id }}
+          path: world-asset-pipeline-v2-output/crownweave/
+          if-no-files-found: warn
+          retention-days: 14
