@@ -1,8 +1,8 @@
-"""Compatibility adapter from the legacy reference executor to the corrected FLUX2 repair lane.
+"""Compatibility adapter from the static reference executor to the corrected FLUX2 repair lane.
 
-The GitHub Actions executor remains static. Tideglass correction runs bind the exact
-material-specific reference anchor at runtime, compute its SHA from committed bytes,
-and restore the regional conditioning file after the bounded FLUX2 call.
+Tideglass correction runs bind one exact material-specific visual authority at runtime
+and restore the regional conditioning file after the bounded FLUX2 call. Reference
+pixels remain conditioning-only and may never be promoted to runtime art.
 """
 from __future__ import annotations
 
@@ -23,6 +23,17 @@ TIDEGLASS_CORRECTION_REFS = {
     "cliff_stone": "259112611c057ad4b3d63d7035ff25f09fdb855a1a555497d2d1194c38d07fbf",
     "saltworn_board": "dde50ac08e4607337b7912018c9b2bbdf586dbac87db7546b80c1b4d35519f67",
     "tidal_silt": "b27ea85f7eab39840e7ccc2ce9dc5bfa2b77989d391368fb0c1f04a84fbf76e8",
+}
+
+# Full-resolution conditioning copies preserve the complete visual language of the
+# accepted user reference sheet. The source PNG SHA above remains the authority
+# identity; this derived JPEG is reference-only and is never runtime art.
+TIDEGLASS_FULL_SHEET_CONDITIONING = {
+    "tidal_silt": {
+        "path": "modal_worker/project_references/tideglass_correction_round/full_sheets/tidal_silt_fullsheet_1536x1024_q40.jpg",
+        "sha256": "a0b878d8f3c19d2d3bcfb1cde81e3144162fb6319b2a66983cc8d63b7e71730e",
+        "size": [1536, 1024],
+    },
 }
 
 
@@ -47,28 +58,54 @@ def _bind_tideglass_correction(region: str, requested_ids: list[str]) -> str | N
         return None
     if len(requested_ids) != 1 or not requested_ids[0].startswith(TIDEGLASS_PREFIX):
         raise RuntimeError("Tideglass correction adapter requires exactly one scoped source ID")
+
     material = requested_ids[0][len(TIDEGLASS_PREFIX):]
     sheet_sha = TIDEGLASS_CORRECTION_REFS.get(material)
     if sheet_sha is None:
         raise RuntimeError(f"{material}: no accepted correction reference is registered")
-    anchor = Path(f"modal_worker/project_references/tideglass_correction_round/{material}_reference_anchor_256.jpg")
-    if not anchor.is_file():
-        raise RuntimeError(f"{material}: committed correction anchor is missing")
-    anchor_sha = hashlib.sha256(anchor.read_bytes()).hexdigest()
-    if anchor_sha == sheet_sha:
-        raise RuntimeError(f"{material}: correction anchor must not be the original reference-sheet bytes")
+
+    full_sheet = TIDEGLASS_FULL_SHEET_CONDITIONING.get(material)
+    if full_sheet is not None:
+        authority = Path(str(full_sheet["path"]))
+        if not authority.is_file():
+            raise RuntimeError(f"{material}: full-resolution conditioning sheet is missing")
+        authority_raw = authority.read_bytes()
+        authority_sha = hashlib.sha256(authority_raw).hexdigest()
+        if authority_sha != full_sheet["sha256"]:
+            raise RuntimeError(f"{material}: full-resolution conditioning sheet hash mismatch")
+        reference_role = "material_specific_full_sheet_visual_authority_only"
+        source_reference_hashes = {
+            "correction_material": material,
+            "correction_reference_sheet_sha256": sheet_sha,
+            "full_sheet_conditioning_sha256": authority_sha,
+            "full_sheet_conditioning_size": full_sheet["size"],
+            "reference_pixels_runtime_forbidden": True,
+        }
+    else:
+        # Existing correction materials stay on the older anchor until their full
+        # sheets are committed and explicitly registered. Never silently guess.
+        authority = Path(
+            f"modal_worker/project_references/tideglass_correction_round/{material}_reference_anchor_256.jpg"
+        )
+        if not authority.is_file():
+            raise RuntimeError(f"{material}: committed correction anchor is missing")
+        authority_sha = hashlib.sha256(authority.read_bytes()).hexdigest()
+        if authority_sha == sheet_sha:
+            raise RuntimeError(f"{material}: correction anchor identity unexpectedly equals source sheet")
+        reference_role = "material_specific_correction_visual_authority_only"
+        source_reference_hashes = {
+            "correction_material": material,
+            "correction_reference_sheet_sha256": sheet_sha,
+            "correction_anchor_sha256": authority_sha,
+        }
 
     original = CONDITIONING_PATH.read_text(encoding="utf-8")
     cfg = json.loads(original)
     reg = cfg["regions"][region]
-    reg["anchor_path"] = str(anchor)
-    reg["anchor_sha256"] = anchor_sha
-    reg["reference_role"] = "material_specific_correction_visual_authority_only"
-    reg["source_reference_hashes"] = {
-        "correction_material": material,
-        "correction_reference_sheet_sha256": sheet_sha,
-        "correction_anchor_sha256": anchor_sha,
-    }
+    reg["anchor_path"] = str(authority)
+    reg["anchor_sha256"] = authority_sha
+    reg["reference_role"] = reference_role
+    reg["source_reference_hashes"] = source_reference_hashes
     CONDITIONING_PATH.write_text(json.dumps(cfg, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return original
 
