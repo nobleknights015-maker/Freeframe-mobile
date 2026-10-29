@@ -157,7 +157,7 @@ jobs:
           set -euo pipefail
           test -n "${MODAL_TOKEN_ID:-}"
           test -n "${MODAL_TOKEN_SECRET:-}"
-          timeout --signal=TERM --kill-after=30s 900s \
+          timeout --signal=TERM --kill-after=30s 1140s \
             env PYTHONPATH=. python -u modal_worker/world_asset_pipeline_v2_reference_batch.py \
               --region "$REGION" \
               --request-ids-json "$IDS_JSON"
