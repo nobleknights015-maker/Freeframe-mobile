@@ -153,4 +153,4 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
 
-# One-shot Tideglass wet_sand canary trigger; authorization remains separately bounded.
+# Improved-prompt Tideglass wet_sand canary trigger; one-shot authorization remains separately bounded.
