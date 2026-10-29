@@ -1,65 +1,17 @@
-name: FreeFrame Modal Worker Checks
+name: RETIRED - Legacy FreeFrame Generator Checks
 
 on:
-  push:
-    branches:
-      - freeframe-modal-worker
-    paths:
-      - 'modal_worker/**'
-      - '.github/workflows/modal-worker-checks.yml'
-  pull_request:
-    paths:
-      - 'modal_worker/**'
-      - '.github/workflows/modal-worker-checks.yml'
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  worker-core:
+  retired:
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Show runtime
-        run: python --version && pip --version
-      - name: Install test dependencies
-        run: python -m pip install --disable-pip-version-check 'modal>=1.0,<2' 'pillow>=10.4,<12'
-      - name: Compile worker
-        run: python -m compileall -q modal_worker
-      - name: Validate A5 GPU fallback declaration
+      - name: Legacy generator test suite retired
         run: |
-          PYTHONPATH=. python - <<'PY'
-          from modal_worker import tileset_regional_a5_prompt_probe as probe
-          assert probe.GPU_CANDIDATES == ['L4', 'A10G']
-          assert probe.STARTUP_TIMEOUT_SECONDS == 180
-          assert probe.REMOTE_TIMEOUT_SECONDS == 120
-          assert probe.MODEL_VOLUME == 'freeframe-model-cache'
-          assert probe.MODEL_ID == 'black-forest-labs/FLUX.2-klein-4B'
-          print('A5 prompt probe GPU fallback declaration OK')
-          PY
-      - name: Run worker core tests
-        run: PYTHONPATH=modal_worker python -m unittest discover -s modal_worker -p 'test_*.py' -v
-      - name: Verify Modal package import path
-        run: |
-          PYTHONPATH=. python - <<'PY'
-          from modal_worker.birefnet_extractor import BiRefNetExtractor
-          from modal_worker.extraction_provider import ExtractionError, ExtractionResult, extract_and_validate
-          from modal_worker.extraction_backend_policy import production_extraction_backend
-          assert BiRefNetExtractor is not None
-          assert ExtractionError is not None
-          assert ExtractionResult is not None
-          assert extract_and_validate is not None
-          assert production_extraction_backend().provider == 'birefnet'
-          print('Modal package import path OK')
-          PY
-      - name: Guard against committed model weights
-        shell: bash
-        run: |
-          if find . -type f \( -name '*.safetensors' -o -name '*.ckpt' -o -name '*.gguf' -o -name '*.bin' \) -size +10M -print -quit | grep -q .; then
-            echo 'Large model weights must not be committed to the repository.' >&2
-            exit 1
-          fi
+          echo "RETIRED: this test suite targets the shelved Modal generation lane."
+          echo "It is preserved for history but no longer runs on repository pushes."
+          echo "Approved-art processing is validated by approved-art-processor-checks.yml."
