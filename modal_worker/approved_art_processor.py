@@ -10,6 +10,7 @@ from typing import Any
 import modal
 
 APP_NAME = "plushbound-approved-art-processor"
+MAX_APPROVED_ASSETS_PER_RUN = 32
 app = modal.App(APP_NAME)
 image = modal.Image.debian_slim(python_version="3.11").pip_install("Pillow>=10.4,<12")
 
@@ -53,9 +54,19 @@ def _validate_manifest(data: dict[str, Any]) -> None:
         raise ValueError("Unsupported manifest schema")
     if data.get("provenance") != "vera-chatgpt-approved":
         raise ValueError("Only Vera/ChatGPT-approved source art may enter this lane")
+    if data.get("generator_calls_allowed") is not False:
+        raise ValueError("Generator calls must be explicitly disabled")
+    if data.get("gpu_allowed") is not False:
+        raise ValueError("GPU use must be explicitly disabled")
+
     assets = data.get("assets")
     if not isinstance(assets, list) or not assets:
         raise ValueError("Manifest assets must be a non-empty list")
+    if len(assets) > MAX_APPROVED_ASSETS_PER_RUN:
+        raise ValueError(
+            f"Manifest contains {len(assets)} assets; hard cap is {MAX_APPROVED_ASSETS_PER_RUN}"
+        )
+
     ids = [row.get("asset_id") for row in assets]
     if any(not isinstance(v, str) or not v for v in ids) or len(ids) != len(set(ids)):
         raise ValueError("asset_id values must be unique non-empty strings")
