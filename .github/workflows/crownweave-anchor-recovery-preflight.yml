@@ -1,0 +1,83 @@
+name: Crownweave Anchor Recovery Preflight
+
+on:
+  push:
+    branches:
+      - freeframe-modal-worker
+    paths:
+      - '.github/workflows/crownweave-anchor-recovery-preflight.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  anchor-recovery-preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install decode dependency
+        run: python -m pip install --disable-pip-version-check 'pillow>=10.4,<12'
+      - name: Test current and original accepted Crownweave anchors with full raster decode
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p crownweave-anchor-preflight
+          git show 1fd1b8c1f05c0bbef7bf0994a1fc2dded2ae4f14:modal_worker/project_references/crownweave_reference_anchor_256.jpg > crownweave-anchor-preflight/original-anchor.jpg
+          cp modal_worker/project_references/crownweave_reference_anchor_256.jpg crownweave-anchor-preflight/current-anchor.jpg
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          from PIL import Image
+
+          def inspect(path: Path):
+              raw = path.read_bytes()
+              out = {
+                  'path': str(path),
+                  'bytes': len(raw),
+                  'sha256': hashlib.sha256(raw).hexdigest(),
+                  'full_decode': False,
+                  'width': None,
+                  'height': None,
+                  'format': None,
+                  'error': None,
+              }
+              try:
+                  with Image.open(path) as im:
+                      im.load()
+                      out['width'], out['height'] = im.size
+                      out['format'] = im.format
+                      out['full_decode'] = True
+              except Exception as exc:
+                  out['error'] = f'{type(exc).__name__}: {exc}'
+              return out
+
+          current = inspect(Path('crownweave-anchor-preflight/current-anchor.jpg'))
+          original = inspect(Path('crownweave-anchor-preflight/original-anchor.jpg'))
+          report = {
+              'schema': 'plushbound.crownweave_anchor_recovery_preflight.v1',
+              'provider_calls': 0,
+              'gpu_calls': 0,
+              'generation_calls': 0,
+              'reference_pixels_modified': False,
+              'current': current,
+              'original': original,
+              'recovery_candidate_status': 'ORIGINAL_VALID' if original['full_decode'] else 'NO_VALID_HISTORICAL_CANDIDATE',
+          }
+          Path('crownweave-anchor-preflight/report.json').write_text(json.dumps(report, indent=2, sort_keys=True) + '\n')
+          print(json.dumps(report, sort_keys=True))
+          if not original['full_decode']:
+              raise SystemExit('Historical original anchor is not fully decodable; recovery blocked.')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: crownweave-anchor-recovery-preflight-${{ github.run_id }}
+          path: crownweave-anchor-preflight/
+          if-no-files-found: error
+          retention-days: 14
