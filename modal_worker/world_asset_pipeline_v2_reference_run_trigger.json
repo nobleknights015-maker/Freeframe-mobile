@@ -1,9 +1,11 @@
 {
   "schema": "plushbound.world_asset_pipeline_v2_reference_run_trigger.v1",
-  "enabled": false,
+  "enabled": true,
   "mode": "selected_ids_one_region_reference_aware",
-  "region": null,
-  "requested_source_ids": [],
+  "region": "tideglass-coast",
+  "requested_source_ids": [
+    "tileset.tideglass-coast.a5.source.tidal_silt"
+  ],
   "generation_attempts_per_requested_id_cap": 1,
   "one_region_only": true,
   "accepted_ids_must_be_excluded": true,
