@@ -29,7 +29,7 @@
       "status": "REFERENCE_AUTHORITY_ACCEPTED",
       "production_batch": "crownweave-core-materials",
       "anchor_path": "modal_worker/project_references/crownweave_reference_anchor_256.jpg",
-      "anchor_sha256": "8b880c534d62ec8dbe82e8cdf4f07ec9569f0ceec21ec255364b002f34e4b71e",
+      "anchor_sha256": "f9bcf952be223aa1f343aa2ff80b5cf0d1d314f5df412368b2a97af5f7397566",
       "reference_mode": "style",
       "reference_scale": 0.35,
       "reference_role": "regional_visual_material_authority_only",
