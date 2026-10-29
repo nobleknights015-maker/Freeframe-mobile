@@ -29,6 +29,12 @@ jobs:
         run: |
           python -m py_compile modal_worker/world_asset_pipeline_v2_flux2_reference_batch.py
           python -m py_compile modal_worker/freeframe_flux2_reference_worker.py
+      - name: Report exact conditioning anchor hashes
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha256sum modal_worker/project_references/tideglass_tg01_reference_anchor_256.jpg
+          sha256sum modal_worker/project_references/crownweave_reference_anchor_256.jpg
       - name: Validate current-chat repair scope with zero generation
         shell: bash
         run: |
