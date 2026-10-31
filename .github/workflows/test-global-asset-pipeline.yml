@@ -1,0 +1,47 @@
+name: Test Plushbound Global Asset Pipeline
+
+on:
+  push:
+    branches: [freeframe-modal-worker]
+    paths:
+      - 'approved_art/PLUSHBOUND_GLOBAL_ASSET_PIPELINE_V1.json'
+      - 'modal_worker/global_asset_pipeline_validator.py'
+      - 'tests/test_global_asset_pipeline_validator.py'
+      - 'reference_profiles/rpg_maker_mv_reference_v1.json'
+      - '.github/workflows/test-global-asset-pipeline.yml'
+  pull_request:
+    paths:
+      - 'approved_art/PLUSHBOUND_GLOBAL_ASSET_PIPELINE_V1.json'
+      - 'modal_worker/global_asset_pipeline_validator.py'
+      - 'tests/test_global_asset_pipeline_validator.py'
+      - 'reference_profiles/rpg_maker_mv_reference_v1.json'
+
+jobs:
+  validate-global-asset-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate global registry
+        run: python -m modal_worker.global_asset_pipeline_validator
+      - name: Run regression suite
+        run: python -m unittest tests.test_global_asset_pipeline_validator -v
+      - name: Enforce region-neutral global ownership
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('approved_art/PLUSHBOUND_GLOBAL_ASSET_PIPELINE_V1.json')
+          data = json.loads(p.read_text())
+          if data.get('primary_partition') != 'asset_class':
+              raise SystemExit('global pipeline drifted away from asset-class ownership')
+          if data.get('region_is_metadata_only') is not True:
+              raise SystemExit('region became production-primary again')
+          ids = {row['id'] for row in data['asset_classes']}
+          required = {'tileset_a5','field_characters','faces_portraits','sv_actors','enemies','animations','system_ui','icons_items_equipment','character_creation_layers','map_props_buildings','audio_bgm','audio_se'}
+          missing = sorted(required - ids)
+          if missing:
+              raise SystemExit(f'global asset coverage missing: {missing}')
+          PY
