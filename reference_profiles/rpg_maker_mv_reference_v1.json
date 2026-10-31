@@ -1,0 +1,76 @@
+{
+  "schema": "plushbound.reference_profile.rpg_maker_mv.v1",
+  "reference_only": true,
+  "production_source_authorized": false,
+  "runtime_pixel_reuse_allowed": false,
+  "cropping_repacking_tracing_allowed": false,
+  "purpose": "Structural and visual calibration reference for original Plushbound assets and World Editor compatibility. No RPG Maker MV pixels may enter production outputs.",
+  "archive_summary": {
+    "total_entries": 1077,
+    "image_categories": {
+      "animations": 117,
+      "battlebacks1": 50,
+      "battlebacks2": 50,
+      "characters": 29,
+      "enemies": 70,
+      "faces": 10,
+      "parallaxes": 15,
+      "sv_actors": 20,
+      "sv_enemies": 70,
+      "system": 14,
+      "tilesets": 31,
+      "titles1": 20,
+      "titles2": 2
+    }
+  },
+  "tile_size_px": 48,
+  "tileset_geometry": {
+    "A1": {"width": 768, "height": 576},
+    "A2": {"width": 768, "height": 576},
+    "A3": {"width": 768, "height": 384},
+    "A4": {"width": 768, "height": 720},
+    "A5": {"width": 384, "height": 768, "grid_columns": 8, "grid_rows": 16, "slot_count": 128},
+    "B": {"width": 768, "height": 768},
+    "C": {"width": 768, "height": 768}
+  },
+  "observed_tileset_counts_by_geometry": {
+    "768x576": 8,
+    "768x720": 5,
+    "384x768": 4,
+    "768x768": 12,
+    "768x384": 2
+  },
+  "observed_tileset_modes": {
+    "RGBA": 24,
+    "RGB": 7
+  },
+  "a5_reference_sheets": [
+    {"name": "Dungeon_A5.png", "width": 384, "height": 768, "mode": "RGBA", "transparent_zero_percent": 3.22, "partial_alpha_percent": 6.47},
+    {"name": "Inside_A5.png", "width": 384, "height": 768, "mode": "RGBA", "transparent_zero_percent": 1.52, "partial_alpha_percent": 0.0},
+    {"name": "Outside_A5.png", "width": 384, "height": 768, "mode": "RGBA", "transparent_zero_percent": 1.52, "partial_alpha_percent": 0.0},
+    {"name": "SF_Outside_A5.png", "width": 384, "height": 768, "mode": "RGBA", "transparent_zero_percent": 3.28, "partial_alpha_percent": 0.23}
+  ],
+  "other_reference_geometry": {
+    "faces": {"common_size": [576, 288], "count": 10},
+    "sv_actors": {"common_size": [576, 384], "count": 20},
+    "battlebacks": {"common_size": [1000, 740], "count_per_layer": 50},
+    "titles": {"common_size": [816, 624]},
+    "parallaxes": {"common_size": [816, 816], "count": 15},
+    "system": {
+      "IconSet": [512, 640],
+      "Window": [192, 192],
+      "Balloon": [384, 720],
+      "States": [768, 960],
+      "Shadow1": [48, 48]
+    }
+  },
+  "plushbound_alignment": {
+    "WORLD_TILE_ASSET_V1_canvas": [384, 768],
+    "WORLD_TILE_ASSET_V1_tile_size": [48, 48],
+    "WORLD_TILE_ASSET_V1_grid": [8, 16],
+    "WORLD_TILE_ASSET_V1_slots": 128,
+    "a5_structural_match_confirmed": true,
+    "plushbound_art_must_remain_original": true,
+    "world_editor_should_use_reference_for_structure_not_pixels": true
+  }
+}
