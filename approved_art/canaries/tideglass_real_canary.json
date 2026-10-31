@@ -6,7 +6,9 @@
   "asset_id": "tideglass.dock_timber",
   "expected_footprint_tiles": [2, 2],
   "expected_source_path": "next_round_sources/dock_timber.png",
+  "attestation_path": "approved_art/attestations/tideglass.dock_timber.json",
   "source_must_be_real_approved_art": true,
+  "source_sha256_attestation_required": true,
   "synthetic_or_fixture_substitution_allowed": false,
   "production_cli": "modal_worker/world_tile_production_cli.py"
 }
