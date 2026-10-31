@@ -7,7 +7,7 @@ from pathlib import Path
 
 from PIL import Image
 
-from approved_art_processor import _safe_child, _validate_manifest, process_manifest
+from modal_worker.approved_art_processor import _safe_child, _validate_manifest, process_manifest
 
 
 class ApprovedArtProcessorTests(unittest.TestCase):
