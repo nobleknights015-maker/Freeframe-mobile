@@ -49,6 +49,24 @@ jobs:
           echo "Execution: local GitHub runner CPU"
           echo "Per-run hard cap: ${MAX_APPROVED_ASSETS_PER_RUN} assets"
 
+      - name: Install deterministic validation dependency
+        run: python -m pip install --disable-pip-version-check 'pillow>=10.4,<12'
+
+      - name: Run approved-art fail-closed regression tests
+        run: python -m unittest -v modal_worker.test_approved_art_processor
+
+      - name: Assert no remote or generation dependencies in approved-art processor
+        run: |
+          set -euo pipefail
+          if grep -En '(^|[[:space:]])(import|from)[[:space:]]+(modal|torch|diffusers|transformers)([[:space:].]|$)' modal_worker/approved_art_processor.py; then
+            echo 'Forbidden generation/remote dependency found in approved-art processor.' >&2
+            exit 1
+          fi
+          if grep -En '(\.remote\(|cuda|text[-_]?to[-_]?image|image[-_]?to[-_]?image|diffusion)' modal_worker/approved_art_processor.py; then
+            echo 'Forbidden generation/GPU execution path found in approved-art processor.' >&2
+            exit 1
+          fi
+
       - name: Validate approved-art manifest
         env:
           MANIFEST_PATH: ${{ inputs.manifest_path }}
@@ -133,27 +151,12 @@ jobs:
           print(f'APPROVED_ART_PREFLIGHT=PASS:{len(assets)}')
           PY
 
-      - name: Install deterministic validation dependency
-        run: python -m pip install --disable-pip-version-check 'pillow>=10.4,<12'
-
       - name: Process Vera-approved art locally
         run: |
           set -euo pipefail
           python modal_worker/approved_art_processor.py \
             --manifest "${{ inputs.manifest_path }}" \
             --output-dir approved-art-output
-
-      - name: Assert no remote or generation dependencies in approved-art processor
-        run: |
-          set -euo pipefail
-          if grep -En '(^|[[:space:]])(import|from)[[:space:]]+(modal|torch|diffusers|transformers)([[:space:].]|$)' modal_worker/approved_art_processor.py; then
-            echo 'Forbidden generation/remote dependency found in approved-art processor.' >&2
-            exit 1
-          fi
-          if grep -En '(\.remote\(|cuda|text[-_]?to[-_]?image|image[-_]?to[-_]?image|diffusion)' modal_worker/approved_art_processor.py; then
-            echo 'Forbidden generation/GPU execution path found in approved-art processor.' >&2
-            exit 1
-          fi
 
       - name: Upload deterministic processed output
         uses: actions/upload-artifact@v4
