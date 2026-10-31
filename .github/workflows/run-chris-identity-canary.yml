@@ -8,7 +8,7 @@ on:
     paths:
       - 'modal_worker/chris_portrait_canary.py'
       - 'modal_worker/chris_identity_canary_trigger.json'
-      - 'modal_worker/canon_refs/chris_identity_compact.b64'
+      - 'modal_worker/project_references/chris_proven_reference.jpg'
       - '.github/workflows/run-chris-identity-canary.yml'
 
 permissions:
@@ -43,12 +43,12 @@ jobs:
         shell: bash
         run: |
           PYTHONPATH=. python - <<'PY'
-          import base64, io
+          import io
           from pathlib import Path
           from PIL import Image
-          p = Path('modal_worker/canon_refs/chris_identity_compact.b64')
+          p = Path('modal_worker/project_references/chris_proven_reference.jpg')
           assert p.is_file() and p.stat().st_size > 1024
-          raw = base64.b64decode(p.read_text(encoding='ascii').strip(), validate=True)
+          raw = p.read_bytes()
           with Image.open(io.BytesIO(raw)) as im:
               im.verify()
           with Image.open(io.BytesIO(raw)) as im:
