@@ -33,5 +33,9 @@
   "target_size_field_allowed": false,
   "reference_sheet_pixels_allowed": false,
   "world_editor_must_reject_mismatch": true,
-  "authorized_compiler": "modal_worker/a5_tilesheet_compiler.py"
+  "world_editor_visual_layout_inference_allowed": false,
+  "world_editor_automatic_repair_allowed": false,
+  "world_editor_package_components_required": ["compiled_png", "manifest", "compiler_metadata"],
+  "authorized_compiler": "modal_worker/a5_tilesheet_compiler.py",
+  "authorized_world_editor_handoff_gate": "modal_worker/world_editor_tile_ingest_gate.py"
 }
