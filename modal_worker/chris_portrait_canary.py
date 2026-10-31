@@ -12,8 +12,8 @@ from PIL import Image
 
 from modal_worker.atlas_controller import plan_asset
 
-CANARY_VERSION = "chris-canonical-portrait-identity-v2"
-REFERENCE_B64_PATH = Path("modal_worker/canon_refs/chris_identity_compact.b64")
+CANARY_VERSION = "chris-canonical-portrait-identity-v3"
+REFERENCE_PATH = Path("modal_worker/project_references/chris_proven_reference.jpg")
 OUTPUT_DIR = Path("chris-portrait-canary")
 OUTPUT_PNG = OUTPUT_DIR / "chris-bourn-portrait.png"
 REPORT_JSON = OUTPUT_DIR / "report.json"
@@ -25,12 +25,9 @@ EXPECTED_ROUTE = "flux2_klein"
 
 
 def _load_reference() -> tuple[bytes, dict]:
-    if not REFERENCE_B64_PATH.is_file():
-        raise RuntimeError(f"missing proven Chris reference payload: {REFERENCE_B64_PATH}")
-    try:
-        raw = base64.b64decode(REFERENCE_B64_PATH.read_text(encoding="ascii").strip(), validate=True)
-    except Exception as exc:
-        raise RuntimeError(f"canonical reference base64 is invalid: {exc}") from exc
+    if not REFERENCE_PATH.is_file():
+        raise RuntimeError(f"missing proven Chris reference image: {REFERENCE_PATH}")
+    raw = REFERENCE_PATH.read_bytes()
     try:
         with Image.open(io.BytesIO(raw)) as image:
             image.verify()
@@ -103,7 +100,7 @@ def main() -> None:
         "status": "generated_pending_identity_visual_review",
         "production_authorized": False,
         "runtime_contract": {"width": WIDTH, "height": HEIGHT, "layout": "single_portrait"},
-        "reference": {"source": str(REFERENCE_B64_PATH), "sha256": reference_sha, "bytes": len(reference_raw), "raster": reference_info, "stored": stored, "mode": "identity", "scale": REFERENCE_SCALE},
+        "reference": {"source": str(REFERENCE_PATH), "sha256": reference_sha, "bytes": len(reference_raw), "raster": reference_info, "stored": stored, "mode": "identity", "scale": REFERENCE_SCALE},
         "atlas": {"assistant_name": plan.get("assistant_name"), "controller_version": plan.get("controller_version"), "atlas_job_id": plan.get("atlas_job_id"), "plan_digest": plan.get("plan_digest"), "visual_generation_owned_by": plan.get("visual_generation_owned_by"), "responsibility_boundary": plan.get("responsibility_boundary")},
         "generation": {"request": request, "result_metadata": {k: v for k, v in result.items() if k != "image_base64"}, "output_sha256": output_sha, "checks": checks},
         "identity_visual_qa": "pending_human_review",
