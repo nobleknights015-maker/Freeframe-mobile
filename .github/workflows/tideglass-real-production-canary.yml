@@ -5,13 +5,16 @@ on:
     branches: [freeframe-modal-worker]
     paths:
       - 'approved_art/canaries/tideglass_real_canary.json'
+      - 'approved_art/attestations/**'
       - 'approved_art/rounds/next_round.json'
       - 'approved_art/rounds/next_round_sources/**'
+      - 'modal_worker/approved_art_source_attestation.py'
       - 'modal_worker/tideglass_real_canary.py'
       - 'modal_worker/world_tile_production_cli.py'
       - 'modal_worker/a5_tilesheet_compiler.py'
       - 'modal_worker/world_tile_package_exporter.py'
       - 'modal_worker/world_editor_tile_ingest_gate.py'
+      - 'tests/test_approved_art_source_attestation.py'
       - '.github/workflows/tideglass-real-production-canary.yml'
   workflow_dispatch:
 
@@ -25,6 +28,8 @@ jobs:
           python-version: '3.12'
       - name: Install deterministic dependency only
         run: python -m pip install Pillow
+      - name: Run source-attestation regression suite
+        run: python -m unittest tests.test_approved_art_source_attestation -v
       - name: Verify canary contract on branch pushes
         if: github.event_name == 'push'
         run: |
@@ -38,24 +43,31 @@ jobs:
           python -m modal_worker.tideglass_real_canary \
             --config approved_art/canaries/tideglass_real_canary.json \
             --output-root tideglass-canary-output | tee tideglass-canary-result.json
-      - name: Reject synthetic substitution hooks
+      - name: Reject synthetic substitution or unattested-byte hooks
         run: |
           python - <<'PY'
           from pathlib import Path
-          text = Path('modal_worker/tideglass_real_canary.py').read_text().lower()
+          canary = Path('modal_worker/tideglass_real_canary.py').read_text().lower()
+          attestor = Path('modal_worker/approved_art_source_attestation.py').read_text().lower()
           required = [
               'blocked_missing_real_approved_asset',
+              'blocked_missing_approved_source_attestation',
               'synthetic/test/fixture source substitution is forbidden',
-              'synthetic_substitution_used',
+              'source_sha256_attested',
+              'verify_attestation',
               'run_production',
           ]
-          missing = [token for token in required if token not in text]
+          missing = [token for token in required if token not in canary]
           if missing:
               raise SystemExit(f'real-canary fail-closed contract missing: {missing}')
+          attestation_required = ['sha256', 'pixels_modified', 'source_size', 'source_mode']
+          missing_attestation = [token for token in attestation_required if token not in attestor]
+          if missing_attestation:
+              raise SystemExit(f'attestation contract missing: {missing_attestation}')
           forbidden = ['import modal', '.resize(', '.crop(', 'resample=']
-          found = [token for token in forbidden if token in text]
+          found = [token for token in forbidden if token in canary or token in attestor]
           if found:
-              raise SystemExit(f'forbidden canary processing behavior found: {found}')
+              raise SystemExit(f'forbidden canary/attestation behavior found: {found}')
           PY
       - name: Upload real canary package when produced
         if: github.event_name == 'workflow_dispatch' && success()
