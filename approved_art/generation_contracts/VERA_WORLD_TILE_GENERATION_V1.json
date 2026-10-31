@@ -1,0 +1,63 @@
+{
+  "schema": "plushbound.vera_world_tile_generation_contract.v1",
+  "contract_id": "VERA_WORLD_TILE_GENERATION_V1",
+  "purpose": "Constrain Vera generation to one original Plushbound runtime source asset per request before visual approval and immutable-byte attestation.",
+  "reference_profile_usage": "measurement_and_layout_calibration_only",
+  "external_reference_pixels_allowed_in_output": false,
+  "one_asset_id_per_generation": true,
+  "one_visual_function_per_generation": true,
+  "sheet_generation_allowed": false,
+  "showcase_composition_allowed": false,
+  "assortment_composition_allowed": false,
+  "scene_composition_allowed": false,
+  "labels_text_borders_guides_allowed": false,
+  "decorative_extras_allowed_unless_asset_function_requires_them": false,
+  "runtime_source_dimensions": {
+    "1x1": [48, 48],
+    "2x2": [96, 96]
+  },
+  "allowed_footprint_tiles": [[1, 1], [2, 2]],
+  "required_request_fields": [
+    "asset_id",
+    "region",
+    "visual_function",
+    "runtime_role",
+    "footprint_tiles",
+    "pixel_size",
+    "top_down_required",
+    "tileable_required",
+    "required_elements",
+    "forbidden_elements",
+    "original_plushbound_art_required"
+  ],
+  "forbidden_request_terms": [
+    "assortment",
+    "asset sheet",
+    "showcase sheet",
+    "variety sheet",
+    "collection of tiles",
+    "multiple materials",
+    "mixed props",
+    "scene composition"
+  ],
+  "generation_output_contract": {
+    "count": 1,
+    "contains_only_declared_asset_function": true,
+    "exact_pixel_dimensions_required": true,
+    "must_be_reviewed_before_production": true,
+    "approval_status_before_review": "candidate",
+    "production_authorized_before_review": false,
+    "sha256_attestation_required_after_approval": true
+  },
+  "compiler_owns": [
+    "sheet_geometry",
+    "slot_order",
+    "role_band_placement",
+    "covered_by_cells",
+    "final_384x768_runtime_sheet"
+  ],
+  "vera_owns": [
+    "visual_design_of_single_declared_asset",
+    "original_plushbound_artwork_only"
+  ]
+}
