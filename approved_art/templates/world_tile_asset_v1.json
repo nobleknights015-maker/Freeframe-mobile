@@ -44,6 +44,7 @@
     "package.json"
   ],
   "production_export_package_extra_files_allowed": false,
+  "authorized_production_cli": "modal_worker/world_tile_production_cli.py",
   "authorized_compiler": "modal_worker/a5_tilesheet_compiler.py",
   "authorized_world_editor_handoff_gate": "modal_worker/world_editor_tile_ingest_gate.py",
   "authorized_package_exporter": "modal_worker/world_tile_package_exporter.py"
