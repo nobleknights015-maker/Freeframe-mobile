@@ -9,7 +9,7 @@ Reference/showcase sheets define visual identity only. They are never runtime pi
 
 Locked production flow:
 
-reference/showcase sheet -> Vera creates new role-specific source art -> visual approval -> immutable approved-art PNG -> WORLD_TILE_ASSET_V1 manifest -> deterministic compiler -> structural validation -> World Editor / Engine v1
+reference/showcase sheet -> Vera creates new role-specific source art -> visual approval -> immutable approved-art PNG -> WORLD_TILE_ASSET_V1 manifest -> deterministic compiler -> structural validation -> deterministic production package export -> World Editor handoff gate -> World Editor / Engine v1
 
 Reference-sheet pixels may never be cropped, extracted, normalized, wrapped, repacked, or promoted into runtime output.
 
@@ -137,14 +137,40 @@ Reject if any of the following occurs:
 
 The World Editor must reject any mismatch. It must never infer layout visually.
 
-## 8. Retired legacy path
+## 8. Production export package
+
+The authorized exporter is `modal_worker/world_tile_package_exporter.py`.
+
+Each exported production package is one deterministic directory named from the locked material ID and sheet ID. It must contain exactly these five files and no extras:
+
+- `runtime.png`
+- `manifest.json`
+- `compiler-metadata.json`
+- `world-editor-handoff.json`
+- `package.json`
+
+The exporter must validate the compiled PNG, manifest, and compiler metadata through `modal_worker/world_editor_tile_ingest_gate.py` before publishing the directory. JSON serialization is canonical and deterministic. Existing packages are fail-closed by default and may only be replaced with an explicit overwrite operation after the replacement package passes validation.
+
+`package.json` is an index, not an alternate source of truth. It records package schema/version, IDs, canonical filenames, compiler identity, handoff status, and the PNG/manifest integrity hashes already established by the compiler.
+
+The exporter performs no image generation, resizing, cropping, resampling, pixel placement, visual inference, or repair.
+
+## 9. World Editor handoff boundary
+
+The authorized repository-side handoff gate is `modal_worker/world_editor_tile_ingest_gate.py`.
+
+The World Editor must consume the package's `runtime.png`, `manifest.json`, and `compiler-metadata.json` together. The embedded `world-editor-handoff.json` must match a fresh canonical validation result. A PNG by itself is never production-authorized input.
+
+The repository does not contain the live World Editor importer, so repository validation proves package integrity and Engine v1 compatibility only; it does not claim live runtime import proof.
+
+## 10. Retired legacy path
 
 The historical regional A5 path that derived sixteen 48x48 variants from each 384x384 material master is retained only for synthetic regression fixtures. It is not production-authorized and may not process real Plushbound runtime art.
 
 Production runtime sheets use `modal_worker/a5_tilesheet_compiler.py` and the locked WORLD_TILE_ASSET_V1 manifest contract.
 
-## 9. Non-negotiable rule
+## 11. Non-negotiable rule
 
-Vera makes and visually approves the source art. The compiler places immutable approved pixels. The World Editor consumes the locked manifest.
+Vera makes and visually approves the source art. The compiler places immutable approved pixels. The exporter serializes the validated package. The World Editor consumes the locked package and manifest.
 
 A technically valid sheet is not automatically a visually approved sheet.
