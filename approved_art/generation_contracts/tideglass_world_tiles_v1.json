@@ -1,0 +1,92 @@
+{
+  "schema": "plushbound.vera_world_tile_generation_batch.v1",
+  "contract_id": "VERA_WORLD_TILE_GENERATION_V1",
+  "region": "tideglass",
+  "generation_mode": "one_asset_per_request",
+  "targets": [
+    {
+      "asset_id": "tideglass.dock_timber",
+      "visual_function": "dock floor material",
+      "runtime_role": "a1_floor",
+      "footprint_tiles": [2, 2],
+      "pixel_size": [96, 96],
+      "top_down_required": true,
+      "tileable_required": true,
+      "required_elements": ["weathered salt-exposed timber planks", "subtle plank seams", "gameplay-readable grain"],
+      "forbidden_elements": ["posts", "rope coils", "bolts as focal props", "railings", "crates", "water", "dock silhouette", "scene framing", "labels", "borders"],
+      "original_plushbound_art_required": true
+    },
+    {
+      "asset_id": "tideglass.dry_sand",
+      "visual_function": "dry coastal sand floor material",
+      "runtime_role": "a1_floor",
+      "footprint_tiles": [2, 2],
+      "pixel_size": [96, 96],
+      "top_down_required": true,
+      "tileable_required": true,
+      "required_elements": ["fine dry sand texture", "subtle tonal variation", "native-size readability"],
+      "forbidden_elements": ["shell clusters", "driftwood", "footprints", "rocks as focal props", "waterline", "scene composition", "labels", "borders"],
+      "original_plushbound_art_required": true
+    },
+    {
+      "asset_id": "tideglass.coastal_stone",
+      "visual_function": "coastal stone floor material",
+      "runtime_role": "a1_floor",
+      "footprint_tiles": [2, 2],
+      "pixel_size": [96, 96],
+      "top_down_required": true,
+      "tileable_required": true,
+      "required_elements": ["salt-worn stone", "subtle coastal discoloration", "clean navigable surface read"],
+      "forbidden_elements": ["cliff edge", "large shells", "seaweed props", "water pools", "scene framing", "labels", "borders"],
+      "original_plushbound_art_required": true
+    },
+    {
+      "asset_id": "tideglass.cliff_stone",
+      "visual_function": "cliff stone surface material",
+      "runtime_role": "a3_edge_corner",
+      "footprint_tiles": [2, 2],
+      "pixel_size": [96, 96],
+      "top_down_required": true,
+      "tileable_required": false,
+      "required_elements": ["weathered coastal cliff stone", "readable rock planes", "salt erosion cues"],
+      "forbidden_elements": ["full cliff scene", "ocean", "grass tufts as props", "birds", "decorative border", "labels"],
+      "original_plushbound_art_required": true
+    },
+    {
+      "asset_id": "tideglass.saltworn_board",
+      "visual_function": "saltworn board floor material",
+      "runtime_role": "a1_floor",
+      "footprint_tiles": [2, 2],
+      "pixel_size": [96, 96],
+      "top_down_required": true,
+      "tileable_required": true,
+      "required_elements": ["salt-bleached boards", "subtle seams", "weathering without focal damage"],
+      "forbidden_elements": ["nails as focal props", "rope", "posts", "signage", "broken-board holes", "scene composition", "labels", "borders"],
+      "original_plushbound_art_required": true
+    },
+    {
+      "asset_id": "tideglass.sea_glass_pebbles",
+      "visual_function": "sea-glass pebble floor material",
+      "runtime_role": "a1_floor",
+      "footprint_tiles": [2, 2],
+      "pixel_size": [96, 96],
+      "top_down_required": true,
+      "tileable_required": true,
+      "required_elements": ["small rounded translucent sea-glass pebbles", "subdued Tideglass palette", "even distribution"],
+      "forbidden_elements": ["jewelry", "large gem focal points", "shell piles", "water", "containers", "scene composition", "labels", "borders"],
+      "original_plushbound_art_required": true
+    },
+    {
+      "asset_id": "tideglass.tidal_silt",
+      "visual_function": "tidal silt floor material",
+      "runtime_role": "a1_floor",
+      "footprint_tiles": [2, 2],
+      "pixel_size": [96, 96],
+      "top_down_required": true,
+      "tileable_required": true,
+      "required_elements": ["fine damp silt", "subtle moisture variation", "low-noise traversable surface"],
+      "forbidden_elements": ["standing water pools", "shell props", "seaweed clumps", "crab tracks", "rocks as focal props", "scene composition", "labels", "borders"],
+      "original_plushbound_art_required": true
+    }
+  ]
+}
