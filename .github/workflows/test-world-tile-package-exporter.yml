@@ -1,0 +1,72 @@
+name: Test WORLD_TILE_ASSET_V1 Production Package Exporter
+
+on:
+  push:
+    branches:
+      - freeframe-modal-worker
+    paths:
+      - 'modal_worker/a5_tilesheet_compiler.py'
+      - 'modal_worker/world_editor_tile_ingest_gate.py'
+      - 'modal_worker/world_tile_package_exporter.py'
+      - 'modal_worker/world_tile_package_exporter_selftest.py'
+      - 'modal_worker/a5_tilesheet_compiler_selftest.py'
+      - 'approved_art/STANDARD_WORLD_TILE_ASSET_V1.md'
+      - 'approved_art/templates/world_tile_asset_v1.json'
+      - '.github/workflows/test-world-tile-package-exporter.yml'
+  pull_request:
+    paths:
+      - 'modal_worker/a5_tilesheet_compiler.py'
+      - 'modal_worker/world_editor_tile_ingest_gate.py'
+      - 'modal_worker/world_tile_package_exporter.py'
+      - 'modal_worker/world_tile_package_exporter_selftest.py'
+      - 'modal_worker/a5_tilesheet_compiler_selftest.py'
+      - 'approved_art/STANDARD_WORLD_TILE_ASSET_V1.md'
+      - 'approved_art/templates/world_tile_asset_v1.json'
+      - '.github/workflows/test-world-tile-package-exporter.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  production-package-exporter:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install deterministic dependency only
+        run: python -m pip install --disable-pip-version-check 'pillow>=10.4,<12'
+
+      - name: Run production package exporter regression suite
+        run: python -m unittest -v modal_worker.world_tile_package_exporter_selftest
+
+      - name: Verify exporter does not mutate or infer pixels
+        run: |
+          set -euo pipefail
+          if grep -En '\.(resize|crop|transform|rotate|thumbnail|paste)\(' modal_worker/world_tile_package_exporter.py; then
+            echo 'Exporter must not perform pixel operations.' >&2
+            exit 1
+          fi
+          if grep -En '(Image|Resampling|ImageChops|generator|gpu)' modal_worker/world_tile_package_exporter.py; then
+            echo 'Exporter contains forbidden generation/pixel-processing coupling.' >&2
+            exit 1
+          fi
+          echo 'PACKAGE_EXPORTER_PIXEL_OPERATIONS=NONE'
+
+      - name: Verify canonical package filenames are locked
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from modal_worker.world_tile_package_exporter import REQUIRED_FILES
+          assert REQUIRED_FILES == (
+              'runtime.png',
+              'manifest.json',
+              'compiler-metadata.json',
+              'world-editor-handoff.json',
+              'package.json',
+          )
+          print('WORLD_TILE_EXPORT_PACKAGE_FILENAMES=LOCKED')
+          PY
