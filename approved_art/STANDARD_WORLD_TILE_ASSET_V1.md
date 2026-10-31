@@ -3,70 +3,79 @@
 Status: LOCKED
 Owner split: Vera = visual source art; deterministic compiler = geometry/layout/manifest; World Editor = strict consumer.
 
-## 1. Reference art vs production runtime art
+## 1. Production flow
 
-Premade showcase sheets (for example BASALT, CLIFF_STONE, SEA_GLASS, DRY_SAND) are VISUAL/DESIGN REFERENCES ONLY. They define material identity, motif vocabulary, useful role coverage, and desired variety.
+Reference/showcase sheets define visual identity only. They are never runtime pixel sources.
 
-They are not runtime sheets and must never be cropped/repacked directly into production output.
+Locked production flow:
 
-Production flow is:
+reference/showcase sheet -> Vera creates new role-specific source art -> visual approval -> immutable approved-art PNG -> WORLD_TILE_ASSET_V1 manifest -> deterministic compiler -> structural validation -> World Editor / Engine v1
 
-reference/showcase sheet -> Vera recreates clean source art for named roles -> human visual approval -> approved-art manifest -> deterministic compiler -> locked runtime sheet + slot manifest -> World Editor/V1.
+Reference-sheet pixels may never be cropped, extracted, normalized, wrapped, repacked, or promoted into runtime output.
 
 ## 2. Runtime sheet contract
 
-Canvas: 384 x 768 px
-Format: PNG, RGB or RGBA
-Tile size: 48 x 48 px
-Grid: 8 columns x 16 rows
-Total slots: 128
-Origin: top-left (0,0)
-Margins: 0
-Padding: 0
-Scaling after placement: forbidden
-Decorative header/title/UI frame: forbidden
-Text/labels/guides/borders: forbidden
+- Canvas: 384 x 768 px
+- Format: PNG, RGB or RGBA
+- Tile size: 48 x 48 px
+- Grid: 8 columns x 16 rows
+- Total slots: 128
+- Origin: top-left (0,0)
+- Margins/padding: 0
+- Resizing/resampling/cropping after visual approval: forbidden
+- Decorative header/title/UI frame: forbidden
+- Text/labels/guides/borders: forbidden
 
-Every runtime slot must begin at:
-x = column * 48
-y = row * 48
+Every slot begins at:
 
-The compiler, never Vera/image generation, owns these coordinates.
+`x = column * 48`
+`y = row * 48`
+
+The compiler, never image generation, owns these coordinates.
 
 ## 3. Locked role bands
 
-Slots are deterministic and role-based. V1 bands:
+- slots 000-031: `a1_floor`
+- slots 032-055: `a2_wall`
+- slots 056-079: `a3_edge_corner`
+- slots 080-103: `a4_prop`
+- slots 104-127: `a5_variation`
 
-- slots 000-031: A1 floor/base material variants
-- slots 032-055: A2 wall/vertical material variants
-- slots 056-079: A3 edges/corners/transitions
-- slots 080-103: A4 props/structural pieces
-- slots 104-127: A5 variations/details/extras
+Unused slots remain explicit `empty` entries. Slot positions never collapse or shift.
 
-A material does not need every slot to contain unique art. Unused slots are explicit `empty` entries in the manifest; slot positions never collapse or shift.
+## 4. Immutable source-art footprints
 
-## 4. Source-art rules
+Production-approved source PNGs must already match one supported footprint exactly:
 
-Vera generates source art by named asset role, not by composing the final 384x768 sheet.
+- `[1,1]` = 48 x 48 px
+- `[2,2]` = 96 x 96 px
 
-Each source must:
-- correspond to one stable asset ID and one declared role
-- be newly generated Plushbound artwork
-- visually match the approved reference material identity
-- remain readable after deterministic reduction/cropping to 48x48 where applicable
-- be top-down/tileable/seamless where the role requires it
-- avoid baked presentation framing, labels, decorative sheet UI, and arbitrary neighboring assets
-- avoid relying on AI-guessed grid geometry
+The deterministic compiler performs zero resizing, zero resampling, zero cropping, zero wrap-offset derivation, and zero visual repair.
 
-Source art may be larger than 48x48 for quality, but the compiler owns all final resizing/cropping/placement.
+A 2x2 source uses one anchor slot. The other three occupied grid cells must explicitly declare `covered_by` with the anchor asset ID. A 2x2 footprint may not leave the 8x16 grid, overlap another source, wrap rows, or cross a locked role-band boundary.
 
-## 5. Manifest contract
+`target_size` is forbidden in WORLD_TILE_ASSET_V1 production manifests.
+
+## 5. Approval contract
+
+Every production anchor source requires:
+
+- `approval_status`: `approved`
+- `approval_designation`: `VERA_APPROVED_SOURCE_V1`
+- `provenance`: `vera-chatgpt-approved`
+- `production_authorized`: true
+
+Reference/showcase art uses `approval_status: reference_only` and `production_authorized: false` and is not compiler-eligible.
+
+## 6. Manifest contract
 
 Schema: `plushbound.world_tile_sheet.v1`
+Template: `WORLD_TILE_ASSET_V1`
 
 Required top-level fields:
+
 - `schema`
-- `template_version`: `WORLD_TILE_ASSET_V1`
+- `template_version`
 - `sheet_id`
 - `material_id`
 - `canvas_width`: 384
@@ -77,68 +86,65 @@ Required top-level fields:
 - `provenance`: `vera-chatgpt-approved`
 - `generator_calls_allowed`: false
 - `gpu_allowed`: false
-- `slots`: exactly 128 entries
+- `slots`: exactly 128 entries in slot-index order
 
-Each slot entry must contain:
-- `slot_index` (0-127)
-- `row` (0-15)
-- `column` (0-7)
+Every slot contains deterministic geometry:
+
+- `slot_index` 0-127
+- `row` 0-15
+- `column` 0-7
 - `x`
 - `y`
-- `role` (`a1_floor`, `a2_wall`, `a3_edge_corner`, `a4_prop`, `a5_variation`, or `empty`)
-- `asset_id` (stable ID or null for empty)
-- `source_path` (approved source PNG or null for empty)
+- `role`
+- `asset_id`
+- `source_path`
 
-## 6. Compiler validation / fail-closed rules
+Anchor slots additionally carry `footprint_tiles` and approval fields.
 
-Reject the sheet/package if any of the following is true:
-- canvas is not exactly 384x768
-- tile size is not exactly 48x48
-- grid is not exactly 8x16
+Covered cells carry:
+
+- their normal role-band role
+- `asset_id: null`
+- `source_path: null`
+- `covered_by: <anchor asset_id>`
+
+Empty cells carry:
+
+- `role: empty`
+- `asset_id: null`
+- `source_path: null`
+- no `covered_by`
+
+## 7. Fail-closed compiler rules
+
+Reject if any of the following occurs:
+
+- canvas/grid/tile geometry differs from 384x768 / 8x16 / 48x48
 - slot count is not exactly 128
-- any x/y coordinate differs from deterministic grid math
-- any duplicate non-empty asset ID exists
-- manifest template/schema version is unknown
-- source provenance is not `vera-chatgpt-approved`
-- `generator_calls_allowed` is not false
-- `gpu_allowed` is not false
-- source path is missing for a non-empty slot
-- runtime output contains text, decorative header framing, or reference-sheet pixels
+- slot order, row, column, x, or y differs from deterministic grid math
+- a non-empty role does not match its locked role band
+- duplicate non-empty stable asset IDs exist
+- schema/template version is unknown
+- provenance or approval designation is invalid
+- production authorization is absent or false
+- generator or GPU authorization is enabled
+- a source path or source PNG is missing
+- source dimensions do not exactly match the declared 1x1 or 2x2 footprint
+- any resize/crop/derived-variant directive is requested
+- 2x2 coverage is missing, orphaned, overlapping, out of bounds, or crosses a role band
+- undeclared source PNGs are supplied to compilation
+- reference/showcase pixels are used as production art
 
-World Editor must reject mismatches. It must never infer or guess layout visually.
+The World Editor must reject any mismatch. It must never infer layout visually.
 
-## 7. Approval designation
+## 8. Retired legacy path
 
-A source asset becomes eligible for compilation only after explicit visual approval. Approved designation fields:
+The historical regional A5 path that derived sixteen 48x48 variants from each 384x384 material master is retained only for synthetic regression fixtures. It is not production-authorized and may not process real Plushbound runtime art.
 
-- `approval_status`: `approved`
-- `approval_designation`: `VERA_APPROVED_SOURCE_V1`
-- `provenance`: `vera-chatgpt-approved`
-- `production_authorized`: true
+Production runtime sheets use `modal_worker/a5_tilesheet_compiler.py` and the locked WORLD_TILE_ASSET_V1 manifest contract.
 
-Reference/showcase art uses:
-- `approval_status`: `reference_only`
-- `production_authorized`: false
+## 9. Non-negotiable rule
 
-## 8. Example: cliff_stone
+Vera makes and visually approves the source art. The compiler places immutable approved pixels. The World Editor consumes the locked manifest.
 
-`cliff_stone` showcase/reference sheet is used to define the desired visual language and coverage only.
-
-Production does NOT crop that sheet.
-
-Instead Vera recreates role-specific source art such as:
-- `cliff_stone.a1.base_01`
-- `cliff_stone.a1.base_02`
-- `cliff_stone.a2.wall_face_01`
-- `cliff_stone.a3.outer_corner_01`
-- `cliff_stone.a3.inner_corner_01`
-- `cliff_stone.a4.rock_prop_01`
-- `cliff_stone.a5.moss_variation_01`
-
-After approval, the compiler places those sources into their locked slots and creates the 384x768 runtime sheet plus manifest.
-
-## 9. Non-negotiable production rule
-
-Vera makes the art. The compiler makes the sheet. The World Editor reads the manifest.
-
-No generated image is allowed to substitute for the deterministic runtime sheet geometry.
+A technically valid sheet is not automatically a visually approved sheet.
