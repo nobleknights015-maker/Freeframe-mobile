@@ -1,0 +1,73 @@
+name: Test World Editor Tile Handoff Contract
+
+on:
+  push:
+    branches:
+      - freeframe-modal-worker
+    paths:
+      - 'modal_worker/world_editor_tile_ingest_gate.py'
+      - 'modal_worker/world_editor_tile_ingest_gate_selftest.py'
+      - 'modal_worker/a5_tilesheet_compiler.py'
+      - 'modal_worker/a5_tilesheet_compiler_selftest.py'
+      - 'modal_worker/engine_v1_a5_compatibility_validator.py'
+      - 'approved_art/templates/world_tile_asset_v1.json'
+      - 'approved_art/STANDARD_WORLD_TILE_ASSET_V1.md'
+      - '.github/workflows/test-world-editor-tile-ingest.yml'
+  pull_request:
+    paths:
+      - 'modal_worker/world_editor_tile_ingest_gate.py'
+      - 'modal_worker/world_editor_tile_ingest_gate_selftest.py'
+      - 'modal_worker/a5_tilesheet_compiler.py'
+      - 'modal_worker/engine_v1_a5_compatibility_validator.py'
+      - 'approved_art/**'
+      - '.github/workflows/test-world-editor-tile-ingest.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  world-editor-handoff:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install deterministic dependency only
+        run: python -m pip install --disable-pip-version-check 'pillow>=10.4,<12'
+      - name: Run handoff fail-closed regression suite
+        run: python -m unittest -v modal_worker.world_editor_tile_ingest_gate_selftest
+      - name: Verify handoff gate performs no pixel repair or inference
+        run: |
+          set -euo pipefail
+          if grep -En '\.(resize|crop|transform|rotate|thumbnail|paste|alpha_composite)\(' modal_worker/world_editor_tile_ingest_gate.py; then
+            echo 'World Editor handoff gate must validate only; pixel mutation found.' >&2
+            exit 1
+          fi
+          if grep -En '(ImageChops|Resampling|normalize_image|diffusion|\.remote\(|cuda)' modal_worker/world_editor_tile_ingest_gate.py; then
+            echo 'World Editor handoff gate contains forbidden inference/generation path.' >&2
+            exit 1
+          fi
+          echo 'WORLD_EDITOR_HANDOFF_PIXEL_MUTATION=NONE'
+      - name: Verify package integrity is mandatory
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('modal_worker/world_editor_tile_ingest_gate.py').read_text(encoding='utf-8')
+          for token in (
+              'validate_world_tile_manifest',
+              'png_sha256',
+              'manifest_sha256',
+              'source_png_sha256',
+              'AUTHORIZED_COMPILERS',
+              'runtime_import_proof',
+              'ACCEPTED_FOR_WORLD_EDITOR_HANDOFF',
+          ):
+              assert token in p, token
+          compat = Path('modal_worker/engine_v1_a5_compatibility_validator.py').read_text(encoding='utf-8')
+          assert 'world_editor_handoff_gate_required' in compat
+          assert 'pixel_uniqueness_used_as_layout_proof' in compat
+          print('WORLD_EDITOR_PACKAGE_INTEGRITY_CONTRACT=PASS')
+          PY
