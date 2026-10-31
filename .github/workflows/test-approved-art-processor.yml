@@ -1,0 +1,66 @@
+name: Test Approved Plushbound Art Processor
+
+on:
+  push:
+    branches:
+      - freeframe-modal-worker
+    paths:
+      - 'modal_worker/approved_art_processor.py'
+      - 'modal_worker/test_approved_art_processor.py'
+      - 'approved_art/**'
+      - '.github/workflows/process-approved-plushbound-art.yml'
+      - '.github/workflows/test-approved-art-processor.yml'
+  pull_request:
+    paths:
+      - 'modal_worker/approved_art_processor.py'
+      - 'modal_worker/test_approved_art_processor.py'
+      - 'approved_art/**'
+      - '.github/workflows/process-approved-plushbound-art.yml'
+      - '.github/workflows/test-approved-art-processor.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  approved-art-contract:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install deterministic validation dependency
+        run: python -m pip install --disable-pip-version-check 'pillow>=10.4,<12'
+
+      - name: Run fail-closed regression tests
+        run: python -m unittest -v modal_worker.test_approved_art_processor
+
+      - name: Reject remote, generation, or GPU dependencies
+        run: |
+          set -euo pipefail
+          if grep -En '(^|[[:space:]])(import|from)[[:space:]]+(modal|torch|diffusers|transformers)([[:space:].]|$)' modal_worker/approved_art_processor.py; then
+            echo 'Forbidden generation/remote dependency found in approved-art processor.' >&2
+            exit 1
+          fi
+          if grep -En '(\.remote\(|cuda|text[-_]?to[-_]?image|image[-_]?to[-_]?image|diffusion)' modal_worker/approved_art_processor.py; then
+            echo 'Forbidden generation/GPU execution path found in approved-art processor.' >&2
+            exit 1
+          fi
+
+      - name: Verify next-round manifest contains no resize directive
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          data = json.loads(Path('approved_art/rounds/next_round.json').read_text(encoding='utf-8'))
+          for asset in data['assets']:
+              assert 'target_size' not in asset, asset['asset_id']
+              assert asset['approval_status'] == 'approved', asset['asset_id']
+              assert asset['approval_designation'] == 'VERA_APPROVED_SOURCE_V1', asset['asset_id']
+              assert asset['production_authorized'] is True, asset['asset_id']
+              assert asset['footprint_tiles'] in ([1, 1], [2, 2]), asset['asset_id']
+          print(f"APPROVED_ART_CONTRACT_TEST=PASS:{len(data['assets'])}")
+          PY
