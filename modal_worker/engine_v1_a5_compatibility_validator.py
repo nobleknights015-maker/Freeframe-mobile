@@ -1,9 +1,9 @@
-"""Fail-closed compatibility-contract validator for Plushbound Engine v1 A5 sheets.
+"""Fail-closed compatibility validator for Plushbound Engine v1 A5 sheet bytes.
 
-The repository does not contain a live World Editor/Engine v1 tileset importer, so
-this validator does not claim runtime-import proof. It validates against the actual
-engine-facing asset profile used by the repository (`mv_tileset_a5`) plus the
-Plushbound 48px grid/slot contract.
+This is deliberately a geometry/profile check only. The repository does not contain
+a live World Editor/Engine v1 importer, and pixel uniqueness is not a layout proof:
+valid WORLD_TILE_ASSET_V1 packages may contain explicit empty, covered, or repeated
+visual cells. Production handoff must additionally pass world_editor_tile_ingest_gate.
 """
 from __future__ import annotations
 
@@ -45,7 +45,6 @@ def validate_a5(sheet_path: Path, *, expected_sha256: str | None = None) -> dict
         fmt = str(image.format or "")
         width, height = image.size
         has_alpha = "A" in image.getbands()
-        rgba = image.convert("RGBA")
 
     profile_validation = validate_metadata(
         profile_name=PROFILE,
@@ -64,31 +63,17 @@ def validate_a5(sheet_path: Path, *, expected_sha256: str | None = None) -> dict
     columns, rows = width // TILE_SIZE, height // TILE_SIZE
     if [columns, rows] != [EXPECTED_COLUMNS, EXPECTED_ROWS]:
         raise RuntimeError("A5 grid is not the locked 8x16 layout")
-
-    tile_hashes: list[str] = []
-    for row in range(rows):
-        for column in range(columns):
-            box = (
-                column * TILE_SIZE,
-                row * TILE_SIZE,
-                (column + 1) * TILE_SIZE,
-                (row + 1) * TILE_SIZE,
-            )
-            tile = rgba.crop(box)
-            if tile.size != (TILE_SIZE, TILE_SIZE):
-                raise RuntimeError(f"out-of-bounds or partial tile at row={row} column={column}")
-            tile_hashes.append(hashlib.sha256(tile.tobytes()).hexdigest())
-
-    if len(tile_hashes) != EXPECTED_SLOTS:
+    slot_count = columns * rows
+    if slot_count != EXPECTED_SLOTS:
         raise RuntimeError("A5 slot count mismatch")
-    if len(set(tile_hashes)) != EXPECTED_SLOTS:
-        raise RuntimeError("Elyndor A5 deterministic sheet contains duplicate slot pixels")
 
     return {
-        "schema": "plushbound.engine_v1_a5_compatibility_report.v1",
+        "schema": "plushbound.engine_v1_a5_compatibility_report.v2",
         "status": "PASS_ENGINE_V1_COMPATIBILITY_CONTRACT",
-        "proof_scope": "repository asset-profile and deterministic geometry compatibility; not live runtime import",
+        "proof_scope": "sheet-byte profile and geometry compatibility only; manifest/package handoff gate still required",
         "runtime_import_proof": False,
+        "world_editor_handoff_gate_required": True,
+        "pixel_uniqueness_used_as_layout_proof": False,
         "profile": PROFILE,
         "profile_validation": profile_validation,
         "format": fmt.upper(),
@@ -99,8 +84,7 @@ def validate_a5(sheet_path: Path, *, expected_sha256: str | None = None) -> dict
         "tile_size": TILE_SIZE,
         "columns": columns,
         "rows": rows,
-        "slot_count": len(tile_hashes),
-        "unique_slot_hashes": len(set(tile_hashes)),
+        "slot_count": slot_count,
         "provider_calls": 0,
         "gpu_calls": 0,
         "generation_calls": 0,
