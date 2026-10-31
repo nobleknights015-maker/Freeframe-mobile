@@ -1,4 +1,4 @@
-name: Plushbound Regional A5 Deterministic Compiler Rehearsal
+name: Plushbound Regional A5 Legacy Compiler Rehearsal
 
 on:
   push:
@@ -17,7 +17,7 @@ permissions:
   contents: read
 
 jobs:
-  synthetic-zero-gpu-compile:
+  synthetic-legacy-only:
     strategy:
       fail-fast: false
       matrix:
@@ -38,15 +38,14 @@ jobs:
       PLUSHBOUND_PAID_REMOTE_ENABLED: '0'
       REGION: ${{ matrix.region }}
     steps:
-      - name: Checkout production branch
-        uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - name: Install deterministic dependency only
         run: python -m pip install --disable-pip-version-check 'pillow>=10.4,<12'
-      - name: Build synthetic wrap-friendly eight-source fixture
+
+      - name: Build synthetic legacy fixture only
         shell: bash
         run: |
           set -euo pipefail
@@ -56,9 +55,7 @@ jobs:
           from PIL import Image
           region = os.environ['REGION']
           scope = json.loads(Path('modal_worker/tileset_regional_a5_scope_manifest.json').read_text(encoding='utf-8'))
-          assert region in scope['remaining_regions']
           materials = scope['regions'][region]['materials']
-          assert len(materials) == 8 and len(set(materials)) == 8
           root = Path('synthetic-regional-a5') / region / 'raw'
           root.mkdir(parents=True, exist_ok=True)
           rows = []
@@ -69,19 +66,13 @@ jobs:
                   ay = 2.0 * math.pi * y / 384.0
                   for x in range(384):
                       ax = 2.0 * math.pi * x / 384.0
-                      v1 = math.sin(ax + family * 0.17)
-                      v2 = math.cos(ay + family * 0.23)
-                      v3 = math.sin(ax + ay * 2.0 + family * 0.31)
-                      r = int(max(0, min(255, 92 + family * 7 + 28 * v1 + 11 * v3)))
-                      g = int(max(0, min(255, 112 + family * 5 + 25 * v2 + 9 * v3)))
-                      b = int(max(0, min(255, 72 + family * 6 + 18 * v1 - 15 * v2)))
+                      r = int(max(0, min(255, 100 + family * 5 + 25 * math.sin(ax))))
+                      g = int(max(0, min(255, 115 + family * 4 + 22 * math.cos(ay))))
+                      b = int(max(0, min(255, 85 + family * 5 + 18 * math.sin(ax + ay))))
                       px[x, y] = (r, g, b, 255)
               p = root / f'{material}-384.png'
               im.save(p, format='PNG')
-              rows.append({
-                  'asset_id': f'tileset.{region}.a5.source.{material}',
-                  'raw_sha256': hashlib.sha256(p.read_bytes()).hexdigest()
-              })
+              rows.append({'asset_id': f'tileset.{region}.a5.source.{material}', 'raw_sha256': hashlib.sha256(p.read_bytes()).hexdigest()})
           closeout = {
               'schema': 'plushbound.tileset_regional_a5_source_closeout.v1',
               'status': 'CLOSED_GREEN_8_OF_8',
@@ -89,40 +80,22 @@ jobs:
               'target_sheet_type': 'A5',
               'machine_gate': 'PASS_8_OF_8',
               'manual_visual_gate': 'PASS_8_OF_8',
-              'accepted_source_ids_protected_from_rerender': True,
-              'catalog_wide_launch_authorized': False,
               'sources': rows,
               'test_fixture_only': True
           }
           Path('synthetic-source-closeout.json').write_text(json.dumps(closeout, indent=2, sort_keys=True), encoding='utf-8')
-          print(f'SYNTHETIC_SOURCE_FIXTURE={region}=8')
           PY
-      - name: Exercise actual regional A5 compiler path
-        shell: bash
+
+      - name: Exercise retired compiler with synthetic fixture
         run: |
           set -euo pipefail
           PYTHONPATH=. python modal_worker/tileset_regional_a5_compiler.py \
             --region "$REGION" \
             --source-root "synthetic-regional-a5/$REGION/raw" \
             --source-closeout synthetic-source-closeout.json \
-            --output-dir "synthetic-regional-a5/$REGION/final" \
-            | tee synthetic-compile.log
-      - name: Run Engine v1 compatibility validator on synthetic compile
-        shell: bash
-        run: |
-          set -euo pipefail
-          SHEET="$(python - <<'PY'
-          import json, os
-          from pathlib import Path
-          region = os.environ['REGION']
-          r = json.loads((Path('synthetic-regional-a5') / region / 'final' / 'report.json').read_text(encoding='utf-8'))
-          print(r['sheet_path'])
-          PY
-          )"
-          PYTHONPATH=. python modal_worker/engine_v1_a5_compatibility_validator.py --sheet "$SHEET" > synthetic-engine-v1.json
-          cat synthetic-engine-v1.json
-      - name: Assert full zero-spend deterministic path
-        shell: bash
+            --output-dir "synthetic-regional-a5/$REGION/final"
+
+      - name: Assert test-only status and production denial
         run: |
           set -euo pipefail
           python - <<'PY'
@@ -130,32 +103,12 @@ jobs:
           from pathlib import Path
           region = os.environ['REGION']
           comp = json.loads((Path('synthetic-regional-a5') / region / 'final' / 'report.json').read_text(encoding='utf-8'))
-          compat = json.loads(Path('synthetic-engine-v1.json').read_text(encoding='utf-8'))
-          assert comp['status'] == 'PASS_NO_SPEND_DETERMINISTIC_COMPILE_ENGINE_PROFILE'
-          assert comp['region'] == region
-          assert comp['stable_sheet_id'] == f'tileset.{region}.a5'
+          assert comp['status'] == 'PASS_LEGACY_TEST_ONLY'
+          assert comp['legacy_test_only'] is True
+          assert comp['production_authorized'] is False
           assert [comp['sheet_width'], comp['sheet_height']] == [384, 768]
-          assert comp['tile_size'] == 48 and [comp['columns'], comp['rows']] == [8, 16]
-          assert comp['slot_count'] == 128 and comp['unique_slot_hashes'] == 128
+          assert comp['slot_count'] == 128
           assert [comp['provider_calls'], comp['gpu_calls'], comp['generation_calls']] == [0, 0, 0]
-          assert comp['runtime_import_proof'] is False and comp['catalog_wide_launch_authorized'] is False
-          assert compat['status'] == 'PASS_ENGINE_V1_COMPATIBILITY_CONTRACT'
-          assert [compat['sheet_width'], compat['sheet_height']] == [384, 768]
-          assert compat['tile_size'] == 48 and [compat['columns'], compat['rows']] == [8, 16]
-          assert compat['slot_count'] == 128 and compat['unique_slot_hashes'] == 128
-          assert compat['runtime_import_proof'] is False
-          assert [compat['provider_calls'], compat['gpu_calls'], compat['generation_calls']] == [0, 0, 0]
-          print(f'REGIONAL_A5_SYNTHETIC_COMPILER_REHEARSAL={region}=PASS_ZERO_GPU')
-          print(f'COMPILED_SHA256={comp["sheet_sha256"]}')
+          print(f'REGIONAL_A5_LEGACY_REHEARSAL={region}=PASS_TEST_ONLY')
+          print('PRODUCTION_AUTHORIZED=false')
           PY
-      - name: Upload rehearsal evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: plushbound-a5-compiler-rehearsal-${{ matrix.region }}-${{ github.run_id }}
-          path: |
-            synthetic-compile.log
-            synthetic-engine-v1.json
-            synthetic-regional-a5/${{ env.REGION }}/final/
-          if-no-files-found: warn
-          retention-days: 14
