@@ -1,0 +1,60 @@
+name: Test Vera WORLD_TILE Generation Contract
+
+on:
+  push:
+    branches: [freeframe-modal-worker]
+    paths:
+      - 'approved_art/generation_contracts/**'
+      - 'modal_worker/vera_generation_contract_validator.py'
+      - 'tests/test_vera_generation_contract.py'
+      - '.github/workflows/test-vera-generation-contract.yml'
+  pull_request:
+    paths:
+      - 'approved_art/generation_contracts/**'
+      - 'modal_worker/vera_generation_contract_validator.py'
+      - 'tests/test_vera_generation_contract.py'
+
+jobs:
+  vera-generation-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate locked contract files
+        run: |
+          python -m modal_worker.vera_generation_contract_validator \
+            --contract approved_art/generation_contracts/VERA_WORLD_TILE_GENERATION_V1.json \
+            --batch approved_art/generation_contracts/tideglass_world_tiles_v1.json
+      - name: Run fail-closed regression tests
+        run: python -m unittest tests.test_vera_generation_contract -v
+      - name: Verify no generation or image-processing implementation lives in validator
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          text = Path('modal_worker/vera_generation_contract_validator.py').read_text().lower()
+          forbidden = ['import modal', 'from pil', '.resize(', '.crop(', 'imagegen', 'diffusion', 'cuda']
+          found = [token for token in forbidden if token in text]
+          if found:
+              raise SystemExit(f'validator contains forbidden generation/image-processing behavior: {found}')
+          PY
+      - name: Verify anti-assortment contract remains explicit
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          c = json.loads(Path('approved_art/generation_contracts/VERA_WORLD_TILE_GENERATION_V1.json').read_text())
+          required_false = [
+              'sheet_generation_allowed',
+              'showcase_composition_allowed',
+              'assortment_composition_allowed',
+              'scene_composition_allowed',
+              'decorative_extras_allowed_unless_asset_function_requires_them',
+          ]
+          bad = [k for k in required_false if c.get(k) is not False]
+          if bad:
+              raise SystemExit(f'anti-assortment contract loosened: {bad}')
+          if c.get('one_asset_id_per_generation') is not True:
+              raise SystemExit('one_asset_id_per_generation must remain true')
+          PY
