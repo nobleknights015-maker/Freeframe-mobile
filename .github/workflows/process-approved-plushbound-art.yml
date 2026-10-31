@@ -1,4 +1,4 @@
-name: Process Approved Plushbound Art (CPU Only)
+name: Process Approved Plushbound Art (Local CPU Only)
 
 on:
   workflow_dispatch:
@@ -26,11 +26,9 @@ env:
   MAX_APPROVED_ASSETS_PER_RUN: "32"
 
 jobs:
-  validate:
+  process:
     runs-on: ubuntu-24.04
-    outputs:
-      manifest_path: ${{ steps.manifest.outputs.path }}
-      asset_count: ${{ steps.manifest.outputs.count }}
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
@@ -46,11 +44,12 @@ jobs:
           echo "Art source: Vera/ChatGPT approved PNGs only"
           echo "Generation: DISABLED"
           echo "GPU: DISABLED"
-          echo "Modal role: deterministic CPU processing only"
+          echo "Remote processing: DISABLED"
+          echo "Resizing/resampling: DISABLED"
+          echo "Execution: local GitHub runner CPU"
           echo "Per-run hard cap: ${MAX_APPROVED_ASSETS_PER_RUN} assets"
 
-      - name: Validate approved-art manifest before Modal credentials
-        id: manifest
+      - name: Validate approved-art manifest
         env:
           MANIFEST_PATH: ${{ inputs.manifest_path }}
           CONFIRM_MODE: ${{ inputs.confirm_mode }}
@@ -67,25 +66,59 @@ jobs:
           if not p.is_file():
               raise SystemExit(f'Manifest not found: {p}')
 
-          data = json.loads(p.read_text())
-          assert data['schema'] == 'plushbound.approved_art_round.v1'
-          assert data['provenance'] == 'vera-chatgpt-approved'
-          assert data['generator_calls_allowed'] is False
-          assert data['gpu_allowed'] is False
+          data = json.loads(p.read_text(encoding='utf-8'))
+          if data.get('schema') != 'plushbound.approved_art_round.v1':
+              raise SystemExit('Unsupported manifest schema.')
+          if data.get('provenance') != 'vera-chatgpt-approved':
+              raise SystemExit('Invalid provenance.')
+          if data.get('generator_calls_allowed') is not False:
+              raise SystemExit('Generator calls must be explicitly disabled.')
+          if data.get('gpu_allowed') is not False:
+              raise SystemExit('GPU use must be explicitly disabled.')
 
-          assets = data['assets']
-          assert isinstance(assets, list) and assets
+          assets = data.get('assets')
+          if not isinstance(assets, list) or not assets:
+              raise SystemExit('Manifest assets must be a non-empty list.')
           cap = int(os.environ['MAX_APPROVED_ASSETS_PER_RUN'])
           if len(assets) > cap:
-              raise SystemExit(f'Round contains {len(assets)} assets; hard cap is {cap}. Split into smaller rounds.')
+              raise SystemExit(f'Round contains {len(assets)} assets; hard cap is {cap}.')
 
-          ids = [a['asset_id'] for a in assets]
-          assert len(ids) == len(set(ids)), 'Duplicate asset IDs are not allowed.'
-
+          ids = []
+          outputs = []
           for a in assets:
+              asset_id = a.get('asset_id')
+              if not isinstance(asset_id, str) or not asset_id:
+                  raise SystemExit('Every asset requires a non-empty asset_id.')
+              ids.append(asset_id)
+
+              if a.get('approval_status') != 'approved':
+                  raise SystemExit(f'{asset_id}: approval_status must be approved.')
+              if a.get('approval_designation') != 'VERA_APPROVED_SOURCE_V1':
+                  raise SystemExit(f'{asset_id}: invalid approval_designation.')
+              if a.get('production_authorized') is not True:
+                  raise SystemExit(f'{asset_id}: production_authorized must be true.')
+              if a.get('provenance', 'vera-chatgpt-approved') != 'vera-chatgpt-approved':
+                  raise SystemExit(f'{asset_id}: invalid per-asset provenance.')
+              if 'target_size' in a:
+                  raise SystemExit(f'{asset_id}: target_size is forbidden; resizing is disabled.')
+              if a.get('footprint_tiles') not in ([1, 1], [2, 2]):
+                  raise SystemExit(f'{asset_id}: footprint_tiles must be [1, 1] or [2, 2].')
+
               source = (p.parent / a['source_path']).resolve()
-              assert source.is_file(), f'Missing source: {source}'
-              assert source.suffix.lower() == '.png', f'Only PNG source art is accepted: {source}'
+              if not source.is_file():
+                  raise SystemExit(f'Missing source: {source}')
+              if source.suffix.lower() != '.png':
+                  raise SystemExit(f'Only PNG source art is accepted: {source}')
+
+              output_name = a.get('output_name') or f'{asset_id}.png'
+              if not output_name.lower().endswith('.png'):
+                  raise SystemExit(f'{asset_id}: output_name must be PNG.')
+              outputs.append(output_name)
+
+          if len(ids) != len(set(ids)):
+              raise SystemExit('Duplicate asset IDs are not allowed.')
+          if len(outputs) != len(set(outputs)):
+              raise SystemExit('Duplicate output names are not allowed.')
 
           print('--- PRE-FLIGHT SUMMARY ---')
           print(f'Manifest: {p.as_posix()}')
@@ -93,51 +126,34 @@ jobs:
           print('Provenance: vera-chatgpt-approved')
           print('Generator calls: BLOCKED')
           print('GPU use: BLOCKED')
-          print('Execution class: CPU deterministic processing')
+          print('Remote processing: BLOCKED')
+          print('Pixel resizing: BLOCKED')
+          print('Execution class: local CPU deterministic copy/validation')
           print('--------------------------')
           print(f'APPROVED_ART_PREFLIGHT=PASS:{len(assets)}')
-
-          with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
-              fh.write(f'path={p.as_posix()}\n')
-              fh.write(f'count={len(assets)}\n')
           PY
 
-  process:
-    needs: validate
-    runs-on: ubuntu-24.04
-    timeout-minutes: 20
-    env:
-      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
-      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: freeframe-modal-worker
+      - name: Install deterministic validation dependency
+        run: python -m pip install --disable-pip-version-check 'pillow>=10.4,<12'
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Confirm validated scope before credentials are used
-        run: |
-          echo "Validated asset count: ${{ needs.validate.outputs.asset_count }}"
-          echo "Mode: CPU-only deterministic processing"
-          test "${{ inputs.confirm_mode }}" = "PROCESS_APPROVED_ART_ONLY"
-
-      - name: Install CPU processing dependencies
-        run: python -m pip install --disable-pip-version-check 'modal>=1.5,<2' 'pillow>=10.4,<12'
-
-      - name: Require Modal credentials
-        run: |
-          test -n "${MODAL_TOKEN_ID:-}"
-          test -n "${MODAL_TOKEN_SECRET:-}"
-
-      - name: Process Vera-approved art on Modal CPU
+      - name: Process Vera-approved art locally
         run: |
           set -euo pipefail
-          modal run modal_worker/approved_art_processor.py \
-            --manifest "${{ needs.validate.outputs.manifest_path }}" \
+          python modal_worker/approved_art_processor.py \
+            --manifest "${{ inputs.manifest_path }}" \
             --output-dir approved-art-output
+
+      - name: Assert no remote or generation dependencies in approved-art processor
+        run: |
+          set -euo pipefail
+          if grep -En '(^|[[:space:]])(import|from)[[:space:]]+(modal|torch|diffusers|transformers)([[:space:].]|$)' modal_worker/approved_art_processor.py; then
+            echo 'Forbidden generation/remote dependency found in approved-art processor.' >&2
+            exit 1
+          fi
+          if grep -En '(\.remote\(|cuda|text[-_]?to[-_]?image|image[-_]?to[-_]?image|diffusion)' modal_worker/approved_art_processor.py; then
+            echo 'Forbidden generation/GPU execution path found in approved-art processor.' >&2
+            exit 1
+          fi
 
       - name: Upload deterministic processed output
         uses: actions/upload-artifact@v4
