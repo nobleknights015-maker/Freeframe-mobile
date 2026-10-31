@@ -1,0 +1,68 @@
+name: Tideglass Real Approved Production Canary
+
+on:
+  push:
+    branches: [freeframe-modal-worker]
+    paths:
+      - 'approved_art/canaries/tideglass_real_canary.json'
+      - 'approved_art/rounds/next_round.json'
+      - 'approved_art/rounds/next_round_sources/**'
+      - 'modal_worker/tideglass_real_canary.py'
+      - 'modal_worker/world_tile_production_cli.py'
+      - 'modal_worker/a5_tilesheet_compiler.py'
+      - 'modal_worker/world_tile_package_exporter.py'
+      - 'modal_worker/world_editor_tile_ingest_gate.py'
+      - '.github/workflows/tideglass-real-production-canary.yml'
+  workflow_dispatch:
+
+jobs:
+  real-tideglass-canary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install deterministic dependency only
+        run: python -m pip install Pillow
+      - name: Verify canary contract on branch pushes
+        if: github.event_name == 'push'
+        run: |
+          python -m modal_worker.tideglass_real_canary \
+            --config approved_art/canaries/tideglass_real_canary.json \
+            --output-root tideglass-canary-output \
+            --contract-check | tee tideglass-canary-result.json
+      - name: Run strict real Tideglass canary on explicit dispatch
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          python -m modal_worker.tideglass_real_canary \
+            --config approved_art/canaries/tideglass_real_canary.json \
+            --output-root tideglass-canary-output | tee tideglass-canary-result.json
+      - name: Reject synthetic substitution hooks
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          text = Path('modal_worker/tideglass_real_canary.py').read_text().lower()
+          required = [
+              'blocked_missing_real_approved_asset',
+              'synthetic/test/fixture source substitution is forbidden',
+              'synthetic_substitution_used',
+              'run_production',
+          ]
+          missing = [token for token in required if token not in text]
+          if missing:
+              raise SystemExit(f'real-canary fail-closed contract missing: {missing}')
+          forbidden = ['import modal', '.resize(', '.crop(', 'resample=']
+          found = [token for token in forbidden if token in text]
+          if found:
+              raise SystemExit(f'forbidden canary processing behavior found: {found}')
+          PY
+      - name: Upload real canary package when produced
+        if: github.event_name == 'workflow_dispatch' && success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tideglass-real-production-canary
+          path: |
+            tideglass-canary-result.json
+            tideglass-canary-output/**
+          if-no-files-found: error
