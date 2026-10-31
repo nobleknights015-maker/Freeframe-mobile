@@ -17,9 +17,21 @@
     {"start": 80, "end": 103, "role": "a4_prop"},
     {"start": 104, "end": 127, "role": "a5_variation"}
   ],
+  "allowed_footprint_tiles": [[1, 1], [2, 2]],
+  "footprint_pixel_sizes": {"1x1": [48, 48], "2x2": [96, 96]},
+  "multitile_coverage_field": "covered_by",
+  "approval_status_required": "approved",
+  "approval_designation_required": "VERA_APPROVED_SOURCE_V1",
+  "production_authorized_required": true,
   "provenance_required": "vera-chatgpt-approved",
   "generator_calls_allowed": false,
   "gpu_allowed": false,
+  "resizing_allowed": false,
+  "resampling_allowed": false,
+  "cropping_allowed": false,
+  "derived_variant_generation_allowed": false,
+  "target_size_field_allowed": false,
   "reference_sheet_pixels_allowed": false,
-  "world_editor_must_reject_mismatch": true
+  "world_editor_must_reject_mismatch": true,
+  "authorized_compiler": "modal_worker/a5_tilesheet_compiler.py"
 }
