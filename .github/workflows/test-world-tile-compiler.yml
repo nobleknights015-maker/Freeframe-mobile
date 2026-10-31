@@ -1,0 +1,100 @@
+name: Test WORLD_TILE_ASSET_V1 Compiler Contract
+
+on:
+  push:
+    branches:
+      - freeframe-modal-worker
+    paths:
+      - 'modal_worker/a5_tilesheet_compiler.py'
+      - 'modal_worker/a5_tilesheet_compiler_selftest.py'
+      - 'modal_worker/tileset_regional_a5_compiler.py'
+      - 'approved_art/README.md'
+      - 'approved_art/STANDARD_WORLD_TILE_ASSET_V1.md'
+      - 'approved_art/templates/world_tile_asset_v1.json'
+      - '.github/workflows/tileset-regional-a5-finalize.yml'
+      - '.github/workflows/tileset-regional-a5-preflight.yml'
+      - '.github/workflows/tileset-regional-a5-compiler-rehearsal.yml'
+      - '.github/workflows/test-world-tile-compiler.yml'
+  pull_request:
+    paths:
+      - 'modal_worker/a5_tilesheet_compiler.py'
+      - 'modal_worker/a5_tilesheet_compiler_selftest.py'
+      - 'modal_worker/tileset_regional_a5_compiler.py'
+      - 'approved_art/**'
+      - '.github/workflows/tileset-regional-a5-*.yml'
+      - '.github/workflows/test-world-tile-compiler.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  world-tile-contract:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install deterministic dependency only
+        run: python -m pip install --disable-pip-version-check 'pillow>=10.4,<12'
+
+      - name: Run strict compiler fail-closed tests
+        run: python -m unittest -v modal_worker.a5_tilesheet_compiler_selftest
+
+      - name: Verify locked template contract
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          t = json.loads(Path('approved_art/templates/world_tile_asset_v1.json').read_text(encoding='utf-8'))
+          assert t['schema'] == 'plushbound.world_tile_sheet.v1'
+          assert t['template_version'] == 'WORLD_TILE_ASSET_V1'
+          assert [t['canvas_width'], t['canvas_height']] == [384, 768]
+          assert [t['columns'], t['rows'], t['slot_count']] == [8, 16, 128]
+          assert t['tile_size'] == 48
+          assert t['allowed_footprint_tiles'] == [[1,1],[2,2]]
+          assert t['approval_designation_required'] == 'VERA_APPROVED_SOURCE_V1'
+          assert t['provenance_required'] == 'vera-chatgpt-approved'
+          assert t['production_authorized_required'] is True
+          assert t['generator_calls_allowed'] is False
+          assert t['gpu_allowed'] is False
+          assert t['resizing_allowed'] is False
+          assert t['resampling_allowed'] is False
+          assert t['cropping_allowed'] is False
+          assert t['derived_variant_generation_allowed'] is False
+          assert t['target_size_field_allowed'] is False
+          assert t['authorized_compiler'] == 'modal_worker/a5_tilesheet_compiler.py'
+          print('WORLD_TILE_TEMPLATE=PASS_LOCKED')
+          PY
+
+      - name: Reject pixel-transform operations in authorized compiler
+        run: |
+          set -euo pipefail
+          if grep -En '\.(resize|crop|transform|rotate|thumbnail)\(' modal_worker/a5_tilesheet_compiler.py; then
+            echo 'Forbidden pixel transform found in authorized compiler.' >&2
+            exit 1
+          fi
+          if grep -En '(ImageChops\.offset|normalize_image|Resampling\.)' modal_worker/a5_tilesheet_compiler.py; then
+            echo 'Forbidden derived-variant/resampling path found in authorized compiler.' >&2
+            exit 1
+          fi
+          echo 'AUTHORIZED_COMPILER_PIXEL_TRANSFORMS=NONE'
+
+      - name: Assert historical 384-master compiler is test-only
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('modal_worker/tileset_regional_a5_compiler.py').read_text(encoding='utf-8')
+          assert 'LEGACY_TEST_ONLY = True' in p
+          assert 'PRODUCTION_AUTHORIZED = False' in p
+          assert 'test_fixture_only' in p
+          finalize = Path('.github/workflows/tileset-regional-a5-finalize.yml').read_text(encoding='utf-8')
+          preflight = Path('.github/workflows/tileset-regional-a5-preflight.yml').read_text(encoding='utf-8')
+          assert 'RETIRED' in finalize.upper()
+          assert 'RETIRED' in preflight.upper()
+          print('LEGACY_384_MASTER_PRODUCTION_ROUTE=RETIRED')
+          PY
