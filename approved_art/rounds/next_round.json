@@ -4,19 +4,19 @@
   "provenance": "vera-chatgpt-approved",
   "generator_calls_allowed": false,
   "gpu_allowed": false,
-  "notes": "First controlled remake round. Source PNGs are supplied only after visual approval in ChatGPT.",
+  "notes": "Controlled approved-art handoff. Source PNGs are supplied only after explicit visual approval. No resizing or generation is permitted in processing.",
   "assets": [
-    {"asset_id":"tideglass.cliff_stone","source_path":"next_round_sources/cliff_stone.png","target_size":48,"output_name":"tideglass/cliff_stone.png"},
-    {"asset_id":"tideglass.coastal_stone","source_path":"next_round_sources/coastal_stone.png","target_size":48,"output_name":"tideglass/coastal_stone.png"},
-    {"asset_id":"tideglass.dock_timber","source_path":"next_round_sources/dock_timber.png","target_size":48,"output_name":"tideglass/dock_timber.png"},
-    {"asset_id":"tideglass.dry_sand","source_path":"next_round_sources/dry_sand.png","target_size":48,"output_name":"tideglass/dry_sand.png"},
-    {"asset_id":"tideglass.saltworn_board","source_path":"next_round_sources/saltworn_board.png","target_size":48,"output_name":"tideglass/saltworn_board.png"},
-    {"asset_id":"tideglass.sea_glass_pebbles","source_path":"next_round_sources/sea_glass_pebbles.png","target_size":48,"output_name":"tideglass/sea_glass_pebbles.png"},
-    {"asset_id":"tideglass.tidal_silt","source_path":"next_round_sources/tidal_silt.png","target_size":48,"output_name":"tideglass/tidal_silt.png"},
-    {"asset_id":"silkspire.bridge_timber","source_path":"next_round_sources/bridge_timber.png","target_size":48,"output_name":"silkspire/bridge_timber.png"},
-    {"asset_id":"silkspire.guild_floorboards","source_path":"next_round_sources/guild_floorboards.png","target_size":48,"output_name":"silkspire/guild_floorboards.png"},
-    {"asset_id":"silkspire.roof_tile","source_path":"next_round_sources/roof_tile.png","target_size":48,"output_name":"silkspire/roof_tile.png"},
-    {"asset_id":"silkspire.workshop_metal_plate","source_path":"next_round_sources/workshop_metal_plate.png","target_size":48,"output_name":"silkspire/workshop_metal_plate.png"},
-    {"asset_id":"silkspire.workshop_timber","source_path":"next_round_sources/workshop_timber.png","target_size":48,"output_name":"silkspire/workshop_timber.png"}
+    {"asset_id":"tideglass.cliff_stone","source_path":"next_round_sources/cliff_stone.png","footprint_tiles":[2,2],"output_name":"tideglass/cliff_stone.png","approval_status":"approved","approval_designation":"VERA_APPROVED_SOURCE_V1","production_authorized":true,"provenance":"vera-chatgpt-approved"},
+    {"asset_id":"tideglass.coastal_stone","source_path":"next_round_sources/coastal_stone.png","footprint_tiles":[2,2],"output_name":"tideglass/coastal_stone.png","approval_status":"approved","approval_designation":"VERA_APPROVED_SOURCE_V1","production_authorized":true,"provenance":"vera-chatgpt-approved"},
+    {"asset_id":"tideglass.dock_timber","source_path":"next_round_sources/dock_timber.png","footprint_tiles":[2,2],"output_name":"tideglass/dock_timber.png","approval_status":"approved","approval_designation":"VERA_APPROVED_SOURCE_V1","production_authorized":true,"provenance":"vera-chatgpt-approved"},
+    {"asset_id":"tideglass.dry_sand","source_path":"next_round_sources/dry_sand.png","footprint_tiles":[2,2],"output_name":"tideglass/dry_sand.png","approval_status":"approved","approval_designation":"VERA_APPROVED_SOURCE_V1","production_authorized":true,"provenance":"vera-chatgpt-approved"},
+    {"asset_id":"tideglass.saltworn_board","source_path":"next_round_sources/saltworn_board.png","footprint_tiles":[2,2],"output_name":"tideglass/saltworn_board.png","approval_status":"approved","approval_designation":"VERA_APPROVED_SOURCE_V1","production_authorized":true,"provenance":"vera-chatgpt-approved"},
+    {"asset_id":"tideglass.sea_glass_pebbles","source_path":"next_round_sources/sea_glass_pebbles.png","footprint_tiles":[2,2],"output_name":"tideglass/sea_glass_pebbles.png","approval_status":"approved","approval_designation":"VERA_APPROVED_SOURCE_V1","production_authorized":true,"provenance":"vera-chatgpt-approved"},
+    {"asset_id":"tideglass.tidal_silt","source_path":"next_round_sources/tidal_silt.png","footprint_tiles":[2,2],"output_name":"tideglass/tidal_silt.png","approval_status":"approved","approval_designation":"VERA_APPROVED_SOURCE_V1","production_authorized":true,"provenance":"vera-chatgpt-approved"},
+    {"asset_id":"silkspire.bridge_timber","source_path":"next_round_sources/bridge_timber.png","footprint_tiles":[1,1],"output_name":"silkspire/bridge_timber.png","approval_status":"approved","approval_designation":"VERA_APPROVED_SOURCE_V1","production_authorized":true,"provenance":"vera-chatgpt-approved"},
+    {"asset_id":"silkspire.guild_floorboards","source_path":"next_round_sources/guild_floorboards.png","footprint_tiles":[1,1],"output_name":"silkspire/guild_floorboards.png","approval_status":"approved","approval_designation":"VERA_APPROVED_SOURCE_V1","production_authorized":true,"provenance":"vera-chatgpt-approved"},
+    {"asset_id":"silkspire.roof_tile","source_path":"next_round_sources/roof_tile.png","footprint_tiles":[1,1],"output_name":"silkspire/roof_tile.png","approval_status":"approved","approval_designation":"VERA_APPROVED_SOURCE_V1","production_authorized":true,"provenance":"vera-chatgpt-approved"},
+    {"asset_id":"silkspire.workshop_metal_plate","source_path":"next_round_sources/workshop_metal_plate.png","footprint_tiles":[1,1],"output_name":"silkspire/workshop_metal_plate.png","approval_status":"approved","approval_designation":"VERA_APPROVED_SOURCE_V1","production_authorized":true,"provenance":"vera-chatgpt-approved"},
+    {"asset_id":"silkspire.workshop_timber","source_path":"next_round_sources/workshop_timber.png","footprint_tiles":[1,1],"output_name":"silkspire/workshop_timber.png","approval_status":"approved","approval_designation":"VERA_APPROVED_SOURCE_V1","production_authorized":true,"provenance":"vera-chatgpt-approved"}
   ]
 }
