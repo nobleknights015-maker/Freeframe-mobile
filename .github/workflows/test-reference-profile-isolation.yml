@@ -1,0 +1,79 @@
+name: Test External Reference Profile Isolation
+
+on:
+  push:
+    branches: [freeframe-modal-worker]
+    paths:
+      - 'reference_profiles/**'
+      - '.github/workflows/test-reference-profile-isolation.yml'
+  pull_request:
+    paths:
+      - 'reference_profiles/**'
+      - '.github/workflows/test-reference-profile-isolation.yml'
+
+jobs:
+  reference-isolation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate RPG Maker MV reference profile contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          p = Path('reference_profiles/rpg_maker_mv_reference_v1.json')
+          data = json.loads(p.read_text(encoding='utf-8'))
+          required = {
+              'schema': 'plushbound.reference_profile.rpg_maker_mv.v1',
+              'reference_only': True,
+              'production_source_authorized': False,
+              'runtime_pixel_reuse_allowed': False,
+              'cropping_repacking_tracing_allowed': False,
+              'tile_size_px': 48,
+          }
+          for key, value in required.items():
+              if data.get(key) != value:
+                  raise SystemExit(f'{key} must remain {value!r}')
+
+          a5 = data['tileset_geometry']['A5']
+          expected_a5 = {
+              'width': 384,
+              'height': 768,
+              'grid_columns': 8,
+              'grid_rows': 16,
+              'slot_count': 128,
+          }
+          for key, value in expected_a5.items():
+              if a5.get(key) != value:
+                  raise SystemExit(f'A5 {key} drifted: {a5.get(key)!r}')
+
+          alignment = data['plushbound_alignment']
+          if alignment.get('a5_structural_match_confirmed') is not True:
+              raise SystemExit('MV A5 structural match must remain explicit')
+          if alignment.get('plushbound_art_must_remain_original') is not True:
+              raise SystemExit('original Plushbound runtime art requirement missing')
+          PY
+      - name: Reject binary or production-art payloads in reference profile directory
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          root = Path('reference_profiles')
+          forbidden_suffixes = {'.png', '.jpg', '.jpeg', '.webp', '.gif', '.bmp', '.tga', '.psd', '.zip'}
+          bad = [str(p) for p in root.rglob('*') if p.is_file() and p.suffix.lower() in forbidden_suffixes]
+          if bad:
+              raise SystemExit(f'binary/reference art payloads are forbidden here: {bad}')
+          PY
+      - name: Verify profile remains metadata-only
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          text = Path('reference_profiles/README.md').read_text(encoding='utf-8').lower()
+          required = ['reference-only', 'do not crop, repack, trace', 'runtime art must remain newly created plushbound artwork']
+          missing = [token for token in required if token not in text]
+          if missing:
+              raise SystemExit(f'reference isolation documentation missing: {missing}')
+          PY
