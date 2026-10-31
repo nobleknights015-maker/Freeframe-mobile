@@ -1,8 +1,10 @@
 """Fail-closed real Tideglass production canary.
 
 This canary may only use a named Vera-approved source from the real approved-art
-round ledger. It refuses synthetic/test/fixture substitution. If the real source
-bytes are absent, it reports BLOCKED rather than manufacturing a green proof.
+round ledger. It refuses synthetic/test/fixture substitution and requires an
+immutable SHA-256 attestation for the exact approved PNG bytes. If either the
+real source bytes or their attestation is absent, it reports BLOCKED rather than
+manufacturing a green proof.
 """
 from __future__ import annotations
 
@@ -11,6 +13,7 @@ import json
 import tempfile
 from pathlib import Path
 
+from modal_worker.approved_art_source_attestation import verify_attestation
 from modal_worker.world_tile_production_cli import run_production
 
 CANARY_SCHEMA = "plushbound.real_production_canary_result.v1"
@@ -120,9 +123,31 @@ def run_canary(config_path: Path, output_root: Path) -> dict[str, object]:
             "production_authorized": False,
             "asset_id": asset_id,
             "expected_source": str(source_path.relative_to(repo_root)),
+            "source_sha256_attested": False,
             "synthetic_substitution_used": False,
             "runtime_import_proof": False,
         }
+
+    attestation_rel = config.get("attestation_path")
+    if not isinstance(attestation_rel, str) or not attestation_rel:
+        raise ValueError("real canary requires attestation_path")
+    attestation_path = (repo_root / attestation_rel).resolve()
+    if not attestation_path.is_file():
+        return {
+            "schema": CANARY_SCHEMA,
+            "status": "BLOCKED_MISSING_APPROVED_SOURCE_ATTESTATION",
+            "production_authorized": False,
+            "asset_id": asset_id,
+            "source": str(source_path.relative_to(repo_root)),
+            "expected_attestation": str(attestation_path.relative_to(repo_root)),
+            "source_sha256_attested": False,
+            "synthetic_substitution_used": False,
+            "runtime_import_proof": False,
+        }
+
+    attestation = verify_attestation(round_path, attestation_path)
+    if attestation.get("asset_id") != asset_id:
+        raise ValueError("approved source attestation belongs to a different asset")
 
     source_root = source_path.parent
     with tempfile.TemporaryDirectory(prefix="tideglass-real-canary-manifest-") as temp_dir:
@@ -137,6 +162,8 @@ def run_canary(config_path: Path, output_root: Path) -> dict[str, object]:
         "production_authorized": True,
         "asset_id": asset_id,
         "source": str(source_path.relative_to(repo_root)),
+        "source_sha256": attestation["source_sha256"],
+        "source_sha256_attested": True,
         "synthetic_substitution_used": False,
         "package_dir": result["package_dir"],
         "package_status": result["package_status"],
@@ -148,7 +175,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--output-root", type=Path, required=True)
-    parser.add_argument("--contract-check", action="store_true", help="BLOCKED is an expected non-failure while real bytes are absent")
+    parser.add_argument("--contract-check", action="store_true", help="BLOCKED is an expected non-failure while real bytes/attestation are absent")
     args = parser.parse_args()
     try:
         result = run_canary(args.config, args.output_root)
@@ -163,7 +190,7 @@ def main() -> int:
         }, sort_keys=True))
         return 1
     print(json.dumps(result, sort_keys=True))
-    if result["status"] == "BLOCKED_MISSING_REAL_APPROVED_ASSET":
+    if str(result["status"]).startswith("BLOCKED_"):
         return 0 if args.contract_check else 2
     return 0
 
